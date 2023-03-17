@@ -2,8 +2,8 @@ from dataclasses import dataclass, field, replace
 from collections import namedtuple
 import numpy as np
 import cmath
-import sys
-from decimal import Decimal
+# import sys
+# from decimal import Decimal
 from sigfig import round
 
 import time
@@ -98,16 +98,19 @@ class SMatrixCollection:
     :param matrix: dict with entries of the form of (doubled_quantum_numbers_in, doubled_quantum_numbers_out): value, consisting of the S-matrix elements for the given initial and final state
     """
 
-    basis: tuple[str, ...] = None # ('2*L', '2*F1', '2*F2', '2*F12', '2*T', '2*MT')
+    basis: tuple[str, ...] = None # doubled quantum numbers ('L', 'F1', 'F2', 'F12', 'T', 'MT')
 
     C4: tuple[float, ...] = None
     singletParameter: tuple[float, ...] = None
     tripletParameter: tuple[float, ...] = None
     reducedMass: tuple[float, ...] = None
     magneticField: tuple[float, ...] = None
-
     collisionEnergy: tuple[float, ...] = None
-    matrixCollection: dict[tuple[int, int, int, int, int, int], SMatrix] = field(default_factory = dict, compare = False) # not sure if a dictionary with (keys) = (rounded up floats) is not better
+
+    # Create a namedtuple class gathering the indices of the given S-matrix within the collection
+    ParametersIndices = namedtuple('ParametersIndices', ('C4', 'singletParameter', 'tripletParameter', 'reducedMass', 'magneticField', 'collisionEnergy'))
+
+    matrixCollection: dict[ParametersIndices, SMatrix] = field(default_factory = dict, compare = False)
 
     def __add__(self, s_collection):
         """Merge two S-matrix collections of the same attributes.
@@ -152,7 +155,8 @@ class SMatrixCollection:
                 # determine which basis set is used in the output
                 elif "in a total angular momentum basis" in line:
                     tcpld = True
-                    basis = ('2*L', '2*F1', '2*F2', '2*F12', '2*T', '2*MT')
+                    basis = ('L', 'F1', 'F2', 'F12', 'T', 'MT')
+                    Qn = namedtuple('Qn', basis)
 
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
@@ -160,7 +164,7 @@ class SMatrixCollection:
                 elif "INTERACTION TYPE IS  ATOM - ATOM IN UNCOUPLED BASIS" in line:
                     raise NotImplementedError("Only the (L F1 F2 F12 T MT) basis can be used in the molscat outputs in the current implementation.")
                     tcpld = False
-                    basis = ('2*L', '2*ML', '2*F1', '2*MF1', '2*F2', '2*MF2')
+                    basis = ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')
 
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
@@ -224,7 +228,7 @@ class SMatrixCollection:
                     line = next(molscat_output)
                     while line.strip():
                         channel_index = int(line.split()[0])
-                        channels[channel_index] = (2*int(line.split()[6]), int(line.split()[2]), int(line.split()[3]), int(line.split()[4]), T, int(line.split()[5]))
+                        channels[channel_index] = Qn(2*int(line.split()[6]), int(line.split()[2]), int(line.split()[3]), int(line.split()[4]), T, int(line.split()[5]))
                         line = next(molscat_output)
                 
                 elif "OPEN CHANNEL   WVEC (1/ANG.)    CHANNEL" in line and tcpld:
@@ -254,9 +258,9 @@ class SMatrixCollection:
                     
                     S = SMatrix(reducedMass = reduced_mass, magneticField = magnetic_field, C4 = C4, singletParameter = A_s, tripletParameter = A_t, collisionEnergy = self.collisionEnergy[energy_counter], basis = basis, matrix = matrix)
                     if (C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
-                        self.matrixCollection[C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter].update(S)
+                        self.matrixCollection[self.ParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:
-                        self.matrixCollection[C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter] = S
+                        self.matrixCollection[self.ParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
                     energy_counter +=1
 
     @classmethod
@@ -264,6 +268,7 @@ class SMatrixCollection:
         s_collection = SMatrixCollection()
         s_collection.update_from_output(file_path = file_path)
         return s_collection
+
 
 
 # s_coll_1 = SMatrixCollection.from_output(r"data/TEST.output")
@@ -274,7 +279,8 @@ class SMatrixCollection:
 # print(s_coll_2)
 time_0 = time.time()
 s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
-# print(s)
+print(s)
+# print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
 print(f"Loading the matrix took {time.time() - time_0} seconds.")
 
 print(timeit.timeit(lambda: SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output"), setup = "from __main__ import SMatrix, SMatrixCollection", number = 10)/10)
