@@ -4,8 +4,8 @@ import warnings
 from typing import ClassVar, NamedTuple
 import numpy as np
 import cmath
-from sympy.physics.wigner import wigner_3j
-# from py3nj import wigner3j as wigner_3j
+# from sympy.physics.wigner import wigner_3j
+from py3nj import wigner3j as wigner_3j
 # import sys
 # from decimal import Decimal
 from sigfig import round
@@ -13,11 +13,38 @@ from sigfig import round
 import time
 import timeit
 
-import cProfile
-import pstats
-
 from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K
 import quantum_numbers as qn
+
+# Qn_Tcpld = namedtuple('Qn_tcpld', ('L', 'F1', 'F2', 'F12', 'T', 'MT'))
+# Qn_FFcpld = namedtuple('Qn_FFcpld', ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'))
+# Qn_FMF = namedtuple('Qn_FMF', ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'))
+
+# class QuantumNumbers:
+
+#     class TotCoupled(NamedTuple):
+#         L: int
+#         F1: int
+#         F2: int
+#         F12: int
+#         T: int
+#         MT: int
+    
+#     class F1F2Coupled(NamedTuple):
+#         L: int
+#         ML: int
+#         F1: int
+#         F2: int
+#         F12: int
+#         MF12: int
+    
+#     class FMF(NamedTuple):
+#         L: int
+#         ML: int
+#         F1: int
+#         MF1: int
+#         F2: int
+#         MF2: int
 
 
 @dataclass
@@ -366,100 +393,59 @@ class SMatrixCollection:
         return s_collection
     
 
-def main():
-    
-    time_0 = time.time()
-    s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
-    print(f"Loading the matrix took {time.time() - time_0} seconds.")
-
-    
-    def summing():
-        Lmax = 2*9
-
-        x = [sum([
-                sum([
-                        0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2 for i in range(10)
-                    ])
-                    for ML in range(-L, L+1, 2)
-                ])
-        for L in range(0, Lmax+1, 2)]
-
-        return x
-    
-    # time_0 = time.time()
-    # x = summing()
-    # print(f"The time was {(time.time()-time_0):.2f} s.")
-    with cProfile.Profile() as pr:
-        x = summing()
-    
-    print(x)
-    stats = pstats.Stats(pr)
-    stats.sort_stats(pstats.SortKey.TIME)
-    stats.print_stats()
-    stats.dump_stats(filename = '../tests/summing_stats.prof')
 
 
-    # def test(qn_out, qn_in):
-    #     x = [ (-1)**((qn_out.J1() + qn_in.J1() - qn_out.J23() - qn_in.J23() + qn_out.MJ1() + qn_out.MJ23() + qn_in.MJ1() + qn_in.MJ23())/2) 
-    #                 * np.sqrt((J123_out+1)*(J123_in+1)) 
-    #                 * wigner_3j(qn_out.J1()/2, qn_out.J23()/2, J123_out/2, qn_out.MJ1()/2, qn_out.MJ23()/2, -(qn_out.MJ1()/2 + qn_out.MJ23()/2)) 
-    #                 * wigner_3j(qn_in.J1()/2, qn_in.J23()/2, J123_in/2, qn_in.MJ1()/2, qn_in.MJ23()/2, -(qn_in.MJ1()/2 + qn_in.MJ23()/2))
-    #                             for J123_in in range(abs(qn_in.J1()-qn_in.J23()), qn_in.J1()+qn_in.J23()+1, 2) 
-    #                             for J123_out in (J123_in,)
-    #                             if abs(qn_in.MJ1() + qn_in.MJ23()) <= J123_in and abs(qn_out.MJ1() + qn_out.MJ23()) <= J123_out
-    #             ]
-    #     return sum(x)
-
-    # time_0 = time.time()
-    # x = [sum([
-    #         sum([
-    #                 0.1*np.abs(test(qn.LF12(L, ML, 2, 1, 3, -1), qn.LF12(L, ML, 4, 1, 3, 1)))**2 for i in range(10)
-    #             ])
-    #             for ML in range(-L, L+1, 2)
-    #         ])
-    #     for L in range(0, Lmax+1, 2)]
-    # print(f"It took {(time.time()-time_0):.2f} s.")
-    # print([float(y) for y in x])
-    # # print(sum(x[:9]), sum(x[:19]), sum(x))
+time_0 = time.time()
+s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
+# print(s)
+# print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
+print(f"Loading the matrix took {time.time() - time_0} seconds.")
 
 
-if __name__ == '__main__':
-    main()
+Lmax = 2*19
+time_0 = time.time()
 
+func = map(
+    lambda L: sum(map(
+    lambda ML: sum(map(
+    lambda i: 0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
+    range(10)
+    )),
+    range(-L, L+1, 2)
+    )),
+    range(0, Lmax+1, 2)
+)
 
+x = list(func)
+print(x)
+print(sum(x[:9]), sum(x[:19]), sum(x))
+print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
 
+time_0 = time.time()
 
-# time_0 = time.time()
+func = map(
+    lambda L: sum(map(
+    lambda i, ML:  0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
+    range(10), range(-L, L+1, 2)
+    )),
+    range(0, Lmax+1, 2)
+)
 
-# func = map(
-#     lambda L: sum(map(
-#     lambda ML: sum(map(
-#     lambda i: 0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-#     range(10)
-#     )),
-#     range(-L, L+1, 2)
-#     )),
-#     range(0, Lmax+1, 2)
-# )
-
-# x = list(func)
-# print(x)
-# print(sum(x[:9]), sum(x[:19]), sum(x))
+x = list(func)
+print(x)
+print(sum(x[:9]), sum(x[:19]), sum(x))
+print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
 # print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
 
-# time_0 = time.time()
-
-# func = map(
-#     lambda L: sum(map(
-#     lambda i, ML:  0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-#     range(10), range(-L, L+1, 2)
-#     )),
-#     range(0, Lmax+1, 2)
-# )
-
-# x = list(func)
-# print(x)
-# print(sum(x[:9]), sum(x[:19]), sum(x))
-# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
-# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
-
+time_0 = time.time()
+x = [sum([
+        sum([
+                0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2 for i in range(10)
+            ])
+            for ML in range(-L, L+1, 2)
+        ])
+      for L in range(0, Lmax+1, 2)]
+print(x)
+print(sum(x[:9]), sum(x[:19]), sum(x))
+# print(np.abs(np.array(x)[:,9])**2)
+print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
