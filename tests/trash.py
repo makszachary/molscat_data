@@ -1,9 +1,15 @@
 import sys
 from collections import namedtuple
 from typing import NamedTuple
-from pyshtools import Wigner3j
+import numpy as np
+from py3nj import wigner3j, clebsch_gordan
 
-print(Wigner3j(1,2,1,1,-2))
+j1,j2,j3,mj1,mj2,mj3 = 2,3,3,0,1,1
+x = (-1)**((j1-j2+mj3)/2) * np.sqrt(j3+1) *wigner3j(j1,j2,j3,mj1,mj2,-mj3)
+y = clebsch_gordan(j1,j2,j3,mj1,mj2,mj3)
+
+print(x,y)
+print(f"x == y: {x == y}")
 
 print(sys.platform)
 

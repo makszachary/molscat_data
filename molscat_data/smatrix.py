@@ -386,9 +386,9 @@ def main():
 
         return x
     
-    # time_0 = time.time()
-    # x = summing()
-    # print(f"The time was {(time.time()-time_0):.2f} s.")
+    time_0 = time.time()
+    x = summing()
+    print(f"The time was {(time.time()-time_0):.2f} s.")
     with cProfile.Profile() as pr:
         x = summing()
     

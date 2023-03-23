@@ -6,6 +6,7 @@ import numpy as np
 import cmath
 # from sympy.physics.wigner import wigner_3j
 from py3nj import wigner3j as wigner_3j
+from py3nj import clebsch_gordan
 # import sys
 # from decimal import Decimal
 from sigfig import round
@@ -15,36 +16,6 @@ import timeit
 
 from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K
 import quantum_numbers as qn
-
-# Qn_Tcpld = namedtuple('Qn_tcpld', ('L', 'F1', 'F2', 'F12', 'T', 'MT'))
-# Qn_FFcpld = namedtuple('Qn_FFcpld', ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'))
-# Qn_FMF = namedtuple('Qn_FMF', ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'))
-
-# class QuantumNumbers:
-
-#     class TotCoupled(NamedTuple):
-#         L: int
-#         F1: int
-#         F2: int
-#         F12: int
-#         T: int
-#         MT: int
-    
-#     class F1F2Coupled(NamedTuple):
-#         L: int
-#         ML: int
-#         F1: int
-#         F2: int
-#         F12: int
-#         MF12: int
-    
-#     class FMF(NamedTuple):
-#         L: int
-#         ML: int
-#         F1: int
-#         MF1: int
-#         F2: int
-#         MF2: int
 
 
 @dataclass
@@ -140,34 +111,46 @@ class SMatrix:
                 """For now, it only supports matrices degenerate in MT."""
                 assert 'T' in self.diagonal and 'MT' in self.diagonal, "For now, getInBasis method only supports matrices diagonal in T and MT."
                 assert isinstance(qn_in, qn.LF12)
-                # y = [(-1)**((qn_out.J1() + qn_in.J1() - qn_out.J23() - qn_in.J23() + qn_out.MJ1() + qn_out.MJ23() + qn_in.MJ1() + qn_in.MJ23())/2) 
+                # we force the MJ123 to be equal to MJ1+MJ23, but abs(MJ123) has to be less than J123
+                # so we limit the values of J123 to those larger or equal to abs(MJ123)
+                # if the matrix is diagonal in J123, then J123_out = J123_in
+                # so we have to limit both J123_out and J123_in to those l.o.e. abs(MJ123_out) and abs(MJ123_in)
+                J123_in = np.arange(max(abs(qn_in.J1()-qn_in.J23()), abs(qn_in.MJ1()+qn_in.MJ23()), abs(qn_out.MJ1()+qn_out.MJ23())), qn_in.J1()+qn_in.J23()+1, 2, dtype = np.int16) # max 2**15 values
+                J123_out = J123_in
+
+                J_in = np.full((J123_in.shape[0], 6), [qn_in.J1(), qn_in.J23(), 0, qn_in.MJ1(), qn_in.MJ23(), qn_in.MJ1()+qn_in.MJ23()]).transpose()
+                J_in[2] = J123_in
+                J_out = np.full((J123_out.shape[0], 6), [qn_out.J1(), qn_out.J23(), 0, qn_out.MJ1(), qn_out.MJ23(), qn_out.MJ1()+qn_out.MJ23()]).transpose()
+                J_out[2] = J123_out
+
+                matrix = np.array([ self.matrix.get( ( qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J_out[2][k], 0), 
+                                            qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J_in[2][k], 0) 
+                                            ), 0 ) for k in range(len(J_out[2]))])
+
+                x = clebsch_gordan(*J_out)*clebsch_gordan(*J_in)*matrix
+
+                # x = [ (-1)**((qn_out.J1() + qn_in.J1() - qn_out.J23() - qn_in.J23() + qn_out.MJ1() + qn_out.MJ23() + qn_in.MJ1() + qn_in.MJ23())/2) 
                 #          * np.sqrt((J123_out+1)*(J123_in+1)) 
                 #          * wigner_3j(qn_out.J1()/2, qn_out.J23()/2, J123_out/2, qn_out.MJ1()/2, qn_out.MJ23()/2, -(qn_out.MJ1()/2 + qn_out.MJ23()/2)) 
-                #          * wigner_3j(qn_in.J1()/2, qn_in.J23()/2, J123_in/2, qn_in.MJ1()/2, qn_in.MJ23()/2, -(qn_in.MJ1()/2 + qn_in.MJ23()/2))
-                #             for J123_in in range(abs(qn_in.J1()-qn_in.J23()), qn_in.J1()+qn_in.J23()+1, 2) 
-                #             for J123_out in (J123_in,)]
-                x = [ (-1)**((qn_out.J1() + qn_in.J1() - qn_out.J23() - qn_in.J23() + qn_out.MJ1() + qn_out.MJ23() + qn_in.MJ1() + qn_in.MJ23())/2) 
-                         * np.sqrt((J123_out+1)*(J123_in+1)) 
-                         * wigner_3j(qn_out.J1()/2, qn_out.J23()/2, J123_out/2, qn_out.MJ1()/2, qn_out.MJ23()/2, -(qn_out.MJ1()/2 + qn_out.MJ23()/2)) 
-                         * wigner_3j(qn_in.J1()/2, qn_in.J23()/2, J123_in/2, qn_in.MJ1()/2, qn_in.MJ23()/2, -(qn_in.MJ1()/2 + qn_in.MJ23()/2)) 
-                         * self.matrix.get( ( qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J123_out, 0), 
-                                            qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J123_in, 0) 
-                                            ), 0
-                                        )
-                                        for J123_in in range(abs(qn_in.J1()-qn_in.J23()), qn_in.J1()+qn_in.J23()+1, 2) 
-                                        for J123_out in (J123_in,)
-                        ]
+                #          * wigner_3j(qn_in.J1()/2, qn_in.J23()/2, J123_in/2, qn_in.MJ1()/2, qn_in.MJ23()/2, -(qn_in.MJ1()/2 + qn_in.MJ23()/2)) 
+                #          * self.matrix.get( ( qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J123_out, 0), 
+                #                             qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J123_in, 0) 
+                #                             ), 0
+                #                         )
+                #                         for J123_in in range(abs(qn_in.J1()-qn_in.J23()), qn_in.J1()+qn_in.J23()+1, 2) 
+                #                         for J123_out in (J123_in,)
+                        # ]
                 # print(y, sum(y))
                 # print(x)
-                x = complex(sum(x))
+                x = np.sum(x)
                 return x
 
             case (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
                 print(((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2))
                 x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
                          * np.sqrt((J23_out+1)*(J23_in+1)) 
-                         * wigner_3j(qn_out.J2()/2, qn_out.J3()/2, J23_out/2, qn_out.MJ2()/2, qn_out.MJ3()/2, -(qn_out.MJ2()/2 + qn_out.MJ3()/2)) 
-                         * wigner_3j(qn_in.J2()/2, qn_in.J3()/2, J23_in/2, qn_in.MJ2()/2, qn_in.MJ3()/2, -(qn_in.MJ2()/2 + qn_in.MJ3()/2)) 
+                         * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
+                         * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
                          * self.matrix.get( ( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
                                             qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3())
                                             )
@@ -180,19 +163,44 @@ class SMatrix:
                 return x
             
             case (('L', 'F1', 'F2', 'F12', 'T', 'MT'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
-                x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
-                         * np.sqrt((J23_out+1)*(J23_in+1)) 
-                         * wigner_3j(qn_out.J2()/2, qn_out.J3()/2, J23_out/2, qn_out.MJ2()/2, qn_out.MJ3()/2, -(qn_out.MJ2()/2 + qn_out.MJ3()/2)) 
-                         * wigner_3j(qn_in.J2()/2, qn_in.J3()/2, J23_in/2, qn_in.MJ2()/2, qn_in.MJ3()/2, -(qn_in.MJ2()/2 + qn_in.MJ3()/2)) 
-                         * self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
-                                                qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3()),
-                                                    new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12')
+                # we force the MJ123 to be equal to MJ1+MJ23, but abs(MJ123) has to be less than J123
+                # so we limit the values of J123 to those larger or equal to abs(MJ123)
+                # if the matrix is diagonal in J123, then J123_out = J123_in
+                # so we have to limit both J123_out and J123_in to those l.o.e. abs(MJ123_out) and abs(MJ123_in)
+                J23_in = np.arange(max(abs(qn_in.J2()-qn_in.J3()), abs(qn_in.MJ2()+qn_in.MJ3())), qn_in.J2()+qn_in.J3()+1, 2, dtype = np.int16) # max 2**15 values
+                J23_out = np.arange(max(abs(qn_out.J2()-qn_out.J3()), abs(qn_out.MJ2()+qn_out.MJ3())), qn_out.J2()+qn_out.J3()+1, 2, dtype = np.int16) # max 2**15 values
+                J23_out, J23_in = np.meshgrid(J23_out, J23_in)
+                J23_out = J23_out.flatten()
+                J23_in = J23_in.flatten()
+
+                J_in = np.full((*J23_in.shape, 6), [qn_in.J2(), qn_in.J3(), 0, qn_in.MJ2(), qn_in.MJ3(), qn_in.MJ2()+qn_in.MJ3()]).transpose()
+                J_in[2] = J23_in
+                J_out = np.full((*J23_out.shape, 6), [qn_out.J2(), qn_out.J3(), 0, qn_out.MJ2(), qn_out.MJ3(), qn_out.MJ2()+qn_out.MJ3()]).transpose()
+                J_out[2] = J23_out
+
+                # print(J_in, J_out)
+
+                matrix = np.array([ self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J_out[2][k], J_out[5][k]), 
+                                            qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J_in[2][k], J_in[5][k]),
+                                                new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') 
                                                 )
-                                        for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
-                                        for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
-                        ]
+                                    for k in range(len(J_out[2]))
+                                    ])
+
+                x = clebsch_gordan(*J_out)*clebsch_gordan(*J_in)*matrix
+                # x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
+                #          * np.sqrt((J23_out+1)*(J23_in+1)) 
+                #          * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
+                #          * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
+                #          * self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
+                #                                 qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3()),
+                #                                     new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12')
+                #                                 )
+                #                         for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
+                #                         for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
+                        # ]
                 # print(x)
-                x = complex(sum(x))
+                x = np.sum(x)
                 return x
 
             case _:
@@ -402,40 +410,41 @@ s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
 print(f"Loading the matrix took {time.time() - time_0} seconds.")
 
 
-Lmax = 2*19
-time_0 = time.time()
+Lmax = 2*9
 
-func = map(
-    lambda L: sum(map(
-    lambda ML: sum(map(
-    lambda i: 0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-    range(10)
-    )),
-    range(-L, L+1, 2)
-    )),
-    range(0, Lmax+1, 2)
-)
+# time_0 = time.time()
 
-x = list(func)
-print(x)
-print(sum(x[:9]), sum(x[:19]), sum(x))
-print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
+# func = map(
+#     lambda L: sum(map(
+#     lambda ML: sum(map(
+#     lambda i: 0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
+#     range(10)
+#     )),
+#     range(-L, L+1, 2)
+#     )),
+#     range(0, Lmax+1, 2)
+# )
 
-time_0 = time.time()
-
-func = map(
-    lambda L: sum(map(
-    lambda i, ML:  0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-    range(10), range(-L, L+1, 2)
-    )),
-    range(0, Lmax+1, 2)
-)
-
-x = list(func)
-print(x)
-print(sum(x[:9]), sum(x[:19]), sum(x))
-print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
+# x = list(func)
+# print(x)
+# print(sum(x[:9]), sum(x[:19]), sum(x))
 # print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
+
+# time_0 = time.time()
+
+# func = map(
+#     lambda L: sum(map(
+#     lambda i, ML:  0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
+#     range(10), range(-L, L+1, 2)
+#     )),
+#     range(0, Lmax+1, 2)
+# )
+
+# x = list(func)
+# print(x)
+# print(sum(x[:9]), sum(x[:19]), sum(x))
+# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
+# # print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
 
 time_0 = time.time()
 x = [sum([
