@@ -374,7 +374,7 @@ def main():
 
     
     def summing():
-        Lmax = 2*9
+        Lmax = 2*19
 
         x = [sum([
                 sum([
@@ -389,13 +389,15 @@ def main():
     time_0 = time.time()
     x = summing()
     print(f"The time was {(time.time()-time_0):.2f} s.")
+    print(x)
+    print(sum(x[:9]), sum(x[:19]))
     with cProfile.Profile() as pr:
         x = summing()
     
     print(x)
     stats = pstats.Stats(pr)
     stats.sort_stats(pstats.SortKey.TIME)
-    stats.print_stats()
+    # stats.print_stats()
     stats.dump_stats(filename = '../tests/summing_stats.prof')
 
 

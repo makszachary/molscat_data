@@ -14,6 +14,9 @@ from sigfig import round
 import time
 import timeit
 
+import cProfile
+import pstats
+
 from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K
 import quantum_numbers as qn
 
@@ -99,13 +102,16 @@ class SMatrix:
         rate_constant = np.sqrt(2*(self.collisionEnergy/Hartree_to_K) / self.reducedMass) * self.cross_section(qn_out, qn_in)
         return rate_constant
 
-    def getInBasis(self, qn_out, qn_in, new_basis = None) -> complex:
-        assert type(qn_out) == type(qn_in), "The types of the quantum numbers passed as arguments should be the same."
+    def getInBasis(self, qn_out, qn_in, new_basis = None, vectorize = False) -> complex:
+        if vectorize == True:
+            f = np.vectorize(self.getInBasis)
+            return f(self, qn_out, qn_in, new_basis = None, vectorize = False)
+        assert type(qn_out) == type(qn_in), f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}."
         # it would be good to replace the warning with a logger?
         if new_basis == None: new_basis = qn_in._fields; warnings.warn(f"The basis {new_basis} read from the type of qn_in argument.")
         match (self.basis, new_basis):
             case (self.basis, self.basis):
-                return self.matrix[(qn_out, qn_in)]
+                return self.matrix.get((qn_out, qn_in), 0)
             
             case (('L', 'F1', 'F2', 'F12', 'T', 'MT'), ('L', 'ML', 'F1', 'F2', 'F12', 'MF12')):
                 """For now, it only supports matrices degenerate in MT."""
@@ -123,83 +129,57 @@ class SMatrix:
                 J_out = np.full((J123_out.shape[0], 6), [qn_out.J1(), qn_out.J23(), 0, qn_out.MJ1(), qn_out.MJ23(), qn_out.MJ1()+qn_out.MJ23()]).transpose()
                 J_out[2] = J123_out
 
-                matrix = np.array([ self.matrix.get( ( qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J_out[2][k], 0), 
-                                            qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J_in[2][k], 0) 
-                                            ), 0 ) for k in range(len(J_out[2]))])
+                matrix = np.array([ self.matrix.get( (qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J_out[2][k], 0), 
+                                                qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J_in[2][k], 0) 
+                                                    ), 0
+                                                ) for k in range(len(J_out[2]))])
 
                 x = clebsch_gordan(*J_out)*clebsch_gordan(*J_in)*matrix
 
-                # x = [ (-1)**((qn_out.J1() + qn_in.J1() - qn_out.J23() - qn_in.J23() + qn_out.MJ1() + qn_out.MJ23() + qn_in.MJ1() + qn_in.MJ23())/2) 
-                #          * np.sqrt((J123_out+1)*(J123_in+1)) 
-                #          * wigner_3j(qn_out.J1()/2, qn_out.J23()/2, J123_out/2, qn_out.MJ1()/2, qn_out.MJ23()/2, -(qn_out.MJ1()/2 + qn_out.MJ23()/2)) 
-                #          * wigner_3j(qn_in.J1()/2, qn_in.J23()/2, J123_in/2, qn_in.MJ1()/2, qn_in.MJ23()/2, -(qn_in.MJ1()/2 + qn_in.MJ23()/2)) 
-                #          * self.matrix.get( ( qn.Tcpld(qn_out.J1(), qn_out.J2(), qn_out.J3(), qn_out.J23(), J123_out, 0), 
-                #                             qn.Tcpld(qn_in.J1(), qn_in.J2(), qn_in.J3(), qn_in.J23(), J123_in, 0) 
-                #                             ), 0
-                #                         )
-                #                         for J123_in in range(abs(qn_in.J1()-qn_in.J23()), qn_in.J1()+qn_in.J23()+1, 2) 
-                #                         for J123_out in (J123_in,)
-                        # ]
-                # print(y, sum(y))
-                # print(x)
                 x = np.sum(x)
                 return x
 
-            case (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
-                print(((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2))
-                x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
-                         * np.sqrt((J23_out+1)*(J23_in+1)) 
-                         * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
-                         * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
-                         * self.matrix.get( ( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
-                                            qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3())
-                                            )
-                                        )
-                                        for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
-                                        for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
-                        ]
-                # print(x)
-                x = complex(sum(x))
-                return x
+            # case (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
+            #     print(((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2))
+            #     x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
+            #              * np.sqrt((J23_out+1)*(J23_in+1)) 
+            #              * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
+            #              * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
+            #              * self.matrix.get( ( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
+            #                                 qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3())
+            #                                 )
+            #                             )
+            #                             for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
+            #                             for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
+            #             ]
+            #     # print(x)
+            #     x = complex(sum(x))
+            #     return x
             
-            case (('L', 'F1', 'F2', 'F12', 'T', 'MT'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
+            case (('L', 'F1', 'F2', 'F12', 'T', 'MT'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')) | (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
                 # we force the MJ123 to be equal to MJ1+MJ23, but abs(MJ123) has to be less than J123
                 # so we limit the values of J123 to those larger or equal to abs(MJ123)
                 # if the matrix is diagonal in J123, then J123_out = J123_in
                 # so we have to limit both J123_out and J123_in to those l.o.e. abs(MJ123_out) and abs(MJ123_in)
-                J23_in = np.arange(max(abs(qn_in.J2()-qn_in.J3()), abs(qn_in.MJ2()+qn_in.MJ3())), qn_in.J2()+qn_in.J3()+1, 2, dtype = np.int16) # max 2**15 values
-                J23_out = np.arange(max(abs(qn_out.J2()-qn_out.J3()), abs(qn_out.MJ2()+qn_out.MJ3())), qn_out.J2()+qn_out.J3()+1, 2, dtype = np.int16) # max 2**15 values
+                J23_in = np.arange(max(abs(qn_in.J2()-qn_in.J3()), abs(qn_in.MJ2()+qn_in.MJ3())), qn_in.J2()+qn_in.J3()+1, 2, dtype = np.int16) # max 2**15
+                J23_out = np.arange(max(abs(qn_out.J2()-qn_out.J3()), abs(qn_out.MJ2()+qn_out.MJ3())), qn_out.J2()+qn_out.J3()+1, 2, dtype = np.int16) # max 2**15
                 J23_out, J23_in = np.meshgrid(J23_out, J23_in)
-                J23_out = J23_out.flatten()
-                J23_in = J23_in.flatten()
 
-                J_in = np.full((*J23_in.shape, 6), [qn_in.J2(), qn_in.J3(), 0, qn_in.MJ2(), qn_in.MJ3(), qn_in.MJ2()+qn_in.MJ3()]).transpose()
+                J_in = np.full((*J23_in.shape, 6), [qn_in.J2(), qn_in.J3(), 0, qn_in.MJ2(), qn_in.MJ3(), qn_in.MJ2()+qn_in.MJ3()]).transpose(2,0,1)
                 J_in[2] = J23_in
-                J_out = np.full((*J23_out.shape, 6), [qn_out.J2(), qn_out.J3(), 0, qn_out.MJ2(), qn_out.MJ3(), qn_out.MJ2()+qn_out.MJ3()]).transpose()
+                J_out = np.full((*J23_out.shape, 6), [qn_out.J2(), qn_out.J3(), 0, qn_out.MJ2(), qn_out.MJ3(), qn_out.MJ2()+qn_out.MJ3()]).transpose(2,0,1)
                 J_out[2] = J23_out
 
-                # print(J_in, J_out)
 
-                matrix = np.array([ self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J_out[2][k], J_out[5][k]), 
-                                            qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J_in[2][k], J_in[5][k]),
+                matrix = np.array([ [self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J_out[2][k][j], J_out[5][k][j]), 
+                                            qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J_in[2][k][j], J_in[5][k][j]),
                                                 new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') 
                                                 )
-                                    for k in range(len(J_out[2]))
+                                    for j in range(J_in.shape[2])]
+                                    for k in range(J_in.shape[1])
                                     ])
 
                 x = clebsch_gordan(*J_out)*clebsch_gordan(*J_in)*matrix
-                # x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
-                #          * np.sqrt((J23_out+1)*(J23_in+1)) 
-                #          * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
-                #          * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
-                #          * self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
-                #                                 qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3()),
-                #                                     new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12')
-                #                                 )
-                #                         for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
-                #                         for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
-                        # ]
-                # print(x)
                 x = np.sum(x)
                 return x
 
@@ -208,7 +188,13 @@ class SMatrix:
 
 
         
-
+class CollectionParametersIndices(NamedTuple):
+    C4: int
+    singletParameter: int
+    tripletParameter: int
+    reducedMass: int
+    magneticField: int
+    collisionEnergy: int
 
 @dataclass
 class SMatrixCollection:
@@ -238,9 +224,9 @@ class SMatrixCollection:
     collisionEnergy: tuple[float, ...] = None
 
     # Create a namedtuple class gathering the indices of the given S-matrix within the collection
-    ParametersIndices: ClassVar[ParametersIndices] = namedtuple('ParametersIndices', ('C4', 'singletParameter', 'tripletParameter', 'reducedMass', 'magneticField', 'collisionEnergy'))
+    # ParametersIndices: ClassVar[ParametersIndices] = namedtuple('ParametersIndices', ('C4', 'singletParameter', 'tripletParameter', 'reducedMass', 'magneticField', 'collisionEnergy'))
 
-    matrixCollection: dict[ParametersIndices, SMatrix] = field(default_factory = dict, compare = False)
+    matrixCollection: dict[CollectionParametersIndices, SMatrix] = field(default_factory = dict, compare = False)
 
     def __add__(self, s_collection):
         """Merge two S-matrix collections of the same attributes.
@@ -286,7 +272,7 @@ class SMatrixCollection:
                 elif "in a total angular momentum basis" in line:
                     tcpld = True
                     basis = ('L', 'F1', 'F2', 'F12', 'T', 'MT')
-                    self.Qn = namedtuple('Qn', basis)
+                    self.Qn = qn.Tcpld
                     self.diagonal = ('T', 'MT')
 
                     if self.basis == None: self.basis = basis
@@ -389,9 +375,9 @@ class SMatrixCollection:
                     
                     S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = C4, singletParameter = A_s, tripletParameter = A_t, reducedMass = reduced_mass, magneticField = magnetic_field, collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
                     if (C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
-                        self.matrixCollection[self.ParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
+                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:
-                        self.matrixCollection[self.ParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
+                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
                     energy_counter +=1
 
     @classmethod
@@ -401,60 +387,69 @@ class SMatrixCollection:
         return s_collection
     
 
+def summing(MF_in, MS_in, smatrix):
+    time_0 = time.perf_counter()
 
-
-time_0 = time.time()
-s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
-# print(s)
-# print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
-print(f"Loading the matrix took {time.time() - time_0} seconds.")
-
-
-Lmax = 2*9
-
-# time_0 = time.time()
-
-# func = map(
-#     lambda L: sum(map(
-#     lambda ML: sum(map(
-#     lambda i: 0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-#     range(10)
-#     )),
-#     range(-L, L+1, 2)
-#     )),
-#     range(0, Lmax+1, 2)
-# )
-
-# x = list(func)
-# print(x)
-# print(sum(x[:9]), sum(x[:19]), sum(x))
-# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
-
-# time_0 = time.time()
-
-# func = map(
-#     lambda L: sum(map(
-#     lambda i, ML:  0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2,
-#     range(10), range(-L, L+1, 2)
-#     )),
-#     range(0, Lmax+1, 2)
-# )
-
-# x = list(func)
-# print(x)
-# print(sum(x[:9]), sum(x[:19]), sum(x))
-# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
-# # print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
-
-time_0 = time.time()
-x = [sum([
-        sum([
-                0.1*np.abs(s.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, 2, 1, -1), qn.LF1F2(L, ML, 4, 0, 1, 1)))**2 for i in range(10)
+    Lmax = 2*29
+    
+    x = [sum([
+            sum([
+                    0.1*np.abs(smatrix.matrixCollection[0,0,0,0,0,i].getInBasis(qn.LF1F2(L, ML, 2, MF, 1, MS), qn.LF1F2(L, ML, 4, MF_in, 1, MS_in)))**2 for i in range(10)
+                ])
+                for ML in range(-L, L+1, 2)
             ])
-            for ML in range(-L, L+1, 2)
-        ])
-      for L in range(0, Lmax+1, 2)]
-print(x)
-print(sum(x[:9]), sum(x[:19]), sum(x))
+       for MF in range(-2, 2+1, 2) for MS in range(-1, 1+1, 2) for L in range(0, Lmax+1, 2)]
+
+    return (MF_in, MS_in), sum(x), time.perf_counter()-time_0
+
+def main():
+    from multiprocessing import Pool
+    from multiprocessing.dummy import Pool as ThreadPool    
+
+    time_0 = time.perf_counter()
+    s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
+    # print(s)
+    # print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
+    print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+
+
+
+    args = ((MF,MS, s) for MF in range(-4,4+1,2) for MS in range(-1, 1+1, 2))
+    def multiprocessing_test(args):
+        time_0 = time.perf_counter()
+        with Pool() as pool:
+            results = pool.starmap(summing, args)
+            for arg, result, duration in results:
+                # result, duration = summing(*arg)
+                print(f"The sum for (MF, MS) = {arg} is {result}. It took {duration:.2f} s to sum up {10*2*3*30**2:.2e} elements, on average {duration/(10*2*3*30**2) :.2e} s per element.")
+        
+        duration = time.perf_counter()-time_0
+        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*30**2:.2e} elements, on average {duration/(5*2*10*2*3*30**2):.2e} s per element.")
+
+    def simple_loop_test(args):
+        time_0 = time.perf_counter()
+        for arg in args:
+            _, result, duration = summing(*arg)
+            print(f"The sum for (MF, MS) = {_} is {result}. It took {duration:.2f} s to sum up {10*2*3*30**2:.2e} elements, on average {duration/(10*2*3*30**2) :.2e} s per element.")
+        
+        duration = time.perf_counter()-time_0
+        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*30**2:.2e} elements, on average {duration/(5*2*10*2*3*30**2):.2e} s per element.")
+
+    simple_loop_test(args)
+
+if __name__ == '__main__':
+    main()
+
+# print(x)
+# print(sum(x[:9]), sum(x[:19]))#, sum(x))
 # print(np.abs(np.array(x)[:,9])**2)
-print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.time() - time_0} seconds.")
+# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.perf_counter() - time_0} seconds.")
+
+# with cProfile.Profile() as pr:
+#     x = summing()
+
+# print(x)
+# stats = pstats.Stats(pr)
+# stats.sort_stats(pstats.SortKey.TIME)
+# # stats.print_stats()
+# stats.dump_stats(filename = '../tests/summing_py3nj_stats.prof')
