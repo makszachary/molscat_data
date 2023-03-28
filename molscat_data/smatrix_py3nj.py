@@ -1,18 +1,13 @@
 from dataclasses import dataclass, field, replace
-from collections import namedtuple
 import warnings
-from typing import ClassVar, NamedTuple
+from typing import NamedTuple
 import numpy as np
 import cmath
-# from sympy.physics.wigner import wigner_3j
-from py3nj import wigner3j as wigner_3j
 from py3nj import clebsch_gordan
-# import sys
-# from decimal import Decimal
 from sigfig import round
 
 import time
-import timeit
+# import timeit
 
 import cProfile
 import pstats
@@ -51,7 +46,7 @@ class SMatrix:
     matrix: dict[tuple[tuple[int, ...], tuple[int, ...]], complex] = field(default_factory = dict, compare = False, repr = False)
 
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Check if the number of quantum numbers in the matrix match the length of the basis."""
         assert all(len(key[0]) == len(key[1]) == len(self.basis) for key in self.matrix.keys()), "The number of quantum numbers in both tuples should match the size of the basis."
 
@@ -75,8 +70,8 @@ class SMatrix:
     def addElement(self, qn_out: tuple, qn_in: tuple, value: complex) -> None:
         """Add new elements to the S-matrix.
 
-        :param qn_in: The quantum numbers for the initial state.
         :param qn_out: The quantum numbers for the final state.
+        :param qn_in: The quantum numbers for the initial state.
         :param value: Value of the S-matrix element.
         :raises AssertionError: if len(qn_in) or len(qn_out) doesn't match len(basis)
         """
@@ -102,14 +97,21 @@ class SMatrix:
         rate_constant = np.sqrt(2*(self.collisionEnergy/Hartree_to_K) / self.reducedMass) * self.cross_section(qn_out, qn_in)
         return rate_constant
 
-    def getInBasis(self, qn_out, qn_in, new_basis = None, vectorize = False) -> complex:
-        if vectorize == True:
-            f = np.vectorize(self.getInBasis)
-            return f(self, qn_out, qn_in, new_basis = new_basis, vectorize = False)
+    def getInBasis(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> complex:
+        """Get the S-matrix element for in the given basis.
+
+        :param qn_out: The quantum numbers for the final state.
+        :param qn_in: The quantum numbers for the initial state.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred for data type of qn_in argument.
+        :raises AssertionError: read the source code.
+        """
+
         assert type(qn_out) == type(qn_in), f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}."
         # it would be good to replace the warning with a logger?
-        if new_basis == None: new_basis = qn_in._fields; warnings.warn(f"The basis {new_basis} read from the type of qn_in argument.")
-        match (self.basis, new_basis):
+        if basis == None: basis = qn_in._fields; warnings.warn(f"The basis {basis} read from the type of qn_in argument.")
+        match (self.basis, basis):
             case (self.basis, self.basis):
                 return self.matrix.get((qn_out, qn_in), 0)
             
@@ -142,23 +144,6 @@ class SMatrix:
 
                 x = np.sum(x)
                 return x
-
-            # case (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
-            #     print(((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2))
-            #     x = [ (-1)**((qn_out.J2() + qn_in.J2() - qn_out.J3() - qn_in.J3() + qn_out.MJ2() + qn_out.MJ3() + qn_in.MJ2() + qn_in.MJ3())/2) 
-            #              * np.sqrt((J23_out+1)*(J23_in+1)) 
-            #              * wigner_3j(qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2(), qn_out.MJ3(), -(qn_out.MJ2() + qn_out.MJ3())) 
-            #              * wigner_3j(qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2(), qn_in.MJ3(), -(qn_in.MJ2() + qn_in.MJ3())) 
-            #              * self.matrix.get( ( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J23_out, qn_out.MJ2() + qn_out.MJ3()), 
-            #                                 qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J23_in, qn_in.MJ2() + qn_in.MJ3())
-            #                                 )
-            #                             )
-            #                             for J23_in in range(abs(qn_in.J2()-qn_in.J3()), qn_in.J2()+qn_in.J3()+1, 2) 
-            #                             for J23_out in range(abs(qn_out.J2()-qn_out.J3()), qn_out.J2()+qn_out.J3()+1, 2)
-            #             ]
-            #     # print(x)
-            #     x = complex(sum(x))
-            #     return x
             
             case (('L', 'F1', 'F2', 'F12', 'T', 'MT'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')) | (('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')):
                 # we force the MJ123 to be equal to MJ1+MJ23, but abs(MJ123) has to be less than J123
@@ -177,7 +162,7 @@ class SMatrix:
 
                 matrix = np.array([ [self.getInBasis( qn.LF12(qn_out.J1(), qn_out.MJ1(), qn_out.J2(), qn_out.J3(), J_out[2][k][j], J_out[5][k][j]), 
                                             qn.LF12(qn_in.J1(), qn_in.MJ1(), qn_in.J2(), qn_in.J3(), J_in[2][k][j], J_in[5][k][j]),
-                                                new_basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') 
+                                                basis = ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') 
                                                 )
                                     for j in range(J_in.shape[2])]
                                     for k in range(J_in.shape[1])
@@ -188,7 +173,7 @@ class SMatrix:
                 return x
 
             case _:
-                raise NotImplementedError(f"The transformation from {self.basis} to {new_basis} is not implemented.")
+                raise NotImplementedError(f"The transformation from {self.basis} to {basis} is not implemented.")
 
 
         
@@ -403,6 +388,7 @@ def summing(MF_in, MS_in, L_max, smatrix):
                 for ML in range(-L, L+1, 2)
             ])
        for MF in range(-2, 2+1, 2) for MS in range(-1, 1+1, 2) for L in range(0, L_max+1, 2)]
+    
 
     return (MF_in, MS_in), sum(x), time.perf_counter()-time_0
 
@@ -458,17 +444,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# print(x)
-# print(sum(x[:9]), sum(x[:19]))#, sum(x))
-# print(np.abs(np.array(x)[:,9])**2)
-# print(f"Getting {10*((Lmax+2)/2)**2} elements in a LF1F2 basis took {time.perf_counter() - time_0} seconds.")
-
-# with cProfile.Profile() as pr:
-#     x = summing()
-
-# print(x)
-# stats = pstats.Stats(pr)
-# stats.sort_stats(pstats.SortKey.TIME)
-# # stats.print_stats()
-# stats.dump_stats(filename = '../tests/summing_py3nj_stats.prof')
