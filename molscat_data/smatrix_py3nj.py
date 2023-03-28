@@ -105,7 +105,7 @@ class SMatrix:
     def getInBasis(self, qn_out, qn_in, new_basis = None, vectorize = False) -> complex:
         if vectorize == True:
             f = np.vectorize(self.getInBasis)
-            return f(self, qn_out, qn_in, new_basis = None, vectorize = False)
+            return f(self, qn_out, qn_in, new_basis = new_basis, vectorize = False)
         assert type(qn_out) == type(qn_in), f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}."
         # it would be good to replace the warning with a logger?
         if new_basis == None: new_basis = qn_in._fields; warnings.warn(f"The basis {new_basis} read from the type of qn_in argument.")
@@ -117,6 +117,10 @@ class SMatrix:
                 """For now, it only supports matrices degenerate in MT."""
                 assert 'T' in self.diagonal and 'MT' in self.diagonal, "For now, getInBasis method only supports matrices diagonal in T and MT."
                 assert isinstance(qn_in, qn.LF12)
+                # we have to exclude the total-momentum-changing collisions manually
+                # because for all the other in/out channels we assume that S(MT, MT') = S(0, 0)
+                if qn_out.MJ1() + qn_out.MJ23() != qn_in.MJ1() + qn_in.MJ23():
+                    return 0
                 # we force the MJ123 to be equal to MJ1+MJ23, but abs(MJ123) has to be less than J123
                 # so we limit the values of J123 to those larger or equal to abs(MJ123)
                 # if the matrix is diagonal in J123, then J123_out = J123_in
@@ -387,10 +391,10 @@ class SMatrixCollection:
         return s_collection
     
 
-def summing(MF_in, MS_in, smatrix):
+def summing(MF_in, MS_in, L_max, smatrix):
     time_0 = time.perf_counter()
 
-    Lmax = 2*29
+    # Lmax = 2*9
     
     x = [sum([
             sum([
@@ -398,7 +402,7 @@ def summing(MF_in, MS_in, smatrix):
                 ])
                 for ML in range(-L, L+1, 2)
             ])
-       for MF in range(-2, 2+1, 2) for MS in range(-1, 1+1, 2) for L in range(0, Lmax+1, 2)]
+       for MF in range(-2, 2+1, 2) for MS in range(-1, 1+1, 2) for L in range(0, L_max+1, 2)]
 
     return (MF_in, MS_in), sum(x), time.perf_counter()-time_0
 
@@ -408,34 +412,49 @@ def main():
 
     time_0 = time.perf_counter()
     s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
-    # print(s)
+    print(s)
     # print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
     print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
 
+    L_max = 2*9
 
-
-    args = ((MF,MS, s) for MF in range(-4,4+1,2) for MS in range(-1, 1+1, 2))
+    # args = ((MF,MS, L_max, s) for MF in range(-4,4+1,2) for MS in range(-1, 1+1, 2))
     def multiprocessing_test(args):
         time_0 = time.perf_counter()
         with Pool() as pool:
             results = pool.starmap(summing, args)
             for arg, result, duration in results:
                 # result, duration = summing(*arg)
-                print(f"The sum for (MF, MS) = {arg} is {result}. It took {duration:.2f} s to sum up {10*2*3*30**2:.2e} elements, on average {duration/(10*2*3*30**2) :.2e} s per element.")
+                print(f"The sum for (MF, MS) = {arg} is {result}. It took {duration:.2f} s to sum up {10*2*3*(L_max/2+1)**2:.2e} elements, on average {duration/(10*2*3*(L_max/2+1)**2) :.2e} s per element.")
         
         duration = time.perf_counter()-time_0
-        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*30**2:.2e} elements, on average {duration/(5*2*10*2*3*30**2):.2e} s per element.")
+        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*(L_max/2+1)**2:.2e} elements, on average {duration/(5*2*10*2*3*(L_max/2+1)**2):.2e} s per element.")
 
     def simple_loop_test(args):
         time_0 = time.perf_counter()
         for arg in args:
             _, result, duration = summing(*arg)
-            print(f"The sum for (MF, MS) = {_} is {result}. It took {duration:.2f} s to sum up {10*2*3*30**2:.2e} elements, on average {duration/(10*2*3*30**2) :.2e} s per element.")
+            print(f"The sum for (MF, MS) = {_} is {result}. It took {duration:.2f} s to sum up {10*2*3*(L_max/2+1)**2:.2e} elements, on average {duration/(10*2*3*(L_max/2+1)**2) :.2e} s per element.")
         
         duration = time.perf_counter()-time_0
-        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*30**2:.2e} elements, on average {duration/(5*2*10*2*3*30**2):.2e} s per element.")
+        print(f"The total time was {duration:.2f} s for summing up {5*2*10*2*3*(L_max/2+1)**2:.2e} elements, on average {duration/(5*2*10*2*3*(L_max/2+1)**2):.2e} s per element.")
 
-    simple_loop_test(args)
+    def vectorize_test(smatrix):
+        L = 2
+        lst_out = [ ML for ML in range(-L, L+1, 2)]
+        lst_in = [ ML for ML in range(-L, L+1, 2)]
+        lst_out, lst_in = np.meshgrid(lst_out, lst_in)
+        # basis = [('L', 'ML', 'F1', 'MF1', 'F2', 'MF2') for ML in range(-L, L+1, 2)]
+        f = lambda ML_out, ML_in: smatrix.matrixCollection[0,0,0,0,0,0].getInBasis(qn.LF1F2(L, ML_out, 2, 0, 1, -1), qn.LF1F2(L, ML_in, 4, 0, 1, 1))
+        g = np.vectorize(f)
+        return np.abs(g(lst_out, lst_in))**2, lst_out, lst_in
+
+    # args = ((MF,MS, L_max, s) for MF in range(-4,4+1,2) for MS in range(-1, 1+1, 2))
+    # multiprocessing_test(args)
+    # args = ((MF,MS, L_max, s) for MF in range(-4,4+1,2) for MS in range(-1, 1+1, 2))
+    # simple_loop_test(args)
+    # x, lst_out, lst_in = vectorize_test(s)
+    # print(x, '\n', lst_out, '\n', lst_in)
 
 if __name__ == '__main__':
     main()

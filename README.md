@@ -15,5 +15,5 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 `python -m venv venv`  
 `source venv/bin/activate`  
 
-3. `pip install --upgrade pip`   
+3. `py -m pip install --upgrade pip`   
 `pip install -r requirements.txt`
