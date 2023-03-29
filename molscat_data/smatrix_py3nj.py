@@ -12,7 +12,7 @@ import time
 import cProfile
 import pstats
 
-from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K
+from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K, rate_from_au_to_SI
 import quantum_numbers as qn
 
 
@@ -104,11 +104,13 @@ class SMatrix:
         :param qn_in: The quantum numbers for the initial state.
         :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
         ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
-        If None (default), then inferred for data type of qn_in argument.
+        If None (default), then inferred from the data type of qn_in argument.
+        :raises TypeError: if the data types of qn_out and qn_in don't match.
         :raises AssertionError: read the source code.
         """
 
-        assert type(qn_out) == type(qn_in), f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}."
+        if type(qn_out) != type(qn_in):
+            raise TypeError(f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}.")
         # it would be good to replace the warning with a logger?
         if basis == None: basis = qn_in._fields; warnings.warn(f"The basis {basis} read from the type of qn_in argument.")
         match (self.basis, basis):
@@ -174,7 +176,116 @@ class SMatrix:
 
             case _:
                 raise NotImplementedError(f"The transformation from {self.basis} to {basis} is not implemented.")
+    
+    def getCrossSection(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
+        """Calculate the cross section in the given basis.
 
+        :param qn_out: The quantum numbers for the final state.
+        :param qn_in: The quantum numbers for the initial state.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred from the data type of qn_in argument.
+        """
+       
+        arguments = locals().copy(); del arguments['self']
+        S_ij = self.getInBasis(**arguments)
+        if S_ij == 0:
+            return 0
+
+        cross_section = np.pi/(2*self.reducedMass*self.collisionEnergy/Hartree_to_K) * np.abs((qn_out == qn_in) - S_ij)**2 * (1+self.identical)
+
+        return cross_section
+
+    def getMomentumTransferCrossSection(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
+        """Calculate the momentum-transfer cross section in the given basis.
+        
+        :param qn_in: The quantum numbers for the initial state.
+        Ignores all the values of L, ML passed in qn_in.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred from the data type of qn_in argument.
+
+        Assumes the collision is fully elastic.
+        Uses the expression from [Phys. Rev. A 89, 052705 (2014)](https://doi.org/10.1103/PhysRevA.89.052705).
+        """
+
+
+        L_max = max( [ qns[1].L for qns in self.matrix.keys() ])
+        if basis == None: basis = qn_in._fields; warnings.warn(f"The basis {basis} read from the type of qn_in argument.")
+        match basis:
+            case ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') | ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'):
+                qn_ins = (qn_in.__class__(L, 0, *qn_in[2:]) for L in range(0, L_max+1, 2))
+            case ('L', 'F1', 'F2', 'F12', 'T', 'MT'):
+                qn_ins = (qn_in.__class__(L, *qn_in[1:]) for L in range(0, L_max+1, 2))
+            case _:
+                raise NotImplementedError(f"Case {basis=} is not implemented.")
+
+        S = np.array( [ self.getInBasis(qn_out = qn, qn_in = qn, basis = basis) for qn in qn_ins ] )
+        phase_shift = np.angle(S)/2
+
+        cross_section = np.fromiter((2*L+2 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1])**2 - np.fromiter((2*L+4 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1]) * np.sin(phase_shift[1:]) * np.cos(phase_shift[:-1] - phase_shift[1:])
+        cross_section *= 2*np.pi/(2*self.reducedMass*(self.collisionEnergy/Hartree_to_K))
+        cross_section *= (1+self.identical)
+        cross_section = cross_section.sum() 
+        
+        return cross_section
+
+    def getRateCoefficient(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
+        """Calculate the rate coefficient in the given basis.
+
+        :param qn_out: The quantum numbers for the final state.
+        :param qn_in: The quantum numbers for the initial state.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred from the data type of qn_in argument.
+        :param unit: Name of the unit at the output if other than a.u.
+        Possible values: 'cm**3/s', 'a.u.', None (default).
+
+        """
+
+        arguments = locals().copy(); del arguments['self']; del arguments['unit']
+
+        rate_coefficient = np.sqrt(2*(self.collisionEnergy/Hartree_to_K)/self.reducedMass) * self.getCrossSection(**arguments)
+        
+        match unit:
+            case 'cm**3/s':
+                rate_coefficient *= 10**6 * rate_from_au_to_SI
+            case None | 'a.u.':
+                pass
+            case _:
+                raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
+
+        return rate_coefficient
+        
+    def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
+        """Calculate the momentum transfer rate coefficient in the given basis.
+
+        :param qn_in: The quantum numbers for the initial state.
+        Ignores all the values of L, ML passed in qn_in.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred from the data type of qn_in argument.
+        :param unit: Name of the unit at the output if other than a.u.
+        Possible values: 'cm**3/s', 'a.u.', None (default).
+        
+        Assumes the collision is fully elastic.
+        Uses the expression from [Phys. Rev. A 89, 052705 (2014)](https://doi.org/10.1103/PhysRevA.89.052705).
+
+        """
+
+        arguments = locals().copy(); del arguments['self']; del arguments['unit']
+
+        rate_coefficient = np.sqrt(2*(self.collisionEnergy/Hartree_to_K)/self.reducedMass) * self.getMomentumTransferCrossSection(**arguments)
+        
+        match unit:
+            case 'cm**3/s':
+                rate_coefficient *= 10**6 * rate_from_au_to_SI
+            case None | 'a.u.':
+                pass
+            case _:
+                raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
+
+        return rate_coefficient
 
         
 class CollectionParametersIndices(NamedTuple):
@@ -441,6 +552,28 @@ def main():
     # simple_loop_test(args)
     # x, lst_out, lst_in = vectorize_test(s)
     # print(x, '\n', lst_out, '\n', lst_in)
+    # x = s.matrixCollection[0,0,0,0,0,0].getInBasis(qn.LF1F2(2, -2, 4, 0, 1, 1), qn.LF1F2(2, -2, 2, 0, 1, 1))
+    L_max, nenergies = 2*29, 1
+    qns = [(qn.LF1F2(L, ML, 2, 0, 1, 1), qn.LF1F2(L, ML, 4, 0, 1, 1)) for L in range (0, L_max+1, 2) for ML in range(-L, L+1, 2)]
+    # x = sum([s.matrixCollection[0,0,0,0,0,8].getCrossSection(*qns) for qns in qns])
+    # print(x)
+    time_0 = time.perf_counter()
+    x = sum([(1/nenergies)*s.matrixCollection[0,0,0,0,0,i].getRateCoefficient(*qns, unit = 'cm**3/s') for qns in qns for i in range(nenergies)])
+    duration = time.perf_counter()-time_0
+    print(f"The time was {duration:.2e} s.")
+    print(x)
+
+    time_0 = time.perf_counter()
+    # lst1 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 2, 4, 0, 1, 1)) for i in range(10)]
+    lst0 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 0, 4, 0, 1, 1), unit = 'cm**3/s') for i in range(10) ]
+    print(lst0)
+    # print(lst1)
+    duration = time.perf_counter()-time_0
+    print(f"The time was {duration:.2e} s.")
+
+
+
+    # print(s.matrixCollection[0,0,0,0,0,0].matrix)
 
 if __name__ == '__main__':
     main()
