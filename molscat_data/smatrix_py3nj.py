@@ -202,7 +202,7 @@ class SMatrix:
         :param qn_in: The quantum numbers for the initial state.
         Ignores all the values of L, ML passed in qn_in.
         :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
-        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12').
         If None (default), then inferred from the data type of qn_in argument.
 
         Assumes the collision is fully elastic.
@@ -216,7 +216,7 @@ class SMatrix:
             case ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') | ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'):
                 qn_ins = (qn_in.__class__(L, 0, *qn_in[2:]) for L in range(0, L_max+1, 2))
             case ('L', 'F1', 'F2', 'F12', 'T', 'MT'):
-                qn_ins = (qn_in.__class__(L, *qn_in[1:]) for L in range(0, L_max+1, 2))
+                raise NotImplementedError(f"The totally coupled basis {basis} cannot be used - it would require decoupling L and F12 before using the expression for the momentum-transfer cross section.")
             case _:
                 raise NotImplementedError(f"Case {basis=} is not implemented.")
 
@@ -564,10 +564,10 @@ def main():
     print(x)
 
     time_0 = time.perf_counter()
-    # lst1 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 2, 4, 0, 1, 1)) for i in range(10)]
-    lst0 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 0, 4, 0, 1, 1), unit = 'cm**3/s') for i in range(10) ]
+    lst0 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 0, 4, -4, 1, -1), unit = 'cm**3/s') for i in range(10) ]
+    lst1 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF12(None, 0, 4, 1, 5, -5), unit = 'cm**3/s') for i in range(10)]
     print(lst0)
-    # print(lst1)
+    print(lst1)
     duration = time.perf_counter()-time_0
     print(f"The time was {duration:.2e} s.")
 
