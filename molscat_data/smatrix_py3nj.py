@@ -287,6 +287,13 @@ class SMatrix:
 
         return rate_coefficient
 
+class CollectionParameters(NamedTuple):
+    C4: float
+    singletParameter: float
+    tripletParameter: float
+    reducedMass: float
+    magneticField: float
+    collisionEnergy: float
         
 class CollectionParametersIndices(NamedTuple):
     C4: int
@@ -486,6 +493,50 @@ class SMatrixCollection:
         s_collection.update_from_output(file_path = file_path)
         return s_collection
     
+    def getAsArray(self, qn_out, qn_in, **kwargs):
+        
+        # if 'param_indices' in kwargs.keys():
+        #     param_indices = kwargs['param_indices']
+        #     if not isinstance('param_indices', dict):
+        #         raise TypeError(f'param_indices should be a dictionary, not a {type(param_indices)}.')
+        param_indices = kwargs['param_indices'] if 'param_indices' in kwargs.keys() else None
+        param_values = kwargs['param_values'] if 'param_values' in kwargs.keys() else None
+
+        if param_indices == None and param_values == None:
+            param_indices = CollectionParametersIndices(*(range( len(getattr(self, attr_name) ) ) for attr_name in CollectionParametersIndices._fields) )
+        elif param_indices == None:
+            
+            if not param_values.keys() <= set(CollectionParametersIndices._fields): raise AttributeError((f"param_values keys can only include the attributes of CollectionParametersIndices objects."))
+            
+            for attr_name, values in param_values.items():
+                try:
+                    iter(values)
+                except TypeError:
+                    param_values[attr_name] = (values, )
+            print( *( tuple(getattr(self, attr_name).index(x) for x in param_values.get(attr_name, getattr(self, attr_name)) ) for attr_name in CollectionParametersIndices._fields ) )
+            param_indices = CollectionParametersIndices( *( tuple(getattr(self, attr_name).index(x) for x in param_values.get(attr_name, getattr(self, attr_name)) ) for attr_name in CollectionParametersIndices._fields ) )
+
+        else:
+            param_indices = CollectionParametersIndices( *( param_indices.get(attr_name, range(len(getattr(self, attr_name)))) for attr_name in CollectionParametersIndices._fields ) )
+
+        arr = np.array( [ 
+                            [ 
+                                [ 
+                                    [ 
+                                        [ 
+                                            [
+                                                self.matrixCollection[CollectionParametersIndices(index_0, index_1, index_2, index_3, index_4, index_5)].getInBasis(qn_out, qn_in)
+                                            for index_5 in param_indices.collisionEnergy] 
+                                        for index_4 in param_indices.magneticField] 
+                                    for index_3 in param_indices.reducedMass] 
+                                for index_2 in param_indices.tripletParameter] 
+                            for index_1 in param_indices.singletParameter] 
+                        for index_0 in param_indices.C4] )
+
+        return param_indices, arr
+        
+
+
 
 def summing(MF_in, MS_in, L_max, smatrix):
     time_0 = time.perf_counter()
@@ -570,6 +621,11 @@ def main():
     print(lst1)
     duration = time.perf_counter()-time_0
     print(f"The time was {duration:.2e} s.")
+    # print(s.getAsArray(0,0))
+    # print(s.getAsArray(0,0, param_values = {'C4': (159.9,)}))
+    # print(s.getAsArray(0,0, param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)}))
+    x = s.getAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)})
+    print(x)
 
 
 
