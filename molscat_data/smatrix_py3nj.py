@@ -3,8 +3,11 @@ import warnings
 from typing import NamedTuple
 import numpy as np
 import cmath
+import scipy
 from py3nj import clebsch_gordan
 from sigfig import round
+
+import itertools
 
 import time
 # import timeit
@@ -14,6 +17,7 @@ import pstats
 
 from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K, rate_from_au_to_SI
 import quantum_numbers as qn
+from thermal_averaging import n_root_iterator
 
 
 @dataclass
@@ -288,20 +292,20 @@ class SMatrix:
         return rate_coefficient
 
 class CollectionParameters(NamedTuple):
-    C4: float
-    singletParameter: float
-    tripletParameter: float
-    reducedMass: float
-    magneticField: float
-    collisionEnergy: float
+    C4: float | tuple[float, ...]
+    singletParameter: float | tuple[float, ...]
+    tripletParameter: float | tuple[float, ...]
+    reducedMass: float | tuple[float, ...]
+    magneticField: float | tuple[float, ...]
+    collisionEnergy: float | tuple[float, ...]
         
 class CollectionParametersIndices(NamedTuple):
-    C4: int
-    singletParameter: int
-    tripletParameter: int
-    reducedMass: int
-    magneticField: int
-    collisionEnergy: int
+    C4: int | tuple[int, ...]
+    singletParameter: int | tuple[int, ...]
+    tripletParameter: int | tuple[int, ...]
+    reducedMass: int | tuple[int, ...]
+    magneticField: int | tuple[int, ...]
+    collisionEnergy: int | tuple[int, ...]
 
 @dataclass
 class SMatrixCollection:
@@ -316,7 +320,7 @@ class SMatrixCollection:
     :param tuple reducedMass: values of the reduced mass of the system in the atomic units allowed in the collection.
     :param tuple magneticField: values of the static magnetic field induction in gausses (G) allowed in the collection.
     :param tuple collisionEnergy: values of the energy in the center-of-mass frame of the colliding pair in kelvins (K) allowed in the collection.
-    :param matrix: dict with entries of the form of (doubled_quantum_numbers_in, doubled_quantum_numbers_out): value, consisting of the S-matrix elements for the given initial and final state
+    :param matrixCollection: dict with entries of the form of CollectionParametersIndices(C4_index, ..., collisionEnergy_index): SMatrix
     """
 
     identical: bool = False
@@ -427,7 +431,7 @@ class SMatrixCollection:
                     energy_tuple = tuple(energy_list)
 
                     if self.collisionEnergy == None: self.collisionEnergy = energy_tuple
-                    assert energy_tuple == self.collisionEnergy, f"The list of collision energies from the molscat output should be an element of {self}.energy_tuple."
+                    assert energy_tuple == self.collisionEnergy, f"The list of collision energies from the molscat output should be equal to {self}.collisionEnergy."
 
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
                 #     f1ref, mf1ref, f2ref, mf2ref = int(line.split()[14])/2, int(line.split()[15])/2, int(line.split()[16])/2, int(line.split()[17])/2 
@@ -493,47 +497,83 @@ class SMatrixCollection:
         s_collection.update_from_output(file_path = file_path)
         return s_collection
     
-    def getAsArray(self, qn_out, qn_in, **kwargs):
+    def getParamIndicesAsArray(self, **kwargs):
         
-        # if 'param_indices' in kwargs.keys():
-        #     param_indices = kwargs['param_indices']
-        #     if not isinstance('param_indices', dict):
-        #         raise TypeError(f'param_indices should be a dictionary, not a {type(param_indices)}.')
         param_indices = kwargs['param_indices'] if 'param_indices' in kwargs.keys() else None
         param_values = kwargs['param_values'] if 'param_values' in kwargs.keys() else None
 
         if param_indices == None and param_values == None:
             param_indices = CollectionParametersIndices(*(range( len(getattr(self, attr_name) ) ) for attr_name in CollectionParametersIndices._fields) )
-        elif param_indices == None:
-            
+
+        elif param_indices == None:           
             if not param_values.keys() <= set(CollectionParametersIndices._fields): raise AttributeError((f"param_values keys can only include the attributes of CollectionParametersIndices objects."))
-            
-            for attr_name, values in param_values.items():
-                try:
-                    iter(values)
-                except TypeError:
-                    param_values[attr_name] = (values, )
-            print( *( tuple(getattr(self, attr_name).index(x) for x in param_values.get(attr_name, getattr(self, attr_name)) ) for attr_name in CollectionParametersIndices._fields ) )
-            param_indices = CollectionParametersIndices( *( tuple(getattr(self, attr_name).index(x) for x in param_values.get(attr_name, getattr(self, attr_name)) ) for attr_name in CollectionParametersIndices._fields ) )
+            try:
+                param_indices = CollectionParametersIndices( *( tuple(getattr(self, attr_name).index(x) for x in param_values.get(attr_name) ) if attr_name in param_values.keys() else range(len(getattr(self, attr_name))) for attr_name in CollectionParametersIndices._fields ) )
+            except ValueError:
+                not_present_values = { attr_name: tuple(value for value in param_values[attr_name] if value not in getattr(self, attr_name)) for attr_name in param_values.keys() if not set(param_values[attr_name]).issubset(getattr(self, attr_name)) }
+                raise ValueError(f"The following parameter values: {not_present_values} are not present in the collection.")
 
         else:
             param_indices = CollectionParametersIndices( *( param_indices.get(attr_name, range(len(getattr(self, attr_name)))) for attr_name in CollectionParametersIndices._fields ) )
 
-        arr = np.array( [ 
-                            [ 
-                                [ 
-                                    [ 
-                                        [ 
-                                            [
-                                                self.matrixCollection[CollectionParametersIndices(index_0, index_1, index_2, index_3, index_4, index_5)].getInBasis(qn_out, qn_in)
-                                            for index_5 in param_indices.collisionEnergy] 
-                                        for index_4 in param_indices.magneticField] 
-                                    for index_3 in param_indices.reducedMass] 
-                                for index_2 in param_indices.tripletParameter] 
-                            for index_1 in param_indices.singletParameter] 
-                        for index_0 in param_indices.C4] )
+        return param_indices
+    
+    def getAsArray(self, qn_out, qn_in, **kwargs):
 
-        return param_indices, arr
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        S_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getInBasis(qn_out, qn_in) for indices_combination in itertools.product( *param_indices )), dtype = complex).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        
+        return S_array
+
+    def getCrossSectionAsArray(self, qn_out, qn_in, **kwargs):
+
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        cross_section_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getCrossSection(qn_out, qn_in) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        return cross_section_array
+    
+    def getMomentumTransferCrossSectionAsArray(self, qn_in, **kwargs):
+
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        cross_section_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferCrossSection(qn_in) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        return cross_section_array
+    
+    def getRateCoefficientAsArray(self, qn_out, qn_in, unit = None, **kwargs):
+
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getRateCoefficient(qn_out, qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        return rate_coefficient_array
+    
+    def getMomentumTransferRateCoefficientAsArray(self, qn_in, unit = None, **kwargs):
+
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficient(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        return rate_coefficient_array
+
+    def thermalAverage(self, array_to_average, distribution_iterator = None):
+
+        if distribution_iterator == None:
+            distribution_iterator = n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3)
+        
+        distribution_array = np.fromiter( distribution_iterator, dtype = float )
+        integrand = array_to_average * distribution_array
+        integral = scipy.integrate.simpson( integrand )
+        norm = scipy.integrate.simpson( distribution_array )
+
+        averaged_array = integral / norm
+
+        return averaged_array
+    
+    def getThermallyAveragedRateAsArray(self, qn_out, qn_in, distribution_iterator = None, unit = None,**kwargs):
+        
+        rate_array_to_average = self.getRateCoefficientAsArray(qn_out, qn_in, unit, **kwargs)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        return averaged_rate_array
+    
+    def getThermallyAveragedRateAsArray(self, qn_out, qn_in, distribution_iterator = None, unit = None,**kwargs):
+        
+        rate_array_to_average = self.getMomentumTransferRateCoefficientAsArray(qn_in, unit, **kwargs)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        return averaged_rate_array
         
 
 
@@ -624,9 +664,69 @@ def main():
     # print(s.getAsArray(0,0))
     # print(s.getAsArray(0,0, param_values = {'C4': (159.9,)}))
     # print(s.getAsArray(0,0, param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)}))
-    x = s.getAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)})
-    print(x)
+    # x = s.getAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)})
+    # print(x)
+    # y = s.getAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_values = {'C4': (159.9,), 'collisionEnergy': (1e-6, 1e-5, 1e-4, 5e-4, 1e-3, 5e-3)})
+    # print(y)
+    # z = s.getRateCoefficientAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_values = {'C4': (159.9,), 'collisionEnergy': (1e-6, 5e-6, 1e-5, 1e-4, 5e-4, 1e-3)})
+    # print(z*10**6*rate_from_au_to_SI)
+    # zz = s.getRateCoefficientAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_values = {'C4': (159.9,), 'collisionEnergy': (1e-6, 5e-6, 1e-5, 1e-4, 5e-4, 1e-3)}, unit = 'cm**3/s')
+    time_0 = time.perf_counter()
+    avv = s.getThermallyAveragedRateAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1))
+    print(avv)
+    duration = time.perf_counter()-time_0
+    print(f"The time was {duration:.2e} s.")    
 
+    # time_0 = time.perf_counter()
+    # # f = lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: sum(  s.getThermallyAveragedRateAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in)) for L in range(0, 58+1, 2) for ML in range(-L, L+1, 2))
+    # # x = f(2, 0, -1, 4, -2, 1)
+    # # print(x)
+
+    # # iterrr = ( s.getRateCoefficientAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in)) for L in range(0, 58+1, 2) for ML in range(-L, L+1, 2) )
+    # # print(type(iter))
+    # # f = lambda : np.fromiter(  iterr, dtype = float).sum()
+    def f(F_out, MF_out, MS_out, F_in, MF_in, MS_in):
+        x = sum( s.getRateCoefficientAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, 18+1, 2) for ML in range(-L, L+1, 2) )
+        return s.thermalAverage(x)
+    # x = f(2, 0, -1, 4, -2, 1)
+    # x = s.thermalAverage(x)
+    # print(x, type(x))
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.") 
+
+    time_0 = time.perf_counter()
+    g = np.vectorize(f, signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
+    F_in = 4
+    MF_in = np.arange(-F_in, F_in+1, 2)
+    # MF_in = 0
+    # MF_in = [0, 2]
+    S = 1
+    MS_in = np.arange(-S, S+1, 2)
+    # MS_in = 1
+    F_out = 2
+    MF_out = np.arange(-F_out, F_out+1, 2)
+    # MF_out = 0
+    # MF_out = [0, 2]
+    MS_out = np.arange(-S, S+1, 2)
+    # MS_out = -1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
+    # MF_out, MF_in = np.meshgrid(MF_out, MF_in)
+    print(MF_out)
+    print(MS_out)
+    print(MF_in)
+    print(MS_in)
+    y = g(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    # y = g( 2, 0, -1, 4, 0, -1 )
+
+    print( y.squeeze(), type(y))
+    duration = time.perf_counter()-time_0
+    print(f"The time was {duration:.2e} s.")   
+
+    # x = s.getRateCoefficientAsArray(qn.LF1F2(4, 2, 2, 0, 1, -1), qn.LF1F2(4, 0, 4, 0, 1, 1), unit = 'cm**3/s')
+    # print(x)
+
+    # x = s.getRateCoefficientAsArray(qn.LF1F2(4, 0, 2, 2, 1, -1), qn.LF1F2(4, 0, 4, 0, 1, 1), unit = 'cm**3/s')
+    # print(x)
 
 
     # print(s.matrixCollection[0,0,0,0,0,0].matrix)
