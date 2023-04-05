@@ -2,11 +2,14 @@ from dataclasses import dataclass, field, replace
 import warnings
 from typing import NamedTuple, Any, Iterable
 import numpy as np
-import numpy.typing as npt
+# import numpy.typing as npt
 import cmath
 import scipy
 from py3nj import clebsch_gordan
 from sigfig import round
+import json
+import msgpack
+import pickle
 
 import itertools
 
@@ -20,6 +23,33 @@ from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi8
 import quantum_numbers as qn
 from thermal_averaging import n_root_iterator
 
+
+class CollectionParameters(NamedTuple):
+    C4: float | tuple[float, ...]
+    singletParameter: float | tuple[float, ...]
+    tripletParameter: float | tuple[float, ...]
+    reducedMass: float | tuple[float, ...]
+    magneticField: float | tuple[float, ...]
+    collisionEnergy: float | tuple[float, ...]
+
+
+class CollectionParametersIndices(NamedTuple):
+    C4: int | tuple[int, ...]
+    singletParameter: int | tuple[int, ...]
+    tripletParameter: int | tuple[int, ...]
+    reducedMass: int | tuple[int, ...]
+    magneticField: int | tuple[int, ...]
+    collisionEnergy: int | tuple[int, ...]
+
+
+class SMatrixCollectionEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, complex):
+            return { '__complex__': True, 'abs': abs(o), 'phase': cmath.phase(o) }
+        elif isinstance(o, SMatrix) or isinstance(o, SMatrixCollection):
+            return o.encodableForm()
+        return super().default(self, o)
+ 
 
 @dataclass
 class SMatrix:
@@ -51,9 +81,9 @@ class SMatrix:
     matrix: dict[tuple[tuple[int, ...], tuple[int, ...]], complex] = field(default_factory = dict, compare = False, repr = False)
 
 
-    def __post_init__(self) -> None:
-        """Check if the number of quantum numbers in the matrix match the length of the basis."""
-        assert all(len(key[0]) == len(key[1]) == len(self.basis) for key in self.matrix.keys()), "The number of quantum numbers in both tuples should match the size of the basis."
+    # def __post_init__(self) -> None:
+    #     """Check if the number of quantum numbers in the matrix match the length of the basis."""
+    #     assert all(len(key[0]) == len(key[1]) == len(self.basis) for key in self.matrix.keys()), "The number of quantum numbers in both tuples should match the size of the basis."
 
     def __add__(self, other_S_matrix):
         """Merge two S-matrices of the same attributes.
@@ -72,6 +102,7 @@ class SMatrix:
         
         return SMatrix(**attributes, matrix = matrix)
 
+
     def addElement(self, qn_out: tuple, qn_in: tuple, value: complex) -> None:
         """Add new elements to the S-matrix.
 
@@ -84,6 +115,7 @@ class SMatrix:
         assert len(qn_out) == len(qn_in) == len(self.basis), "The number of quantum numbers in both tuples should match the size of the basis."
         self.matrix[(qn_out, qn_in)] = value
 
+
     def update(self, other_S_matrix) -> None:
         """Update the S-matrix with the elements of another S-matrix if the parameters match.
         :param SMatrix S_matrix: The scattering matrix used to update the object.
@@ -93,14 +125,71 @@ class SMatrix:
         assert self == other_S_matrix, "The new S_matrix should have same attributes as the updated one."
         self.matrix.update(other_S_matrix.matrix)
 
-    def cross_section(self, qn_out: tuple, qn_in: tuple) -> float:
-        
-        cross_section = np.pi/(2*self.reducedMass*self.collisionEnergy/Hartree_to_K) * np.abs((qn_out == qn_in) - self.matrix.get((qn_out, qn_in), (qn_out == qn_in)))**2 * (1+self.identical)
-        return cross_section
 
-    def rate_constant(self, qn_out: tuple, qn_in: tuple) -> float:
-        rate_constant = np.sqrt(2*(self.collisionEnergy/Hartree_to_K) / self.reducedMass) * self.cross_section(qn_out, qn_in)
-        return rate_constant
+    def encodableMatrix(self) -> dict:
+        encodable_matrix = { "__SMatrix__": True }
+        encodable_matrix.update({ str(tuple(tuple(qn) for qn in key)): value for key, value in self.matrix.items() })
+        return encodable_matrix
+
+
+    def encodableForm(self) -> dict:
+        attributes = vars(self).copy()
+        attributes.pop('matrix')
+        
+        for attr, value in attributes.items():
+            if isinstance(value, tuple):
+                attributes[attr] = str(value)
+
+        s_matrix = self.encodableMatrix()
+        s_matrix.pop('__SMatrix__')
+
+        encodable_form = { "__SMatrix__": True }
+        encodable_form.update( self.__class__(**attributes, matrix = s_matrix ).__dict__ )
+        
+        return encodable_form
+
+    @staticmethod
+    def default(o):
+        if isinstance(o, complex):
+            return { '__complex__': True, 'abs': abs(o), 'phase': cmath.phase(o) }
+        elif isinstance(o, SMatrix) or isinstance(o, SMatrixCollection):
+            return o.encodableForm()
+        return o
+
+    def toJSON(self, file_path: str) -> None:
+        with open(file_path, 'w') as file:
+            json.dump(self, file, default = self.default, indent = 3)
+
+    @classmethod
+    def decode(cls, dct):
+        if '__complex__' in dct:
+            return cmath.rect(dct['abs'], dct['phase'])
+        
+        elif '__SMatrix__' in dct:
+            matrix = dct.get('matrix')
+            
+            ## parsing basis name
+            for key, value in dct.items():
+                if isinstance(value, str) and value.startswith('(') and value.endswith(')'):
+                    dct[key] = eval(value)
+
+            if dct['basis'] == ('L', 'F1', 'F2', 'F12', 'T', 'MT'):
+                new_matrix = { ( qn.Tcpld( *eval(key)[0] ), qn.Tcpld( *eval(key)[1] ) ): value for key, value in matrix.items() }
+            
+            dct.pop('matrix')
+            dct.pop('__SMatrix__')
+
+            return cls(**dct, matrix = new_matrix)
+        
+        return dct
+
+
+    @classmethod
+    def fromJSON(cls, file_path):
+        with open(file_path, 'r') as file:
+            s_matrix = json.load(file, object_hook = cls.decode)
+            return s_matrix
+
 
     def getInBasis(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> complex:
         """Get the S-matrix element for in the given basis.
@@ -181,7 +270,8 @@ class SMatrix:
 
             case _:
                 raise NotImplementedError(f"The transformation from {self.basis} to {basis} is not implemented.")
-    
+
+
     def getCrossSection(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
         """Calculate the cross section in the given basis.
 
@@ -200,6 +290,7 @@ class SMatrix:
         cross_section = np.pi/(2*self.reducedMass*self.collisionEnergy/Hartree_to_K) * np.abs((qn_out == qn_in) - S_ij)**2 * (1+self.identical)
 
         return cross_section
+
 
     def getMomentumTransferCrossSection(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
         """Calculate the momentum-transfer cross section in the given basis.
@@ -235,6 +326,7 @@ class SMatrix:
         
         return cross_section
 
+
     def getRateCoefficient(self, qn_out: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
         """Calculate the rate coefficient in the given basis.
 
@@ -261,7 +353,8 @@ class SMatrix:
                 raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
 
         return rate_coefficient
-        
+
+
     def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
         """Calculate the momentum transfer rate coefficient in the given basis.
 
@@ -291,22 +384,6 @@ class SMatrix:
                 raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
 
         return rate_coefficient
-
-class CollectionParameters(NamedTuple):
-    C4: float | tuple[float, ...]
-    singletParameter: float | tuple[float, ...]
-    tripletParameter: float | tuple[float, ...]
-    reducedMass: float | tuple[float, ...]
-    magneticField: float | tuple[float, ...]
-    collisionEnergy: float | tuple[float, ...]
-        
-class CollectionParametersIndices(NamedTuple):
-    C4: int | tuple[int, ...]
-    singletParameter: int | tuple[int, ...]
-    tripletParameter: int | tuple[int, ...]
-    reducedMass: int | tuple[int, ...]
-    magneticField: int | tuple[int, ...]
-    collisionEnergy: int | tuple[int, ...]
 
 @dataclass
 class SMatrixCollection:
@@ -357,6 +434,7 @@ class SMatrixCollection:
 
         return SMatrixCollection(**attributes, matrixCollection = collection)
 
+
     def update(self, s_collection):
         """Update the S-matrix collection with the S-matrices from another S-matrix collection if the attributes match.
         :param SMatrixCollection s_collection: The S-matrix collection used to update the object.
@@ -365,6 +443,7 @@ class SMatrixCollection:
 
         assert self == s_collection, "The new S_matrix should have same attributes as the updated one."
         self.matrixCollection.update(s_collection.matrixCollection)
+
 
     def update_from_output(self, file_path: str):
         """Update the S-matrix collection with data from a single molscat output file in tcpld basis.
@@ -491,6 +570,9 @@ class SMatrixCollection:
                     else:
                         self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
                     energy_counter +=1
+            
+            del self.Qn
+            
 
     @classmethod
     def from_output(cls, file_path: str):
@@ -502,7 +584,98 @@ class SMatrixCollection:
         s_collection = SMatrixCollection()
         s_collection.update_from_output(file_path = file_path)
         return s_collection
-    
+
+
+    def encodableMatrixCollection(self) -> dict:      
+        encodable_matrix_collection = { str(tuple(key)): value.encodableForm() for key, value in self.matrixCollection.items() }
+        return encodable_matrix_collection
+
+
+    def encodableForm(self) -> dict:
+        attributes = vars(self).copy()
+        attributes.pop('matrixCollection')
+        
+        for attr, value in attributes.items():
+            if isinstance(value, tuple):
+                attributes[attr] = str(value)
+
+        encodable_form = { "__SMatrixCollection__": True }
+        encodable_form.update( self.__class__(**attributes, matrixCollection = self.encodableMatrixCollection() ).__dict__ )
+        
+        return encodable_form
+
+    @staticmethod
+    def default(o):
+        if isinstance(o, complex):
+            return { '__complex__': True, 'abs': abs(o), 'phase': cmath.phase(o) }
+        elif isinstance(o, SMatrix) or isinstance(o, SMatrixCollection):
+            return o.encodableForm()
+        return o
+
+
+    def toJSON(self, file_path: str) -> None:
+        with open(file_path, 'w') as file:
+            json.dump(self, file, default = self.default, indent = 3)
+
+
+    def toMsgPack(self, file_path: str) -> None:
+        with open(file_path, 'wb') as file:
+            msgpack.pack(self, file, default = self.default)
+
+
+    def toPickle(self, file_path: str) -> None:
+        with open(file_path, 'wb') as file:
+            pickle.dump(self, file, protocol = 5)
+
+
+    @classmethod
+    def decode(cls, dct):
+        if '__complex__' in dct:
+            return cmath.rect(dct['abs'], dct['phase'])
+
+        elif '__SMatrix__' in dct:
+            return SMatrix.decode(dct)
+
+        elif '__SMatrixCollection__' in dct:
+            matrix_collection = dct.get('matrixCollection')
+
+            ## parsing tuples of parameters and basis name
+            for key, value in dct.items():
+                if isinstance(value, str) and value.startswith('(') and value.endswith(')'):
+                    dct[key] = eval(value)
+
+
+            new_matrix_collection = { CollectionParametersIndices( *eval(key) ): value for key, value in matrix_collection.items() }
+            
+            dct.pop('matrixCollection')
+            dct.pop('__SMatrixCollection__')
+
+            return cls(**dct, matrixCollection = new_matrix_collection)
+        
+        return dct
+
+
+    @classmethod
+    def fromJSON(cls, file_path):
+        with open(file_path, 'r') as file:
+            s_matrix_collection = json.load(file, object_hook = cls.decode)
+            return s_matrix_collection
+
+
+    @classmethod
+    def fromMsgPack(cls, file_path):
+        with open(file_path, 'rb') as file:
+            s_matrix_collection = msgpack.unpack(file, object_hook = cls.decode)
+            return s_matrix_collection
+
+
+    @classmethod
+    def fromPickle(cls, file_path):
+        with open(file_path, 'rb') as file:
+            s_matrix_collection = pickle.load(file)
+            return s_matrix_collection
+
+
     def getParamIndicesAsArray(self, **kwargs) -> CollectionParametersIndices[tuple[int, ...], ...]:
         """Get the indices of the parameters from a dictionary.
         
@@ -536,7 +709,8 @@ class SMatrixCollection:
             param_indices = CollectionParametersIndices( *( param_indices.get(attr_name, range(len(getattr(self, attr_name)))) for attr_name in CollectionParametersIndices._fields ) )
 
         return param_indices
-    
+
+
     def getAsArray(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, **kwargs) -> np.ndarray[Any, complex]:
         """Get S-matrix elements as an array for the given parameter values.
 
@@ -557,6 +731,7 @@ class SMatrixCollection:
         S_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getInBasis(qn_out, qn_in) for indices_combination in itertools.product( *param_indices )), dtype = complex).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         
         return S_array
+
 
     def getCrossSection(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent cross section for the given final
@@ -580,7 +755,8 @@ class SMatrixCollection:
         param_indices = self.getParamIndicesAsArray(**kwargs)
         cross_section_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getCrossSection(qn_out, qn_in) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         return cross_section_array
-    
+
+
     def getMomentumTransferCrossSection(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent momentum-transfer cross section for 
         the given initial state as an array for the given parameter values.
@@ -602,7 +778,8 @@ class SMatrixCollection:
         param_indices = self.getParamIndicesAsArray(**kwargs)
         cross_section_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferCrossSection(qn_in) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         return cross_section_array
-    
+
+
     def getRateCoefficient(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, unit = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent rate coefficient for the given final
           and initial state as an array for the given parameter values.
@@ -625,7 +802,8 @@ class SMatrixCollection:
         param_indices = self.getParamIndicesAsArray(**kwargs)
         rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getRateCoefficient(qn_out, qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         return rate_coefficient_array
-    
+
+
     def getMomentumTransferRateCoefficient(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, unit = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent momentum-transfer rate coefficient for
           the given initial state as an array for the given parameter values.
@@ -647,6 +825,7 @@ class SMatrixCollection:
         param_indices = self.getParamIndicesAsArray(**kwargs)
         rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficient(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         return rate_coefficient_array
+
 
     def thermalAverage(self, array_to_average: np.ndarray[Any, float], distribution_iterator: Iterable = None) -> np.ndarray[Any, float]:
         """Thermally average an array of values.
@@ -671,7 +850,8 @@ class SMatrixCollection:
         averaged_array = integral / norm
 
         return averaged_array
-    
+
+
     def getThermallyAveragedRate(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged rate coefficient for the given final
           and initial state as an array for the given parameter values.
@@ -696,7 +876,8 @@ class SMatrixCollection:
         rate_array_to_average = self.getRateCoefficient(qn_out, qn_in, unit, **kwargs)
         averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
         return averaged_rate_array
-    
+
+
     def getThermallyAveragedMomentumTransferRate(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged momentum-transfer rate coefficient
           for the given final and initial state as an array
@@ -721,7 +902,8 @@ class SMatrixCollection:
         rate_array_to_average = self.getMomentumTransferRateCoefficient(qn_in, unit, **kwargs)
         averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
         return averaged_rate_array
-        
+
+
     def getProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent probability of collision calculated
           as the ratio of the rate coefficient for the transition from the 
@@ -753,7 +935,8 @@ class SMatrixCollection:
         probability_array = rate_array / momentum_transfer_rate_array
 
         return probability_array
-    
+
+
     def getThermallyAveragedProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged probability of collision calculated
           as the ratio of the energy-dependent rate coefficient for the
@@ -782,7 +965,8 @@ class SMatrixCollection:
         probability_array_to_average = self.getProbability(qn_out, qn_in, qn_momentum_transfer, **kwargs)
         averaged_probability_array = self.thermalAverage(probability_array_to_average, distribution_iterator)
         return averaged_probability_array
-    
+
+
     def getProbabilityFromThermalAverages(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the probability of collision calculated as the ratio of the
           thermally averaged rate coefficient for the transition from
@@ -812,7 +996,7 @@ class SMatrixCollection:
         averaged_momentum_transfer_rate_array = self.getThermallyAveragedMomentumTransferRate(qn_momentum_transfer, **kwargs)
         probability_from_averages_array = averaged_rate_array / averaged_momentum_transfer_rate_array
         return probability_from_averages_array
-        
+
 
 
 
@@ -836,11 +1020,97 @@ def main():
     from multiprocessing import Pool
     from multiprocessing.dummy import Pool as ThreadPool    
     
-    time_0 = time.perf_counter()
-    s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
-    print(s)
+    def json_dump_load():
+        time_0 = time.perf_counter()
+        s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
+        s.toJSON(r"../data_produced/json_test_3.json")
+
+        s2 = SMatrixCollection.fromJSON(r"../data_produced/json_test_3.json")
+        print(s2)
+        print(s == s2)
+        print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+    
+    def msgpack_pack_unpack():
+        time_0 = time.perf_counter()
+        s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
+        s.toMsgPack(r"../data_produced/json_test_3.msgpack")
+
+        s2 = SMatrixCollection.fromMsgPack(r"../data_produced/json_test_3.msgpack")
+        print(s2)
+        print(s == s2)
+        print(s2.matrixCollection == s.matrixCollection)
+        x = s.matrixCollection[(0,0,0,0,0,0,)]
+        y = s2.matrixCollection[(0,0,0,0,0,0,)]
+        print( y == x )
+        print( y.matrix == x.matrix )
+
+        difference = { key: y.matrix[key] - x.matrix[key] for key in y.matrix.keys() if (abs(y.matrix[key] - x.matrix[key]) > 1e-16) }
+        print(difference)
+        ### floating point precisions problems, something to test in tests
+        difference = { key: y.matrix[key] - x.matrix[key] for key in x.matrix.keys() if (abs(y.matrix[key] - x.matrix[key]) > 1e-16) }
+        print(difference)
+        print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+
+    def pickle_dump_load():
+        time_0 = time.perf_counter()
+        s = SMatrixCollection.from_output(r"../data/TEST_10_ENERGIES.output")
+        s.toPickle(r"../data_produced/json_test_3.pickle")
+
+        s2 = SMatrixCollection.fromPickle(r"../data_produced/json_test_3.pickle")
+        print(s2)
+        print(s == s2)
+        print(s2.matrixCollection == s.matrixCollection)
+        x = s.matrixCollection[(0,0,0,0,0,0,)]
+        y = s2.matrixCollection[(0,0,0,0,0,0,)]
+        print( y == x )
+        print( y.matrix == x.matrix )
+
+        difference = { key: y.matrix[key] - x.matrix[key] for key in y.matrix.keys() if (abs(y.matrix[key] - x.matrix[key]) > 1e-16) }
+        print(difference)
+        ### floating point precisions problems, something to test in tests
+        difference = { key: y.matrix[key] - x.matrix[key] for key in x.matrix.keys() if (abs(y.matrix[key] - x.matrix[key]) > 1e-16) }
+        print(difference)
+        print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+
+    def unpickle_json_dump():
+        time_0 = time.perf_counter()
+        s = SMatrixCollection.fromPickle(r"../data_produced/json_test_3.pickle")
+        s.toJSON(r"../data_produced/pickle_to_json_test_3.json")
+        print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+
+    # msgpack_pack_unpack()
+    # pickle_dump_load()
+    # unpickle_json_dump()
+    # time_0 = time.perf_counter()
+    # x = s.matrixCollection[(0,0,0,0,0,0)]
+    # print(x)
+    # y = json.dumps(x.encodableForm(), cls = SMatrixCollectionEncoder)
+    # print(y)
+    # z = json.loads(y, object_hook = decode_smatrix)
+    # print(z)
+    # print(z == x)
+
+    # print(z.matrix == x.matrix)
+    # difference = { key: z.matrix[key] - x.matrix[key] for key in z.matrix.keys() if (abs(z.matrix[key] - x.matrix[key]) > 1e-15) }
+    # print(difference)
+    # ### floating point precisions problems, something to test in tests
+    # difference = { key: x.matrix[key] - z.matrix[key] for key in x.matrix.keys() if (abs(x.matrix[key] - z.matrix[key]) > 1e-15) }
+    # print(difference)
+    # print(set(z.matrix.items()).difference(set(x.matrix.items())))
+    # print(set(x.matrix.items()).difference(set(z.matrix.items())))
+
+    # x = set({"a": 231, "b": 321321.2}.items())
+    # y = set({"a": 1.2, "c": 2121 }.items())
+    # print(x.difference(y))
+    # ss = s.decodableForm()
+    # print(ss)
+    # s.toJSON(r"../data_produced/json_test_2.json")
+    # ss = s.decodable_matrix_collection()
+    # print(ss)
+    # with open(r"../data_produced/test_json.json", 'w') as file:
+    #     json.dump(ss, file, cls = ComplexEncoder)
     # print(s.matrixCollection[(0,0,0,0,0,0)].matrix)
-    print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
+    # print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
 
     L_max = 2*9
 
@@ -882,23 +1152,23 @@ def main():
     # x, lst_out, lst_in = vectorize_test(s)
     # print(x, '\n', lst_out, '\n', lst_in)
     # x = s.matrixCollection[0,0,0,0,0,0].getInBasis(qn.LF1F2(2, -2, 4, 0, 1, 1), qn.LF1F2(2, -2, 2, 0, 1, 1))
-    L_max, nenergies = 2*29, 1
-    qns = [(qn.LF1F2(L, ML, 2, 0, 1, 1), qn.LF1F2(L, ML, 4, 0, 1, 1)) for L in range (0, L_max+1, 2) for ML in range(-L, L+1, 2)]
-    # x = sum([s.matrixCollection[0,0,0,0,0,8].getCrossSection(*qns) for qns in qns])
+    # L_max, nenergies = 2*29, 1
+    # qns = [(qn.LF1F2(L, ML, 2, 0, 1, 1), qn.LF1F2(L, ML, 4, 0, 1, 1)) for L in range (0, L_max+1, 2) for ML in range(-L, L+1, 2)]
+    # # x = sum([s.matrixCollection[0,0,0,0,0,8].getCrossSection(*qns) for qns in qns])
+    # # print(x)
+    # time_0 = time.perf_counter()
+    # x = sum([(1/nenergies)*s.matrixCollection[0,0,0,0,0,i].getRateCoefficient(*qns, unit = 'cm**3/s') for qns in qns for i in range(nenergies)])
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.")
     # print(x)
-    time_0 = time.perf_counter()
-    x = sum([(1/nenergies)*s.matrixCollection[0,0,0,0,0,i].getRateCoefficient(*qns, unit = 'cm**3/s') for qns in qns for i in range(nenergies)])
-    duration = time.perf_counter()-time_0
-    print(f"The time was {duration:.2e} s.")
-    print(x)
     
-    time_0 = time.perf_counter()
-    lst0 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 0, 4, -4, 1, -1), unit = 'cm**3/s') for i in range(10) ]
-    lst1 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF12(None, 0, 4, 1, 5, -5), unit = 'cm**3/s') for i in range(10)]
-    print(lst0)
-    print(lst1)
-    duration = time.perf_counter()-time_0
-    print(f"The time was {duration:.2e} s.")
+    # time_0 = time.perf_counter()
+    # lst0 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF1F2(None, 0, 4, -4, 1, -1), unit = 'cm**3/s') for i in range(10) ]
+    # lst1 = [s.matrixCollection[0,0,0,0,0,i].getMomentumTransferRateCoefficient(qn.LF12(None, 0, 4, 1, 5, -5), unit = 'cm**3/s') for i in range(10)]
+    # print(lst0)
+    # print(lst1)
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.")
     # print(s.getAsArray(0,0))
     # print(s.getAsArray(0,0, param_values = {'C4': (159.9,)}))
     # print(s.getAsArray(0,0, param_indices = {'C4': (0,), 'collisionEnergy': (1,3,5,7,9)}))
@@ -909,11 +1179,11 @@ def main():
     # z = s.getRateCoefficientAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_values = {'C4': (159.9,), 'collisionEnergy': (1e-6, 5e-6, 1e-5, 1e-4, 5e-4, 1e-3)})
     # print(z*10**6*rate_from_au_to_SI)
     # zz = s.getRateCoefficientAsArray(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1), param_values = {'C4': (159.9,), 'collisionEnergy': (1e-6, 5e-6, 1e-5, 1e-4, 5e-4, 1e-3)}, unit = 'cm**3/s')
-    time_0 = time.perf_counter()
-    avv = s.getThermallyAveragedRate(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1))
-    print(avv)
-    duration = time.perf_counter()-time_0
-    print(f"The time was {duration:.2e} s.")    
+    # time_0 = time.perf_counter()
+    # avv = s.getThermallyAveragedRate(qn.LF1F2(0,0,2,0,1,1), qn.LF1F2(0,0,4,0,1,1))
+    # print(avv)
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.")    
 
     # time_0 = time.perf_counter()
     # # f = lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: sum(  s.getThermallyAveragedRateAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in)) for L in range(0, 58+1, 2) for ML in range(-L, L+1, 2))
@@ -923,42 +1193,42 @@ def main():
     # # iterrr = ( s.getRateCoefficientAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in)) for L in range(0, 58+1, 2) for ML in range(-L, L+1, 2) )
     # # print(type(iter))
     # # f = lambda : np.fromiter(  iterr, dtype = float).sum()
-    def f(F_out, MF_out, MS_out, F_in, MF_in, MS_in):
-        x = sum( s.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, 18+1, 2) for ML in range(-L, L+1, 2) )
-        return s.thermalAverage(x)
+    # def f(F_out, MF_out, MS_out, F_in, MF_in, MS_in):
+    #     x = sum( s.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, 18+1, 2) for ML in range(-L, L+1, 2) )
+    #     return s.thermalAverage(x)
     # x = f(2, 0, -1, 4, -2, 1)
     # x = s.thermalAverage(x)
     # print(x, type(x))
     # duration = time.perf_counter()-time_0
     # print(f"The time was {duration:.2e} s.") 
 
-    time_0 = time.perf_counter()
-    g = np.vectorize(f, signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
-    F_in = 4
-    MF_in = np.arange(-F_in, F_in+1, 2)
-    # MF_in = 0
-    # MF_in = [0, 2]
-    S = 1
-    MS_in = np.arange(-S, S+1, 2)
-    # MS_in = 1
-    F_out = 2
-    MF_out = np.arange(-F_out, F_out+1, 2)
-    # MF_out = 0
-    # MF_out = [0, 2]
-    MS_out = np.arange(-S, S+1, 2)
-    # MS_out = -1
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
-    # MF_out, MF_in = np.meshgrid(MF_out, MF_in)
-    print(MF_out)
-    print(MS_out)
-    print(MF_in)
-    print(MS_in)
-    y = g(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
-    # y = g( 2, 0, -1, 4, 0, -1 )
+    # time_0 = time.perf_counter()
+    # g = np.vectorize(f, signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
+    # F_in = 4
+    # MF_in = np.arange(-F_in, F_in+1, 2)
+    # # MF_in = 0
+    # # MF_in = [0, 2]
+    # S = 1
+    # MS_in = np.arange(-S, S+1, 2)
+    # # MS_in = 1
+    # F_out = 2
+    # MF_out = np.arange(-F_out, F_out+1, 2)
+    # # MF_out = 0
+    # # MF_out = [0, 2]
+    # MS_out = np.arange(-S, S+1, 2)
+    # # MS_out = -1
+    # MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
+    # # MF_out, MF_in = np.meshgrid(MF_out, MF_in)
+    # print(MF_out)
+    # print(MS_out)
+    # print(MF_in)
+    # print(MS_in)
+    # y = g(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    # # y = g( 2, 0, -1, 4, 0, -1 )
 
-    print( y.squeeze(), type(y))
-    duration = time.perf_counter()-time_0
-    print(f"The time was {duration:.2e} s.")   
+    # print( y.squeeze(), type(y))
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.")   
 
     # x = s.getRateCoefficientAsArray(qn.LF1F2(4, 2, 2, 0, 1, -1), qn.LF1F2(4, 0, 4, 0, 1, 1), unit = 'cm**3/s')
     # print(x)
