@@ -19,9 +19,9 @@ import time
 import cProfile
 import pstats
 
-from physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K, rate_from_au_to_SI
-import quantum_numbers as qn
-from thermal_averaging import n_root_iterator
+from .physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K, rate_from_au_to_SI
+from . import quantum_numbers as qn
+from .thermal_averaging import n_root_iterator
 
 
 class CollectionParameters(NamedTuple):
