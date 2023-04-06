@@ -1075,12 +1075,14 @@ def main():
     def unpickle_json_dump():
         time_0 = time.perf_counter()
         s = SMatrixCollection.fromPickle(r"../data_produced/json_test_3.pickle")
+        x = len( s.matrixCollection[(0,0,0,0,0,0,)].matrix )
+        print(x)
         s.toJSON(r"../data_produced/pickle_to_json_test_3.json")
         print(f"Loading the matrix took {time.perf_counter() - time_0} seconds.")
 
     # msgpack_pack_unpack()
     # pickle_dump_load()
-    # unpickle_json_dump()
+    unpickle_json_dump()
     # time_0 = time.perf_counter()
     # x = s.matrixCollection[(0,0,0,0,0,0)]
     # print(x)
