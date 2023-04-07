@@ -15,9 +15,9 @@ from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase
 
-singlet_scaling_path = str(Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json'))
-triplet_scaling_path = str(Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json'))
-molscat_executable_path = Path('$HOME','molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
+singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
+triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
+molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
 
 E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
@@ -26,8 +26,8 @@ molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 number_of_parameters = 24
 
 phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
-SINGLETSCALING = [parameter_from_semiclassical_phase(phase, Path('$HOME', 'python', 'molscat_data', 'data', 'scaling_old', 'singlet_vs_coeff.json'), starting_points=[1.000,1.010]) for phase in phases]
-TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, Path('$HOME', 'python', 'molscat_data', 'data', 'scaling_old', 'triplet_vs_coeff.json'), starting_points=[1.000,0.996]) for phase in phases]
+SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in phases]
+TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in phases]
 scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 # [(c_s, c_t) for c_s in SINGLETSCALING for c_t in TRIPLETSCALING]
 
@@ -35,7 +35,7 @@ def create_and_run(molscat_input_template_path):
     
     time_0 = time.perf_counter()
     
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.name)
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'RbSr+_tcpld', molscat_input_template_path.name)
     molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', molscat_input_template_path.name).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
@@ -61,6 +61,7 @@ def create_and_run(molscat_input_template_path):
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
     # print(molscat_command)
+    print(f"{molscat_input_path.name} run")
     subprocess.run(molscat_command, shell = True)
     # print("Molscat done!")
 
@@ -106,7 +107,8 @@ def main():
 
     total_duration = time.perf_counter()-time_0
     print(f"The total time was {total_duration:.2f} s.")
-
+    
+    print(Path.home())
 
 if __name__ == '__main__':
     main()
