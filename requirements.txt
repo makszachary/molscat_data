@@ -2,3 +2,4 @@ numpy
 sigfig
 py3nj
 scipy
+msgpack

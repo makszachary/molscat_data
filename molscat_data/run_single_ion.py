@@ -1,6 +1,6 @@
 import subprocess
 # import os
-from pathlib import Path
+from pathlib import Path, PurePath
 import re
 
 import numpy as np
@@ -17,7 +17,7 @@ def main():
     triplet_scaling_path = str(Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json'))
     
     molscat_executable_path = Path('$HOME','molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
-    molscat_input_template_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'molscat-RbSr+.input').resolve()
+    molscat_input_template_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'molscat-RbSr+.input')
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'molscat-RbSr+.input')
     molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'molscat-RbSr+.output')
     print(f"""{molscat_executable_path}\n{molscat_input_template_path}""")
@@ -48,7 +48,8 @@ def main():
             molscat_input.write(input_content)
             molscat_input.truncate()
 
-    molscat_command = f"./{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
+    molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
+    print(molscat_command)
     subprocess.run(molscat_command, shell = True)
     print("Done!") 
 
