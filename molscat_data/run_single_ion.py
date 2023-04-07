@@ -88,11 +88,15 @@ def collect_and_pickle(molscat_output_directory_path):
     return duration, s_matrix_collection, molscat_output_directory_path, pickle_path
 
 def probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in):
+    
+    param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
+    
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
-    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
+    
+    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s', param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
     averaged_rate = s_matrix_collection.thermalAverage(rate)
     
-    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1))
+    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
         
     return averaged_rate/averaged_momentum_transfer_rate
 
