@@ -7,7 +7,7 @@ def effective_probability(p0: float | np.ndarray[Any, float], pmf_array: np.ndar
 
     p0 = np.array(p0)
 
-    if any( x < 0 or x > 1 for x in p0):
+    if np.any( (p0 < 0) | (p0 > 1)):
         raise ValueError("All values in the p0 array should be between 0 and 1.")    
 
     # p_eff = sum([ sum(pmf_array[index:,1])*(1-p0)**(pmf_array[index,0]-1)*p0 for index in range(len(pmf_array)) ])
