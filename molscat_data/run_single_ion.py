@@ -20,6 +20,8 @@ def main():
     molscat_input_template_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'molscat-RbSr+.input')
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'molscat-RbSr+.input')
     molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'molscat-RbSr+.output')
+    molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
+    molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     print(f"""{molscat_executable_path}\n{molscat_input_template_path}""")
     E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
 
