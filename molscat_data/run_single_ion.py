@@ -93,7 +93,7 @@ def probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in):
     
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
     
-    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s', param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
+    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
     averaged_rate = s_matrix_collection.thermalAverage(rate)
     
     averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
@@ -131,9 +131,9 @@ def main():
     F_out = 2
     MF_out = np.arange(-F_out, F_out+1, 2)
     MS_out = np.arange(-S, S+1, 2)
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in, indexing = 'ij')
 
-    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
 
     print(probability_array)
     total_duration = time.perf_counter()-time_0
