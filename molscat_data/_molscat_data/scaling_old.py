@@ -66,7 +66,7 @@ def semiclassical_phase_function(single_channel_data_path: str | Path):
         f = interp1d(x,y)
         return f
     else:
-        print("Supplied %s file is not a .json file. Try again:)" % single_channel_data_path)
+        print("Supplied %s file is not a .json file or doesn't exist. Try again:)" % single_channel_data_path)
         return None
 
 

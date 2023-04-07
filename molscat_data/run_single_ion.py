@@ -85,30 +85,57 @@ def collect_and_pickle(molscat_output_directory_path):
 
     duration = time.perf_counter()-time_0
 
-    return duration, molscat_output_directory_path, pickle_path
+    return duration, s_matrix_collection, molscat_output_directory_path, pickle_path
+
+def probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in):
+    L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
+    averaged_rate = s_matrix_collection.thermalAverage(rate)
+    
+    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1))
+        
+    return averaged_rate/averaged_momentum_transfer_rate
 
 def main():
     from multiprocessing import Pool
     # from multiprocessing.dummy import Pool as ThreadPool 
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
-
+    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld.pickle')
     time_0 = time.perf_counter()
 
-    with Pool() as pool:
-        results = pool.imap(create_and_run, molscat_input_templates)
+    # with Pool() as pool:
+    #     results = pool.imap(create_and_run, molscat_input_templates)
 
-        for duration, input_path, output_path in results:
-            output_dir = output_path.parent
-            print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
+    #     for duration, input_path, output_path in results:
+    #         output_dir = output_path.parent
+    #         print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
 
-    duration, output_dir, pickle_path = collect_and_pickle( output_dir )
-    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    # duration, s_matrix_collection, output_dir, pickle_path = collect_and_pickle( output_dir )
+    # print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
+    s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    print(s_matrix_collection)
+
+    probability_vectorized = np.vectorize(lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in), signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
+
+    F_in = 4
+    MF_in = np.arange(-F_in, F_in+1, 2)
+    S = 1
+    # MS_in = np.arange(-S, S+1, 2)
+    MS_in = 1
+    F_out = 2
+    MF_out = np.arange(-F_out, F_out+1, 2)
+    MS_out = np.arange(-S, S+1, 2)
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
+
+    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+
+    print(probability_array)
     total_duration = time.perf_counter()-time_0
     print(f"The total time was {total_duration:.2f} s.")
     
-    print(Path.home())
+    # print(Path.home())
 
 if __name__ == '__main__':
     main()
