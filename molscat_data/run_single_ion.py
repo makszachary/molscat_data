@@ -41,14 +41,16 @@ def create_and_run(molscat_input_template_path):
     triplet_phase = 0.24
     
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
-    lambda_t = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
+    # singlet_scaling = round(singlet_scaling, sigfigs = 12)
+    triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
+    # triplet_scaling = round(triplet_scaling, sigfigs = 12)
 
     with open(molscat_input_template_path, 'r') as molscat_template:
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", energyarray_str, input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
-        input_content = re.sub("TRIPLETSCALING", str(lambda_t), input_content, flags = re.M)
+        input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
 
         with open(molscat_input_path, 'w') as molscat_input:
             molscat_input.write(input_content)

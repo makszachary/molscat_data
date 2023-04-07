@@ -454,10 +454,12 @@ class SMatrixCollection:
         with open(file_path,'r') as molscat_output:
             for line in molscat_output:
                 if "REDUCED MASS FOR INTERACTION =" in line:
-                    reduced_mass = float(line.split()[5])*amu_to_au # reduced mass is given in amu in MOLSCAT output/input, we convert it to atomic units
+                    # reduced mass is given F14.9 format in amu in MOLSCAT output, we convert it to atomic units and round
+                    reduced_mass = round(float(line.split()[5])*amu_to_au, sigfigs = 8)
                     if self.reducedMass == None: self.reducedMass = (reduced_mass,)
-                    assert reduced_mass in self.reducedMass, f"The reduced mass in the molscat output should be an element of {self}.reducedMass."
-                    reduced_mass_index = self.reducedMass.index(reduced_mass)
+                    rounded_reducedMass = tuple(round(reduced_mass, sigfigs = 8) for reduced_mass in self.reducedMass)
+                    assert reduced_mass in rounded_reducedMass, f"The reduced mass in the molscat output should be an element of {self}.reducedMass."
+                    reduced_mass_index = rounded_reducedMass.index(reduced_mass)
 
                 # determine which basis set is used in the output
                 elif "in a total angular momentum basis" in line:
@@ -481,8 +483,9 @@ class SMatrixCollection:
                     #  find values of short-range factors and C4
                     A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)      
                     if self.singletParameter == None: self.singletParameter = (A_s,)
-                    assert A_s in self.singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
-                    A_s_index = self.singletParameter.index(A_s)
+                    rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 12) for singlet_parameter in self.singletParameter)
+                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
+                    A_s_index = rounded_singletParameter.index(A_s)
 
                     for i in range(2):
                         line = next(molscat_output)
@@ -496,22 +499,26 @@ class SMatrixCollection:
                     A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)
                     
                     if self.tripletParameter == None: self.tripletParameter = (A_t,)
-                    assert A_t in self.tripletParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
-                    A_t_index = self.tripletParameter.index(A_t)
+                    rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 12) for triplet_parameter in self.tripletParameter)
+                    assert A_t in rounded_tripletParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
+                    A_t_index = rounded_tripletParameter.index(A_t)
 
                 elif "INPUT ENERGY LIST IS" in line:
-                    while "CALCULATIONS WILL BE PERFORMED FOR" not in line: line = next(molscat_output)
+                    while "CALCULATIONS WILL BE PERFORMED FOR" not in line:
+                        line = next(molscat_output)
                     line = next(molscat_output)
                     # create the list of energies from the output
                     energy_list = []
                     # append each energy value from the output to the list of energies
                     while line.strip():
-                        energy_list.append(float(line.split()[6]))
+                        # the energies in the molscat outputs are listed in G17.10 format here anyway
+                        energy_list.append(round(float(line.split()[6]), sigfigs = 11))
                         line = next(molscat_output)
                     energy_tuple = tuple(energy_list)
 
                     if self.collisionEnergy == None: self.collisionEnergy = energy_tuple
-                    assert energy_tuple == self.collisionEnergy, f"The list of collision energies from the molscat output should be equal to {self}.collisionEnergy."
+                    rounded_collisionEnergy = tuple(round(energy, sigfigs = 11) for energy in self.collisionEnergy )
+                    assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies from the molscat output should be equal to {self}.collisionEnergy."
 
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
                 #     f1ref, mf1ref, f2ref, mf2ref = int(line.split()[14])/2, int(line.split()[15])/2, int(line.split()[16])/2, int(line.split()[17])/2 
@@ -564,7 +571,7 @@ class SMatrixCollection:
                             matrix[(channels[channel_out_index], channels[channel_in_index])] = cmath.rect(np.sqrt(float(line.split()[2])), 2*np.pi*float(line.split()[3]))
                         line = next(molscat_output)
                     
-                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = C4, singletParameter = A_s, tripletParameter = A_t, reducedMass = reduced_mass, magneticField = magnetic_field, collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
+                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = self.C4[C4_index], singletParameter = self.singletParameter[A_s_index], tripletParameter = self.tripletParameter[A_t_index], reducedMass = self.reducedMass[reduced_mass_index], magneticField = self.magneticField[magnetic_field_index], collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
                     if (C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
                         self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:
