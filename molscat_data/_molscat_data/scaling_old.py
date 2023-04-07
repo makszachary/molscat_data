@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import json
 
 import numpy as np
@@ -15,19 +15,22 @@ def decode_complex(dct):
         return cmath.rect(dct['abs'], dct['phase'])
     return dct
 
-def read_from_json(json_path, recursive = False):
+def read_from_json(json_path: str | Path, recursive: bool = False) -> None:
     data = []
     # print(json_path, "--- input.")
-    if os.path.isfile(json_path) and json_path.endswith('.json'):
+    if not isinstance(json_path, Path):
+        json_path = Path(json_path)
+    
+    if json_path.is_file() and json_path.suffix == '.json':
         with open(json_path) as json_file:
                 data = json.load(json_file, object_hook=decode_complex)
-    elif os.path.isdir(json_path):
-        for file in os.scandir(json_path):
-            if file.is_file() and file.name.endswith('.json'):
-                data.extend(read_from_json(file.path, recursive = recursive))
+    elif json_path.is_dir():
+        for file in json_path.iterdir():
+            if file.is_file() and file.suffix == '.json':
+                data.extend(read_from_json(file, recursive = recursive))
                 # print(file.path, "read.")
             if recursive and file.is_dir():
-                data.extend(read_from_json(file.path, recursive = recursive))
+                data.extend(read_from_json(file, recursive = recursive))
     else:
         print("The input path is neither .json file nor a directory! Nothing can be done.")
     return data
@@ -47,12 +50,12 @@ def phase_from_scattering_length(scattering_length, C4 = -159.9, red_mass = red_
     """
     return np.pi/2 + np.arctan(-scattering_length/np.sqrt(2*red_mass*np.abs(C4)))
 
-def semiclassical_phase_function(single_channel_data_path):
+def semiclassical_phase_function(single_channel_data_path: str | Path):
     """
     Returns ( semiclassical phase integral + pi/4 ) modulo pi as a multiple of pi!
     """
 
-    if os.path.isfile(single_channel_data_path):# and single_channel_data_path.endswith(r'.json'):
+    if Path(single_channel_data_path).is_file(): # and single_channel_data_path.endswith(r'.json'):
         data = read_from_json(single_channel_data_path)
         data =  sorted(data, key = lambda i: (i["potential_name"], i["coefficient"] ) )
         x, y = [], []
