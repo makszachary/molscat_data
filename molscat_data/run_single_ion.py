@@ -139,7 +139,7 @@ def main():
 
     print(probability_array)
 
-    pmf_path = Path(__file__).parents[2].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
     effective_probability_array = effective_probability(probability_array, pmf_array)
