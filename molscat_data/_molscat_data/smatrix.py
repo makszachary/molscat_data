@@ -1202,37 +1202,37 @@ def main():
     # iterrr = ( s.getRateCoefficientAsArray(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in)) for L in range(0, 58+1, 2) for ML in range(-L, L+1, 2) )
     # print(type(iter))
     # f = lambda : np.fromiter(  iterr, dtype = float).sum()
-    def f(F_out, MF_out, MS_out, F_in, MF_in, MS_in):
-        x = sum( s.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, 18+1, 2) for ML in range(-L, L+1, 2) )
-        return s.thermalAverage(x)
-    x = f(2, 0, -1, 4, -2, 1)
-    x = s.thermalAverage(x)
-    print(x, type(x))
-    duration = time.perf_counter()-time_0
-    print(f"The time was {duration:.2e} s.") 
+    # def f(F_out, MF_out, MS_out, F_in, MF_in, MS_in):
+    #     x = sum( s.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), unit = 'cm**3/s') for L in range(0, 18+1, 2) for ML in range(-L, L+1, 2) )
+    #     return s.thermalAverage(x)
+    # x = f(2, 0, -1, 4, -2, 1)
+    # x = s.thermalAverage(x)
+    # print(x, type(x))
+    # duration = time.perf_counter()-time_0
+    # print(f"The time was {duration:.2e} s.") 
 
-    time_0 = time.perf_counter()
-    g = np.vectorize(f, signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
-    F_in = 4
-    MF_in = np.arange(-F_in, F_in+1, 2)
-    # MF_in = 0
-    # MF_in = [0, 2]
-    S = 1
-    MS_in = np.arange(-S, S+1, 2)
-    # MS_in = 1
-    F_out = 2
-    MF_out = np.arange(-F_out, F_out+1, 2)
-    # MF_out = 0
-    # MF_out = [0, 2]
-    MS_out = np.arange(-S, S+1, 2)
-    # MS_out = -1
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
-    # MF_out, MF_in = np.meshgrid(MF_out, MF_in)
-    print(MF_out)
-    print(MS_out)
-    print(MF_in)
-    print(MS_in)
-    y = g(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    # time_0 = time.perf_counter()
+    # g = np.vectorize(f, signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
+    # F_in = 4
+    # MF_in = np.arange(-F_in, F_in+1, 2)
+    # # MF_in = 0
+    # # MF_in = [0, 2]
+    # S = 1
+    # MS_in = np.arange(-S, S+1, 2)
+    # # MS_in = 1
+    # F_out = 2
+    # MF_out = np.arange(-F_out, F_out+1, 2)
+    # # MF_out = 0
+    # # MF_out = [0, 2]
+    # MS_out = np.arange(-S, S+1, 2)
+    # # MS_out = -1
+    # MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in)
+    # # MF_out, MF_in = np.meshgrid(MF_out, MF_in)
+    # print(MF_out)
+    # print(MS_out)
+    # print(MF_in)
+    # print(MS_in)
+    # y = g(F_out, MF_out, MS_out, F_in, MF_in, MS_in)
     # y = g( 2, 0, -1, 4, 0, -1 )
 
     # print( y.squeeze(), type(y))

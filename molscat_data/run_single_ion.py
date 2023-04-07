@@ -14,6 +14,7 @@ from _molscat_data.smatrix import SMatrix, SMatrixCollection, CollectionParamete
 from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase
+from _molscat_data.effective_probability import effective_probability
 
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
@@ -106,6 +107,7 @@ def main():
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld.pickle')
+
     time_0 = time.perf_counter()
 
     # with Pool() as pool:
@@ -136,6 +138,14 @@ def main():
     probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
 
     print(probability_array)
+
+    pmf_path = Path(__file__).parents[2].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_array = np.loadtxt(pmf_path)
+
+    effective_probability_array = effective_probability(probability_array, pmf_array)
+
+    print(effective_probability_array)
+
     total_duration = time.perf_counter()-time_0
     print(f"The total time was {total_duration:.2f} s.")
     
