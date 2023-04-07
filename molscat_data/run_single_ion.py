@@ -13,17 +13,17 @@ from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase
 
-singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
-triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
+singlet_scaling_path = str(Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json'))
+triplet_scaling_path = str(Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json'))
 molscat_executable_path = Path('$HOME','molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
 
 def create_and_run(molscat_input_template_path):
     
     time_0 = time.perf_counter()
-
+    
     # molscat_input_template_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'molscat-RbSr+.input')
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.name)
-    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', molscat_input_template_path.name.with_suffix('.output'))
+    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', molscat_input_template_path.name).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     print(f"""{molscat_executable_path}\n{molscat_input_template_path}""")
@@ -61,7 +61,7 @@ def create_and_run(molscat_input_template_path):
     
     duration = time.perf_counter()-time_0
     
-    return molscat_input_template_path.name, duration
+    return molscat_input_template_path, duration
 
 
 def main():
@@ -75,8 +75,8 @@ def main():
     with Pool() as pool:
         results = pool.imap(create_and_run, molscat_input_templates)
 
-        for name, duration in results:
-            print(f"It took {duration:.2f} s to create the {name} input, run molscat and generate the {name.with_suffix('output')} output.")
+        for path, duration in results:
+            print(f"It took {duration:.2f} s to create the {path.name} input, run molscat and generate the {path.with_suffix('.output').name} output.")
     
     duration = time.perf_counter()-time_0
     print(f"The total time was {duration:.2f} s.")
