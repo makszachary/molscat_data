@@ -1,0 +1,3008 @@
+[
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992825,
+    "scattering_length": -9580.623171,
+    "scattering_phase/pi": 0.8456556044635732
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995275,
+    "scattering_length": 10395.94773,
+    "scattering_phase/pi": 0.14387503368254462
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99295,
+    "scattering_length": -10803.94706,
+    "scattering_phase/pi": 0.8608818053465002
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9934,
+    "scattering_length": -18608.09798,
+    "scattering_phase/pi": 0.9156872566407068
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000425,
+    "scattering_length": -5707.041521,
+    "scattering_phase/pi": 0.769498327738403
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995175,
+    "scattering_length": 11493.95139,
+    "scattering_phase/pi": 0.13171193924218524
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99615,
+    "scattering_length": 5038.867548,
+    "scattering_phase/pi": 0.2502705914380391
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997925,
+    "scattering_length": 541.8502854,
+    "scattering_phase/pi": 0.4659593324685166
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996225,
+    "scattering_length": 4758.161506,
+    "scattering_phase/pi": 0.2593879055756236
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998525,
+    "scattering_length": -618.8718557,
+    "scattering_phase/pi": 0.5388344601925608
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996,
+    "scattering_length": 5651.935696,
+    "scattering_phase/pi": 0.23203521268578445
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9984,
+    "scattering_length": -375.7630533,
+    "scattering_phase/pi": 0.5236533404036879
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993625,
+    "scattering_length": -27927.14735,
+    "scattering_phase/pi": 0.94308435259829
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997275,
+    "scattering_length": 1871.22522,
+    "scattering_phase/pi": 0.38699374510816764
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0016,
+    "scattering_length": -17799.37705,
+    "scattering_phase/pi": 0.9120446591262152
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0025,
+    "scattering_length": 75810.44399,
+    "scattering_phase/pi": 0.02116176628321251
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99445,
+    "scattering_length": 36698.65077,
+    "scattering_phase/pi": 0.04350659411580166
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997875,
+    "scattering_length": 639.4791812,
+    "scattering_phase/pi": 0.45988585323812486
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993475,
+    "scattering_length": -20971.87228,
+    "scattering_phase/pi": 0.9248200550191299
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994175,
+    "scattering_length": 159996.0351,
+    "scattering_phase/pi": 0.010038485927530925
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00345,
+    "scattering_length": 11060.73949,
+    "scattering_phase/pi": 0.13627245579590805
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9993,
+    "scattering_length": -2239.820112,
+    "scattering_phase/pi": 0.6329412427841927
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002775,
+    "scattering_length": 29196.37129,
+    "scattering_phase/pi": 0.05449052430674856
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99535,
+    "scattering_length": 9679.773437,
+    "scattering_phase/pi": 0.15299685944552127
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001125,
+    "scattering_length": -10256.61836,
+    "scattering_phase/pi": 0.8544304558453344
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9974,
+    "scattering_length": 1601.858337,
+    "scattering_phase/pi": 0.40218122824390756
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00295,
+    "scattering_length": 20823.23858,
+    "scattering_phase/pi": 0.07569663274358979
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995825,
+    "scattering_length": 6475.195421,
+    "scattering_phase/pi": 0.21075868657604957
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001775,
+    "scattering_length": -23721.93131,
+    "scattering_phase/pi": 0.9332667098598206
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0013,
+    "scattering_length": -12257.28157,
+    "scattering_phase/pi": 0.8756586809352106
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994725,
+    "scattering_length": 20465.65622,
+    "scattering_phase/pi": 0.07696868464640995
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993525,
+    "scattering_length": -22887.55555,
+    "scattering_phase/pi": 0.9309083468710303
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0043,
+    "scattering_length": 5401.820506,
+    "scattering_phase/pi": 0.23920890066676484
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999375,
+    "scattering_length": -2414.916422,
+    "scattering_phase/pi": 0.6420471504728208
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998025,
+    "scattering_length": 347.7235156,
+    "scattering_phase/pi": 0.47810589343314747
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99345,
+    "scattering_length": -20123.91675,
+    "scattering_phase/pi": 0.9217758370639566
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003575,
+    "scattering_length": 9798.355704,
+    "scattering_phase/pi": 0.15141345940570705
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999075,
+    "scattering_length": -1739.152639,
+    "scattering_phase/pi": 0.6056220246932958
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9986,
+    "scattering_length": -766.0297372,
+    "scattering_phase/pi": 0.5479427454427719
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992475,
+    "scattering_length": -7087.489746,
+    "scattering_phase/pi": 0.8030164999326924
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99825,
+    "scattering_length": -86.18996463,
+    "scattering_phase/pi": 0.505434921844976
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00415,
+    "scattering_length": 6060.604281,
+    "scattering_phase/pi": 0.2210471352731164
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002625,
+    "scattering_length": 44053.69471,
+    "scattering_phase/pi": 0.036311939928002475
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9942,
+    "scattering_length": 122751.3474,
+    "scattering_phase/pi": 0.013081290535550051
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9946,
+    "scattering_length": 25687.41651,
+    "scattering_phase/pi": 0.06175938837682608
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99865,
+    "scattering_length": -864.8297383,
+    "scattering_phase/pi": 0.5540147793225458
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000375,
+    "scattering_length": -5492.416533,
+    "scattering_phase/pi": 0.7634305214922753
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001025,
+    "scattering_length": -9340.452104,
+    "scattering_phase/pi": 0.8422992787848218
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999775,
+    "scattering_length": -3444.320098,
+    "scattering_phase/pi": 0.6906067101467596
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99705,
+    "scattering_length": 2381.84127,
+    "scattering_phase/pi": 0.35965448455501514
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000575,
+    "scattering_length": -6410.96242,
+    "scattering_phase/pi": 0.7877007719243242
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003375,
+    "scattering_length": 11952.6276,
+    "scattering_phase/pi": 0.1271872883561131
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00135,
+    "scattering_length": -12952.84871,
+    "scattering_phase/pi": 0.8817234748645078
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99715,
+    "scattering_length": 2150.317126,
+    "scattering_phase/pi": 0.3718053787498526
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992125,
+    "scattering_length": -5387.48537,
+    "scattering_phase/pi": 0.760369113131566
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992675,
+    "scattering_length": -8376.787421,
+    "scattering_phase/pi": 0.8273827326204084
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9998,
+    "scattering_length": -3515.312774,
+    "scattering_phase/pi": 0.6936413887226103
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99745,
+    "scattering_length": 1496.454762,
+    "scattering_phase/pi": 0.408255975776498
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996375,
+    "scattering_length": 4239.533028,
+    "scattering_phase/pi": 0.27762143209693624
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0029,
+    "scattering_length": 22702.20406,
+    "scattering_phase/pi": 0.06963799078821369
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999275,
+    "scattering_length": -2182.451282,
+    "scattering_phase/pi": 0.6299058740082701
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9959,
+    "scattering_length": 6106.093094,
+    "scattering_phase/pi": 0.21987747360098142
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992525,
+    "scattering_length": -7382.514739,
+    "scattering_phase/pi": 0.8091083149131795
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002175,
+    "scattering_length": -88014.34971,
+    "scattering_phase/pi": 0.9817655554152125
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000875,
+    "scattering_length": -8184.713917,
+    "scattering_phase/pi": 0.8241012594599315
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99495,
+    "scattering_length": 14842.3744,
+    "scattering_phase/pi": 0.10434229344709342
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99355,
+    "scattering_length": -23975.54316,
+    "scattering_phase/pi": 0.9339524206205022
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003675,
+    "scattering_length": 8945.140313,
+    "scattering_phase/pi": 0.16352541909727172
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003625,
+    "scattering_length": 9356.693881,
+    "scattering_phase/pi": 0.15746953226189522
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003775,
+    "scattering_length": 8199.818929,
+    "scattering_phase/pi": 0.17563663325843723
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99785,
+    "scattering_length": 688.4677081,
+    "scattering_phase/pi": 0.4568490328709927
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99305,
+    "scattering_length": -11978.79399,
+    "scattering_phase/pi": 0.8730619797057092
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9985,
+    "scattering_length": -570.0592297,
+    "scattering_phase/pi": 0.5357982972009008
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002,
+    "scattering_length": -40516.28254,
+    "scattering_phase/pi": 0.9605488092156634
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997525,
+    "scattering_length": 1340.548198,
+    "scattering_phase/pi": 0.4173678390551779
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004025,
+    "scattering_length": 6682.623195,
+    "scattering_phase/pi": 0.20591144161806738
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9963,
+    "scattering_length": 4492.230019,
+    "scattering_phase/pi": 0.2685048567118404
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999825,
+    "scattering_length": -3587.25376,
+    "scattering_phase/pi": 0.6966760348125032
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0009,
+    "scattering_length": -8362.020952,
+    "scattering_phase/pi": 0.827134369215186
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0028,
+    "scattering_length": 27627.28196,
+    "scattering_phase/pi": 0.05752011604293394
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993275,
+    "scattering_length": -15611.98783,
+    "scattering_phase/pi": 0.9004649649567179
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001925,
+    "scattering_length": -32839.25737,
+    "scattering_phase/pi": 0.9514552032158274
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000625,
+    "scattering_length": -6668.645569,
+    "scattering_phase/pi": 0.7937679283857443
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99755,
+    "scattering_length": 1289.118558,
+    "scattering_phase/pi": 0.4204050594325953
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003425,
+    "scattering_length": 11345.297,
+    "scattering_phase/pi": 0.1332441140950721
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99635,
+    "scattering_length": 4322.381768,
+    "scattering_phase/pi": 0.27458261408524487
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999,
+    "scattering_length": -1579.140331,
+    "scattering_phase/pi": 0.5965155011123889
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9944,
+    "scattering_length": 42735.41388,
+    "scattering_phase/pi": 0.03742193172081746
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00305,
+    "scattering_length": 17829.68107,
+    "scattering_phase/pi": 0.08781332466239877
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00325,
+    "scattering_length": 13742.23077,
+    "scattering_phase/pi": 0.11204439703528343
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9972,
+    "scattering_length": 2037.39822,
+    "scattering_phase/pi": 0.3778808323913428
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99775,
+    "scattering_length": 885.7963781,
+    "scattering_phase/pi": 0.44470159355300287
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99925,
+    "scattering_length": -2125.552874,
+    "scattering_phase/pi": 0.6268704658030199
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001225,
+    "scattering_length": -11326.63268,
+    "scattering_phase/pi": 0.8665611404501112
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9932,
+    "scattering_length": -14205.91163,
+    "scattering_phase/pi": 0.8913310147116869
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992975,
+    "scattering_length": -11079.10751,
+    "scattering_phase/pi": 0.8639269161044466
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00285,
+    "scattering_length": 24933.13029,
+    "scattering_phase/pi": 0.06357915182291972
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00435,
+    "scattering_length": 5199.968282,
+    "scattering_phase/pi": 0.2452625003404144
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993325,
+    "scattering_length": -16696.57793,
+    "scattering_phase/pi": 0.9065540257563424
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992325,
+    "scattering_length": -6289.703015,
+    "scattering_phase/pi": 0.784740031587913
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99855,
+    "scattering_length": -667.7981703,
+    "scattering_phase/pi": 0.5418705846101818
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993575,
+    "scattering_length": -25167.06342,
+    "scattering_phase/pi": 0.9369964461436359
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002875,
+    "scattering_length": 23767.66704,
+    "scattering_phase/pi": 0.06660859579319156
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9952,
+    "scattering_length": 11202.03309,
+    "scattering_phase/pi": 0.13475278395667958
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994925,
+    "scattering_length": 15321.07467,
+    "scattering_phase/pi": 0.10130097982128781
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999425,
+    "scattering_length": -2534.313593,
+    "scattering_phase/pi": 0.6481175796233125
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001725,
+    "scattering_length": -21684.31167,
+    "scattering_phase/pi": 0.9272035013657232
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0,
+    "scattering_length": -4120.285647,
+    "scattering_phase/pi": 0.7179175730248607
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992625,
+    "scattering_length": -8025.280228,
+    "scattering_phase/pi": 0.8212914310940014
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992425,
+    "scattering_length": -6807.900504,
+    "scattering_phase/pi": 0.7969245150845709
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00025,
+    "scattering_length": -4992.568199,
+    "scattering_phase/pi": 0.7482602969318485
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003925,
+    "scattering_length": 7239.545548,
+    "scattering_phase/pi": 0.19380206549264367
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002925,
+    "scattering_length": 21724.23097,
+    "scattering_phase/pi": 0.07266733510618556
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002025,
+    "scattering_length": -43921.7401,
+    "scattering_phase/pi": 0.9635799158886096
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996925,
+    "scattering_length": 2683.347854,
+    "scattering_phase/pi": 0.344465318188924
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995025,
+    "scattering_length": 13554.87527,
+    "scattering_phase/pi": 0.11346593923578736
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9933,
+    "scattering_length": -16137.70314,
+    "scattering_phase/pi": 0.9035095193109602
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0021,
+    "scattering_length": -58648.90128,
+    "scattering_phase/pi": 0.9726729489766068
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995475,
+    "scattering_length": 8646.037845,
+    "scattering_phase/pi": 0.16819896610114596
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996725,
+    "scattering_length": 3199.631706,
+    "scattering_phase/pi": 0.3201606511165
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99875,
+    "scattering_length": -1064.447092,
+    "scattering_phase/pi": 0.5661584657343289
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00385,
+    "scattering_length": 7698.76861,
+    "scattering_phase/pi": 0.18471955967637932
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000125,
+    "scattering_length": -4537.728181,
+    "scattering_phase/pi": 0.7330890627535452
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9939,
+    "scattering_length": -68431.99523,
+    "scattering_phase/pi": 0.9765643756192511
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99465,
+    "scattering_length": 23322.11543,
+    "scattering_phase/pi": 0.06784325573545659
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999875,
+    "scattering_length": -3734.111427,
+    "scattering_phase/pi": 0.7027452140105179
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9997,
+    "scattering_length": -3236.724421,
+    "scattering_phase/pi": 0.6815024666819237
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992875,
+    "scattering_length": -10041.97235,
+    "scattering_phase/pi": 0.8517462183719259
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996525,
+    "scattering_length": 3768.605812,
+    "scattering_phase/pi": 0.29585348686041946
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993425,
+    "scattering_length": -19338.24099,
+    "scattering_phase/pi": 0.9187315707141476
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002275,
+    "scattering_length": -262851.1216,
+    "scattering_phase/pi": 0.9938883533036165
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995125,
+    "scattering_length": 12117.69975,
+    "scattering_phase/pi": 0.12563010828220814
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996175,
+    "scattering_length": 4943.553214,
+    "scattering_phase/pi": 0.2533097376798674
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999625,
+    "scattering_length": -3036.601963,
+    "scattering_phase/pi": 0.6723979109521048
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0012,
+    "scattering_length": -11042.45509,
+    "scattering_phase/pi": 0.8635285348846083
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99955,
+    "scattering_length": -2843.245704,
+    "scattering_phase/pi": 0.6632930470316316
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996475,
+    "scattering_length": 3920.881858,
+    "scattering_phase/pi": 0.28977629703548674
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001675,
+    "scattering_length": -19954.93877,
+    "scattering_phase/pi": 0.9211401050336046
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002575,
+    "scattering_length": 52948.87576,
+    "scattering_phase/pi": 0.030252018089617583
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99335,
+    "scattering_length": -17291.9641,
+    "scattering_phase/pi": 0.9095984840846306
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992725,
+    "scattering_length": -8751.345938,
+    "scattering_phase/pi": 0.8334738621960208
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995075,
+    "scattering_length": 12801.44849,
+    "scattering_phase/pi": 0.11954812090830341
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994425,
+    "scattering_length": 39491.28572,
+    "scattering_phase/pi": 0.040464287826983074
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99245,
+    "scattering_length": -6945.855187,
+    "scattering_phase/pi": 0.7999705290794201
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99905,
+    "scattering_length": -1685.479291,
+    "scattering_phase/pi": 0.6025865494225319
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999675,
+    "scattering_length": -3169.222996,
+    "scattering_phase/pi": 0.6784676485782384
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992375,
+    "scattering_length": -6542.376869,
+    "scattering_phase/pi": 0.790832358163095
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99695,
+    "scattering_length": 2621.871238,
+    "scattering_phase/pi": 0.3475032198386224
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999475,
+    "scattering_length": -2656.016923,
+    "scattering_phase/pi": 0.6541878710463139
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999975,
+    "scattering_length": -4040.722697,
+    "scattering_phase/pi": 0.7148831713848445
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999525,
+    "scattering_length": -2780.185041,
+    "scattering_phase/pi": 0.660258023666929
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9965,
+    "scattering_length": 3844.189752,
+    "scattering_phase/pi": 0.2928149125005426
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9955,
+    "scattering_length": 8459.417999,
+    "scattering_phase/pi": 0.17123924738220397
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99965,
+    "scattering_length": -3102.524235,
+    "scattering_phase/pi": 0.6754327971169685
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00095,
+    "scattering_length": -8734.00362,
+    "scattering_phase/pi": 0.8332004564667042
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0006,
+    "scattering_length": -6538.21427,
+    "scattering_phase/pi": 0.7907343708618662
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993375,
+    "scattering_length": -17927.68063,
+    "scattering_phase/pi": 0.9126428942287699
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004125,
+    "scattering_length": 6179.165446,
+    "scattering_phase/pi": 0.21802008464547865
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9978,
+    "scattering_length": 786.8371715,
+    "scattering_phase/pi": 0.4507753966712983
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001175,
+    "scattering_length": -10769.87794,
+    "scattering_phase/pi": 0.8604958809544593
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0014,
+    "scattering_length": -13719.91591,
+    "scattering_phase/pi": 0.8877880842211544
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00355,
+    "scattering_length": 10031.63652,
+    "scattering_phase/pi": 0.14838535225862415
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99895,
+    "scattering_length": -1474.0611,
+    "scattering_phase/pi": 0.5904443386355982
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9989,
+    "scattering_length": -1370.144123,
+    "scattering_phase/pi": 0.5843730578933244
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997975,
+    "scattering_length": 444.6226464,
+    "scattering_phase/pi": 0.4720326816764457
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9969,
+    "scattering_length": 2745.452515,
+    "scattering_phase/pi": 0.34142736737088114
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001,
+    "scattering_length": -9131.347977,
+    "scattering_phase/pi": 0.8392663779311634
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998225,
+    "scattering_length": -38.03219667,
+    "scattering_phase/pi": 0.5023984021152651
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992025,
+    "scattering_length": -4990.148119,
+    "scattering_phase/pi": 0.748183134836121
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996025,
+    "scattering_length": 5544.457363,
+    "scattering_phase/pi": 0.23507453651021556
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002425,
+    "scattering_length": 133035.4438,
+    "scattering_phase/pi": 0.012071071638727162
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996075,
+    "scattering_length": 5336.111743,
+    "scattering_phase/pi": 0.24115304462101833
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994625,
+    "scattering_length": 24450.00723,
+    "scattering_phase/pi": 0.06480134686392705
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99835,
+    "scattering_length": -279.0605289,
+    "scattering_phase/pi": 0.5175806651093308
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996975,
+    "scattering_length": 2561.001512,
+    "scattering_phase/pi": 0.35054110460357096
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9943,
+    "scattering_length": 63491.13366,
+    "scattering_phase/pi": 0.02525200980452167
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002475,
+    "scattering_length": 88514.74686,
+    "scattering_phase/pi": 0.018131583942108627
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998625,
+    "scattering_length": -815.3538654,
+    "scattering_phase/pi": 0.5509787772810272
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993225,
+    "scattering_length": -14648.55933,
+    "scattering_phase/pi": 0.8943757120818342
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993675,
+    "scattering_length": -31340.48179,
+    "scattering_phase/pi": 0.9491720659017878
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9975,
+    "scattering_length": 1392.239738,
+    "scattering_phase/pi": 0.4143305855090493
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9987,
+    "scattering_length": -964.275669,
+    "scattering_phase/pi": 0.5600866845141329
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0003,
+    "scattering_length": -5186.617287,
+    "scattering_phase/pi": 0.7543285075764437
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998375,
+    "scattering_length": -327.3820633,
+    "scattering_phase/pi": 0.5206170145784413
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00245,
+    "scattering_length": 106311.3423,
+    "scattering_phase/pi": 0.015101352390599511
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0026,
+    "scattering_length": 48097.80927,
+    "scattering_phase/pi": 0.03328200361390511
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002225,
+    "scattering_length": -131920.9981,
+    "scattering_phase/pi": 0.9878270530218745
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994975,
+    "scattering_length": 14389.84604,
+    "scattering_phase/pi": 0.10738355737276867
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003125,
+    "scattering_length": 16065.07048,
+    "scattering_phase/pi": 0.09690032595024595
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9929,
+    "scattering_length": -10286.04767,
+    "scattering_phase/pi": 0.8547914558302474
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99805,
+    "scattering_length": 299.3746376,
+    "scattering_phase/pi": 0.48114244798964495
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99225,
+    "scattering_length": -5932.448148,
+    "scattering_phase/pi": 0.7756012199150404
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99545,
+    "scattering_length": 8838.869019,
+    "scattering_phase/pi": 0.16515863836285374
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003175,
+    "scattering_length": 15056.86293,
+    "scattering_phase/pi": 0.10295809065249216
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994125,
+    "scattering_length": 406445.4991,
+    "scattering_phase/pi": 0.003952726858745825
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9991,
+    "scattering_length": -1793.179169,
+    "scattering_phase/pi": 0.6086574600490271
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9931,
+    "scattering_length": -12649.79646,
+    "scattering_phase/pi": 0.8791518024078404
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994875,
+    "scattering_length": 16367.03543,
+    "scattering_phase/pi": 0.09521820495417235
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9958,
+    "scattering_length": 6604.306507,
+    "scattering_phase/pi": 0.20771900990435588
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994525,
+    "scattering_length": 30246.70294,
+    "scattering_phase/pi": 0.05263321483586803
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003875,
+    "scattering_length": 7541.349976,
+    "scattering_phase/pi": 0.18774711419723492
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9968,
+    "scattering_length": 3000.582708,
+    "scattering_phase/pi": 0.3292751958263348
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00405,
+    "scattering_length": 6552.116835,
+    "scattering_phase/pi": 0.2089386688624877
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997775,
+    "scattering_length": 836.2383409,
+    "scattering_phase/pi": 0.4477385086718466
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0036,
+    "scattering_length": 9573.538491,
+    "scattering_phase/pi": 0.15444151911671758
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0037,
+    "scattering_length": 8749.621209,
+    "scattering_phase/pi": 0.16655329215238351
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993075,
+    "scattering_length": -12306.4725,
+    "scattering_phase/pi": 0.8761069133077227
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99625,
+    "scattering_length": 4667.956346,
+    "scattering_phase/pi": 0.2624269324498158
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997625,
+    "scattering_length": 1136.289142,
+    "scattering_phase/pi": 0.4295165265306728
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00225,
+    "scattering_length": -175690.3304,
+    "scattering_phase/pi": 0.9908577278263644
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995675,
+    "scattering_length": 7302.063412,
+    "scattering_phase/pi": 0.19251991779026661
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992175,
+    "scattering_length": -5598.509716,
+    "scattering_phase/pi": 0.7664620278515853
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995725,
+    "scattering_length": 7011.869319,
+    "scattering_phase/pi": 0.1985996947870809
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9928,
+    "scattering_length": -9362.307799,
+    "scattering_phase/pi": 0.8426102329539326
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997425,
+    "scattering_length": 1549.001916,
+    "scattering_phase/pi": 0.4052186191543881
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998175,
+    "scattering_length": 58.2728559,
+    "scattering_phase/pi": 0.4963252667757073
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9979,
+    "scattering_length": 590.6101687,
+    "scattering_phase/pi": 0.4629225972458653
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00445,
+    "scattering_length": 4818.983127,
+    "scattering_phase/pi": 0.2573692003603198
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998475,
+    "scattering_length": -521.3512218,
+    "scattering_phase/pi": 0.5327621067270051
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0045,
+    "scattering_length": 4638.757735,
+    "scattering_phase/pi": 0.2634222990366441
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994575,
+    "scattering_length": 27051.37018,
+    "scattering_phase/pi": 0.05871738020796337
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000475,
+    "scattering_length": -5931.117264,
+    "scattering_phase/pi": 0.7755659714823845
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001375,
+    "scattering_length": -13326.73832,
+    "scattering_phase/pi": 0.8847558032574347
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99735,
+    "scattering_length": 1708.549075,
+    "scattering_phase/pi": 0.39610634234317416
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99985,
+    "scattering_length": -3660.175653,
+    "scattering_phase/pi": 0.6997106535303204
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99935,
+    "scattering_length": -2356.035621,
+    "scattering_phase/pi": 0.639011884336229
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00425,
+    "scattering_length": 5612.067125,
+    "scattering_phase/pi": 0.2331551323235091
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993,
+    "scattering_length": -11366.06767,
+    "scattering_phase/pi": 0.8669719813478456
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995425,
+    "scattering_length": 9038.263889,
+    "scattering_phase/pi": 0.1621182638175934
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002725,
+    "scattering_length": 32917.49358,
+    "scattering_phase/pi": 0.048431193091093554
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996425,
+    "scattering_length": 4077.747437,
+    "scattering_phase/pi": 0.28369894636733917
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998975,
+    "scattering_length": -1526.449572,
+    "scattering_phase/pi": 0.5934799422902696
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993175,
+    "scattering_length": -13786.46617,
+    "scattering_phase/pi": 0.888286267183983
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9947,
+    "scattering_length": 21340.7907,
+    "scattering_phase/pi": 0.0739269247021402
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997725,
+    "scattering_length": 935.5212403,
+    "scattering_phase/pi": 0.44166464264206495
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99595,
+    "scattering_length": 5873.963479,
+    "scattering_phase/pi": 0.22595643908072172
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0042,
+    "scattering_length": 5831.404903,
+    "scattering_phase/pi": 0.227101195839954
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001975,
+    "scattering_length": -37594.4398,
+    "scattering_phase/pi": 0.9575176547891832
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999025,
+    "scattering_length": -1632.146111,
+    "scattering_phase/pi": 0.5995510403032218
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997025,
+    "scattering_length": 2441.005808,
+    "scattering_phase/pi": 0.35661672309083264
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9983,
+    "scattering_length": -182.5597217,
+    "scattering_phase/pi": 0.5115078581809837
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998875,
+    "scattering_length": -1318.592178,
+    "scattering_phase/pi": 0.5813373781060838
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9935,
+    "scattering_length": -21889.99352,
+    "scattering_phase/pi": 0.9278642250847556
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00115,
+    "scattering_length": -10508.15889,
+    "scattering_phase/pi": 0.8574631825264263
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997575,
+    "scattering_length": 1237.939614,
+    "scattering_phase/pi": 0.4234422420817813
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0024,
+    "scattering_length": 177664.47,
+    "scattering_phase/pi": 0.009040741673832689
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99385,
+    "scattering_length": -54265.15657,
+    "scattering_phase/pi": 0.9704775362091036
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9967,
+    "scattering_length": 3267.582496,
+    "scattering_phase/pi": 0.31712239312256996
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001825,
+    "scattering_length": -26160.21651,
+    "scattering_phase/pi": 0.9393297292146934
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998575,
+    "scattering_length": -716.8476874,
+    "scattering_phase/pi": 0.5449066816584885
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996625,
+    "scattering_length": 3476.625976,
+    "scattering_phase/pi": 0.30800738450943205
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998425,
+    "scattering_length": -424.2121984,
+    "scattering_phase/pi": 0.5266896280362117
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00195,
+    "scattering_length": -35059.59403,
+    "scattering_phase/pi": 0.9544864524554549
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997075,
+    "scattering_length": 2323.207925,
+    "scattering_phase/pi": 0.3626922107708856
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996575,
+    "scattering_length": 3620.614461,
+    "scattering_phase/pi": 0.3019305160059301
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99555,
+    "scattering_length": 8103.523499,
+    "scattering_phase/pi": 0.1773196704702521
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99645,
+    "scattering_length": 3998.720942,
+    "scattering_phase/pi": 0.28673764161988113
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99205,
+    "scattering_length": -5086.591269,
+    "scattering_phase/pi": 0.7512296783040036
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9996,
+    "scattering_length": -2971.430947,
+    "scattering_phase/pi": 0.6693629913838202
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99605,
+    "scattering_length": 5439.211952,
+    "scattering_phase/pi": 0.23811381138723073
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995575,
+    "scattering_length": 7933.658634,
+    "scattering_phase/pi": 0.1803598122717198
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9922,
+    "scattering_length": -5707.407934,
+    "scattering_phase/pi": 0.7695084691161309
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9936,
+    "scattering_length": -26477.8846,
+    "scattering_phase/pi": 0.9400404235670832
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993775,
+    "scattering_length": -41361.39724,
+    "scattering_phase/pi": 0.9613469117315281
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004275,
+    "scattering_length": 5505.852656,
+    "scattering_phase/pi": 0.23618203653994932
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99395,
+    "scattering_length": -92516.06461,
+    "scattering_phase/pi": 0.9826510195962858
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00165,
+    "scattering_length": -19184.44648,
+    "scattering_phase/pi": 0.9181083365316084
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000675,
+    "scattering_length": -6939.636495,
+    "scattering_phase/pi": 0.799834922610637
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997225,
+    "scattering_length": 1981.594812,
+    "scattering_phase/pi": 0.3809185080856353
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99375,
+    "scattering_length": -38311.16869,
+    "scattering_phase/pi": 0.9583032730062313
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003225,
+    "scattering_length": 14157.01695,
+    "scattering_phase/pi": 0.10901567594972225
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0032,
+    "scattering_length": 14594.55726,
+    "scattering_phase/pi": 0.10598690716138794
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99685,
+    "scattering_length": 2871.630501,
+    "scattering_phase/pi": 0.3353513569090412
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9962,
+    "scattering_length": 4850.006361,
+    "scattering_phase/pi": 0.25634884037840977
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998075,
+    "scattering_length": 251.0807655,
+    "scattering_phase/pi": 0.4841789822823982
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994075,
+    "scattering_length": -753143.0577,
+    "scattering_phase/pi": 0.9978667710529912
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0041,
+    "scattering_length": 6300.521477,
+    "scattering_phase/pi": 0.21499299254347617
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9971,
+    "scattering_length": 2265.088053,
+    "scattering_phase/pi": 0.36572990485550594
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00015,
+    "scattering_length": -4625.486354,
+    "scattering_phase/pi": 0.7361233857347032
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000075,
+    "scattering_length": -4366.637421,
+    "scattering_phase/pi": 0.7270205710330437
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99365,
+    "scattering_length": -29538.31773,
+    "scattering_phase/pi": 0.9461282334043793
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999725,
+    "scattering_length": -3305.055524,
+    "scattering_phase/pi": 0.684537248768789
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9988,
+    "scattering_length": -1165.425451,
+    "scattering_phase/pi": 0.5722301069238768
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9999,
+    "scattering_length": -3809.09727,
+    "scattering_phase/pi": 0.7057797632681715
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997325,
+    "scattering_length": 1762.409214,
+    "scattering_phase/pi": 0.39306884193728975
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0017,
+    "scattering_length": -20785.71616,
+    "scattering_phase/pi": 0.9241718266176919
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99885,
+    "scattering_length": -1267.295546,
+    "scattering_phase/pi": 0.5783016431293806
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00235,
+    "scattering_length": 539140.6833,
+    "scattering_phase/pi": 0.0029799340654921985
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994825,
+    "scattering_length": 17551.2459,
+    "scattering_phase/pi": 0.08913522930998248
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003725,
+    "scattering_length": 8560.448523,
+    "scattering_phase/pi": 0.16958111909980667
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001325,
+    "scattering_length": -12596.79891,
+    "scattering_phase/pi": 0.8786911010562541
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00085,
+    "scattering_length": -8012.800648,
+    "scattering_phase/pi": 0.8210681079082576
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9956,
+    "scattering_length": 7768.821058,
+    "scattering_phase/pi": 0.18339990800249378
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00045,
+    "scattering_length": -5817.849251,
+    "scattering_phase/pi": 0.772532169098631
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99655,
+    "scattering_length": 3694.092689,
+    "scattering_phase/pi": 0.29889202094916556
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99425,
+    "scattering_length": 83723.55222,
+    "scattering_phase/pi": 0.019166749943614902
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99275,
+    "scattering_length": -8948.081366,
+    "scattering_phase/pi": 0.8365193620934104
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003,
+    "scattering_length": 19217.95577,
+    "scattering_phase/pi": 0.08175507585110625
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99525,
+    "scattering_length": 10653.78618,
+    "scattering_phase/pi": 0.1408343306787906
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00375,
+    "scattering_length": 8377.285636,
+    "scattering_phase/pi": 0.17260889889402709
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99455,
+    "scattering_length": 28562.61692,
+    "scattering_phase/pi": 0.055675322363053385
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994275,
+    "scattering_length": 72223.57365,
+    "scattering_phase/pi": 0.02220940478444516
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9938,
+    "scattering_length": -44930.22062,
+    "scattering_phase/pi": 0.9643905018843445
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996775,
+    "scattering_length": 3066.158151,
+    "scattering_phase/pi": 0.3262370483444239
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99725,
+    "scattering_length": 1926.208755,
+    "scattering_phase/pi": 0.3839561421928796
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000225,
+    "scattering_length": -4898.269268,
+    "scattering_phase/pi": 0.74522612997123
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994,
+    "scattering_length": -142594.9381,
+    "scattering_phase/pi": 0.9887374675986313
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004075,
+    "scattering_length": 6424.795294,
+    "scattering_phase/pi": 0.21196585487839917
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003025,
+    "scattering_length": 18499.60134,
+    "scattering_phase/pi": 0.08478422585622943
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992775,
+    "scattering_length": -9151.603131,
+    "scattering_phase/pi": 0.8395648189505988
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993025,
+    "scattering_length": -11665.65929,
+    "scattering_phase/pi": 0.870017001815936
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0031,
+    "scattering_length": 16616.37406,
+    "scattering_phase/pi": 0.09387137498077536
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0015,
+    "scattering_length": -15520.61444,
+    "scattering_phase/pi": 0.8999167440110599
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993925,
+    "scattering_length": -78679.39082,
+    "scattering_phase/pi": 0.9796077220724925
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994775,
+    "scattering_length": 18904.11263,
+    "scattering_phase/pi": 0.08305205584462862
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995625,
+    "scattering_length": 7608.762098,
+    "scattering_phase/pi": 0.18643995716154496
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001625,
+    "scattering_length": -18467.78173,
+    "scattering_phase/pi": 0.9150765212076434
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002825,
+    "scattering_length": 26213.60881,
+    "scattering_phase/pi": 0.06054965899196873
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9982,
+    "scattering_length": 10.11902173,
+    "scattering_phase/pi": 0.49936185884518647
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999175,
+    "scattering_length": -1957.522927,
+    "scattering_phase/pi": 0.6177640337488453
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99515,
+    "scattering_length": 11798.85824,
+    "scattering_phase/pi": 0.12867104735532983
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0008,
+    "scattering_length": -7684.084792,
+    "scattering_phase/pi": 0.815001692119615
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00145,
+    "scattering_length": -14570.75601,
+    "scattering_phase/pi": 0.8938525073371942
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99565,
+    "scattering_length": 7453.248913,
+    "scattering_phase/pi": 0.18947996072612017
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003075,
+    "scattering_length": 17203.34617,
+    "scattering_phase/pi": 0.09084237418576449
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000825,
+    "scattering_length": -7846.009037,
+    "scattering_phase/pi": 0.8180349175277483
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99945,
+    "scattering_length": -2594.867329,
+    "scattering_phase/pi": 0.6511527440312432
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00035,
+    "scattering_length": -5388.416434,
+    "scattering_phase/pi": 0.7603965573725211
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99995,
+    "scattering_length": -3962.364122,
+    "scattering_phase/pi": 0.7118487371510913
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00255,
+    "scattering_length": 58876.3802,
+    "scattering_phase/pi": 0.02722198334803779
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000275,
+    "scattering_length": -5088.660976,
+    "scattering_phase/pi": 0.751294422398345
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99665,
+    "scattering_length": 3406.050404,
+    "scattering_phase/pi": 0.3110457611110078
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9945,
+    "scattering_length": 32135.44371,
+    "scattering_phase/pi": 0.049591057608165345
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00315,
+    "scattering_length": 15546.1887,
+    "scattering_phase/pi": 0.09992922830556833
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996825,
+    "scattering_length": 2935.748594,
+    "scattering_phase/pi": 0.33231327975018277
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001525,
+    "scattering_length": -16038.48106,
+    "scattering_phase/pi": 0.9029487928284732
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00275,
+    "scattering_length": 30948.33288,
+    "scattering_phase/pi": 0.051460883320296406
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994225,
+    "scattering_length": 99557.90727,
+    "scattering_phase/pi": 0.016124045196406263
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997825,
+    "scattering_length": 737.5832438,
+    "scattering_phase/pi": 0.45381225324736746
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9926,
+    "scattering_length": -7857.440316,
+    "scattering_phase/pi": 0.8182457159488628
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9923,
+    "scattering_length": -6167.841566,
+    "scattering_phase/pi": 0.7816938033494109
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994375,
+    "scattering_length": 46550.91403,
+    "scattering_phase/pi": 0.034379525924367285
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001075,
+    "scattering_length": -9781.623118,
+    "scattering_phase/pi": 0.8483649505306147
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001475,
+    "scattering_length": -15032.21511,
+    "scattering_phase/pi": 0.8968846491211381
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995225,
+    "scattering_length": 10922.24081,
+    "scattering_phase/pi": 0.1377935803761543
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99315,
+    "scattering_length": -13388.37463,
+    "scattering_phase/pi": 0.885241472323955
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0005,
+    "scattering_length": -6046.949595,
+    "scattering_phase/pi": 0.778599732199876
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995875,
+    "scattering_length": 6226.218931,
+    "scattering_phase/pi": 0.2168379306506676
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9977,
+    "scattering_length": 985.4227912,
+    "scattering_phase/pi": 0.4386276607995611
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003275,
+    "scattering_length": 13348.39936,
+    "scattering_phase/pi": 0.11507306932367946
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99235,
+    "scattering_length": -6414.504359,
+    "scattering_phase/pi": 0.7877862174824185
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997375,
+    "scattering_length": 1655.036458,
+    "scattering_phase/pi": 0.3991438040608759
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9994,
+    "scattering_length": -2474.336305,
+    "scattering_phase/pi": 0.6450823834286742
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004225,
+    "scattering_length": 5720.553155,
+    "scattering_phase/pi": 0.23012818752654168
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99505,
+    "scattering_length": 13168.76869,
+    "scattering_phase/pi": 0.1165070537640446
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995925,
+    "scattering_length": 5988.712664,
+    "scattering_phase/pi": 0.22291697266452917
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00185,
+    "scattering_length": -27569.12031,
+    "scattering_phase/pi": 0.9423611682786874
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997125,
+    "scattering_length": 2207.464009,
+    "scattering_phase/pi": 0.3687675921998492
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000725,
+    "scattering_length": -7225.206318,
+    "scattering_phase/pi": 0.8059017532612939
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00335,
+    "scattering_length": 12277.2707,
+    "scattering_phase/pi": 0.12415880562874726
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00075,
+    "scattering_length": -7373.899415,
+    "scattering_phase/pi": 0.8089351073130269
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9976,
+    "scattering_length": 1187.000179,
+    "scattering_phase/pi": 0.4264793933387054
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99255,
+    "scattering_length": -7536.292038,
+    "scattering_phase/pi": 0.8121541579306419
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0002,
+    "scattering_length": -4805.697761,
+    "scattering_phase/pi": 0.7421919218670973
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001275,
+    "scattering_length": -11933.11373,
+    "scattering_phase/pi": 0.8726262134933033
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000775,
+    "scattering_length": -7526.78917,
+    "scattering_phase/pi": 0.8119684201231924
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9966,
+    "scattering_length": 3548.13663,
+    "scattering_phase/pi": 0.3049689707485744
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995975,
+    "scattering_length": 5761.738737,
+    "scattering_phase/pi": 0.2289958473942854
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002375,
+    "scattering_length": 267281.6626,
+    "scattering_phase/pi": 0.006010362488879715
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00365,
+    "scattering_length": 9147.367941,
+    "scattering_phase/pi": 0.16049749890053305
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995,
+    "scattering_length": 13961.32419,
+    "scattering_phase/pi": 0.1104247717441865
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9937,
+    "scattering_length": -33370.13542,
+    "scattering_phase/pi": 0.952215850043499
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003825,
+    "scattering_length": 7860.82442,
+    "scattering_phase/pi": 0.18169196276512176
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995775,
+    "scattering_length": 6736.686967,
+    "scattering_phase/pi": 0.20467928820439066
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9921,
+    "scattering_length": -5285.184217,
+    "scattering_phase/pi": 0.757322670043118
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00155,
+    "scattering_length": -16588.66759,
+    "scattering_phase/pi": 0.905980794956979
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0004,
+    "scattering_length": -5598.595209,
+    "scattering_phase/pi": 0.7664644452446467
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99265,
+    "scattering_length": -8198.303565,
+    "scattering_phase/pi": 0.8243371032349158
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992925,
+    "scattering_length": -10539.82599,
+    "scattering_phase/pi": 0.8578366511519591
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004175,
+    "scattering_length": 5944.721058,
+    "scattering_phase/pi": 0.22407416431119392
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0044,
+    "scattering_length": 5005.879857,
+    "scattering_phase/pi": 0.2513159334652796
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998,
+    "scattering_length": 396.1368275,
+    "scattering_phase/pi": 0.4750692861663134
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996275,
+    "scattering_length": 4579.331538,
+    "scattering_phase/pi": 0.26546591436791617
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994475,
+    "scattering_length": 34268.9728,
+    "scattering_phase/pi": 0.046548850754589845
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0019,
+    "scattering_length": -30877.97939,
+    "scattering_phase/pi": 0.948423905560664
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997175,
+    "scattering_length": 2093.633971,
+    "scattering_phase/pi": 0.374843116428642
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997,
+    "scattering_length": 2500.719664,
+    "scattering_phase/pi": 0.3535789290445913
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0027,
+    "scattering_length": 35147.34408,
+    "scattering_phase/pi": 0.04540145364577977
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003475,
+    "scattering_length": 10787.80913,
+    "scattering_phase/pi": 0.139300750824061
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998725,
+    "scattering_length": -1014.265647,
+    "scattering_phase/pi": 0.5631225909040231
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0018,
+    "scattering_length": -24883.84054,
+    "scattering_phase/pi": 0.9362982435382518
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004375,
+    "scattering_length": 5101.990648,
+    "scattering_phase/pi": 0.24828923734696567
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0023,
+    "scattering_length": -521442.2849,
+    "scattering_phase/pi": 0.996918929487137
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993875,
+    "scattering_length": -60536.33978,
+    "scattering_phase/pi": 0.973520980379609
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99585,
+    "scattering_length": 6349.210656,
+    "scattering_phase/pi": 0.2137983357869341
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993825,
+    "scattering_length": -49163.02795,
+    "scattering_phase/pi": 0.9674340433188874
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002525,
+    "scattering_length": 66284.83273,
+    "scattering_phase/pi": 0.024191899419212858
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998925,
+    "scattering_length": -1421.9634,
+    "scattering_phase/pi": 0.587408720990005
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9951,
+    "scattering_length": 12451.51404,
+    "scattering_phase/pi": 0.12258913825666734
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992575,
+    "scattering_length": -7694.524981,
+    "scattering_phase/pi": 0.8151999584003099
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9961,
+    "scattering_length": 5235.073654,
+    "scattering_phase/pi": 0.24419223377622337
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9953,
+    "scattering_length": 10148.06359,
+    "scattering_phase/pi": 0.14691568919605394
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9949,
+    "scattering_length": 15828.38031,
+    "scattering_phase/pi": 0.09825961651193209
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99475,
+    "scattering_length": 19655.82301,
+    "scattering_phase/pi": 0.08001039508855003
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998675,
+    "scattering_length": -914.467002,
+    "scattering_phase/pi": 0.5570507454607785
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99765,
+    "scattering_length": 1085.79659,
+    "scattering_phase/pi": 0.4325535938871232
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99405,
+    "scattering_length": -310359.7046,
+    "scattering_phase/pi": 0.9948237191381208
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994325,
+    "scattering_length": 56633.37757,
+    "scattering_phase/pi": 0.028294564971505048
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0007,
+    "scattering_length": -7080.513513,
+    "scattering_phase/pi": 0.8028683581475666
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99915,
+    "scattering_length": -1902.350837,
+    "scattering_phase/pi": 0.6147284901417072
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9948,
+    "scattering_length": 18204.36102,
+    "scattering_phase/pi": 0.08609366754232853
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998275,
+    "scattering_length": -134.3628742,
+    "scattering_phase/pi": 0.5084714068593214
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998825,
+    "scattering_length": -1216.243997,
+    "scattering_phase/pi": 0.5752659081384611
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00125,
+    "scattering_length": -11623.22263,
+    "scattering_phase/pi": 0.8695937003029098
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003525,
+    "scattering_length": 10273.91263,
+    "scattering_phase/pi": 0.1453571989988443
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003325,
+    "scattering_length": 12617.3018,
+    "scattering_phase/pi": 0.12113027407168836
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994025,
+    "scattering_length": -195427.5285,
+    "scattering_phase/pi": 0.9917806179544811
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00265,
+    "scattering_length": 40630.07118,
+    "scattering_phase/pi": 0.03934182703357962
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002325,
+    "scattering_length": -31787422.03,
+    "scattering_phase/pi": 0.9999494564041623
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.003975,
+    "scattering_length": 6953.782193,
+    "scattering_phase/pi": 0.19985684271289864
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999925,
+    "scattering_length": -3885.168758,
+    "scattering_phase/pi": 0.7088142664413714
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002975,
+    "scattering_length": 19990.338,
+    "scattering_phase/pi": 0.07872587866516598
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0022,
+    "scattering_length": -105594.8026,
+    "scattering_phase/pi": 0.9847963289001053
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002125,
+    "scattering_length": -65999.35347,
+    "scattering_phase/pi": 0.9757038639554139
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99675,
+    "scattering_length": 3132.499178,
+    "scattering_phase/pi": 0.32319886869325737
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9995,
+    "scattering_length": -2717.782593,
+    "scattering_phase/pi": 0.6572229652171289
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000025,
+    "scattering_length": -4201.095779,
+    "scattering_phase/pi": 0.720951942981531
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001425,
+    "scattering_length": -14133.99085,
+    "scattering_phase/pi": 0.8908203190995748
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0035,
+    "scattering_length": 10525.76116,
+    "scattering_phase/pi": 0.14232899808477037
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996875,
+    "scattering_length": 2808.206056,
+    "scattering_phase/pi": 0.33838938323516954
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9964,
+    "scattering_length": 4158.003469,
+    "scattering_phase/pi": 0.28066021101710575
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99325,
+    "scattering_length": -15116.47787,
+    "scattering_phase/pi": 0.8974203629876087
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000525,
+    "scattering_length": -6165.456144,
+    "scattering_phase/pi": 0.7816334524093455
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9957,
+    "scattering_length": 7155.000949,
+    "scattering_phase/pi": 0.1955598287443042
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993725,
+    "scattering_length": -35673.70449,
+    "scattering_phase/pi": 0.9552595857616003
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996125,
+    "scattering_length": 5136.017947,
+    "scattering_phase/pi": 0.24723139752720072
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996325,
+    "scattering_length": 4406.597488,
+    "scattering_phase/pi": 0.2715437553718504
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00065,
+    "scattering_length": -6802.401618,
+    "scattering_phase/pi": 0.796801445170453
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9981,
+    "scattering_length": 202.8333528,
+    "scattering_phase/pi": 0.4872154759470037
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0034,
+    "scattering_length": 11642.29582,
+    "scattering_phase/pi": 0.13021572510769655
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000975,
+    "scattering_length": -8929.32839,
+    "scattering_phase/pi": 0.8362334413976141
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998325,
+    "scattering_length": -230.7892947,
+    "scattering_phase/pi": 0.5145442751941403
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0033,
+    "scattering_length": 12973.90738,
+    "scattering_phase/pi": 0.11810169607149834
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00055,
+    "scattering_length": -6286.752938,
+    "scattering_phase/pi": 0.7846671331881742
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997475,
+    "scattering_length": 1444.204667,
+    "scattering_phase/pi": 0.4112932989650528
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001575,
+    "scattering_length": -17174.40683,
+    "scattering_phase/pi": 0.9090127504973262
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99485,
+    "scattering_length": 16940.14767,
+    "scattering_phase/pi": 0.09217673948242261
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9954,
+    "scattering_length": 9244.601656,
+    "scattering_phase/pi": 0.15907784289968516
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00205,
+    "scattering_length": -47942.51075,
+    "scattering_phase/pi": 0.9666109749529604
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00215,
+    "scattering_length": -75440.37122,
+    "scattering_phase/pi": 0.9787347325157845
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.997675,
+    "scattering_length": 1035.511171,
+    "scattering_phase/pi": 0.4355906442880667
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004325,
+    "scattering_length": 5299.885926,
+    "scattering_phase/pi": 0.24223572255003337
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992,
+    "scattering_length": -4895.511399,
+    "scattering_phase/pi": 0.7451365369236983
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.994675,
+    "scattering_length": 22289.63731,
+    "scattering_phase/pi": 0.07088511502640554
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9924,
+    "scattering_length": -6673.459834,
+    "scattering_phase/pi": 0.7938784583227276
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99415,
+    "scattering_length": 229627.8726,
+    "scattering_phase/pi": 0.006995631341267302
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002675,
+    "scattering_length": 37693.81569,
+    "scattering_phase/pi": 0.042371664939499544
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0011,
+    "scattering_length": -10014.63278,
+    "scattering_phase/pi": 0.8513977261651675
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0001,
+    "scattering_length": -4451.464195,
+    "scattering_phase/pi": 0.7300548375051283
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999225,
+    "scattering_length": -2069.109018,
+    "scattering_phase/pi": 0.6238350244220447
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00105,
+    "scattering_length": -9557.059684,
+    "scattering_phase/pi": 0.8453321379676065
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9992,
+    "scattering_length": -2013.104145,
+    "scattering_phase/pi": 0.6207995499412322
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004,
+    "scattering_length": 6816.460302,
+    "scattering_phase/pi": 0.20288416418665534
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9941,
+    "scattering_length": 1765984.591,
+    "scattering_phase/pi": 0.0009097736518248314
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99575,
+    "scattering_length": 6872.487995,
+    "scattering_phase/pi": 0.2016395140787287
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999125,
+    "scattering_length": -1847.573223,
+    "scattering_phase/pi": 0.611692906620339
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992275,
+    "scattering_length": -6048.795812,
+    "scattering_phase/pi": 0.7786475333540378
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00175,
+    "scattering_length": -22659.56728,
+    "scattering_phase/pi": 0.930235129124239
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000175,
+    "scattering_length": -4714.79028,
+    "scattering_phase/pi": 0.7391576728580639
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999575,
+    "scattering_length": -2906.986755,
+    "scattering_phase/pi": 0.6663280378119895
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000325,
+    "scattering_length": -5286.510166,
+    "scattering_phase/pi": 0.7573625514068726
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995525,
+    "scattering_length": 8278.681673,
+    "scattering_phase/pi": 0.17427948221518524
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992075,
+    "scattering_length": -5184.91208,
+    "scattering_phase/pi": 0.7542761926361378
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004475,
+    "scattering_length": 4728.067213,
+    "scattering_phase/pi": 0.2603957698410775
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993125,
+    "scattering_length": -13009.98143,
+    "scattering_phase/pi": 0.8821966479041051
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995375,
+    "scattering_length": 9458.291127,
+    "scattering_phase/pi": 0.1560373745744631
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.004425,
+    "scattering_length": 4911.566217,
+    "scattering_phase/pi": 0.2543425869715793
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998125,
+    "scattering_length": 154.6224465,
+    "scattering_phase/pi": 0.4902519993117767
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99285,
+    "scattering_length": -9807.010951,
+    "scattering_phase/pi": 0.8487009277222639
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.996675,
+    "scattering_length": 3336.379168,
+    "scattering_phase/pi": 0.314084096652976
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.993975,
+    "scattering_length": -112232.5488,
+    "scattering_phase/pi": 0.9856942681625217
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.992225,
+    "scattering_length": -5818.687282,
+    "scattering_phase/pi": 0.7725548633118392
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99215,
+    "scattering_length": -5491.897759,
+    "scattering_phase/pi": 0.7634155415911558
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99815,
+    "scattering_length": 106.43762,
+    "scattering_phase/pi": 0.4932886544434824
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00005,
+    "scattering_length": -4283.197475,
+    "scattering_phase/pi": 0.723986273410424
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99795,
+    "scattering_length": 493.1911266,
+    "scattering_phase/pi": 0.4689960084403946
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.998775,
+    "scattering_length": -1114.830285,
+    "scattering_phase/pi": 0.5691943087350382
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.995325,
+    "scattering_length": 9909.5254,
+    "scattering_phase/pi": 0.14995629869565927
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.001875,
+    "scattering_length": -29132.62249,
+    "scattering_phase/pi": 0.9453925613607082
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.000925,
+    "scattering_length": -8545.013027,
+    "scattering_phase/pi": 0.8301674310675721
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.00395,
+    "scattering_length": 7094.752393,
+    "scattering_phase/pi": 0.19682948165692069
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99845,
+    "scattering_length": -472.738571,
+    "scattering_phase/pi": 0.5297258832079675
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99435,
+    "scattering_length": 51104.22452,
+    "scattering_phase/pi": 0.03133707033903973
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9925,
+    "scattering_length": -7232.980471,
+    "scattering_phase/pi": 0.8060624288199495
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9927,
+    "scattering_length": -8561.028653,
+    "scattering_phase/pi": 0.8304283183113721
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.99975,
+    "scattering_length": -3374.244381,
+    "scattering_phase/pi": 0.687571996106061
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.002075,
+    "scattering_length": -52762.88304,
+    "scattering_phase/pi": 0.9696419858703387
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0038,
+    "scattering_length": 8027.756168,
+    "scattering_phase/pi": 0.17866432088595843
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.999325,
+    "scattering_length": -2297.675944,
+    "scattering_phase/pi": 0.6359765803026259
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 1.0039,
+    "scattering_length": 7388.345716,
+    "scattering_phase/pi": 0.1907746118893239
+  },
+  {
+    "potential_name": "triplet",
+    "coefficient": 0.9973,
+    "scattering_length": 1816.630062,
+    "scattering_phase/pi": 0.3900313093215582
+  }
+]

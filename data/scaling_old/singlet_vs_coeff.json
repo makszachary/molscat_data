@@ -1,0 +1,3008 @@
+[
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01165,
+    "scattering_length": -2327.810641,
+    "scattering_phase/pi": 0.63754722705666
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0091,
+    "scattering_length": -128.6517093,
+    "scattering_phase/pi": 0.5081114845625776
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0195,
+    "scattering_length": 45681.99777,
+    "scattering_phase/pi": 0.035028240105005985
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01105,
+    "scattering_length": -1765.492286,
+    "scattering_phase/pi": 0.6071044260908103
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0214,
+    "scattering_length": 11565.5794,
+    "scattering_phase/pi": 0.13098546773950046
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0013,
+    "scattering_length": 13847.7561,
+    "scattering_phase/pi": 0.11125866458016286
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0137,
+    "scattering_length": -4784.736277,
+    "scattering_phase/pi": 0.7414971154768073
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00885,
+    "scattering_length": 72.71693899,
+    "scattering_phase/pi": 0.49541452476145537
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00175,
+    "scattering_length": 11254.47346,
+    "scattering_phase/pi": 0.13419683898419893
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01625,
+    "scattering_length": -11730.55749,
+    "scattering_phase/pi": 0.870659360867337
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01085,
+    "scattering_length": -1586.803643,
+    "scattering_phase/pi": 0.5969555002994829
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01755,
+    "scattering_length": -24941.49007,
+    "scattering_phase/pi": 0.9364415963455595
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0119,
+    "scattering_length": -2576.380614,
+    "scattering_phase/pi": 0.6502292449669216
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.016,
+    "scattering_length": -10554.0401,
+    "scattering_phase/pi": 0.8580036935713172
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0074,
+    "scattering_length": 1266.53892,
+    "scattering_phase/pi": 0.4217432444323009
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9986,
+    "scattering_length": -60508.98423,
+    "scattering_phase/pi": 0.9735090646470036
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0054,
+    "scattering_length": 3202.132566,
+    "scattering_phase/pi": 0.3200481721724435
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02075,
+    "scattering_length": 15843.91501,
+    "scattering_phase/pi": 0.09816927111833258
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99875,
+    "scattering_length": -85212.12481,
+    "scattering_phase/pi": 0.9811672867284367
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01865,
+    "scattering_length": -202499.0984,
+    "scattering_phase/pi": 0.992067530036477
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01845,
+    "scattering_length": -88946.35248,
+    "scattering_phase/pi": 0.9819562094189476
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0152,
+    "scattering_length": -7816.83284,
+    "scattering_phase/pi": 0.8174949198216614
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0147,
+    "scattering_length": -6599.460861,
+    "scattering_phase/pi": 0.7921682607695977
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0158,
+    "scattering_length": -9745.001197,
+    "scattering_phase/pi": 0.8478778704861827
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0048,
+    "scattering_length": 3927.381866,
+    "scattering_phase/pi": 0.2895208078651154
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99845,
+    "scattering_length": -46866.49779,
+    "scattering_phase/pi": 0.9658501963934173
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0229,
+    "scattering_length": 6649.530194,
+    "scattering_phase/pi": 0.20667194123582922
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00395,
+    "scattering_length": 5167.510395,
+    "scattering_phase/pi": 0.24625869415142115
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00945,
+    "scattering_length": -411.3863073,
+    "scattering_phase/pi": 0.5258862856897868
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01875,
+    "scattering_length": -558387.2954,
+    "scattering_phase/pi": 0.9971227732413572
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99925,
+    "scattering_length": 240119.7728,
+    "scattering_phase/pi": 0.006690053176093442
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01455,
+    "scattering_length": -6282.786596,
+    "scattering_phase/pi": 0.7845690566039206
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9992,
+    "scattering_length": 388236.4916,
+    "scattering_phase/pi": 0.004138096619158314
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00835,
+    "scattering_length": 476.8650096,
+    "scattering_phase/pi": 0.47001617120039774
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01535,
+    "scattering_length": -8241.995732,
+    "scattering_phase/pi": 0.8250915378427864
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0075,
+    "scattering_length": 1181.209763,
+    "scattering_phase/pi": 0.4268255093839211
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0106,
+    "scattering_length": -1368.351704,
+    "scattering_phase/pi": 0.5842677696940436
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0109,
+    "scattering_length": -1631.126719,
+    "scattering_phase/pi": 0.5994928359514391
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0144,
+    "scattering_length": -5984.382888,
+    "scattering_phase/pi": 0.776969574027751
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0084,
+    "scattering_length": 436.2559376,
+    "scattering_phase/pi": 0.4725563291913584
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0008,
+    "scattering_length": 18277.59182,
+    "scattering_phase/pi": 0.08576521008578555
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00565,
+    "scattering_length": 2926.173837,
+    "scattering_phase/pi": 0.3327648369158497
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00465,
+    "scattering_length": 4125.443118,
+    "scattering_phase/pi": 0.2818873400581015
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01695,
+    "scattering_length": -16608.39821,
+    "scattering_phase/pi": 0.9060861155210316
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0041,
+    "scattering_length": 4925.415386,
+    "scattering_phase/pi": 0.2538945986482907
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0004,
+    "scattering_length": 24233.09655,
+    "scattering_phase/pi": 0.06536528346381332
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02205,
+    "scattering_length": 8927.769595,
+    "scattering_phase/pi": 0.16379036603959451
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01765,
+    "scattering_length": -27154.13917,
+    "scattering_phase/pi": 0.9414998653099126
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9985,
+    "scattering_length": -50681.44296,
+    "scattering_phase/pi": 0.9684032244962002
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99865,
+    "scattering_length": -66990.24041,
+    "scattering_phase/pi": 0.9760618769778541
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0018,
+    "scattering_length": 11017.38904,
+    "scattering_phase/pi": 0.13674517419520768
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0179,
+    "scattering_length": -34794.4094,
+    "scattering_phase/pi": 0.9541443339061129
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02265,
+    "scattering_length": 7226.980359,
+    "scattering_phase/pi": 0.19406156054224502
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01195,
+    "scattering_length": -2627.283168,
+    "scattering_phase/pi": 0.6527654364468124
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0173,
+    "scattering_length": -20678.84638,
+    "scattering_phase/pi": 0.9237947086114693
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01065,
+    "scattering_length": -1411.64376,
+    "scattering_phase/pi": 0.5868054590342399
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00405,
+    "scattering_length": 5004.828274,
+    "scattering_phase/pi": 0.25134936941477115
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00345,
+    "scattering_length": 6070.131756,
+    "scattering_phase/pi": 0.22080129510277718
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0182,
+    "scattering_length": -52198.02456,
+    "scattering_phase/pi": 0.9693154886887215
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0203,
+    "scattering_length": 20895.81473,
+    "scattering_phase/pi": 0.07544347228700067
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01815,
+    "scattering_length": -48198.66505,
+    "scattering_phase/pi": 0.9667871341349128
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0127,
+    "scattering_length": -3448.860972,
+    "scattering_phase/pi": 0.6908020111830357
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0207,
+    "scattering_length": 16289.54244,
+    "scattering_phase/pi": 0.09564446007835452
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0205,
+    "scattering_length": 18327.10346,
+    "scattering_phase/pi": 0.08554452079033031
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0161,
+    "scattering_length": -11000.16713,
+    "scattering_phase/pi": 0.8630661735313934
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0177,
+    "scattering_length": -28408.54566,
+    "scattering_phase/pi": 0.9440288969124022
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0225,
+    "scattering_length": 7605.930667,
+    "scattering_phase/pi": 0.18649453674701558
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99895,
+    "scattering_length": -186281.3321,
+    "scattering_phase/pi": 0.9913772486551627
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01415,
+    "scattering_length": -5522.703181,
+    "scattering_phase/pi": 0.764302412570174
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00185,
+    "scattering_length": 10788.45485,
+    "scattering_phase/pi": 0.13929343767677402
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0065,
+    "scattering_length": 2072.313925,
+    "scattering_phase/pi": 0.3759919787789655
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00975,
+    "scattering_length": -655.6747111,
+    "scattering_phase/pi": 0.5411189549539888
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0175,
+    "scattering_length": -23960.5832,
+    "scattering_phase/pi": 0.9339123578774722
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.008,
+    "scattering_length": 763.1794763,
+    "scattering_phase/pi": 0.4522329700929815
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99975,
+    "scattering_length": 49716.83911,
+    "scattering_phase/pi": 0.03220567885887059
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0138,
+    "scattering_length": -4939.677477,
+    "scattering_phase/pi": 0.7465654642080457
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02095,
+    "scattering_length": 14262.86464,
+    "scattering_phase/pi": 0.10826781877050219
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.013,
+    "scattering_length": -3814.908724,
+    "scattering_phase/pi": 0.7060131407975465
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0153,
+    "scattering_length": -8096.667528,
+    "scattering_phase/pi": 0.822559401143387
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01375,
+    "scattering_length": -4861.61394,
+    "scattering_phase/pi": 0.744031327081376
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0183,
+    "scattering_length": -62555.66991,
+    "scattering_phase/pi": 0.9743719869776815
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00575,
+    "scattering_length": 2819.396181,
+    "scattering_phase/pi": 0.33785100679869956
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00825,
+    "scattering_length": 558.2758952,
+    "scattering_phase/pi": 0.4649356329248812
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0101,
+    "scattering_length": -944.5754791,
+    "scattering_phase/pi": 0.5588872085221344
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0184,
+    "scattering_length": -77990.91539,
+    "scattering_phase/pi": 0.9794282051209185
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0181,
+    "scattering_length": -44763.15164,
+    "scattering_phase/pi": 0.9642587092139848
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01345,
+    "scattering_length": -4416.916064,
+    "scattering_phase/pi": 0.7288251420610838
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00925,
+    "scattering_length": -249.6292846,
+    "scattering_phase/pi": 0.5157297067402047
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0139,
+    "scattering_length": -5099.514988,
+    "scattering_phase/pi": 0.751633520763816
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0134,
+    "scattering_length": -4346.443174,
+    "scattering_phase/pi": 0.726290747492729
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00965,
+    "scattering_length": -573.9681798,
+    "scattering_phase/pi": 0.536041683840722
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01015,
+    "scattering_length": -986.2938176,
+    "scattering_phase/pi": 0.5614252507300981
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00375,
+    "scattering_length": 5509.519553,
+    "scattering_phase/pi": 0.23607647682104507
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0017,
+    "scattering_length": 11500.18324,
+    "scattering_phase/pi": 0.13164843261169157
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01445,
+    "scattering_length": -6081.941402,
+    "scattering_phase/pi": 0.7795027999952333
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0113,
+    "scattering_length": -1994.559747,
+    "scattering_phase/pi": 0.6197892982072933
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0012,
+    "scattering_length": 14568.82373,
+    "scattering_phase/pi": 0.10616055019287812
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00935,
+    "scattering_length": -330.4257223,
+    "scattering_phase/pi": 0.5208081471103033
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00525,
+    "scattering_length": 3374.489737,
+    "scattering_phase/pi": 0.312417310213613
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01055,
+    "scattering_length": -1325.245154,
+    "scattering_phase/pi": 0.5817300078779766
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01745,
+    "scattering_length": -23050.96255,
+    "scattering_phase/pi": 0.9313830499000632
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00255,
+    "scattering_length": 8238.903313,
+    "scattering_phase/pi": 0.17496166785191553
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01885,
+    "scattering_length": 737749.4419,
+    "scattering_phase/pi": 0.0021777387639418237
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0034,
+    "scattering_length": 6169.855383,
+    "scattering_phase/pi": 0.2182552690401281
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01835,
+    "scattering_length": -69430.22847,
+    "scattering_phase/pi": 0.9769001310204086
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00595,
+    "scattering_length": 2611.403063,
+    "scattering_phase/pi": 0.3480235447002661
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0067,
+    "scattering_length": 1886.275023,
+    "scattering_phase/pi": 0.3861601431547311
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9984,
+    "scattering_length": -43580.31099,
+    "scattering_phase/pi": 0.9632970961236188
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00425,
+    "scattering_length": 4694.416838,
+    "scattering_phase/pi": 0.26152985179943733
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0165,
+    "scattering_length": -13146.55987,
+    "scattering_phase/pi": 0.8833132801255626
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02035,
+    "scattering_length": 20192.54188,
+    "scattering_phase/pi": 0.07796883870926685
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02145,
+    "scattering_length": 11319.89065,
+    "scattering_phase/pi": 0.13350933831426204
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01185,
+    "scattering_length": -2525.889031,
+    "scattering_phase/pi": 0.6476929829499183
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.021,
+    "scattering_length": 13911.07088,
+    "scattering_phase/pi": 0.11079228113763784
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00355,
+    "scattering_length": 5876.32707,
+    "scattering_phase/pi": 0.22589314166848087
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00245,
+    "scattering_length": 8542.90414,
+    "scattering_phase/pi": 0.16986697577455925
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9991,
+    "scattering_length": -1663144.755,
+    "scattering_phase/pi": 0.9990339712235947
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0029,
+    "scattering_length": 7288.786622,
+    "scattering_phase/pi": 0.19279096224041592
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00515,
+    "scattering_length": 3492.493422,
+    "scattering_phase/pi": 0.3073297066140284
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99905,
+    "scattering_length": -456649.9766,
+    "scattering_phase/pi": 0.9964818016367564
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02065,
+    "scattering_length": 16758.59793,
+    "scattering_phase/pi": 0.09311957927287114
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0168,
+    "scattering_length": -15288.21074,
+    "scattering_phase/pi": 0.898495712050037
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01935,
+    "scattering_length": 58388.3355,
+    "scattering_phase/pi": 0.027448399341180197
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99855,
+    "scattering_length": -55164.55775,
+    "scattering_phase/pi": 0.9709561805119099
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01855,
+    "scattering_length": -123634.1236,
+    "scattering_phase/pi": 0.9870120088924423
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0043,
+    "scattering_length": 4619.707982,
+    "scattering_phase/pi": 0.2640747957342256
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00115,
+    "scattering_length": 14954.9434,
+    "scattering_phase/pi": 0.10361138433557404
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01605,
+    "scattering_length": -10773.32063,
+    "scattering_phase/pi": 0.8605349695975478
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01045,
+    "scattering_length": -1239.562055,
+    "scattering_phase/pi": 0.576654262275575
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00385,
+    "scattering_length": 5335.618668,
+    "scattering_phase/pi": 0.24116772908390469
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99965,
+    "scattering_length": 59135.83335,
+    "scattering_phase/pi": 0.0271031270333697
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02025,
+    "scattering_length": 21646.87566,
+    "scattering_phase/pi": 0.07291803776034438
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00895,
+    "scattering_length": -7.823076417,
+    "scattering_phase/pi": 0.5004933510217525
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0135,
+    "scattering_length": -4488.377494,
+    "scattering_phase/pi": 0.7313595225584194
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0124,
+    "scattering_length": -3105.921167,
+    "scattering_phase/pi": 0.6755882296792682
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01115,
+    "scattering_length": -1856.309364,
+    "scattering_phase/pi": 0.6121784719790908
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0149,
+    "scattering_length": -7053.823101,
+    "scattering_phase/pi": 0.8022997908032014
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0141,
+    "scattering_length": -5435.189643,
+    "scattering_phase/pi": 0.7617687746149577
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01675,
+    "scattering_length": -14889.58884,
+    "scattering_phase/pi": 0.8959654762703764
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0082,
+    "scattering_length": 599.0884922,
+    "scattering_phase/pi": 0.46239524806023385
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00505,
+    "scattering_length": 3613.14352,
+    "scattering_phase/pi": 0.3022418143716479
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00005,
+    "scattering_length": 33564.44964,
+    "scattering_phase/pi": 0.04751161599227408
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.004,
+    "scattering_length": 5085.512811,
+    "scattering_phase/pi": 0.24880406829101864
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0026,
+    "scattering_length": 8092.797667,
+    "scattering_phase/pi": 0.17750892217006742
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0176,
+    "scattering_length": -26002.54449,
+    "scattering_phase/pi": 0.9389707656879006
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0197,
+    "scattering_length": 35358.68472,
+    "scattering_phase/pi": 0.045133720132965696
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0035,
+    "scattering_length": 5972.310855,
+    "scattering_phase/pi": 0.2233472570721029
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00775,
+    "scattering_length": 970.5785222,
+    "scattering_phase/pi": 0.4395299193753214
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02225,
+    "scattering_length": 8301.99919,
+    "scattering_phase/pi": 0.17388181143507456
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99945,
+    "scattering_length": 94994.71096,
+    "scattering_phase/pi": 0.01689716398203405
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0136,
+    "scattering_length": -4634.394575,
+    "scattering_phase/pi": 0.7364284695108104
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0097,
+    "scattering_length": -614.7823277,
+    "scattering_phase/pi": 0.5385803547011073
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0201,
+    "scattering_length": 24242.2328,
+    "scattering_phase/pi": 0.06534133538256691
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02255,
+    "scattering_length": 7476.651362,
+    "scattering_phase/pi": 0.1890169237680594
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99955,
+    "scattering_length": 72912.29194,
+    "scattering_phase/pi": 0.022000288794902706
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01595,
+    "scattering_length": -10341.92692,
+    "scattering_phase/pi": 0.8554723463898009
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.005,
+    "scattering_length": 3674.508705,
+    "scattering_phase/pi": 0.29969775804659476
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01775,
+    "scattering_length": -29780.35613,
+    "scattering_phase/pi": 0.9465578593684704
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0036,
+    "scattering_length": 5782.1133,
+    "scattering_phase/pi": 0.22843905495885986
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0073,
+    "scattering_length": 1352.559486,
+    "scattering_phase/pi": 0.4166606926708335
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01615,
+    "scattering_length": -11235.00838,
+    "scattering_phase/pi": 0.8655973064897534
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00735,
+    "scattering_length": 1309.459504,
+    "scattering_phase/pi": 0.41920200483589215
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01555,
+    "scattering_length": -8863.297294,
+    "scattering_phase/pi": 0.8352194040964608
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0159,
+    "scattering_length": -10136.60972,
+    "scattering_phase/pi": 0.8529409272458348
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0224,
+    "scattering_length": 7874.001267,
+    "scattering_phase/pi": 0.18144966100855406
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0056,
+    "scattering_length": 2980.306716,
+    "scattering_phase/pi": 0.3302216507239
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9997,
+    "scattering_length": 54022.25974,
+    "scattering_phase/pi": 0.029654438738032834
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01325,
+    "scattering_length": -4140.6609,
+    "scattering_phase/pi": 0.7186871515341386
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01585,
+    "scattering_length": -9937.742211,
+    "scattering_phase/pi": 0.8504094352019749
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9981,
+    "scattering_length": -30607.99553,
+    "scattering_phase/pi": 0.9479769922647648
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00815,
+    "scattering_length": 639.979584,
+    "scattering_phase/pi": 0.459854794948687
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00995,
+    "scattering_length": -820.1362506,
+    "scattering_phase/pi": 0.5512726579944706
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0052,
+    "scattering_length": 3433.170004,
+    "scattering_phase/pi": 0.3098735451081116
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0199,
+    "scattering_length": 28793.36344,
+    "scattering_phase/pi": 0.055238085695261
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0178,
+    "scattering_length": -31287.06183,
+    "scattering_phase/pi": 0.9490867529802021
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01945,
+    "scattering_length": 49260.91128,
+    "scattering_phase/pi": 0.03250169614471641
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0202,
+    "scattering_length": 22450.86998,
+    "scattering_phase/pi": 0.07039254012127094
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00715,
+    "scattering_length": 1483.002984,
+    "scattering_phase/pi": 0.4090363169841738
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0104,
+    "scattering_length": -1196.972517,
+    "scattering_phase/pi": 0.5741162776000718
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0131,
+    "scattering_length": -3942.774717,
+    "scattering_phase/pi": 0.7110829525883229
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01035,
+    "scattering_length": -1154.542463,
+    "scattering_phase/pi": 0.5715782165574729
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9982,
+    "scattering_length": -33996.8955,
+    "scattering_phase/pi": 0.9530839696301965
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01515,
+    "scattering_length": -7682.027301,
+    "scattering_phase/pi": 0.8149625745600911
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00725,
+    "scattering_length": 1395.845558,
+    "scattering_phase/pi": 0.4141193058665055
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00225,
+    "scattering_length": 9203.374962,
+    "scattering_phase/pi": 0.1596769555208264
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01465,
+    "scattering_length": -6491.746383,
+    "scattering_phase/pi": 0.7896351930567342
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01965,
+    "scattering_length": 37482.72652,
+    "scattering_phase/pi": 0.04260745454656741
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01275,
+    "scattering_length": -3508.158566,
+    "scattering_phase/pi": 0.6933373783948705
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01915,
+    "scattering_length": 92558.88666,
+    "scattering_phase/pi": 0.01734096983296969
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02135,
+    "scattering_length": 11820.36553,
+    "scattering_phase/pi": 0.1284615532020175
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01795,
+    "scattering_length": -36852.6956,
+    "scattering_phase/pi": 0.9566730215651547
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02245,
+    "scattering_length": 7738.335638,
+    "scattering_phase/pi": 0.18397213420610956
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0218,
+    "scattering_length": 9816.451672,
+    "scattering_phase/pi": 0.15117448625357555
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0116,
+    "scattering_length": -2279.209864,
+    "scattering_phase/pi": 0.6350106078364278
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0118,
+    "scattering_length": -2475.797146,
+    "scattering_phase/pi": 0.6451566513470803
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.019,
+    "scattering_length": 164569.8766,
+    "scattering_phase/pi": 0.009759666600100216
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00295,
+    "scattering_length": 7165.610784,
+    "scattering_phase/pi": 0.1953377173976994
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.002,
+    "scattering_length": 10146.2962,
+    "scattering_phase/pi": 0.14693779707229962
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01645,
+    "scattering_length": -12840.53285,
+    "scattering_phase/pi": 0.8807826325102621
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00765,
+    "scattering_length": 1054.400543,
+    "scattering_phase/pi": 0.4344483714071916
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0227,
+    "scattering_length": 7106.359011,
+    "scattering_phase/pi": 0.19658377518421782
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.017,
+    "scattering_length": -17095.63668,
+    "scattering_phase/pi": 0.9086161276321403
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0208,
+    "scattering_length": 15419.95109,
+    "scattering_phase/pi": 0.1006940125012804
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00495,
+    "scattering_length": 3736.593941,
+    "scattering_phase/pi": 0.29715363000682987
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01575,
+    "scattering_length": -9558.084409,
+    "scattering_phase/pi": 0.8453462307665868
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00015,
+    "scattering_length": 30258.52675,
+    "scattering_phase/pi": 0.05261302052796256
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.001,
+    "scattering_length": 16231.98592,
+    "scattering_phase/pi": 0.09596345601698952
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01785,
+    "scattering_length": -32949.80958,
+    "scattering_phase/pi": 0.951615577863225
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0132,
+    "scattering_length": -4073.855474,
+    "scattering_phase/pi": 0.7161524862941442
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01725,
+    "scattering_length": -19987.9571,
+    "scattering_phase/pi": 0.9212651215929518
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0085,
+    "scattering_length": 355.2038812,
+    "scattering_phase/pi": 0.477636430927038
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0154,
+    "scattering_length": -8391.145085,
+    "scattering_phase/pi": 0.8276236049797573
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0155,
+    "scattering_length": -8701.6076,
+    "scattering_phase/pi": 0.8326875394888473
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02275,
+    "scattering_length": 6988.40244,
+    "scattering_phase/pi": 0.19910592246015954
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0087,
+    "scattering_length": 193.6174446,
+    "scattering_phase/pi": 0.4877957691988639
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0051,
+    "scattering_length": 3552.478278,
+    "scattering_phase/pi": 0.30478579680002377
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0192,
+    "scattering_length": 80761.48355,
+    "scattering_phase/pi": 0.01986793178824589
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0061,
+    "scattering_length": 2459.90564,
+    "scattering_phase/pi": 0.3556521720171076
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00055,
+    "scattering_length": 21616.8548,
+    "scattering_phase/pi": 0.07301579142842461
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00195,
+    "scattering_length": 10353.30421,
+    "scattering_phase/pi": 0.1443897482258078
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00795,
+    "scattering_length": 804.4400573,
+    "scattering_phase/pi": 0.4496922110397524
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99835,
+    "scattering_length": -40719.73244,
+    "scattering_phase/pi": 0.9607439235492214
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0002,
+    "scattering_length": 28833.02507,
+    "scattering_phase/pi": 0.05516361551167395
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99825,
+    "scattering_length": -35981.50886,
+    "scattering_phase/pi": 0.9556373605992249
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0121,
+    "scattering_length": -2782.574251,
+    "scattering_phase/pi": 0.6603736005680357
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00665,
+    "scattering_length": 1932.350323,
+    "scattering_phase/pi": 0.38361820510271166
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0028,
+    "scattering_length": 7543.90707,
+    "scattering_phase/pi": 0.18769723607681474
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00025,
+    "scattering_length": 27532.34854,
+    "scattering_phase/pi": 0.057714138200462985
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0058,
+    "scattering_length": 2766.719042,
+    "scattering_phase/pi": 0.34039425247781346
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0025,
+    "scattering_length": 8388.880931,
+    "scattering_phase/pi": 0.17241433955877034
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00905,
+    "scattering_length": -88.36303526,
+    "scattering_phase/pi": 0.5055719225536828
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0188,
+    "scattering_length": -4594244.436,
+    "scattering_phase/pi": 0.9996502907058451
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01305,
+    "scattering_length": -3878.451342,
+    "scattering_phase/pi": 0.7085480804827247
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00865,
+    "scattering_length": 233.9623771,
+    "scattering_phase/pi": 0.48525604202426054
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0014,
+    "scattering_length": 13187.42991,
+    "scattering_phase/pi": 0.11635649522862061
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0115,
+    "scattering_length": -2183.039834,
+    "scattering_phase/pi": 0.6299371426823123
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00545,
+    "scattering_length": 3145.85267,
+    "scattering_phase/pi": 0.3225916302878454
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0068,
+    "scattering_length": 1794.942659,
+    "scattering_phase/pi": 0.39124380217871024
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9995,
+    "scattering_length": 82506.57713,
+    "scattering_phase/pi": 0.019448762221956968
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00035,
+    "scattering_length": 25244.6267,
+    "scattering_phase/pi": 0.0628149714841966
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0,
+    "scattering_length": 35496.50687,
+    "scattering_phase/pi": 0.04496080559110983
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0076,
+    "scattering_length": 1096.52083,
+    "scattering_phase/pi": 0.43190748031898324
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00485,
+    "scattering_length": 3863.00869,
+    "scattering_phase/pi": 0.2920651531042193
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01395,
+    "scattering_length": -5181.369137,
+    "scattering_phase/pi": 0.7541674403236049
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0078,
+    "scattering_length": 928.864528,
+    "scattering_phase/pi": 0.4420705923430503
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00265,
+    "scattering_length": 7950.397506,
+    "scattering_phase/pi": 0.18005611063961344
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01665,
+    "scattering_length": -14145.84382,
+    "scattering_phase/pi": 0.8909048018291903
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0081,
+    "scattering_length": 680.9548293,
+    "scattering_phase/pi": 0.45731426076028037
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99815,
+    "scattering_length": -32215.70209,
+    "scattering_phase/pi": 0.9505305055083185
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.003,
+    "scattering_length": 7045.205138,
+    "scattering_phase/pi": 0.1978844001047666
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02175,
+    "scattering_length": 10010.81169,
+    "scattering_phase/pi": 0.14865110143761964
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0088,
+    "scattering_length": 112.9998929,
+    "scattering_phase/pi": 0.4928750093574463
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00325,
+    "scattering_length": 6481.154235,
+    "scattering_phase/pi": 0.21061673450465088
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00755,
+    "scattering_length": 1138.788376,
+    "scattering_phase/pi": 0.42936653413859144
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0114,
+    "scattering_length": -2088.181202,
+    "scattering_phase/pi": 0.6248633788441077
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01405,
+    "scattering_length": -5349.161213,
+    "scattering_phase/pi": 0.7592350667656868
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0023,
+    "scattering_length": 9031.177271,
+    "scattering_phase/pi": 0.16222457023909534
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01025,
+    "scattering_length": -1070.135821,
+    "scattering_phase/pi": 0.5665018634972062
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01495,
+    "scattering_length": -7173.755511,
+    "scattering_phase/pi": 0.8048324901700784
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0143,
+    "scattering_length": -5794.667443,
+    "scattering_phase/pi": 0.7719029151732665
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0096,
+    "scattering_length": -533.2268787,
+    "scattering_phase/pi": 0.5335029432118354
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00435,
+    "scattering_length": 4546.087011,
+    "scattering_phase/pi": 0.26661965543419974
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9999,
+    "scattering_length": 40097.48147,
+    "scattering_phase/pi": 0.039858969576308766
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0069,
+    "scattering_length": 1704.640718,
+    "scattering_phase/pi": 0.3963275313325099
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99885,
+    "scattering_length": -116965.5044,
+    "scattering_phase/pi": 0.9862724104588161
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01245,
+    "scattering_length": -3161.631633,
+    "scattering_phase/pi": 0.6781240475367611
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0191,
+    "scattering_length": 108377.0224,
+    "scattering_phase/pi": 0.01481393811743828
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0126,
+    "scattering_length": -3332.168853,
+    "scattering_phase/pi": 0.6857310507567193
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00135,
+    "scattering_length": 13510.51179,
+    "scattering_phase/pi": 0.11380761315101603
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99805,
+    "scattering_length": -29149.41655,
+    "scattering_phase/pi": 0.9454234095819171
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02055,
+    "scattering_length": 17775.06306,
+    "scattering_phase/pi": 0.08806960954873719
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0006,
+    "scattering_length": 20860.68101,
+    "scattering_phase/pi": 0.07556581808603673
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0172,
+    "scattering_length": -19339.20906,
+    "scattering_phase/pi": 0.9187354643174337
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0146,
+    "scattering_length": -6386.212854,
+    "scattering_phase/pi": 0.7871020848851549
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01905,
+    "scattering_length": 130696.9873,
+    "scattering_phase/pi": 0.012286837065021088
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0071,
+    "scattering_length": 1526.888274,
+    "scattering_phase/pi": 0.4064947104576142
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01145,
+    "scattering_length": -2135.451304,
+    "scattering_phase/pi": 0.6274002989523316
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01005,
+    "scattering_length": -902.9801196,
+    "scattering_phase/pi": 0.5563490845137787
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0103,
+    "scattering_length": -1112.265675,
+    "scattering_phase/pi": 0.569040081652604
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00695,
+    "scattering_length": 1659.856211,
+    "scattering_phase/pi": 0.3988694377584856
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02155,
+    "scattering_length": 10853.81739,
+    "scattering_phase/pi": 0.13855686846600931
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0204,
+    "scattering_length": 19532.55683,
+    "scattering_phase/pi": 0.08049413481026793
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0055,
+    "scattering_length": 3090.131233,
+    "scattering_phase/pi": 0.3251350580572894
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0027,
+    "scattering_length": 7811.546645,
+    "scattering_phase/pi": 0.18260322257057243
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0053,
+    "scattering_length": 3316.434811,
+    "scattering_phase/pi": 0.31496100335690763
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00845,
+    "scattering_length": 395.703968,
+    "scattering_phase/pi": 0.47509641691749005
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00455,
+    "scattering_length": 4261.839424,
+    "scattering_phase/pi": 0.2767984075052911
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00365,
+    "scattering_length": 5689.611511,
+    "scattering_phase/pi": 0.23098493566922734
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0024,
+    "scattering_length": 8701.159009,
+    "scattering_phase/pi": 0.16731958299103394
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0019,
+    "scattering_length": 10567.22985,
+    "scattering_phase/pi": 0.14184162937786657
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0059,
+    "scattering_length": 2662.734894,
+    "scattering_phase/pi": 0.3454805227885302
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9998,
+    "scattering_length": 46041.58244,
+    "scattering_phase/pi": 0.034756847362297984
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00645,
+    "scattering_length": 2119.577342,
+    "scattering_phase/pi": 0.37344974657154906
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0129,
+    "scattering_length": -3690.07806,
+    "scattering_phase/pi": 0.7009430491292803
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0062,
+    "scattering_length": 2360.876202,
+    "scattering_phase/pi": 0.3607375558324192
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0198,
+    "scattering_length": 31748.18621,
+    "scattering_phase/pi": 0.050186042443241624
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.011,
+    "scattering_length": -1720.463363,
+    "scattering_phase/pi": 0.604567290773961
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00785,
+    "scattering_length": 887.2740955,
+    "scattering_phase/pi": 0.444611192208388
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0166,
+    "scattering_length": -13798.29369,
+    "scattering_phase/pi": 0.8883743623627337
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01285,
+    "scattering_length": -3628.748047,
+    "scattering_phase/pi": 0.698407897498735
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0111,
+    "scattering_length": -1810.771722,
+    "scattering_phase/pi": 0.6096414902915097
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00475,
+    "scattering_length": 3992.562713,
+    "scattering_phase/pi": 0.2869763889123588
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01315,
+    "scattering_length": -4007.901445,
+    "scattering_phase/pi": 0.7136177496071383
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01955,
+    "scattering_length": 42582.9098,
+    "scattering_phase/pi": 0.037554714514068534
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99935,
+    "scattering_length": 136166.6178,
+    "scattering_phase/pi": 0.011793752291094837
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01825,
+    "scattering_length": -56913.09772,
+    "scattering_phase/pi": 0.9718437729446745
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02185,
+    "scattering_length": 9627.999022,
+    "scattering_phase/pi": 0.15369780151949858
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0107,
+    "scattering_length": -1455.12806,
+    "scattering_phase/pi": 0.589343075815225
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01095,
+    "scattering_length": -1675.677731,
+    "scattering_phase/pi": 0.6020301142200523
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01635,
+    "scattering_length": -12264.11542,
+    "scattering_phase/pi": 0.8757211355584028
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00045,
+    "scattering_length": 23296.53031,
+    "scattering_phase/pi": 0.06791552414850864
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01805,
+    "scattering_length": -41779.7441,
+    "scattering_phase/pi": 0.9617302134541982
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9989,
+    "scattering_length": -143711.0609,
+    "scattering_phase/pi": 0.9888248652019588
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0045,
+    "scattering_length": 4331.426717,
+    "scattering_phase/pi": 0.27425382496211703
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02005,
+    "scattering_length": 25244.356,
+    "scattering_phase/pi": 0.06281562770916496
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02235,
+    "scattering_length": 8013.067407,
+    "scattering_phase/pi": 0.17892711320628532
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0211,
+    "scattering_length": 13251.67526,
+    "scattering_phase/pi": 0.115840995035915
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0162,
+    "scattering_length": -11478.30592,
+    "scattering_phase/pi": 0.8681283684897462
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.015,
+    "scattering_length": -7296.428005,
+    "scattering_phase/pi": 0.8073651173794661
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0133,
+    "scattering_length": -4208.343019,
+    "scattering_phase/pi": 0.7212217477207868
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00985,
+    "scattering_length": -737.7158336,
+    "scattering_phase/pi": 0.5461959334925196
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0046,
+    "scattering_length": 4193.187468,
+    "scattering_phase/pi": 0.2793429075071445
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00205,
+    "scattering_length": 9945.85055,
+    "scattering_phase/pi": 0.14948577321164858
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0102,
+    "scattering_length": -1028.147116,
+    "scattering_phase/pi": 0.5639635808631107
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00105,
+    "scattering_length": 15784.98629,
+    "scattering_phase/pi": 0.09851283869692598
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9993,
+    "scattering_length": 173794.6101,
+    "scattering_phase/pi": 0.009241938699430166
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00085,
+    "scattering_length": 17723.08182,
+    "scattering_phase/pi": 0.08831487918199138
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.007,
+    "scattering_length": 1615.307629,
+    "scattering_phase/pi": 0.4014112686529024
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00655,
+    "scattering_length": 2025.361125,
+    "scattering_phase/pi": 0.3785341205810577
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0209,
+    "scattering_length": 14630.79849,
+    "scattering_phase/pi": 0.10574328643997843
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0098,
+    "scattering_length": -696.6510522,
+    "scattering_phase/pi": 0.5436575019060651
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00675,
+    "scattering_length": 1840.475277,
+    "scattering_phase/pi": 0.38870200563897905
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0092,
+    "scattering_length": -209.2797404,
+    "scattering_phase/pi": 0.5131903800546902
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0007,
+    "scattering_length": 19489.19713,
+    "scattering_phase/pi": 0.08066565713776379
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00145,
+    "scattering_length": 12877.59565,
+    "scattering_phase/pi": 0.11890532865029398
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0094,
+    "scattering_length": -370.882855,
+    "scattering_phase/pi": 0.5233472519749643
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00155,
+    "scattering_length": 12294.40265,
+    "scattering_phase/pi": 0.12400278415149565
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0003,
+    "scattering_length": 26340.6425,
+    "scattering_phase/pi": 0.06026458899880654
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0123,
+    "scattering_length": -2996.121685,
+    "scattering_phase/pi": 0.6705168559857542
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00075,
+    "scattering_length": 18865.24821,
+    "scattering_phase/pi": 0.08321546940778586
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00095,
+    "scattering_length": 16702.63451,
+    "scattering_phase/pi": 0.09341400218559792
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0125,
+    "scattering_length": -3217.899228,
+    "scattering_phase/pi": 0.6806597904630407
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.006,
+    "scattering_length": 2560.495279,
+    "scattering_phase/pi": 0.35056649440813553
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99915,
+    "scattering_length": 1012967.764,
+    "scattering_phase/pi": 0.0015860695529199245
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0187,
+    "scattering_length": -297234.3406,
+    "scattering_phase/pi": 0.994595186363433
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00615,
+    "scattering_length": 2410.20133,
+    "scattering_phase/pi": 0.3581949008098975
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0015,
+    "scattering_length": 12580.17559,
+    "scattering_phase/pi": 0.12145409251643552
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01565,
+    "scattering_length": -9200.624635,
+    "scattering_phase/pi": 0.8402829294043989
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0222,
+    "scattering_length": 8452.186517,
+    "scattering_phase/pi": 0.17135905346898384
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00855,
+    "scattering_length": 314.750429,
+    "scattering_phase/pi": 0.48017637124294493
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02115,
+    "scattering_length": 12942.1845,
+    "scattering_phase/pi": 0.11836524778578211
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00415,
+    "scattering_length": 4847.234448,
+    "scattering_phase/pi": 0.2564397544156999
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01995,
+    "scattering_length": 27508.05199,
+    "scattering_phase/pi": 0.05776400301251123
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.998,
+    "scattering_length": -27819.97145,
+    "scattering_phase/pi": 0.9428697560809155
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00605,
+    "scattering_length": 2509.999914,
+    "scattering_phase/pi": 0.3531093707141492
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0206,
+    "scattering_length": 17253.04268,
+    "scattering_phase/pi": 0.0905946292300768
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0039,
+    "scattering_length": 5250.864016,
+    "scattering_phase/pi": 0.24371324919331003
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0169,
+    "scattering_length": -16145.98369,
+    "scattering_phase/pi": 0.9035560308056094
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00685,
+    "scattering_length": 1749.668777,
+    "scattering_phase/pi": 0.3937855499440071
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01705,
+    "scattering_length": -17609.82021,
+    "scattering_phase/pi": 0.9111460684304836
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02085,
+    "scattering_length": 15016.05882,
+    "scattering_phase/pi": 0.10321868439279434
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02215,
+    "scattering_length": 8606.418109,
+    "scattering_phase/pi": 0.16883622917719013
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00555,
+    "scattering_length": 3034.954546,
+    "scattering_phase/pi": 0.32767838261350857
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01925,
+    "scattering_length": 71623.64113,
+    "scattering_phase/pi": 0.022394824016281463
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01545,
+    "scattering_length": -8544.288237,
+    "scattering_phase/pi": 0.8301556074181834
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0005,
+    "scattering_length": 22426.78485,
+    "scattering_phase/pi": 0.07046569330554109
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0193,
+    "scattering_length": 64336.2956,
+    "scattering_phase/pi": 0.024921646485036066
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.012,
+    "scattering_length": -2678.608287,
+    "scattering_phase/pi": 0.6553015580215289
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0164,
+    "scattering_length": -12546.63207,
+    "scattering_phase/pi": 0.8782519186986223
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0213,
+    "scattering_length": 12084.79907,
+    "scattering_phase/pi": 0.12593758220134949
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0186,
+    "scattering_length": -153541.3184,
+    "scattering_phase/pi": 0.9895398042345349
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0001,
+    "scattering_length": 31827.93958,
+    "scattering_phase/pi": 0.05006235399246866
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99995,
+    "scattering_length": 37659.40662,
+    "scattering_phase/pi": 0.04240992322562703
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01125,
+    "scattering_length": -1948.192949,
+    "scattering_phase/pi": 0.6172522601750811
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01525,
+    "scattering_length": -7954.997796,
+    "scattering_phase/pi": 0.8200271951172091
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0228,
+    "scattering_length": 6873.00922,
+    "scattering_phase/pi": 0.2016279969419559
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0016,
+    "scattering_length": 12019.57107,
+    "scattering_phase/pi": 0.12655140522263555
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0117,
+    "scattering_length": -2376.768556,
+    "scattering_phase/pi": 0.6400837728274005
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0105,
+    "scattering_length": -1282.317447,
+    "scattering_phase/pi": 0.5791921719356319
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01385,
+    "scattering_length": -5018.964713,
+    "scattering_phase/pi": 0.7490995282617504
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0216,
+    "scattering_length": 10632.52393,
+    "scattering_phase/pi": 0.14108053022255085
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0079,
+    "scattering_length": 845.8015645,
+    "scattering_phase/pi": 0.44715170890908373
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02295,
+    "scattering_length": 6541.264963,
+    "scattering_phase/pi": 0.209193808378515
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0145,
+    "scattering_length": -6181.38668,
+    "scattering_phase/pi": 0.7820359638541856
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0032,
+    "scattering_length": 6589.216399,
+    "scattering_phase/pi": 0.20807041098365248
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0219,
+    "scattering_length": 9445.165824,
+    "scattering_phase/pi": 0.15622104711083556
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0212,
+    "scattering_length": 12645.03749,
+    "scattering_phase/pi": 0.12088943064293704
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0042,
+    "scattering_length": 4770.247169,
+    "scattering_phase/pi": 0.25898483925940574
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00285,
+    "scattering_length": 7414.845685,
+    "scattering_phase/pi": 0.1902441347788459
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0157,
+    "scattering_length": -9376.714433,
+    "scattering_phase/pi": 0.8428145904877938
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0174,
+    "scattering_length": -22205.02662,
+    "scattering_phase/pi": 0.9288536726107282
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0089,
+    "scattering_length": 32.4441661,
+    "scattering_phase/pi": 0.49795398203743885
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02105,
+    "scattering_length": 13574.33636,
+    "scattering_phase/pi": 0.11331667486315362
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01735,
+    "scattering_length": -21416.21718,
+    "scattering_phase/pi": 0.9263242256373104
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01255,
+    "scattering_length": -3274.739639,
+    "scattering_phase/pi": 0.6831954601147393
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0049,
+    "scattering_length": 3799.420087,
+    "scattering_phase/pi": 0.2946094287747019
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02045,
+    "scattering_length": 18911.90598,
+    "scattering_phase/pi": 0.08301936254205483
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00705,
+    "scattering_length": 1570.98738,
+    "scattering_phase/pi": 0.40395302949813644
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.99985,
+    "scattering_length": 42867.19301,
+    "scattering_phase/pi": 0.037307944271790426
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01355,
+    "scattering_length": -4560.861824,
+    "scattering_phase/pi": 0.7338940333786894
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0009,
+    "scattering_length": 17198.92533,
+    "scattering_phase/pi": 0.09086447662417359
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01685,
+    "scattering_length": -15706.49011,
+    "scattering_phase/pi": 0.9010258801028574
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0022,
+    "scattering_length": 9380.678164,
+    "scattering_phase/pi": 0.15712926951581613
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9983,
+    "scattering_length": -38206.80329,
+    "scattering_phase/pi": 0.9581906783037023
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0112,
+    "scattering_length": -1902.113772,
+    "scattering_phase/pi": 0.6147153992813523
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01485,
+    "scattering_length": -6936.525205,
+    "scattering_phase/pi": 0.799767017308333
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0215,
+    "scattering_length": 11082.79395,
+    "scattering_phase/pi": 0.1360331361285281
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0033,
+    "scattering_length": 6375.292364,
+    "scattering_phase/pi": 0.2131629889575244
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01295,
+    "scattering_length": -3752.124706,
+    "scattering_phase/pi": 0.7034781289789446
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01,
+    "scattering_length": -861.5022499,
+    "scattering_phase/pi": 0.5538108983307205
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00535,
+    "scattering_length": 3258.987974,
+    "scattering_phase/pi": 0.31750462501976867
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0021,
+    "scattering_length": 9751.635558,
+    "scattering_phase/pi": 0.15203367692770062
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00125,
+    "scattering_length": 14200.16189,
+    "scattering_phase/pi": 0.10870964420050118
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.999,
+    "scattering_length": -264635.8501,
+    "scattering_phase/pi": 0.9939295607837757
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0072,
+    "scattering_length": 1439.324463,
+    "scattering_phase/pi": 0.4115778455715348
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00745,
+    "scattering_length": 1223.791143,
+    "scattering_phase/pi": 0.4242844135752862
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01265,
+    "scattering_length": -3390.203566,
+    "scattering_phase/pi": 0.6882665665701951
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02285,
+    "scattering_length": 6760.082472,
+    "scattering_phase/pi": 0.20415000300084976
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00445,
+    "scattering_length": 4401.977037,
+    "scattering_phase/pi": 0.27170918261359117
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01205,
+    "scattering_length": -2730.367786,
+    "scattering_phase/pi": 0.6578376064020464
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0163,
+    "scattering_length": -11992.30031,
+    "scattering_phase/pi": 0.8731902830283981
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0093,
+    "scattering_length": -290.0095231,
+    "scattering_phase/pi": 0.5182689606333272
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01175,
+    "scattering_length": -2426.093928,
+    "scattering_phase/pi": 0.6426202492730163
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00065,
+    "scattering_length": 20152.99564,
+    "scattering_phase/pi": 0.07811577327648866
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9994,
+    "scattering_length": 111921.0479,
+    "scattering_phase/pi": 0.014345494019652015
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0095,
+    "scattering_length": -451.9412536,
+    "scattering_phase/pi": 0.5284252439553305
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0038,
+    "scattering_length": 5421.82084,
+    "scattering_phase/pi": 0.2386221412150406
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.018,
+    "scattering_length": -39164.39839,
+    "scattering_phase/pi": 0.9592016470284233
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01475,
+    "scattering_length": -6709.43708,
+    "scattering_phase/pi": 0.7947012516651711
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02195,
+    "scattering_length": 9267.682457,
+    "scattering_phase/pi": 0.15874422284962933
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0148,
+    "scattering_length": -6821.761718,
+    "scattering_phase/pi": 0.7972341726491712
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0226,
+    "scattering_length": 7350.373508,
+    "scattering_phase/pi": 0.19153927812234453
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0122,
+    "scattering_length": -2888.377078,
+    "scattering_phase/pi": 0.6654453570149398
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0099,
+    "scattering_length": -778.8756409,
+    "scattering_phase/pi": 0.5487343149121167
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0083,
+    "scattering_length": 517.5365636,
+    "scattering_phase/pi": 0.4674759382469
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0189,
+    "scattering_length": 341443.8918,
+    "scattering_phase/pi": 0.004705117436170837
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01215,
+    "scattering_length": -2835.239517,
+    "scattering_phase/pi": 0.6629095072320735
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01425,
+    "scattering_length": -5702.38837,
+    "scattering_phase/pi": 0.7693694768010558
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00875,
+    "scattering_length": 153.2983191,
+    "scattering_phase/pi": 0.4903354259401494
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00585,
+    "scattering_length": 2714.502774,
+    "scattering_phase/pi": 0.34293742643147074
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0151,
+    "scattering_length": -7550.443682,
+    "scattering_phase/pi": 0.8124301595475248
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0167,
+    "scattering_length": -14509.22357,
+    "scattering_phase/pi": 0.8934351730554067
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00315,
+    "scattering_length": 6699.562533,
+    "scattering_phase/pi": 0.2055240163857184
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0011,
+    "scattering_length": 15359.84398,
+    "scattering_phase/pi": 0.10106214816871019
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01715,
+    "scattering_length": -18728.78588,
+    "scattering_phase/pi": 0.9162057367023942
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9988,
+    "scattering_length": -98601.84577,
+    "scattering_phase/pi": 0.9837198843153522
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02015,
+    "scattering_length": 23313.71305,
+    "scattering_phase/pi": 0.06786697261343379
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.023,
+    "scattering_length": 6435.20328,
+    "scattering_phase/pi": 0.2117156062961311
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01155,
+    "scattering_length": -2230.956148,
+    "scattering_phase/pi": 0.6324739111011176
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01655,
+    "scattering_length": -13465.51955,
+    "scattering_phase/pi": 0.8858438534335432
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0077,
+    "scattering_length": 1012.421816,
+    "scattering_phase/pi": 0.4369891825739484
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02165,
+    "scattering_length": 10418.50665,
+    "scattering_phase/pi": 0.14360412308557663
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0066,
+    "scattering_length": 1978.709639,
+    "scattering_phase/pi": 0.38107618944967964
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0108,
+    "scattering_length": -1542.700961,
+    "scattering_phase/pi": 0.5944180953261566
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00915,
+    "scattering_length": -168.9554899,
+    "scattering_phase/pi": 0.5106509657605707
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.009,
+    "scattering_length": -48.09034881,
+    "scattering_phase/pi": 0.5030326590960353
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00165,
+    "scattering_length": 11755.03118,
+    "scattering_phase/pi": 0.12909995403161656
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0128,
+    "scattering_length": -3568.114654,
+    "scattering_phase/pi": 0.6958726732066335
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0057,
+    "scattering_length": 2872.541513,
+    "scattering_phase/pi": 0.33530795722720974
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01235,
+    "scattering_length": -3050.756195,
+    "scattering_phase/pi": 0.6730525016324418
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0064,
+    "scattering_length": 2167.160019,
+    "scattering_phase/pi": 0.3709074527042796
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00635,
+    "scattering_length": 2215.071518,
+    "scattering_phase/pi": 0.36836508749324937
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00625,
+    "scattering_length": 2311.91965,
+    "scattering_phase/pi": 0.36328014020020616
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00275,
+    "scattering_length": 7676.096472,
+    "scattering_phase/pi": 0.18515026585743907
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0044,
+    "scattering_length": 4473.520514,
+    "scattering_phase/pi": 0.26916445249312637
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00215,
+    "scattering_length": 9563.341498,
+    "scattering_phase/pi": 0.154581506880625
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9987,
+    "scattering_length": -75015.37978,
+    "scattering_phase/pi": 0.9786146176526469
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0223,
+    "scattering_length": 8155.681108,
+    "scattering_phase/pi": 0.17640450067154848
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0063,
+    "scattering_length": 2263.321469,
+    "scattering_phase/pi": 0.36582264923366214
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0196,
+    "scattering_length": 39872.89418,
+    "scattering_phase/pi": 0.040081119332438166
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0156,
+    "scattering_length": -9029.563096,
+    "scattering_phase/pi": 0.8377511977277204
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00805,
+    "scattering_length": 722.0195555,
+    "scattering_phase/pi": 0.4547736559796169
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00305,
+    "scattering_length": 6927.462345,
+    "scattering_phase/pi": 0.20043101083014225
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02125,
+    "scattering_length": 12359.47525,
+    "scattering_phase/pi": 0.1234135411640421
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0086,
+    "scattering_length": 274.3383068,
+    "scattering_phase/pi": 0.4827162429589234
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0037,
+    "scattering_length": 5598.765426,
+    "scattering_phase/pi": 0.23353074183467554
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01505,
+    "scattering_length": -7421.951743,
+    "scattering_phase/pi": 0.8098976743338735
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01365,
+    "scattering_length": -4709.008213,
+    "scattering_phase/pi": 0.738962831782482
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0185,
+    "scattering_length": -103466.9271,
+    "scattering_phase/pi": 0.9844841439930159
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.022,
+    "scattering_length": 9095.296109,
+    "scattering_phase/pi": 0.16126732929313584
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0031,
+    "scattering_length": 6812.280457,
+    "scattering_phase/pi": 0.20297754945787483
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0171,
+    "scattering_length": -18153.3182,
+    "scattering_phase/pi": 0.9136759382066933
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0142,
+    "scattering_length": -5611.752017,
+    "scattering_phase/pi": 0.7668359811272927
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00235,
+    "scattering_length": 8863.846675,
+    "scattering_phase/pi": 0.1647721119847024
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01435,
+    "scattering_length": -5888.645564,
+    "scattering_phase/pi": 0.7744362760758515
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01985,
+    "scattering_length": 30200.60209,
+    "scattering_phase/pi": 0.05271209904485458
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01075,
+    "scattering_length": -1498.81148,
+    "scattering_phase/pi": 0.5918806216490671
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01225,
+    "scattering_length": -2941.999814,
+    "scattering_phase/pi": 0.6679811339651032
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.014,
+    "scattering_length": -5264.569783,
+    "scattering_phase/pi": 0.7567012892127176
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01895,
+    "scattering_length": 222107.212,
+    "scattering_phase/pi": 0.007232426712257791
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0217,
+    "scattering_length": 10211.38692,
+    "scattering_phase/pi": 0.14612764650500634
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01975,
+    "scattering_length": 33458.43945,
+    "scattering_phase/pi": 0.04765991611751884
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01335,
+    "scattering_length": -4276.928099,
+    "scattering_phase/pi": 0.7237562800788537
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00955,
+    "scattering_length": -492.5530173,
+    "scattering_phase/pi": 0.5309641301683434
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.02,
+    "scattering_length": 26329.33753,
+    "scattering_phase/pi": 0.06028985037085899
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.01135,
+    "scattering_length": -2041.220264,
+    "scattering_phase/pi": 0.6223263751617987
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.00335,
+    "scattering_length": 6271.551679,
+    "scattering_phase/pi": 0.21570916047128003
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 0.9996,
+    "scattering_length": 65309.54549,
+    "scattering_phase/pi": 0.024551743708955322
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0047,
+    "scattering_length": 4058.574919,
+    "scattering_phase/pi": 0.2844318999713968
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0194,
+    "scattering_length": 53441.00756,
+    "scattering_phase/pi": 0.029975082536785373
+  },
+  {
+    "potential_name": "singlet",
+    "coefficient": 1.0221,
+    "scattering_length": 8764.88012,
+    "scattering_phase/pi": 0.16631333245618016
+  }
+]

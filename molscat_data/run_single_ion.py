@@ -21,7 +21,7 @@ def main():
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'molscat-RbSr+.input')
     molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'molscat-RbSr+.output')
     print(f"""{molscat_executable_path}\n{molscat_input_template_path}""")
-    E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+    E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
 
     energyarray_str = str([round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies)]).strip(']').strip('[')
     print(energyarray_str)
@@ -49,7 +49,8 @@ def main():
             molscat_input.truncate()
 
     molscat_command = f"./{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    subprocess.run(molscat_command, shell = True)        
+    subprocess.run(molscat_command, shell = True)
+    print("Done!") 
 
 if __name__ == '__main__':
     main()
