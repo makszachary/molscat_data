@@ -20,7 +20,7 @@ singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 
@@ -36,8 +36,8 @@ def create_and_run(molscat_input_template_path):
     
     time_0 = time.perf_counter()
     
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'RbSr+_tcpld', molscat_input_template_path.name)
-    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', molscat_input_template_path.name).with_suffix('.output')
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'RbSr+_tcpld_100_E', molscat_input_template_path.name)
+    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_100_E', molscat_input_template_path.name).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -106,24 +106,27 @@ def main():
     # from multiprocessing.dummy import Pool as ThreadPool 
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld.pickle')
+    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld_100_E.pickle')
 
     time_0 = time.perf_counter()
 
-    # with Pool() as pool:
-    #     results = pool.imap(create_and_run, molscat_input_templates)
+    with Pool() as pool:
+        results = pool.imap(create_and_run, molscat_input_templates)
 
-    #     for duration, input_path, output_path in results:
-    #         output_dir = output_path.parent
-    #         print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
+        for duration, input_path, output_path in results:
+            output_dir = output_path.parent
+            print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
 
-    # duration, s_matrix_collection, output_dir, pickle_path = collect_and_pickle( output_dir )
-    # print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    print(f"The time of the calculations in molscat was {time.perf_counter() - time_0:.2f} s.")
 
+    duration, s_matrix_collection, output_dir, pickle_path = collect_and_pickle( output_dir )
+    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+
+    t0 = time.perf_counter()
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
     # print(s_matrix_collection)
     
-    t1 = time.perf_counter() - time_0
+    t1 = time.perf_counter() - t0
     print(f"The time of loading the SMatrix from pickle was {t1=:.2e} s.")
 
     probability_vectorized = np.vectorize(lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in), signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
