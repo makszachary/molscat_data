@@ -131,7 +131,7 @@ def main():
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
-    t2 = time.perf_counter - t1
+    t2 = time.perf_counter() - t1
     print(f"The time of vectorizing the probability function and loading PMF was {t2=:.2e} s.")
 
     ### Hyperfine deexcitation
@@ -151,7 +151,7 @@ def main():
 
     print(effective_probability_array)
     
-    effective_probability = effective_probability_array.sum(axis = (0, 1))
+    effective_probability_array = effective_probability_array.sum(axis = (0, 1))
 
     print("--------------------------------------------------")
     print(f"The effective probabilities of the hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2 > states are:")
@@ -179,10 +179,15 @@ def main():
 
     print(effective_probability_array)
     
-    effective_probability = effective_probability_array.sum(axis = (0,))
+    effective_probability_array = effective_probability_array.sum(axis = (0,))
+
+    print("--------------------------------------------------")
+    print(f"The effective probabilities of the cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2 > states are:")
+    print(effective_probability_array)
+    print("--------------------------------------------------")
 
     t4 = time.perf_counter() - t3
-    print(f"The time of calculating the effective probabilities for the cold spin change for 5 m_f values was {t4:.2f} s.")
+    print(f"The time of calculating the effective probabilities of the cold spin change for 5 m_f values was {t4:.2f} s.")
 
     total_duration = time.perf_counter()-time_0
     print(f"The total time was {total_duration:.2f} s.")
