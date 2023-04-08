@@ -121,30 +121,68 @@ def main():
     # print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
-    print(s_matrix_collection)
+    # print(s_matrix_collection)
+    
+    t1 = time.perf_counter() - time_0
+    print(f"The time of loading the SMatrix from pickle was {t1=:.2e} s.")
 
     probability_vectorized = np.vectorize(lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in), signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
 
-    F_in = 4
-    MF_in = np.arange(-F_in, F_in+1, 2)
-    S = 1
+    pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_array = np.loadtxt(pmf_path)
+
+    t2 = time.perf_counter - t1
+    print(f"The time of vectorizing the probability function and loading PMF was {t2=:.2e} s.")
+
+    ### Hyperfine deexcitation
+
+    F_in, S = 4, 1
+    MF_in, MS_in = np.arange(-F_in, F_in+1, 2), S
     # MS_in = np.arange(-S, S+1, 2)
-    MS_in = 1
     F_out = 2
-    MF_out = np.arange(-F_out, F_out+1, 2)
-    MS_out = np.arange(-S, S+1, 2)
+    MF_out, MS_out = np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2)
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in, indexing = 'ij')
 
     probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
 
     print(probability_array)
 
-    pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
-    pmf_array = np.loadtxt(pmf_path)
+    effective_probability_array = effective_probability(probability_array, pmf_array)
+
+    print(effective_probability_array)
+    
+    effective_probability = effective_probability_array.sum(axis = (0, 1))
+
+    print("--------------------------------------------------")
+    print(f"The effective probabilities of the hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2 > states are:")
+    print(effective_probability_array)
+    print("--------------------------------------------------")
+
+    t3 = time.perf_counter() - t2
+    print(f"The time of calculating the effective probabilities for the hyperfine deexcitation for 5 m_f values was {t3:.2f} s.")
+
+    ### Cold spin change in F = 4 manifold
+
+
+    F_in, S = 4, 1
+    MF_in, MS_in = np.arange(-F_in, F_in+1, 2), S
+    # MS_in = np.arange(-S, S+1, 2)
+    F_out = F_in
+    MF_out, MS_out = np.arange(-F_out, F_out+1, 2), -S
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in, indexing = 'ij')
+
+    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
+
+    print(probability_array)
 
     effective_probability_array = effective_probability(probability_array, pmf_array)
 
     print(effective_probability_array)
+    
+    effective_probability = effective_probability_array.sum(axis = (0,))
+
+    t4 = time.perf_counter() - t3
+    print(f"The time of calculating the effective probabilities for the cold spin change for 5 m_f values was {t4:.2f} s.")
 
     total_duration = time.perf_counter()-time_0
     print(f"The total time was {total_duration:.2f} s.")
