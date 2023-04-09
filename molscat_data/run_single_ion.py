@@ -1,7 +1,10 @@
+from typing import Any
 import subprocess
-# import os
 from pathlib import Path, PurePath
 import re
+
+from multiprocessing import Pool
+# from multiprocessing.dummy import Pool as ThreadPool 
 
 import itertools
 
@@ -88,25 +91,100 @@ def collect_and_pickle(molscat_output_directory_path):
 
     return duration, s_matrix_collection, molscat_output_directory_path, pickle_path
 
-def probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in):
-    
-    param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
-    
+def rate_fmfms(s_matrix_collection: SMatrixCollection, F_out: int, MF_out: int, MS_out: int, F_in: int, MF_in: int, MS_in: int, param_indices: dict) -> float:
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    rate = np.sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
+    return rate
+
+
+def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int]) -> np.ndarray[Any, float]:
     
-    rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
-    averaged_rate = s_matrix_collection.thermalAverage(rate)
-    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
+
     averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
         
-    return averaged_rate/averaged_momentum_transfer_rate
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+
+    if array_like:
+        with Pool() as pool:
+           arguments = ( (s_matrix_collection, *(args[name][index] for name in args), param_indices) for index in np.ndindex(arg_shapes[0]))
+           results = pool.starmap(rate_fmfms, arguments)
+           rate_shape = results[0].shape
+           rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+
+           averaged_rate = s_matrix_collection.thermalAverage(rate)
+           averaged_momentum_transfer_rate = np.full_like(averaged_rate, averaged_momentum_transfer_rate)
+           probability = averaged_rate / averaged_momentum_transfer_rate
+
+           return probability
+    
+    rate = rate_fmfms(s_matrix_collection, **args)
+    averaged_rate = s_matrix_collection.thermalAverage(rate)
+    probability = averaged_rate / averaged_momentum_transfer_rate
+
+    return probability
+
+        
+    
+    # results = rate_fmfms()
+        # results = np.fromiter( ( rate_fmfms(s_matrix_collection, *(args[name][index] for name in args)) for index in np.ndindex(arg_shapes[0]) ), dtype= float)
+        # print(results)
+    # print('fuck you')
+        
+
+    # args = locals().copy()
+    # args.pop('s_matrix_collection')
+    # print(dict(args))    
+    # print(arg_shapes)
+    # print(all(qn_shape == arg_shapes[0] for qn_shape in arg_shapes))
+    
+    # param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
+    
+    # L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    
+    # arguments = ( ( qn_number if isinstance(value, np.ndarray) else value for value in args.values()) for qn_number in value.flatten() )
+    # print(arguments)
+    # print(tuple(arguments))
+
+    # with Pool() as pool:
+    #    results = pool.starmap(rate_fmfms, args)
+
+    #    for name, result in zip(names, results):
+    #        print(result)
+
+    # rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
+    # averaged_rate = s_matrix_collection.thermalAverage(rate)
+    
+    # averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
+    
+    # probability = averaged_rate/averaged_momentum_transfer_rate
+
+    # duration = time.perf_counter()-time_0
+    # print(f'{duration} s.')
+
+    # return probability
+
 
 def main():
-    from multiprocessing import Pool
-    # from multiprocessing.dummy import Pool as ThreadPool 
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld_100_E.pickle')
+    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld.pickle')
+    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'json_test_3.pickle')
 
     time_0 = time.perf_counter()
 
@@ -117,7 +195,7 @@ def main():
     #        output_dir = output_path.parent
     #        print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
 
-    #cprint(f"The time of the calculations in molscat was {time.perf_counter() - time_0:.2f} s.")
+    #print(f"The time of the calculations in molscat was {time.perf_counter() - time_0:.2f} s.")
 
     #duration, s_matrix_collection, output_dir, pickle_path = collect_and_pickle( output_dir )
     #print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
@@ -126,83 +204,55 @@ def main():
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
     # print(s_matrix_collection)
     
-    t1 = time.perf_counter()
-    print(f"The time of loading the SMatrix from pickle was {t1-t0:.2e} s.")
-
-    probability_vectorized = np.vectorize(lambda F_out, MF_out, MS_out, F_in, MF_in, MS_in: probability(s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in), signature = '(),(),(),(),(),() -> (a,b,c,d,e)' )
-
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
-    t2 = time.perf_counter()
-    print(f"The time of vectorizing the probability function and loading PMF was {t2-t1:.2e} s.")
+    F_out, F_in, S = 2, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
 
-    ### Hyperfine deexcitation
-    
-    txt_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld_100_E_hpf_deexcitation.txt')
+    F_out, F_in, S = 4, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
 
-    F_in, S = 4, 1
-    MF_in, MS_in = np.arange(-F_in, F_in+1, 2), S
-    # MS_in = np.arange(-S, S+1, 2)
-    F_out = 2
-    MF_out, MS_out = np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2)
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in, indexing = 'ij')
+    F_out, F_in, S = 2, 2, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
 
-    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
-
-    print(probability_array)
-
-    probability_array = probability_array.sum(axis = (0, 1))
-
-    print(probability_array)
-
-    effective_probability_array = effective_probability(probability_array, pmf_array)
-
-    np.savetxt(txt_path, effective_probability_array, fmt = '%.10f')
-
-    print("--------------------------------------------------")
-    print(f"The effective probabilities of the hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2 > states are:")
-    print(effective_probability_array)
-    print("--------------------------------------------------")
-
-    t3 = time.perf_counter()
-    print(f"The time of calculating the effective probabilities for the hyperfine deexcitation for 5 m_f values was {t3-t2:.2f} s.")
-
-    ### Cold spin change in F = 4 manifold
-
-    txt_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld_100_E_cold_spin_change.txt')
-
-    F_in, S = 4, 1
-    MF_in, MS_in = np.arange(-F_in, F_in+1, 2), S
-    # MS_in = np.arange(-S, S+1, 2)
-    F_out = F_in
-    MF_out, MS_out = np.arange(-F_out, F_out+1, 2), -S
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(MF_out, MS_out, MF_in, MS_in, indexing = 'ij')
-
-    probability_array = probability_vectorized(F_out, MF_out, MS_out, F_in, MF_in, MS_in).squeeze()
-
-    print(probability_array)
-
-    probability_array = probability_array.sum(axis = (0,))
-
-    print(probability_array)
-
-    effective_probability_array = effective_probability(probability_array, pmf_array)
-
-    np.savetxt(txt_path, effective_probability_array, fmt = '%.10f')
-
-    print("--------------------------------------------------")
-    print(f"The effective probabilities of the cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2 > states are:")
-    print(effective_probability_array)
-    print("--------------------------------------------------")
+    args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
+    names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', 
+             f'cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states',
+             f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
+    abbreviations = ['hpf', 'cold_higher', 'cold_lower']
 
     t4 = time.perf_counter()
-    print(f"The time of calculating the effective probabilities of the cold spin change for 5 m_f values was {t4-t3:.2f} s.")
 
-    total_duration = time.perf_counter()-time_0
-    print(f"The total time was {total_duration/60:.2f} min.")
+    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
+        print(abbreviation, name, arg)
+
+    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
+        t = time.perf_counter()
+        probability_array = probability(*arg).sum(axis = (0, 1)).squeeze()
+        effective_probability_array = effective_probability(probability_array, pmf_array)
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare probabilities p_0 for the {name} are:')
+        print(probability_array, '\n')
+
+        print(f'The effective probabilities p_eff for the {name} are:')
+        print(effective_probability_array)
+        print("------------------------------------------------------------------------")
+        
+        txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
+        txt_path.parent.mkdir(parents = True, exist_ok = True)
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f')
+        
+        duration = time.perf_counter() - t
+        print(f"It took {duration:.2f} s.")
     
-    # print(Path.home())
+    t5 = time.perf_counter()
+    print(f"The time of the loop calculations with parallelized probability function was {t5 - t4:.2f} s.")
+
 
 if __name__ == '__main__':
     main()
