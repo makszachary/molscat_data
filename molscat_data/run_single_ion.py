@@ -88,6 +88,7 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
     
     args = locals().copy()
     args.pop('s_matrix_collection')
+    args.pop('param_indices')
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
     averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
