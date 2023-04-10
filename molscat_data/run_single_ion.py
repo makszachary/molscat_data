@@ -68,6 +68,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
     s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = singletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
+        print(output_path)
         s_matrix_collection.update_from_output(file_path = output_path)
     
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir).with_suffix('.pickle'))
@@ -248,9 +249,10 @@ def main():
     phases = ((args.singlet_phase, args.triplet_phase),)
 
     ### RUN MOLSCAT ###
-    output_dir = create_and_run_parallel(molscat_input_templates, phases)
+    #output_dir = create_and_run_parallel(molscat_input_templates, phases)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
+    output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
