@@ -484,7 +484,7 @@ class SMatrixCollection:
                     A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)      
                     if self.singletParameter == None: self.singletParameter = (A_s,)
                     rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 11) for singlet_parameter in self.singletParameter)
-                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
+                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter {A_s} from the molscat output should be an element of {rounded_singletParameter}."
                     A_s_index = rounded_singletParameter.index(A_s)
 
                     for i in range(2):
