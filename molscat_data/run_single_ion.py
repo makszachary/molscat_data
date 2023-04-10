@@ -2,6 +2,7 @@ from typing import Any
 import subprocess
 from pathlib import Path, PurePath
 import re
+import argparse
 
 from multiprocessing import Pool
 # from multiprocessing.dummy import Pool as ThreadPool 
@@ -16,41 +17,30 @@ import time
 from _molscat_data.smatrix import SMatrix, SMatrixCollection, CollectionParameters, CollectionParametersIndices
 from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
-from _molscat_data.scaling_old import parameter_from_semiclassical_phase
+from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
 from _molscat_data.effective_probability import effective_probability
+from _molscat_data.physical_constants import amu_to_au
 
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
-molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
 
 E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 
-number_of_parameters = 24
-
-phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
-SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in phases]
-TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in phases]
-scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
-# [(c_s, c_t) for c_s in SINGLETSCALING for c_t in TRIPLETSCALING]
-
-def create_and_run(molscat_input_template_path):
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float) -> tuple[float, float, float]:
     
     time_0 = time.perf_counter()
-    
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', 'RbSr+_tcpld_100_E', molscat_input_template_path.name)
-    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_100_E', molscat_input_template_path.name).with_suffix('.output')
+
+    molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
+    molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', molscat_input_template_path.stem).with_suffix('.input')
+    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', molscat_input_template_path.stem).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
-    singlet_phase = 0.04
-    triplet_phase = 0.24
-    
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
-    # singlet_scaling = round(singlet_scaling, sigfigs = 12)
     triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
-    # triplet_scaling = round(triplet_scaling, sigfigs = 12)
 
     with open(molscat_input_template_path, 'r') as molscat_template:
         input_content = molscat_template.read()
@@ -64,38 +54,35 @@ def create_and_run(molscat_input_template_path):
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    # print(molscat_command)
     print(f"{molscat_input_path.name} run")
     subprocess.run(molscat_command, shell = True)
-    # print("Molscat done!")
 
     duration = time.perf_counter()-time_0
     
-    return duration, molscat_input_template_path, molscat_output_path
+    return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path):
+def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
-
-    s_matrix_collection = SMatrixCollection(singletParameter = SINGLETSCALING, tripletParameter = TRIPLETSCALING, collisionEnergy = energy_tuple)
+    molscat_out_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs')
+    s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = singletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path)
     
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', molscat_output_directory_path.with_suffix('.pickle').name)
+    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir).with_suffix('.pickle'))
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
     s_matrix_collection.toPickle(pickle_path)
 
     duration = time.perf_counter()-time_0
 
-    return duration, s_matrix_collection, molscat_output_directory_path, pickle_path
+    return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 def rate_fmfms(s_matrix_collection: SMatrixCollection, F_out: int, MF_out: int, MS_out: int, F_in: int, MF_in: int, MS_in: int, param_indices: dict) -> float:
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
     rate = np.sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
     return rate
-
 
 def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int]) -> np.ndarray[Any, float]:
     
@@ -178,31 +165,26 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
 
     # return probability
 
-
-def main():
-
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld_100_E.pickle')
-    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'RbSr+_tcpld.pickle')
-    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'json_test_3.pickle')
-
-    time_0 = time.perf_counter()
-
-    #with Pool() as pool:
-    #    results = pool.imap(create_and_run, molscat_input_templates)
-    #
-    #    for duration, input_path, output_path in results:
-    #        output_dir = output_path.parent
-    #        print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
-
-    #print(f"The time of the calculations in molscat was {time.perf_counter() - time_0:.2f} s.")
-
-    #duration, s_matrix_collection, output_dir, pickle_path = collect_and_pickle( output_dir )
-    #print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-
+def create_and_run_parallel(molscat_input_templates, phases):
     t0 = time.perf_counter()
+    with Pool() as pool:
+       arguments = ( (x, *y) for x, y in itertools.product( molscat_input_templates, phases ))
+       results = pool.starmap(create_and_run, arguments)
+    
+       for duration, input_path, output_path in results:
+           output_dir = output_path.parent
+           print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
+    t1 = time.perf_counter()
+    print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
+
+    return output_dir
+
+def calculate_and_save_the_peff_parallel(pickle_path, phases = None):
+    ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
+    t4 = time.perf_counter()
+    fs = semiclassical_phase_function(singlet_scaling_path)
+    ft = semiclassical_phase_function(triplet_scaling_path)
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
-    # print(s_matrix_collection)
     
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
@@ -225,33 +207,57 @@ def main():
              f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
     abbreviations = ['hpf', 'cold_higher', 'cold_lower']
 
-    t4 = time.perf_counter()
-
-    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
-        print(abbreviation, name, arg)
-
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
         probability_array = probability(*arg).sum(axis = (0, 1)).squeeze()
         effective_probability_array = effective_probability(probability_array, pmf_array)
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 for the {name} are:')
+        print(f'The bare probabilities p_0 of the {name} are:')
         print(probability_array, '\n')
 
-        print(f'The effective probabilities p_eff for the {name} are:')
+        print(f'The effective probabilities p_eff of the {name} are:')
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
         
-        txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
+        data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
+        pickles_dir = data_produced_dir.joinpath('pickles')
+        txt_dir = data_produced_dir.joinpath('arrays')
+        txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir).with_stem(pickle_path.stem+'_'+abbreviation)).with_suffix('.txt')
+        # txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
-    
-    t5 = time.perf_counter()
-    print(f"The time of the loop calculations with parallelized probability function was {t5 - t4:.2f} s.")
+
+def main():
+    parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
+    parser = argparse.ArgumentParser(description=parser_description)
+    parser.add_argument("-s", "--singlet_phase", type = float, default = 0.04, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phase", type = float, default = 0.24, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    args = parser.parse_args()
+
+    number_of_parameters = 24
+    all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
+    SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
+    TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
+    # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
+
+    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
+    phases = ((args.singlet_phase, args.triplet_phase),)
+
+    ### RUN MOLSCAT ###
+    # output_dir = create_and_run_parallel(molscat_input_templates, phases)
+
+    ### COLLECT S-MATRIX AND PICKLE IT ####
+    # s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
+    # print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+
+    ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
+    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
+    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
+    calculate_and_save_the_peff_parallel(pickle_path, phases[0])
 
 
 if __name__ == '__main__':

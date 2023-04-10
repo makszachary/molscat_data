@@ -206,7 +206,7 @@ class SMatrix:
         if type(qn_out) != type(qn_in):
             raise TypeError(f"The types of the quantum numbers passed as arguments should be the same. You passed {qn_out =}: {type(qn_out)} and {qn_in =}: {type(qn_in)}.")
         # it would be good to replace the warning with a logger?
-        # if basis == None: basis = qn_in._fields; warnings.warn(f"The basis {basis} read from the type of qn_in argument.")
+        if basis == None: basis = qn_in._fields
         match (self.basis, basis):
             case (self.basis, self.basis):
                 return self.matrix.get((qn_out, qn_in), 0)
@@ -307,7 +307,7 @@ class SMatrix:
 
 
         L_max = max( [ qns[1].L for qns in self.matrix.keys() ])
-        # if basis == None: basis = qn_in._fields; warnings.warn(f"The basis {basis} read from the type of qn_in argument.")
+        if basis == None: basis = qn_in._fields
         match basis:
             case ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') | ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'):
                 qn_ins = (qn_in.__class__(L, 0, *qn_in[2:]) for L in range(0, L_max+1, 2))
