@@ -248,15 +248,15 @@ def main():
     phases = ((args.singlet_phase, args.triplet_phase),)
 
     ### RUN MOLSCAT ###
-    # output_dir = create_and_run_parallel(molscat_input_templates, phases)
+    output_dir = create_and_run_parallel(molscat_input_templates, phases)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    # s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
-    # print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
+    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
+    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
     calculate_and_save_the_peff_parallel(pickle_path, phases[0])
 
 
