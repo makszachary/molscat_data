@@ -185,7 +185,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None):
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
-        txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir).with_stem(pickle_path.stem+'_'+abbreviation)).with_suffix('.txt')
+        txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir).with_stem(pickle_path.with_suffix('')+'_'+abbreviation)).with_suffix('.txt')
         # txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
         np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}.')
