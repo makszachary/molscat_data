@@ -2,6 +2,8 @@
 
 hartree_in_SI                    = 4.3597447222071e-18
 Boltzmann_constant_in_SI         = 1.380649e-23
+inverse_fine_structure_constant  = 137.035999084
+fine_structure_constant          = 7.2973525693e-3
 
 # these are energy equivalents (or prefactors for the magneton values) in inverse cm [from physical_constants_module.f 2021]
 hartree_in_inv_cm                = 2.1947463136320e5 # hartree_in_SI*Joule_in_inv_cm
