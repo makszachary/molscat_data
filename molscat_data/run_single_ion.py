@@ -84,13 +84,11 @@ def rate_fmfms(s_matrix_collection: SMatrixCollection, F_out: int, MF_out: int, 
     rate = np.sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
     return rate
 
-def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int]) -> np.ndarray[Any, float]:
+def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None) -> np.ndarray[Any, float]:
     
     args = locals().copy()
     args.pop('s_matrix_collection')
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
-
-    param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
 
     averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
 
@@ -150,17 +148,19 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None):
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
+    param_indices = { "singletParameter": s_matrix_collection.singletParameter.index(parameter_from_semiclassical_phase(phases[0], singlet_scaling_path, starting_points=[1.000,1.010])), "tripletParameter": s_matrix_collection.tripletParameter.index( parameter_from_semiclassical_phase(phases[1], triplet_scaling_path, starting_points=[1.000,0.996]) ) } if phases is not None else None
+
     F_out, F_in, S = 2, 4, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in, param_indices)
 
     F_out, F_in, S = 4, 4, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in, param_indices)
 
     F_out, F_in, S = 2, 2, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in)
+    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, MS_out, F_in, MF_in, MS_in, param_indices)
 
     args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
     names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', 
@@ -203,7 +203,6 @@ def main():
     all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
     SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
     TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
-    print(TRIPLETSCALING)
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
