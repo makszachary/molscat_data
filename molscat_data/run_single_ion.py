@@ -203,6 +203,7 @@ def main():
     all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
     SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
     TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
+    print(TRIPLETSCALING)
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld').iterdir()
