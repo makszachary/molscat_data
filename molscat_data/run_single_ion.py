@@ -70,7 +70,8 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path)
     
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir)+'.pickle')
+    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir))
+    pickle_path = pickle_path.with_name(pickle_path.name+'.pickle')
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
     s_matrix_collection.toPickle(pickle_path)
