@@ -481,9 +481,9 @@ class SMatrixCollection:
                 
                 elif "SHORT-RANGE POTENTIAL 1 SCALING FACTOR" in line:
                     #  find values of short-range factors and C4
-                    A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)      
+                    A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)      
                     if self.singletParameter == None: self.singletParameter = (A_s,)
-                    rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 12) for singlet_parameter in self.singletParameter)
+                    rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 11) for singlet_parameter in self.singletParameter)
                     assert A_s in rounded_singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
                     A_s_index = rounded_singletParameter.index(A_s)
 
@@ -496,10 +496,10 @@ class SMatrixCollection:
                     C4_index = self.C4.index(C4)
                 
                 elif "SHORT-RANGE POTENTIAL 2 SCALING FACTOR" in line:
-                    A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)
+                    A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)
                     
                     if self.tripletParameter == None: self.tripletParameter = (A_t,)
-                    rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 12) for triplet_parameter in self.tripletParameter)
+                    rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 11) for triplet_parameter in self.tripletParameter)
                     assert A_t in rounded_tripletParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
                     A_t_index = rounded_tripletParameter.index(A_t)
 

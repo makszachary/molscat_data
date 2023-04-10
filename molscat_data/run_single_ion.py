@@ -68,7 +68,6 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
     s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = singletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
-        print(output_path)
         s_matrix_collection.update_from_output(file_path = output_path)
     
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir).with_suffix('.pickle'))
@@ -126,45 +125,6 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
 
     return probability
 
-        
-    
-    # results = rate_fmfms()
-        # results = np.fromiter( ( rate_fmfms(s_matrix_collection, *(args[name][index] for name in args)) for index in np.ndindex(arg_shapes[0]) ), dtype= float)
-        # print(results)
-    # print('fuck you')
-        
-
-    # args = locals().copy()
-    # args.pop('s_matrix_collection')
-    # print(dict(args))    
-    # print(arg_shapes)
-    # print(all(qn_shape == arg_shapes[0] for qn_shape in arg_shapes))
-    
-    # param_indices = { "singletParameter": (0,), "tripletParameter": (5,) }
-    
-    # L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
-    
-    # arguments = ( ( qn_number if isinstance(value, np.ndarray) else value for value in args.values()) for qn_number in value.flatten() )
-    # print(arguments)
-    # print(tuple(arguments))
-
-    # with Pool() as pool:
-    #    results = pool.starmap(rate_fmfms, args)
-
-    #    for name, result in zip(names, results):
-    #        print(result)
-
-    # rate = sum( s_matrix_collection.getRateCoefficient(qn.LF1F2(L, ML, F1 = F_out, MF1 = MF_out, F2 = 1, MF2 = MS_out), qn.LF1F2(L, ML, F1 = F_in, MF1 = MF_in, F2 = 1, MF2 = MS_in), param_indices = param_indices) for L in range(0, L_max+1, 2) for ML in range(-L, L+1, 2) )
-    # averaged_rate = s_matrix_collection.thermalAverage(rate)
-    
-    # averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
-    
-    # probability = averaged_rate/averaged_momentum_transfer_rate
-
-    # duration = time.perf_counter()-time_0
-    # print(f'{duration} s.')
-
-    # return probability
 
 def create_and_run_parallel(molscat_input_templates, phases):
     t0 = time.perf_counter()
