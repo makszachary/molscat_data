@@ -225,10 +225,10 @@ def main():
     first_point_scaling_values = (0.25, 0.5, 0.75, 1.00, 1.25, 1.5)
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
+    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
+    output_dirs = set(output_dir for output_dir in Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_first_pt_scaling', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}').iterdir() if output_dir.is_dir() )
     pickle_paths = set()
     for output_dir in output_dirs:
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
