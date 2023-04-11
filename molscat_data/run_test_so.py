@@ -141,7 +141,7 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
 
 def create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values) -> set:
     t0 = time.perf_counter()
-    output_dirs = {}
+    output_dirs = set()
     with Pool() as pool:
        arguments = ( (x, *y, z) for x, y, z in itertools.product( molscat_input_templates, phases, first_point_scaling_values ))
        results = pool.starmap(create_and_run, arguments)
@@ -231,7 +231,7 @@ def main():
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
-    pickle_paths = {}
+    pickle_paths = set()
     for output_dir in output_dirs:
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
         pickle_paths.add(pickle_path)
