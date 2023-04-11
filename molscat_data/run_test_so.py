@@ -61,7 +61,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
-        input_content = re.sub("LAMBDASOFILEPATH", str(lambda_so_path), input_content, flags = re.M)
+        input_content = re.sub("LAMBDASOFILEPATH", f'\"{lambda_so_path}\"', input_content, flags = re.M)
 
         with open(molscat_input_path, 'w') as molscat_input:
             molscat_input.write(input_content)
