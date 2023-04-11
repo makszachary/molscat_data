@@ -3,3 +3,4 @@ sigfig
 py3nj
 scipy
 msgpack
+matplotlib
