@@ -83,7 +83,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
         s_matrix_collection.update_from_output(file_path = output_path)
     
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir))
-    pickle_path = pickle_path.parent / pickle_path.name+'.pickle'
+    pickle_path = pickle_path.parent / (pickle_path.name + '.pickle')
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
     s_matrix_collection.toPickle(pickle_path)
@@ -199,7 +199,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
         txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir)).with_suffix('')
-        txt_path = txt_path.parent / txt_path.name+'_'+abbreviation+'.txt'
+        txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         # txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
         np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling:.2f}.')
