@@ -202,7 +202,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
         txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         # txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling:.2f}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
