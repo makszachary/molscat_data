@@ -225,7 +225,7 @@ def main():
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    first_point_scaling_values = (0.25, 0.5, 0.75, 1.00, 1.25, 1.5)
+    first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
