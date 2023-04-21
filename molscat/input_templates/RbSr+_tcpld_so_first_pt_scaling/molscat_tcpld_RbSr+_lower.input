@@ -30,7 +30,7 @@
     LMIN   =  0,
     LMAX   =  29,
     LSTEP  =  1,
-    ISPSP  =  -1,
+    ISPSP  =  1,
     NEXTRA =  2,
  /
 

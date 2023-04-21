@@ -24,6 +24,12 @@ def get_potentials(filepath):
         'distance': [],
         'energy': []
     }
+    so_coupling = {
+        'label': 'so_coupling',
+        'scaling': None,
+        'distance': [],
+        'energy': []
+    }
     
     with open(filepath, 'r') as molscatoutput:
         start, midstart = False, False
@@ -34,7 +40,9 @@ def get_potentials(filepath):
             elif "SHORT-RANGE POTENTIAL 2 SCALING FACTOR" in line:
                 A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)   
                 tripletpotential['scaling'] = A_t
-            
+            elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
+                A_so = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)   
+                tripletpotential['scaling'] = A_so
             elif "PROPAGATION RANGES ARE CONTROLLED BY VARIABLES RMIN, RMID AND RMAX, WITH INPUT VALUES" in line:
                 line = next(molscatoutput)
                 rmin, rmid, rmax = round(float( line.split()[2] ), sigfigs = 8, warn = False), round(float( line.split()[5] ), sigfigs = 8, warn = False), round(float( line.split()[8] ), sigfigs = 8, warn = False)
