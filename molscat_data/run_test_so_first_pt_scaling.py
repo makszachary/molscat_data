@@ -17,7 +17,7 @@ import time
 from _molscat_data.smatrix import SMatrix, SMatrixCollection, CollectionParameters, CollectionParametersIndices
 from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
-from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
+from old_utils.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
 

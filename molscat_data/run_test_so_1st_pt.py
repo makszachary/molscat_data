@@ -18,7 +18,7 @@ import time
 from _molscat_data.smatrix import SMatrix, SMatrixCollection, CollectionParameters, CollectionParametersIndices
 from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
-from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
+from old_utils.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
 
@@ -42,7 +42,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
 
     lambda_so_template_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'so_template_first_pt_scaling.dat'
-    lambda_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / f'so_{first_point_scaling:.2f}_first_pt_scaling.dat'
+    lambda_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / molscat_input_template_path.stem / f'so_{first_point_scaling:.2f}_first_pt_scaling.dat'
     lambda_so_path.parent.mkdir(parents = True, exist_ok = True)
 
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])

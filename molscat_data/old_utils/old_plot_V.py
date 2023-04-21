@@ -1,0 +1,138 @@
+import numpy as np
+from scaling_old import read_from_json
+from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
+import os
+from pathlib import Path
+import argparse
+import time
+
+# filepath = r"C:\Users\maksw\Documents\python\data\SO\RKHS\molscat-RbSr+30.json"
+# impath = filepath.strip('.json')+'.png'
+# singletpotential, tripletpotential = read_from_json(filepath)
+
+def plot_potentials(filepath, impath = None, show = False):
+    singletpotential, tripletpotential = read_from_json(filepath)
+    plt.figure()
+    plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
+    plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
+    # plt.plot(singletpotential['distance'], np.array(singletpotential['distance'])**4 * np.array(singletpotential['energy']), color = 'tab:blue', label = "$A^{1}\Sigma^{+}$")
+    # plt.plot(tripletpotential['distance'], np.array(tripletpotential['distance'])**4 * np.array(tripletpotential['energy']), color = 'tab:purple', label = "$a^{3}\Sigma^{+}$")
+    plt.xlim(5, 25)
+    plt.ylim(-0.03, 0.005)
+    plt.xlabel("$R, a_0$", fontsize = 'xx-large')
+    plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
+    # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
+    plt.grid()
+    plt.legend()
+    plt.tight_layout()
+    if isinstance(impath, str):
+        plt.savefig(impath)
+    if show == True:
+        plt.show()
+    else:
+        plt.close()
+
+def plot_scaling(path, xrange = [11,20], yrange = [-0.004, 0.0001], figsize=(10,6), dpi = 100, impath = None, show = False):
+    xx = np.arange(6,50,0.01)
+    data = read_from_json(path)
+    singletdata, tripletdata = [], []
+    for item in data:
+        if item['label'] == 'singlet':
+            singletdata.append(item)
+        elif item['label'] == 'triplet':
+            tripletdata.append(item)
+    singletdata = sorted(singletdata, key = lambda i: ( i['scaling'] ) )
+    fs0 = interp1d(singletdata[0]['distance'], singletdata[0]['energy'])
+    fs1 = interp1d(singletdata[-1]['distance'], singletdata[-1]['energy'])
+    tripletdata = sorted(tripletdata, key = lambda i: ( i['scaling'] ) )
+    ft0 = interp1d(tripletdata[0]['distance'], tripletdata[0]['energy'])
+    ft1 = interp1d(tripletdata[-1]['distance'], tripletdata[-1]['energy'])
+    
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.add_subplot(100, 100, (1,10000))
+
+    linecolor = 'firebrick'
+    fillcolor = 'darksalmon'
+    ax.plot(xx, fs0(xx), color = linecolor, linewidth = 2, linestyle = '--', label = r"$(2)\,{}^{1}\Sigma^{+}$")
+    ax.plot(xx, fs1(xx), color = linecolor, linewidth = 2, linestyle = '--')
+    ax.fill_between(xx, fs0(xx), fs1(xx), color = fillcolor)
+
+    ax1 = fig.add_subplot(100, 100, (2865,6100))
+    ax1.plot(xx, fs0(xx), color = linecolor, linestyle = '--')
+    ax1.plot(xx, fs1(xx), color = linecolor, linestyle = '--')
+    ax1.fill_between(xx, fs0(xx), fs1(xx), color = fillcolor)
+    ax1.set_xlim(12.5, 16.8)
+    ax1.set_ylim(-0.0038,-0.0022)
+    ax1.tick_params(axis = 'both', direction='in', pad = 2, grid_color = 'gray', grid_alpha = 0.5)
+    ax1.tick_params(axis = 'x', top = True, labeltop = True, labelbottom = False)
+    ax1.grid()
+
+    linecolor = 'indigo'
+    fillcolor = 'mediumslateblue'
+    ax.plot(xx, ft0(xx), color = linecolor, linewidth = 2, linestyle = '--', label = r"$(1)\,{}^{3}\Sigma^{+}$")
+    ax.plot(xx, ft1(xx), color = linecolor, linewidth = 2, linestyle = '--')
+    ax.fill_between(xx, ft0(xx), ft1(xx), color = fillcolor)
+
+    ax2 = fig.add_subplot(100, 100, (6265,9500))
+    ax2.plot(xx, ft0(xx), color = linecolor, linestyle = '--')
+    ax2.plot(xx, ft1(xx), color = linecolor, linestyle = '--')
+    ax2.fill_between(xx, ft0(xx), ft1(xx), color = fillcolor)
+    ax2.set_xlim(8.1, 12.4)
+    ax2.set_ylim(-0.0295,-0.0225)
+    ax2.tick_params(axis = 'both', direction='in', pad = 2, grid_color = 'gray', grid_alpha = 0.5)
+    ax2.tick_params(axis = 'x', top = True)
+    ax2.grid()
+
+    # for tripletpotential in tripletdata:
+    #     ax.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = r"$a^{3}\Sigma^{+} \times %s$" % tripletpotential['scaling'])
+    # ax.plot(singletpotential['distance'], np.array(singletpotential['distance'])**4 * np.array(singletpotential['energy']), color = 'tab:blue', label = "$A^{1}\Sigma^{+}$")
+    # ax.plot(tripletpotential['distance'], np.array(tripletpotential['distance'])**4 * np.array(tripletpotential['energy']), color = 'tab:purple', label = "$a^{3}\Sigma^{+}$")
+    ax.set_xlim(xrange)
+    ax.set_ylim(yrange)
+    ax.tick_params(axis = 'both', labelsize ='large')
+    ax.set_xlabel("$R \, (a_0)$", fontsize = 'xx-large')
+    ax.set_ylabel("$V(R) \, (E_h$)", fontsize = 'xx-large')
+    # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
+    ax.grid(color = 'gray')
+    fig.legend(loc = 'upper right', bbox_to_anchor = (0.90, 0.89), labelspacing = 0.1, fontsize = 'large')
+    plt.tight_layout()
+    if isinstance(impath, str):
+        plt.savefig(impath)
+    if show == True:
+        plt.show()
+    else:
+        plt.close()
+
+def main():
+    parser_description = "This is a python script for plotting the potential curves fitted by RKHS from MOLSCAT outputs."
+    parser = argparse.ArgumentParser(description=parser_description)
+    parser.add_argument("-i", "--input", type = str, required = True, help = "Path to the input file or directory")
+    parser.add_argument("-o", "--output", type = str, required = True, help = "Path to the output file or directory")
+    # parser.add_argument("-r", "--recursive", action = 'store_true', help = "If enabled, the input directory will be searched for .output files recursively.")
+    parser.add_argument("--extension", type = str, default = r'.png', help = "Extension of the output plot file (if a directory was specified as an output and input)")
+    parser.add_argument("--show", action = 'store_true', help = "If enabled, the image will be shown (in the single-file case).")
+    parser.add_argument("--scaling", action = 'store_true', help = "If enabled, the image will show all the potential curves to show scaling.")
+    args = parser.parse_args()
+
+
+    if args.scaling:
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        plot_scaling(path = args.input, xrange = [6,30], yrange = [-0.03, 0.005], impath = args.output, show = args.show)
+    elif os.path.isfile(args.input) and not os.path.isdir(args.output):
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        plot_potentials(filepath = args.input, impath = args.output, show = args.show)
+    elif os.path.isdir(args.input):
+        Path(args.output).mkdir(parents=True, exist_ok=True)
+        for file in os.scandir(args.input):
+            if file.is_file() and file.name.endswith('.json'):
+                plot_potentials(filepath = file.path, impath = os.path.join(args.output, file.name.strip('.json')+args.extension))
+                print("Data from ", file.name, " plotted.")
+    else:
+        print("Input and output should both be .json files or both should be directories. Try again")
+        return
+
+if __name__ == "__main__":
+    start_time = time.time()
+    main()
+    print("---Time of generating plots was %s seconds ---" % (time.time() - start_time))
