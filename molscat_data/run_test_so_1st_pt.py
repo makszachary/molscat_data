@@ -1,5 +1,6 @@
 from typing import Any
 import subprocess
+import os
 from pathlib import Path, PurePath
 import re
 import argparse
@@ -27,6 +28,7 @@ triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
+scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, first_point_scaling: float) -> tuple[float, float, float]:
     
@@ -39,7 +41,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -76,7 +78,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
-    molscat_out_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs')
+    molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
     s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = tripletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
@@ -199,10 +201,11 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
         txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir)).with_suffix('')
+        so_scaling = txt_path.name
         txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         # txt_path = pickle_path.parent.joinpath('arrays', pickle_path.stem+'_'+abbreviation).with_suffix('.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {so_scaling}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -228,7 +231,7 @@ def main():
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    output_dirs = set(output_dir for output_dir in Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_first_pt_scaling', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}').iterdir() if output_dir.is_dir() )
+    #output_dirs = set(output_dir for output_dir in Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_first_pt_scaling', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}').iterdir() if output_dir.is_dir() )
     pickle_paths = set()
     for output_dir in output_dirs:
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
