@@ -186,7 +186,13 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
-        probability_array = probability(*arg).sum(axis = (0, 1)).squeeze()
+        probability_array = probability(*arg)
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} are:')
+        print(probability_array, '\n')
+        
+        probability_array = probability_array.sum(axis = (0, 1)).squeeze()
         effective_probability_array = effective_probability(probability_array, pmf_array)
 
         print("------------------------------------------------------------------------")
@@ -196,7 +202,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
         print(f'The effective probabilities p_eff of the {name} are:')
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
-        
+
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
