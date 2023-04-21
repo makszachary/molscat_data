@@ -10,7 +10,7 @@ import time
 # filepath = r"C:\Users\maksw\Documents\python\data\SO\RKHS\molscat-RbSr+30.output"
 
 
-def get_potentials(filepath):
+def get_potentials_and_so(file_path: Path | str) -> tuple[dict, dict, dict]:
 
     singletpotential = {
         'label': 'singlet',
@@ -31,7 +31,7 @@ def get_potentials(filepath):
         'energy': []
     }
     
-    with open(filepath, 'r') as molscatoutput:
+    with open(file_path, 'r') as molscatoutput:
         start, midstart = False, False
         for line in molscatoutput:
             if "SHORT-RANGE POTENTIAL 1 SCALING FACTOR" in line:
@@ -112,13 +112,13 @@ def main():
     args = parser.parse_args()
 
     if Path(args.input).is_file() and not Path(args.output).is_dir():
-        potential_data = get_potentials(args.input)
+        potential_data = get_potentials_and_so(args.input)
         update_json(potential_data, args.output)
     elif Path(args.input).is_dir():
         Path(args.output).mkdir(parents=True, exist_ok=True)
         for file_path in Path(args.input).iterdir():
             if file_path.is_file() and file_path.name.endswith('.output'):
-                potential_data = get_potentials(file_path)
+                potential_data = get_potentials_and_so(file_path)
                 update_json(potential_data, Path(args.output).joinpath(file_path.name.strip('.output')+r'.json'))
                 print(file_path.name, " read.")
     else:
