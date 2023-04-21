@@ -42,7 +42,7 @@ def get_potentials(filepath):
                 tripletpotential['scaling'] = A_t
             elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
                 A_so = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 12)   
-                tripletpotential['scaling'] = A_so
+                so_coupling['scaling'] = A_so
             elif "PROPAGATION RANGES ARE CONTROLLED BY VARIABLES RMIN, RMID AND RMAX, WITH INPUT VALUES" in line:
                 line = next(molscatoutput)
                 rmin, rmid, rmax = round(float( line.split()[2] ), sigfigs = 8, warn = False), round(float( line.split()[5] ), sigfigs = 8, warn = False), round(float( line.split()[8] ), sigfigs = 8, warn = False)
@@ -54,12 +54,14 @@ def get_potentials(filepath):
                     r = rmin
                 except NameError:
                     r = 0
-                    print("WARNING: minimum distance of propagation no specified")
+                    warnings.warn("Minimum distance of propagation no specified")
             elif "P(I)" in line and start and not midstart:
                 singletpotential['distance'].append( r )
                 singletpotential['energy'].append( float(line.split()[2]) )
                 tripletpotential['distance'].append( r )
                 tripletpotential['energy'].append( float(line.split()[3]) )
+                so_coupling['distance'].append( r )
+                so_coupling['energy'].append( float(line.split()[4]) )
                 r = round(r + dr/2, sigfigs = 8, warn = False)
             
             elif "MDPROP. LOG-DERIVATIVE MATRIX PROPAGATED FROM" in line:
@@ -79,9 +81,11 @@ def get_potentials(filepath):
                 # singletpotential['distance'].append( r )
                 singletpotential['energy'].append( float(line.split()[2]) )
                 tripletpotential['energy'].append( float(line.split()[3]) )
+                so_coupling['energy'].append( float(line.split()[4]) )
                 line = next(molscatoutput)
                 singletpotential['energy'].append( float(line.split()[2]) )
                 tripletpotential['energy'].append( float(line.split()[3]) )
+                so_coupling['energy'].append( float(line.split()[4]) )
                 line = next(molscatoutput)
                 if "AIPROP" in line:
                     line = next(molscatoutput)
@@ -91,30 +95,32 @@ def get_potentials(filepath):
                 r = round(r + dr/2, sigfigs = 8, warn = False)
                 singletpotential['distance'].append( r )
                 tripletpotential['distance'].append( r )
+                so_coupling['distance'].append( r )
                 
                 r = round(r + dr/2, sigfigs = 8, warn = False)
                 singletpotential['distance'].append( r )
                 tripletpotential['distance'].append( r )
-    return singletpotential, tripletpotential
+                so_coupling['distance'].append( r )
+    return singletpotential, tripletpotential, so_coupling
 
 
 def main():
-    parser_description = "This is a python script for collecting the potential curves fitted by RKHS from MOLSCAT outputs."
+    parser_description = "This is a python script for collecting the potential and spin-orbit coupling curves fitted by RKHS from MOLSCAT outputs."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-i", "--input", type = str, required = True, help = "Path to the input file or directory")
     parser.add_argument("-o", "--output", type = str, required = True, help = "Path to the output file or directory")
     # parser.add_argument("-r", "--recursive", action = 'store_true', help = "If enabled, the input directory will be searched for .output files recursively.")
     args = parser.parse_args()
 
-    if os.path.isfile(args.input) and not os.path.isdir(args.output):
+    if Path(args.input).is_file() and not Path(args.output).is_dir():
         potential_data = get_potentials(args.input)
         update_json(potential_data, args.output)
-    elif os.path.isdir(args.input):
+    elif Path(args.input).is_dir():
         Path(args.output).mkdir(parents=True, exist_ok=True)
-        for file in os.scandir(args.input):
+        for file in Path(args.input).iterdir():
             if file.is_file() and file.name.endswith('.output'):
                 potential_data = get_potentials(file.path)
-                update_json(potential_data, os.path.join(args.output,file.name.strip('.output')+r'.json'))
+                update_json(potential_data, Path(args.output).joinpath(file.name.strip('.output')+r'.json'))
                 print(file.name, " read.")
     else:
         print("Input and output should both be .json files or both should be directories. Try again")

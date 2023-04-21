@@ -12,10 +12,11 @@ import time
 # singletpotential, tripletpotential = read_from_json(filepath)
 
 def plot_potentials(filepath, impath = None, show = False):
-    singletpotential, tripletpotential = read_from_json(filepath)
+    singletpotential, tripletpotential, so_coupling = read_from_json(filepath)
     plt.figure()
     plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
     plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
+    plt.plot(so_coupling['distance'], np.array(so_coupling['energy'])*10**3, color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)*10^3$")
     # plt.plot(singletpotential['distance'], np.array(singletpotential['distance'])**4 * np.array(singletpotential['energy']), color = 'tab:blue', label = "$A^{1}\Sigma^{+}$")
     # plt.plot(tripletpotential['distance'], np.array(tripletpotential['distance'])**4 * np.array(tripletpotential['energy']), color = 'tab:purple', label = "$a^{3}\Sigma^{+}$")
     plt.xlim(5, 25)
