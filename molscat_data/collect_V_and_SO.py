@@ -1,6 +1,6 @@
 import warnings
 
-from scaling_old import update_json
+from _molscat_data.scaling_old import update_json
 from sigfig import round
 import argparse
 import os
@@ -78,7 +78,6 @@ def get_potentials(filepath):
                 line = next(molscatoutput)
             
             elif "P(I)" in line and midstart:
-                # singletpotential['distance'].append( r )
                 singletpotential['energy'].append( float(line.split()[2]) )
                 tripletpotential['energy'].append( float(line.split()[3]) )
                 so_coupling['energy'].append( float(line.split()[4]) )
@@ -117,11 +116,11 @@ def main():
         update_json(potential_data, args.output)
     elif Path(args.input).is_dir():
         Path(args.output).mkdir(parents=True, exist_ok=True)
-        for file in Path(args.input).iterdir():
-            if file.is_file() and file.name.endswith('.output'):
-                potential_data = get_potentials(file.path)
-                update_json(potential_data, Path(args.output).joinpath(file.name.strip('.output')+r'.json'))
-                print(file.name, " read.")
+        for file_path in Path(args.input).iterdir():
+            if file_path.is_file() and file_path.name.endswith('.output'):
+                potential_data = get_potentials(file_path)
+                update_json(potential_data, Path(args.output).joinpath(file_path.name.strip('.output')+r'.json'))
+                print(file_path.name, " read.")
     else:
         print("Input and output should both be .json files or both should be directories. Try again")
         return

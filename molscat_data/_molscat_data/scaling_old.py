@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 from scipy import optimize
 
 # from more_itertools import unique_everseen
-from .._molscat_data.physical_constants import red_mass_87Rb_88Sr
+from .physical_constants import red_mass_87Rb_88Sr
 
 class ComplexEncoder(json.JSONEncoder):
     def default(self, z):

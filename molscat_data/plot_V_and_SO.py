@@ -1,5 +1,5 @@
 import numpy as np
-from scaling_old import read_from_json
+from _molscat_data.scaling_old import read_from_json
 from matplotlib import pyplot as plt
 from scipy.interpolate import interp1d
 import os
@@ -16,11 +16,11 @@ def plot_potentials(filepath, impath = None, show = False):
     plt.figure()
     plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
     plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
-    plt.plot(so_coupling['distance'], np.array(so_coupling['energy'])*10**3, color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)*10^3$")
+    plt.plot(so_coupling['distance'], np.array(so_coupling['energy'])*10**3, color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)\\times10^3$")
     # plt.plot(singletpotential['distance'], np.array(singletpotential['distance'])**4 * np.array(singletpotential['energy']), color = 'tab:blue', label = "$A^{1}\Sigma^{+}$")
     # plt.plot(tripletpotential['distance'], np.array(tripletpotential['distance'])**4 * np.array(tripletpotential['energy']), color = 'tab:purple', label = "$a^{3}\Sigma^{+}$")
     plt.xlim(5, 25)
-    plt.ylim(-0.03, 0.005)
+    plt.ylim(-0.03, 0.05)
     plt.xlabel("$R, a_0$", fontsize = 'xx-large')
     plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
