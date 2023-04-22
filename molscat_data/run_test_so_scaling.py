@@ -199,6 +199,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
         
+
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
@@ -207,8 +208,8 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
         output_state_res_txt_path = txt_path.parent / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
         txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array, fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling:.2f}.')
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling:.2f}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
