@@ -24,7 +24,7 @@ from _molscat_data.physical_constants import amu_to_au
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 
@@ -218,7 +218,7 @@ def main():
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    so_scaling_values = (0.25, 0.5, 0.75, 1.00, 1.25, 1.5)
+    so_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.5, 2.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
