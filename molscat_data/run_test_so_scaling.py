@@ -1,5 +1,6 @@
 from typing import Any
 import subprocess
+import os
 from pathlib import Path, PurePath
 import re
 import argparse
@@ -27,6 +28,7 @@ triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 E_min, E_max, nenergies, n = 4e-7, 4e-3, 10, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
+scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float) -> tuple[float, float, float]:
     
@@ -34,8 +36,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = Path(__file__).parents[1].joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -50,9 +52,9 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
-        input_content = re.sub("SINGLETPATH", str(singlet_potential_path), input_content, flags = re.M)
-        input_content = re.sub("TRIPLETPATH", str(triplet_potential_path), input_content, flags = re.M)
-        input_content = re.sub("SOPATH", str(so_path), input_content, flags = re.M)
+        input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
+        input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
+        input_content = re.sub("SOPATH", f'\"{so_path}\"', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
         input_content = re.sub("SOSCALING", str(so_scaling), input_content, flags = re.M)
