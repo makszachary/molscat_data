@@ -74,7 +74,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
-    molscat_out_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs')
+    molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
     s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = tripletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
