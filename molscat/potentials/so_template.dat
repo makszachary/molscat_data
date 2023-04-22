@@ -3,7 +3,7 @@
 # also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)
 3 0 3 T 1
 # also ignored (Ra, C3, RC3)
-15.0 -5.325135452067e-05 50.0
+15.0 5.325135452067e-05 50.0
 # also ignored
 7.00 VALUEATTHEBEGINNING
 10.00 3.336835441906137e-06

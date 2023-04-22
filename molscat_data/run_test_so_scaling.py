@@ -39,6 +39,10 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
+    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
+    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
+    so_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'so.dat'
+
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
     triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
 
@@ -46,6 +50,9 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
+        input_content = re.sub("SINGLETPATH", str(singlet_potential_path), input_content, flags = re.M)
+        input_content = re.sub("TRIPLETPATH", str(triplet_potential_path), input_content, flags = re.M)
+        input_content = re.sub("SOPATH", str(so_path), input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
         input_content = re.sub("SOSCALING", str(so_scaling), input_content, flags = re.M)
