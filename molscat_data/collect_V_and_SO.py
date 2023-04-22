@@ -119,7 +119,7 @@ def main():
         for file_path in Path(args.input).iterdir():
             if file_path.is_file() and file_path.name.endswith('.output'):
                 potential_data = get_potentials_and_so(file_path)
-                update_json(potential_data, Path(args.output).joinpath(file_path.name.strip('.output')+r'.json'))
+                update_json(potential_data, Path(args.output).joinpath(file_path.with_suffix('.json')).name)
                 print(file_path.name, " read.")
     else:
         print("Input and output should both be .json files or both should be directories. Try again")

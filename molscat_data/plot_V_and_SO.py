@@ -11,8 +11,8 @@ import time
 # impath = filepath.strip('.json')+'.png'
 # singletpotential, tripletpotential = read_from_json(filepath)
 
-def plot_potentials(filepath, impath = None, show = False):
-    singletpotential, tripletpotential, so_coupling = read_from_json(filepath)
+def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool = False) -> None:
+    singletpotential, tripletpotential, so_coupling = read_from_json(file_path)
     plt.figure()
     plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
     plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
@@ -24,10 +24,10 @@ def plot_potentials(filepath, impath = None, show = False):
     plt.xlabel("$R, a_0$", fontsize = 'xx-large')
     plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
-    plt.grid()
+    plt.grid('both')
     plt.legend()
     plt.tight_layout()
-    if isinstance(impath, str):
+    if impath is not None:
         plt.savefig(impath)
     if show == True:
         plt.show()
@@ -120,15 +120,16 @@ def main():
     if args.scaling:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
         plot_scaling(path = args.input, xrange = [6,30], yrange = [-0.03, 0.005], impath = args.output, show = args.show)
-    elif os.path.isfile(args.input) and not os.path.isdir(args.output):
+    elif Path(args.input).is_file() and not Path(args.output).is_dir:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-        plot_potentials(filepath = args.input, impath = args.output, show = args.show)
-    elif os.path.isdir(args.input):
+        plot_potentials(file_path = args.input, impath = args.output, show = args.show)
+    elif Path(args.input).is_dir():
         Path(args.output).mkdir(parents=True, exist_ok=True)
-        for file in os.scandir(args.input):
-            if file.is_file() and file.name.endswith('.json'):
-                plot_potentials(filepath = file.path, impath = os.path.join(args.output, file.name.strip('.json')+args.extension))
-                print("Data from ", file.name, " plotted.")
+        for file_path in Path(args.input).iterdir():
+            if file_path.is_file() and file_path.name.endswith('.json'):
+                print(file_path.name)
+                plot_potentials(file_path = file_path, impath = Path(args.output).joinpath(file_path.with_suffix(args.extension).name) )
+                print(f"Data from {file_path.name} plotted to {Path(args.output).joinpath(file_path.with_suffix(args.extension).name)}.")
     else:
         print("Input and output should both be .json files or both should be directories. Try again")
         return
