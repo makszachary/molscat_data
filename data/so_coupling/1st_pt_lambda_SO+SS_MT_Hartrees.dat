@@ -1,10 +1,3 @@
-# first line anyway ignored (n. of points, energy shift, scaling = scaling x scaling, unit of disctance, unit of energy [both in units defined in POTL block])
-33 0.0 1.0 1.0 1.0
-# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)
-3 0 3 T 1
-# also ignored (Ra, C3, RC3)
-25.0 -5.325135452067e-05 50.0
-# also ignored
 7.00 -4.435395152865600e-05
 7.25 -1.578157811626889e-05
 7.50 -9.940423720814621e-06

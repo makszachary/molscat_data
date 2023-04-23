@@ -50,7 +50,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     with open(lambda_so_template_path, 'r') as lambda_so_template:
         lambda_so_content = lambda_so_template.read()
-        lambda_so_content = re.sub("FIRSTPOINTVALUE", f'{first_point_scaling*4.435395152865600e-05:.15e}', lambda_so_content, flags = re.M)
+        lambda_so_content = re.sub("FIRSTPOINTVALUE", f'{-4.435395152865600e-05*first_point_scaling:.15e}', lambda_so_content, flags = re.M)
         with open(lambda_so_path, 'w') as lambda_so_file:
             lambda_so_file.write(lambda_so_content)
             lambda_so_file.truncate()
