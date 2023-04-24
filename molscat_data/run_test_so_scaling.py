@@ -1,3 +1,5 @@
+### The scaling of the SO term should be done outside molscat - we don't want to scale the pure spin-spin part...
+
 from typing import Any
 import subprocess
 import os

@@ -7,9 +7,10 @@ from _molscat_data.physical_constants import hartree_in_inv_cm, fine_structure_c
 
 so_coupling_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
 so_coupling = np.loadtxt(so_coupling_path, dtype = float)
-
-so_coupling[:,1] /= -hartree_in_inv_cm
-so_coupling[:,1] += fine_structure_constant**2 / so_coupling[:,0]**3
+print(1/(hartree_in_inv_cm**2 * fine_structure_constant**2))
+so_coupling[:,1] /= (hartree_in_inv_cm**2 * fine_structure_constant**2)
+so_coupling[:,1] -=  1/(so_coupling[:,0]**3*hartree_in_inv_cm)
+print(1/hartree_in_inv_cm)
 
 plt.scatter(so_coupling[:,0], so_coupling[:,1])
 plt.show()

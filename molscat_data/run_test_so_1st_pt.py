@@ -44,13 +44,14 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     lambda_so_template_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'so_template.dat'
     lambda_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / molscat_input_template_path.stem / f'so_{first_point_scaling:.2f}_first_pt_scaling.dat'
     lambda_so_path.parent.mkdir(parents = True, exist_ok = True)
+    first_point_value = 3.795048497358345e-06
 
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
     triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
 
     with open(lambda_so_template_path, 'r') as lambda_so_template:
         lambda_so_content = lambda_so_template.read()
-        lambda_so_content = re.sub("FIRSTPOINTVALUE", f'{-4.435395152865600e-05*first_point_scaling:.15e}', lambda_so_content, flags = re.M)
+        lambda_so_content = re.sub("FIRSTPOINTVALUE", f'{first_point_value*first_point_scaling:.15e}', lambda_so_content, flags = re.M)
         with open(lambda_so_path, 'w') as lambda_so_file:
             lambda_so_file.write(lambda_so_content)
             lambda_so_file.truncate()
@@ -186,31 +187,35 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
-        probability_array = probability(*arg)
-
-        print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} are:')
-        print(probability_array, '\n')
         
-        probability_array = probability_array.sum(axis = (0, 1)).squeeze()
-        effective_probability_array = effective_probability(probability_array, pmf_array)
-
-        print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} are:')
-        print(probability_array, '\n')
-
-        print(f'The effective probabilities p_eff of the {name} are:')
-        print(effective_probability_array)
-        print("------------------------------------------------------------------------")
-
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
         txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir)).with_suffix('')
-        so_scaling = txt_path.name
+        first_point_scaling = txt_path.name
+        output_state_res_txt_path = txt_path.parent / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
         txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {so_scaling}.')
+
+        probability_array = probability(*arg)
+        output_state_resolved_probability_array = probability_array.squeeze()
+        probability_array = probability_array.sum(axis = (0, 1)).squeeze()
+        effective_probability_array = effective_probability(probability_array, pmf_array)
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {first_point_scaling=} are:')
+        print(output_state_resolved_probability_array, '\n')
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {first_point_scaling=} are:')
+        print(probability_array, '\n')
+
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {first_point_scaling=} are:')
+        print(effective_probability_array)
+        print("------------------------------------------------------------------------")
+
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
