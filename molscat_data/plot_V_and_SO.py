@@ -40,7 +40,7 @@ def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None
     plt.figure()
     plt.plot(singlet_potential['distance'], np.array(triplet_potential['energy'])-np.array(singlet_potential['energy']), color = 'tab:blue', label = "$(1)\,{}^{3}\Sigma^{+} - (2)\,{}^{1}\Sigma^{+}$")
     plt.plot(so_coupling['distance'], so_coupling['energy'], color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)$")
-    plt.plot(np.array(so_coupling['distance']), L*(L+1)/(2 * reduced_mass * np.array(so_coupling['distance']) ), color = 'red', label = "$L(L+1)/2\muR^2$" )
+    plt.plot(np.array(so_coupling['distance']), L*(L+1)/(2 * reduced_mass * np.array(so_coupling['distance']) ), color = 'red', label = r"$L(L+1)/2 \mu R^2$" )
     # max_so = max(so_coupling['energy'])
     max_so = 1e-5
     plt.xlim(5, 100)
