@@ -50,6 +50,7 @@ def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None
     plt.legend()
     plt.tight_layout()
     if impath is not None:
+        Path(impath).parent.mkdir(parents = True, exist_ok = True)
         plt.savefig(impath)
     if show == True:
         plt.show()
