@@ -31,7 +31,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     added_ss_distances = np.arange(max_distance + 5, max_distance + 15, 1)
     added_ss_coupling = np.array(zip(added_ss_distances, -C3/added_ss_distances**3))
     
-    so_and_ss = np.concatenate(so_coupling, added_ss_coupling)
+    so_and_ss = np.concatenate( (so_coupling, added_ss_coupling) )
 
     number_of_points = so_and_ss.shape[0]
     condition_check_distance = max_distance + 10
