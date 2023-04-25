@@ -38,13 +38,13 @@ def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool
 def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None, L: int = 2, reduced_mass: float = red_mass_87Rb_88Sr, show: bool = False) -> None:
     singlet_potential, triplet_potential, so_coupling = read_from_json(file_path)
     plt.figure()
-    plt.plot(singlet_potential['distance'], np.array(triplet_potential['energy'])-np.array(singlet_potential['energy']), color = 'tab:blue', label = "$(1)\,{}^{3}\Sigma^{+} - (2)\,{}^{1}\Sigma^{+}$")
+    plt.plot(singlet_potential['distance'], np.abs(np.array(triplet_potential['energy'])-np.array(singlet_potential['energy'])), color = 'tab:blue', label = "$|V_t(R)-V_s(R)|$")
     plt.plot(so_coupling['distance'], so_coupling['energy'], color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)$")
     plt.plot(np.array(so_coupling['distance']), L*(L+1)/(2 * reduced_mass * np.array(so_coupling['distance']) ), color = 'red', label = r"$L(L+1)/2 \mu R^2$" )
     # max_so = max(so_coupling['energy'])
     max_so = 1e-5
     plt.xlim(5, 60)
-    plt.ylim(-max_so, 1.5*max_so)
+    plt.ylim(-0.1*max_so, 2*max_so)
     plt.xlabel("$R, a_0$", fontsize = 'xx-large')
     plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     plt.grid('both')
