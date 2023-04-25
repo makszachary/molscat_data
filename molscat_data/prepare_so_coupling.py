@@ -20,11 +20,21 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
     so_coupling = np.loadtxt(input_path, dtype = float)
-    
-    C3 = 1/hartree_in_inv_cm
-    number_of_points = so_coupling.shape[0]
     max_distance = np.max(so_coupling[:,0])
-    condition_check_distance = max_distance + 50
+    C3 = 1/hartree_in_inv_cm
+    
+
+    so_coupling[:,1] /= (hartree_in_inv_cm**2 * fine_structure_constant**2)
+    so_coupling[:,1] *= scaling
+    so_coupling[:,1] -=  C3/so_coupling[:,0]**3
+
+    added_ss_distances = np.arange(max_distance + 5, max_distance + 15, 1)
+    added_ss_coupling = np.array(zip(added_ss_distances, -C3/added_ss_distances**3))
+    
+    so_and_ss = np.concatenate(so_coupling, added_ss_coupling)
+
+    number_of_points = so_and_ss.shape[0]
+    condition_check_distance = max_distance + 10
     
     if header == None:
         header = (  f'# first line anyway ignored (n. of points, energy shift, scaling = scaling x scaling, unit of disctance, unit of energy [both in units defined in POTL block])\n'
@@ -32,15 +42,11 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
                     f'# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)\n'
                     f'3 2 1 T 1\n'
                     f'# also ignored (Ra, C3, RC3)\n'
-                    f'25.0 {C3:.15e} {condition_check_distance}\n'
+                    f'32.0 {C3:.15e} {condition_check_distance}\n'
                     f'# also ignored'
                     )
-    
 
-    so_coupling[:,1] /= (hartree_in_inv_cm**2 * fine_structure_constant**2)
-    so_coupling[:,1] *= scaling
-    so_coupling[:,1] -=  C3/so_coupling[:,0]**3
-    np.savetxt(output_path, so_coupling, fmt = ['%.2f','%.15e'], header = header, comments = '')
+    np.savetxt(output_path, so_and_ss, fmt = ['%.2f','%.15e'], header = header, comments = '')
 
 
 def main():
