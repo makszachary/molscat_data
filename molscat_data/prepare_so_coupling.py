@@ -34,7 +34,8 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     so_and_ss = np.concatenate( (so_coupling, added_ss_coupling) )
 
     number_of_points = so_and_ss.shape[0]
-    condition_check_distance = max_distance + 10
+    new_max_distance = max(so_and_ss[:,0])
+    condition_check_distance = new_max_distance + 5
     
     if header == None:
         header = (  f'# first line anyway ignored (n. of points, energy shift, scaling = scaling x scaling, unit of disctance, unit of energy [both in units defined in POTL block])\n'
@@ -42,7 +43,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
                     f'# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)\n'
                     f'3 2 1 T 1\n'
                     f'# also ignored (Ra, C3, RC3)\n'
-                    f'32.0 {C3:.15e} {condition_check_distance}\n'
+                    f'{new_max_distance-5} {C3:.15e} {condition_check_distance}\n'
                     f'# also ignored'
                     )
 
