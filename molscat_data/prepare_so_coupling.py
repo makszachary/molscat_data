@@ -48,6 +48,10 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
                     )
 
     np.savetxt(output_path, so_and_ss, fmt = ['%.2f','%.15e'], header = header, comments = '')
+    with open(output_path) as file:
+        data = file.read().rstrip('\n')
+    with open(output_path, 'w') as file:
+        file.write(data)
 
 
 def main():
