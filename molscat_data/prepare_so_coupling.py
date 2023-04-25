@@ -27,11 +27,11 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     so_coupling[:,1] /= (hartree_in_inv_cm**2 * fine_structure_constant**2)
     so_coupling[:,1] *= scaling
     so_coupling[:,1] -=  C3/so_coupling[:,0]**3
-
-    added_ss_distances = np.arange(max_distance + 2, max_distance + 15, 1)
-    added_ss_coupling = np.array( [list(added_ss_distances), list(-C3/added_ss_distances**3) ]).transpose()
+    so_and_ss = so_coupling
+    # added_ss_distances = np.arange(max_distance + 2, max_distance + 15, 1)
+    # added_ss_coupling = np.array( [list(added_ss_distances), list(-C3/added_ss_distances**3) ]).transpose()
     
-    so_and_ss = np.concatenate( (so_coupling, added_ss_coupling) )
+    # so_and_ss = np.concatenate( (so_coupling, added_ss_coupling) )
 
     number_of_points = so_and_ss.shape[0]
     new_max_distance = max(so_and_ss[:,0])
