@@ -29,7 +29,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     so_coupling[:,1] -=  C3/so_coupling[:,0]**3
 
     added_ss_distances = np.arange(max_distance + 5, max_distance + 15, 1)
-    added_ss_coupling = np.fromiter(zip(added_ss_distances, -C3/added_ss_distances**3), dtype = float)
+    added_ss_coupling = np.array( [list(added_ss_distances), list(-C3/added_ss_distances**3) ]).transpose()
     
     so_and_ss = np.concatenate( (so_coupling, added_ss_coupling) )
 
