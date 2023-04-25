@@ -1,13 +1,21 @@
 import numpy as np
 from pathlib import Path
 
-from matplotlib import pyplot as plt
-
 import argparse
 
 from _molscat_data.physical_constants import hartree_in_inv_cm, fine_structure_constant
 
-def scale_so_and_write(input_path, output_path, scaling, header = None):
+def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling: float, header: str = None) -> None:
+    """Scales the spin-orbit term provided in input_path (in cm-1),
+    adds the spin-spin term, and writes to output_path in a format
+    needed in RKHS routine. The units in POTENL in molscat input
+    should be set to atomic units (Hartees and bohrs).
+
+    :param input_path: Path to a file providing the second-order spin-orbit
+    coupling at short range in cm-1 and bohrs.
+    :param output_path: Path where to write the output.
+    :param scaling: Scaling of the short-range part of the provided data.
+    """
     
     Path(output_path).parent.mkdir(parents = True, exist_ok = True)
 
@@ -48,21 +56,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    # new_so_coupling_path = so_coupling_path.with_stem('1st_pt_lambda_SO+SS_MT_Hartrees')
-
-
-# so_coupling_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
-# so_coupling = np.loadtxt(so_coupling_path, dtype = float)
-# print(1/(hartree_in_inv_cm**2 * fine_structure_constant**2))
-# so_coupling[:,1] /= (hartree_in_inv_cm**2 * fine_structure_constant**2)
-# so_coupling[:,1] -=  1/(so_coupling[:,0]**3*hartree_in_inv_cm)
-# print(1/hartree_in_inv_cm)
-
-# plt.scatter(so_coupling[:,0], so_coupling[:,1])
-# plt.show()
-
-
-
-# new_so_coupling_path = so_coupling_path.with_stem('1st_pt_lambda_SO+SS_MT_Hartrees')
-# np.savetxt(new_so_coupling_path, so_coupling, fmt = ['%.2f','%.15e'])
