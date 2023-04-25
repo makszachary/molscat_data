@@ -24,7 +24,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
     C3 = 1/hartree_in_inv_cm
     number_of_points = so_coupling.shape[0]
     max_distance = np.max(so_coupling[:,0])
-    condition_check_distance = max_distance + 5
+    condition_check_distance = max_distance + 20
     
     if header == None:
         header = (  f'# first line anyway ignored (n. of points, energy shift, scaling = scaling x scaling, unit of disctance, unit of energy [both in units defined in POTL block])\n'
@@ -32,7 +32,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
                     f'# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)\n'
                     f'3 2 1 T 1\n'
                     f'# also ignored (Ra, C3, RC3)\n'
-                    f'15.0 {C3:.15e} {condition_check_distance}\n'
+                    f'25.0 {C3:.15e} {condition_check_distance}\n'
                     f'# also ignored'
                     )
     
