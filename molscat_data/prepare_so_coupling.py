@@ -30,7 +30,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
         header = (  f'# first line anyway ignored (n. of points, energy shift, scaling = scaling x scaling, unit of disctance, unit of energy [both in units defined in POTL block])\n'
                     f'{number_of_points} 0.0 1.0 1.0 1.0\n'
                     f'# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)\n'
-                    f'10 0 3 T 1\n'
+                    f'4 0 3 T 1\n'
                     f'# also ignored (Ra, C3, RC3)\n'
                     f'30.0 {C3:.15e} {condition_check_distance}\n'
                     f'# also ignored'
