@@ -39,17 +39,6 @@ molscat_outputs_dir_path = scratch_path / 'molscat' / 'outputs'
 
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float = None, triplet_phase: float = None, so_scaling: float = 1.0) -> tuple[float, float, float]:
     
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
-    molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
-    molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
-    
-    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
-    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
-    original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
-    scaled_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / molscat_input_template_path.stem / f'so_{so_scaling:.3f}_scaling.dat'
-    scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
-
     if singlet_phase == None:
         singlet_scaling = 1.0
         singlet_phase = fs(singlet_scaling)
@@ -61,6 +50,17 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         triplet_phase = ft(triplet_scaling)
     else:
         triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
+
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
+    molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
+    
+    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
+    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
+    original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
+    scaled_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / molscat_input_template_path.stem / f'so_{so_scaling:.3f}_scaling.dat'
+    scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
 
     scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
 
