@@ -52,7 +52,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
 
     molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{so_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{singlet_phase:.2f}_{triplet_phase:.2f}_{so_scaling:.2f}.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -90,7 +90,7 @@ def main():
     for scaling_value in scaling_values:
         molscat_output_path = create_and_run(molscat_input_template_path = molscat_input_template_path, so_scaling = scaling_value)
         json_path = Path(__file__).parents[1] / 'data_produced' / 'json_files' / molscat_output_path.relative_to(molscat_outputs_dir_path).with_suffix('.json')
-        image_path = Path(__file__).parents[1] / 'plots' / 'so_comparison'
+        image_path = Path(__file__).parents[1] / 'plots' / 'so_comparison' / molscat_output_path.relative_to(molscat_outputs_dir_path).with_suffix('.png')
         
         potentials_data = get_potentials_and_so(molscat_output_path)
         update_json(potentials_data, json_path = json_path)
