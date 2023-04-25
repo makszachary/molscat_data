@@ -28,7 +28,7 @@
     HFSPLB =  0,		! 88Sr+
     GB     =  0,		! 88Sr+
     LMIN   =  0,
-    LMAX   =  0,
+    LMAX   =  29,
     LSTEP  =  1,
     ISPSP  =  1,
     NEXTRA =  2,
