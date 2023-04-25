@@ -22,12 +22,14 @@ from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, update_json
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
-from .prepare_so_coupling import scale_so_and_write
-from .collect_V_and_SO import get_potentials_and_so
-from .plot_V_and_SO import plot_so_potdiff_centrifugal
+from prepare_so_coupling import scale_so_and_write
+from collect_V_and_SO import get_potentials_and_so
+from plot_V_and_SO import plot_so_potdiff_centrifugal
 
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
+fs = semiclassical_phase_function(singlet_scaling_path)
+ft = semiclassical_phase_function(triplet_scaling_path)
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
@@ -50,11 +52,13 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     if singlet_phase == None:
         singlet_scaling = 1.0
+        singlet_phase = fs(singlet_scaling)
     else: 
         singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
     
     if triplet_phase == None:
         triplet_scaling = 1.0
+        triplet_phase = ft(triplet_scaling)
     else:
         triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
 
