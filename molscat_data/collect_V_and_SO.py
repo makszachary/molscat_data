@@ -1,6 +1,9 @@
 import warnings
 
+import numpy as np
+
 from _molscat_data.scaling_old import update_json
+from _molscat_data.physical_constants import hartree_in_inv_cm, fine_structure_constant
 from sigfig import round
 import argparse
 import os
@@ -100,6 +103,10 @@ def get_potentials_and_so(file_path: Path | str) -> tuple[dict, dict, dict]:
                 singletpotential['distance'].append( r )
                 tripletpotential['distance'].append( r )
                 so_coupling['distance'].append( r )
+
+    # get the true value used by molscat
+    so_coupling['energy'] = list(hartree_in_inv_cm*fine_structure_constant**2 *np.array(so_coupling['energy']))
+
     return singletpotential, tripletpotential, so_coupling
 
 

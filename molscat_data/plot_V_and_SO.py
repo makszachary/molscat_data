@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import argparse
 import time
+from _molscat_data.physical_constants import red_mass_87Rb_88Sr
 
 # filepath = r"C:\Users\maksw\Documents\python\data\SO\RKHS\molscat-RbSr+30.json"
 # impath = filepath.strip('.json')+'.png'
@@ -24,6 +25,27 @@ def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool
     plt.xlabel("$R, a_0$", fontsize = 'xx-large')
     plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
+    plt.grid('both')
+    plt.legend()
+    plt.tight_layout()
+    if impath is not None:
+        plt.savefig(impath)
+    if show == True:
+        plt.show()
+    else:
+        plt.close()
+
+def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None, L: int = 2, reduced_mass: float = red_mass_87Rb_88Sr, show: bool = False) -> None:
+    singlet_potential, triplet_potential, so_coupling = read_from_json(file_path)
+    plt.figure()
+    plt.plot(singlet_potential['distance'], np.array(triplet_potential['energy'])-np.array(singlet_potential['energy']), color = 'tab:blue', label = "$(1)\,{}^{3}\Sigma^{+} - (2)\,{}^{1}\Sigma^{+}$")
+    plt.plot(so_coupling['distance'], so_coupling['energy'], color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)$")
+    plt.plot(np.array(so_coupling['distance']), L*(L+1)/(2 * reduced_mass * np.array(so_coupling['distance']) ) )
+    max_so = max(so_coupling['energy'])
+    plt.xlim(5, 100)
+    plt.ylim(-1.5*max_so, 1.6*max_so)
+    plt.xlabel("$R, a_0$", fontsize = 'xx-large')
+    plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     plt.grid('both')
     plt.legend()
     plt.tight_layout()
