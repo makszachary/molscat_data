@@ -43,8 +43,8 @@ def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None
     plt.plot(np.array(so_coupling['distance']), L*(L+1)/(2 * reduced_mass * np.array(so_coupling['distance']) ), color = 'red', label = r"$L(L+1)/2 \mu R^2$" )
     # max_so = max(so_coupling['energy'])
     max_so = 1e-5
-    plt.xlim(5, 100)
-    plt.ylim(-0.5*max_so, 1.6*max_so)
+    plt.xlim(5, 60)
+    plt.ylim(-max_so, 1.5*max_so)
     plt.xlabel("$R, a_0$", fontsize = 'xx-large')
     plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
     plt.grid('both')
