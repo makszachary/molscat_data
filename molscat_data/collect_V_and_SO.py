@@ -105,7 +105,7 @@ def get_potentials_and_so(file_path: Path | str) -> tuple[dict, dict, dict]:
                 so_coupling['distance'].append( r )
 
     # get the true value used by molscat
-    so_coupling['energy'] = list(hartree_in_inv_cm*fine_structure_constant**2 *np.array(so_coupling['energy']))
+    # so_coupling['energy'] = list(hartree_in_inv_cm*fine_structure_constant**2 * np.array(so_coupling['energy']))
 
     return singletpotential, tripletpotential, so_coupling
 
