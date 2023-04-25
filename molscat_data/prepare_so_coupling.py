@@ -43,7 +43,7 @@ def scale_so_and_write(input_path: Path | str, output_path: Path | str, scaling:
                     f'# also ignored (3 integer parameters n, m, and s controling the RKHS, if we want to impose conditions, number of coefficients we want to impose conditions on)\n'
                     f'3 0 3 T 1\n'
                     f'# also ignored (Ra, C3, RC3)\n'
-                    f'25.0 {-C3:.15e} {condition_check_distance}\n'
+                    f'25.0 {C3:.15e} {condition_check_distance}\n'
                     f'# also ignored'
                     )
 
