@@ -23,7 +23,6 @@ from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
-from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
 from prepare_so_coupling import scale_so_and_write
 
@@ -80,7 +79,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: float | tuple[float, ...], tripletParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
