@@ -26,7 +26,7 @@ from _molscat_data.utils import probability
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 5, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -170,8 +170,8 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
 
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.\n The maximum change of L: +/-{dLMax}.')
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.\n The maximum change of L: +/-{dLMax}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.\nThe maximum change of L: +/-{dLMax}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the first point in lambda_SO: {first_point_scaling}.\nThe maximum change of L: +/-{dLMax}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -212,7 +212,7 @@ def main():
     # first_point_scaling_values = (0.5, 1.00, 1.25, 1.5)
     # pickle_paths = (pickle_dir.joinpath(f'{first_point_scaling:.2f}.pickle') for first_point_scaling in first_point_scaling_values)
     for pickle_path in pickle_paths:
-        calculate_and_save_the_peff_parallel(pickle_path, phases[0])
+        calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
 
 
 if __name__ == '__main__':
