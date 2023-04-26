@@ -26,7 +26,7 @@ from _molscat_data.utils import probability
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 5, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -193,7 +193,8 @@ def main():
     # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
+#    first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
+    first_point_scaling_values = (0.1, 0.5, 1.00, 2.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
@@ -212,7 +213,7 @@ def main():
     # first_point_scaling_values = (0.5, 1.00, 1.25, 1.5)
     # pickle_paths = (pickle_dir.joinpath(f'{first_point_scaling:.2f}.pickle') for first_point_scaling in first_point_scaling_values)
     for pickle_path in pickle_paths:
-        calculate_and_save_the_peff_parallel(pickle_path, phases[0])
+        calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
 
 
 if __name__ == '__main__':
