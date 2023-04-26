@@ -235,7 +235,7 @@ def main():
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'L-6-4-20246', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
+    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'L_-6-4-20246', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
     first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
 
