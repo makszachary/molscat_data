@@ -29,7 +29,7 @@ from prepare_so_coupling import scale_so_and_write
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 5, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -113,7 +113,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values) 
 
     return output_dirs
 
-def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling = None, dLMax: int = 2):
+def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling = None, dLMax: int = 4):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     fs = semiclassical_phase_function(singlet_scaling_path)
@@ -183,7 +183,7 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-s", "--singlet_phase", type = float, default = 0.04, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = 0.24, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("--dLMax", type = int, default = 2, help = "The maximum change of the orbital angular momentum L durign the collision.")
+    parser.add_argument("--dLMax", type = int, default = 4, help = "The maximum change of the orbital angular momentum L durign the collision.")
     args = parser.parse_args()
 
     number_of_parameters = 24
