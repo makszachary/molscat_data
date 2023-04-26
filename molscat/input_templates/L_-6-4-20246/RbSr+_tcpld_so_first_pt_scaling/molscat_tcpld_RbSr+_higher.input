@@ -1,0 +1,52 @@
+ &INPUT
+    LABEL  =  '87Rb-88Sr+ elastic cross section for bb (1 0 1/2 1/2) channel vs collision energy',
+    URED   =  43.70227836,	! NIST DATA
+    IPRINT =   11,
+    RMIN   =   5.5,  RMID   =  21.0,   RMAX   = 15.0E3, IRMSET = 0,
+    IPROPS =   6,    DR     =   0.002,
+    IPROPL =   9,    TOLHIL =   1.E-7,
+    JTOTL  =   1,    JTOTU  = 63,     IBFIX  =  0,           JSTEP  = 2,
+    EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
+                     DTOL   =   1.E-6, MONQN  =  4, 0, 1, 1,
+    FLDMIN = 0., FLDMAX =  0., DFIELD = 1.0,
+    ICHAN  =   1,
+ /
+
+ &BASIS
+    ITYPE  = 9,
+ /
+
+ &BASIS9
+    ISA    =  1,    		! 87-Rb
+    GSA    =  2.00231930,	! simply electron g-factor
+    INUCA  =  3,   		! 87-Rb
+    HFSPLA = +6.83468261090429, ! 87-Rb
+    GA     = -9.951413E-4,	! 87-Rb steck.us
+    ISB    =  1,		! 88Sr+
+    GSB    =  2.00231930,	! simply electron g-factor
+    INUCB  =  0,		! 88Sr+
+    HFSPLB =  0,		! 88Sr+
+    GB     =  0,		! 88Sr+
+    LMIN   =  0,
+    LMAX   =  29,
+    LSTEP  =  1,
+    ISPSP  =  1,
+    NEXTRA =  2,
+ /
+
+ &POTL
+    RM     =   0.52917720859,
+    EPSIL  =   219474.6313705,
+    MXLAM  =   3,
+    LAMBDA =   0, 1, 3,
+    NTERM  =   -1, -1, -1,
+ /
+ 
+ &RKHS_CONTROL
+    FILENAMES = "/net/people/plgrid/plgwalewski/molscat-RKHS-tcpld/molscat-exe/potentials/A.dat", "/net/people/plgrid/plgwalewski/molscat-RKHS-tcpld/molscat-exe/potentials/a.dat", LAMBDASOFILEPATH
+    INUM      = 1, 2, 3,
+    LAMNUM    = "NUM",
+    NPOT      = 3,
+    csn_print = .true.,
+    xscl      = SINGLETSCALING, TRIPLETSCALING, 1.00,
+ /
