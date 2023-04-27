@@ -83,7 +83,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
-    s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = tripletParameter, collisionEnergy = energy_tuple)
+    s_matrix_collection = SMatrixCollection(parametersBasis.singletParameter = singletParameter, parametersBasis.tripletParameter = tripletParameter, parametersBasis.collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path)
