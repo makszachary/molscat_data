@@ -48,8 +48,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
-    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
-    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
+    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
+    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
     original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
     scaled_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.3f}_scaling.dat'
     scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
@@ -145,7 +145,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
-        
+
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')

@@ -45,8 +45,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
 
 
-    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
-    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
+    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
+    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
     lambda_so_template_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'so_template.dat'
     first_point_scaled_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{first_point_scaling:.4f}_first_pt_scaling.dat'
     first_point_scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
