@@ -2,8 +2,10 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy import optimize
 
-def effective_probability(p0: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), float] = np.array([[1.0, 1.0]])) -> float:
+
+def effective_probability(p0: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), float] = np.array([[1.0, 1.0]])) -> float | np.ndarray[Any, float]:
 
     p0 = np.array(p0)
 
@@ -14,6 +16,11 @@ def effective_probability(p0: float | np.ndarray[Any, float], pmf_array: np.ndar
     p_eff = np.sum( [ np.sum(pmf_array[index:,1])*(1-p0)**(pmf_array[index,0]-1)*p0 for index in range(len(pmf_array)) ], axis = 0)
 
     return p_eff
+
+def p0(peff: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), float] = np.array([[1.0, 1.0]])) -> float | np.ndarray[Any, float]:
+    fun = lambda x: effective_probability(x, pmf_array = pmf_array) - peff
+    inverse = optimize.newton(fun, 0.01)
+    return inverse
     
 
 def main():
