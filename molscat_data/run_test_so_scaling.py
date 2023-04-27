@@ -72,14 +72,14 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    print(f"{molscat_input_path.name} run\nwith lambda_SO scaling: {so_scaling:.3f}")
+    print(f"{molscat_input_path.name} run\nwith lambda_SO scaling: {so_scaling:.4f}")
     subprocess.run(molscat_command, shell = True)
 
     duration = time.perf_counter()-time_0
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: float | tuple[float, ...], tripletParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
@@ -145,7 +145,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
-
+        
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')

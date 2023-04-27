@@ -26,7 +26,7 @@ from _molscat_data.utils import probability
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 5, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -35,25 +35,27 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     time_0 = time.perf_counter()
 
+    singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
+    triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.2f}_{triplet_phase:.2f}', f'{first_point_scaling:.2f}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{first_point_scaling:.4f}', molscat_input_template_path.stem).with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{first_point_scaling:.4f}', molscat_input_template_path.stem).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
 
-    lambda_so_template_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'so_template.dat'
-    lambda_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.2f}_{triplet_phase:.2f}' / molscat_input_template_path.stem / f'so_{first_point_scaling:.2f}_first_pt_scaling.dat'
-    lambda_so_path.parent.mkdir(parents = True, exist_ok = True)
-    first_point_value = 3.795048497358345e-06
 
-    singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
-    triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
+    singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'A.dat'
+    triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'a.dat'
+    lambda_so_template_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'so_template.dat'
+    first_point_scaled_so_path = Path(__file__).parents[1] / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{first_point_scaling:.4f}_first_pt_scaling.dat'
+    first_point_scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
+    first_point_value = 3.795048497358345e-06
 
     with open(lambda_so_template_path, 'r') as lambda_so_template:
         lambda_so_content = lambda_so_template.read()
         lambda_so_content = re.sub("FIRSTPOINTVALUE", f'{first_point_value*first_point_scaling:.15e}', lambda_so_content, flags = re.M)
-        with open(lambda_so_path, 'w') as lambda_so_file:
+        with open(first_point_scaled_so_path, 'w') as lambda_so_file:
             lambda_so_file.write(lambda_so_content)
             lambda_so_file.truncate()
 
@@ -61,16 +63,18 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
+        input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
+        input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
+        input_content = re.sub("SOPATH", f'\"{first_point_scaled_so_path}\"', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
-        input_content = re.sub("LAMBDASOFILEPATH", f'\"{lambda_so_path}\"', input_content, flags = re.M)
 
         with open(molscat_input_path, 'w') as molscat_input:
             molscat_input.write(input_content)
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    print(f"{molscat_input_path.name} run\nwith lambda_SO: {lambda_so_path}")
+    print(f"{molscat_input_path.name} run\nwith lambda_SO: {first_point_scaled_so_path}")
     subprocess.run(molscat_command, shell = True)
 
     duration = time.perf_counter()-time_0
@@ -143,7 +147,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, first_point
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
-        
+
         data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
@@ -181,7 +185,7 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-s", "--singlet_phase", type = float, default = 0.04, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = 0.24, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("--dLMax", type = int, default = 2, help = "The maximum change of the orbital angular momentum L durign the collision.")
+    parser.add_argument("--dLMax", type = int, default = 4, help = "The maximum change of the orbital angular momentum L durign the collision.")
     args = parser.parse_args()
 
     number_of_parameters = 24
@@ -193,8 +197,8 @@ def main():
     # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_first_pt_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-#    first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
-    first_point_scaling_values = (0.1, 0.5, 1.00, 2.00)
+    first_point_scaling_values = (0.1, 0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 2.00)
+    # first_point_scaling_values = (0.1, 0.5, 1.00, 2.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, first_point_scaling_values)
