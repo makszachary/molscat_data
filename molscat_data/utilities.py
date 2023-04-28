@@ -9,7 +9,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 from _molscat_data.effective_probability import effective_probability, p0
 
-singlet_phase, triplet_phase = 0.04, 0.24
 
 def plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max = False):
     so_scaling_values = (1e-4, 1e-3, 1e-2, 0.25, 0.5, 0.75, 1.0)
@@ -58,7 +57,7 @@ def plot_and_save_peff_Cso(singlet_phase, triplet_phase):
 
     array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4' / f'{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
     output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
-    image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'mod_peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
     image_path.parent.mkdir(parents = True, exist_ok = True)
     pmf_path = Path(__file__).parents[1] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 
@@ -71,8 +70,8 @@ def plot_and_save_peff_Cso(singlet_phase, triplet_phase):
     fig, ax = plt.subplots()
 
     ax.scatter(so_scaling_values, ss_dominated_rates, s = 4**2, color = 'k', marker = 'o', label = '$p_\mathrm{eff}(c_\mathrm{so}) / p_\mathrm{eff}(c_\mathrm{so} = 1)$')
-    ax.plot(xx, effective_probability(p0(max(ss_dominated_rates), pmf_array = pmf) * xx**4, pmf_array = pmf), color = 'red', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $c_\mathrm{so}^4$ scaling')
-    ax.plot(xx, effective_probability(p0(max(ss_dominated_rates), pmf_array = pmf) * xx**3, pmf_array = pmf), color = 'orange', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $c_\mathrm{so}^3$ scaling')
+    ax.plot(xx, effective_probability(p0(max(ss_dominated_rates), pmf_array = pmf) * xx**2, pmf_array = pmf), color = 'red', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^2$')
+    ax.plot(xx, effective_probability(p0(max(ss_dominated_rates), pmf_array = pmf) * xx**1.8, pmf_array = pmf), color = 'orange', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^{1.8}$')
 
     ax.axhline(0.0895, color = 'k', linewidth = 1, linestyle = '--', label = 'experimental value')
 
@@ -91,7 +90,11 @@ def plot_and_save_peff_Cso(singlet_phase, triplet_phase):
 
 
 def main():
-    plot_and_save_peff_Cso(0.04, 0.24)
+    singlet_phase, triplet_phase = 0.04, 0.24
+    # plot_and_save_p0_Cso(singlet_phase, triplet_phase)
+    # plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max=True)
+    plot_and_save_peff_Cso(singlet_phase, triplet_phase)
+
     
 
 if __name__ == '__main__':

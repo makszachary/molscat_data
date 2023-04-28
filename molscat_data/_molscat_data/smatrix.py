@@ -28,6 +28,7 @@ class CollectionParameters(NamedTuple):
     C4: float | tuple[float, ...]
     singletParameter: float | tuple[float, ...]
     tripletParameter: float | tuple[float, ...]
+    spinOrbitParameter: float | tuple[float, ...]
     reducedMass: float | tuple[float, ...]
     magneticField: float | tuple[float, ...]
     collisionEnergy: float | tuple[float, ...]
@@ -37,6 +38,7 @@ class CollectionParametersIndices(NamedTuple):
     C4: int | tuple[int, ...]
     singletParameter: int | tuple[int, ...]
     tripletParameter: int | tuple[int, ...]
+    spinOrbitParameter: int | tuple[int, ...]
     reducedMass: int | tuple[int, ...]
     magneticField: int | tuple[int, ...]
     collisionEnergy: int | tuple[int, ...]
@@ -74,6 +76,7 @@ class SMatrix:
     C4: float = None
     singletParameter: float = None
     tripletParameter: float = None
+    spinOrbitParameter: float = None
     reducedMass: float = None
     magneticField: float = None
     collisionEnergy: float = None
@@ -405,15 +408,13 @@ class SMatrixCollection:
     basis: tuple[str, ...] = None # doubled quantum numbers ('L', 'F1', 'F2', 'F12', 'T', 'MT')
     diagonal: tuple[str, ...] = None # ('MT')
 
-    C4: tuple[float, ...] = None
-    singletParameter: tuple[float, ...] = None
-    tripletParameter: tuple[float, ...] = None
-    reducedMass: tuple[float, ...] = None
-    magneticField: tuple[float, ...] = None
-    collisionEnergy: tuple[float, ...] = None
-
-    # Create a namedtuple class gathering the indices of the given S-matrix within the collection
-    # ParametersIndices: ClassVar[ParametersIndices] = namedtuple('ParametersIndices', ('C4', 'singletParameter', 'tripletParameter', 'reducedMass', 'magneticField', 'collisionEnergy'))
+    C4: tuple[float, ...] = (None,)
+    singletParameter: tuple[float, ...] = (None,)
+    tripletParameter: tuple[float, ...] = (None,)
+    spinOrbitParameter: tuple[float, ...] = (None,)
+    reducedMass: tuple[float, ...] = (None,)
+    magneticField: tuple[float, ...] = (None,)
+    collisionEnergy: tuple[float, ...] = (None,)
 
     matrixCollection: dict[CollectionParametersIndices, SMatrix] = field(default_factory = dict, compare = False)
 
@@ -445,10 +446,12 @@ class SMatrixCollection:
         self.matrixCollection.update(s_collection.matrixCollection)
 
 
-    def update_from_output(self, file_path: str):
+    def update_from_output(self, file_path: str, non_molscat_so_parameter = None):
         """Update the S-matrix collection with data from a single molscat output file in tcpld basis.
 
         :param file_path: Path to the molscat output file.
+        :param non_molscat_so_parameter: scaling of the spin-orbit coupling
+        if the data was scaled before putting into RKHS routine.
         """
         
         with open(file_path,'r') as molscat_output:
@@ -456,7 +459,7 @@ class SMatrixCollection:
                 if "REDUCED MASS FOR INTERACTION =" in line:
                     # reduced mass is given F14.9 format in amu in MOLSCAT output, we convert it to atomic units and round
                     reduced_mass = round(float(line.split()[5])*amu_to_au, sigfigs = 8)
-                    if self.reducedMass == None: self.reducedMass = (reduced_mass,)
+                    if self.reducedMass == (None,): self.reducedMass = (reduced_mass,)
                     rounded_reducedMass = tuple(round(reduced_mass, sigfigs = 8) for reduced_mass in self.reducedMass)
                     assert reduced_mass in rounded_reducedMass, f"The reduced mass in the molscat output should be an element of {self}.reducedMass."
                     reduced_mass_index = rounded_reducedMass.index(reduced_mass)
@@ -471,18 +474,40 @@ class SMatrixCollection:
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
 
+                elif "SPIN-SPIN TERM INCLUDED" in line:
+                    spin_spin = True
+                    if non_molscat_so_parameter is not None:
+                        if self.spinOrbitParameter == (None,):
+                            self.spinOrbitParameter = (non_molscat_so_parameter,)
+                        else:
+                            rounded_spinOrbitParameter = tuple( round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
+                            if round(non_molscat_so_parameter, sigfigs = 11) not in rounded_spinOrbitParameter:
+                                raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
+                        
+                        so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, sigfigs = 11))
+                    ## now, if non_molscat_so_parameter is not None, we are sure that it is an element of self.spinOrbitParameter
+                    ## if non_molscat_so_parameter is None, we do nothing
+
+
+                elif "SPIN-SPIN TERM OMITTED" in line:
+                    spin_spin = False
+                    if non_molscat_so_parameter is not None:
+                        raise ValueError(f"You defined the {non_molscat_so_parameter=}, but the spin-spin term is not included in this molscat calculation!")
+                    if self.spinOrbitParameter != (None,):
+                        raise ValueError(f"The spin-orbit coupling parameter is defined in self.spinOrbitParameter, but the spin-spin term is not included in this molscat calculation!")
+                    ## we don't want to fake data (on purpose or accidentaly) ;)
+
                 elif "INTERACTION TYPE IS  ATOM - ATOM IN UNCOUPLED BASIS" in line:
                     raise NotImplementedError("Only the (L F1 F2 F12 T MT) basis can be used in the molscat outputs in the current implementation.")
                     tcpld = False
                     basis = ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')
-
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
                 
                 elif "SHORT-RANGE POTENTIAL 1 SCALING FACTOR" in line:
                     #  find values of short-range factors and C4
                     A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)      
-                    if self.singletParameter == None: self.singletParameter = (A_s,)
+                    if self.singletParameter == (None,): self.singletParameter = (A_s,)
                     rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 11) for singlet_parameter in self.singletParameter)
                     assert A_s in rounded_singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
                     A_s_index = rounded_singletParameter.index(A_s)
@@ -491,17 +516,32 @@ class SMatrixCollection:
                         line = next(molscat_output)
                         if "C 4 =" in line:
                             C4 = float(line.split()[3])
-                    if self.C4 == None: self.C4 = (C4,)
+                    if self.C4 == (None,): self.C4 = (C4,)
                     assert C4 in self.C4, f"The value of C4 from the molscat output should be an element of {self}.C4."
                     C4_index = self.C4.index(C4)
                 
                 elif "SHORT-RANGE POTENTIAL 2 SCALING FACTOR" in line:
                     A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)
                     
-                    if self.tripletParameter == None: self.tripletParameter = (A_t,)
+                    if self.tripletParameter == (None,): self.tripletParameter = (A_t,)
                     rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 11) for triplet_parameter in self.tripletParameter)
                     assert A_t in rounded_tripletParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
                     A_t_index = rounded_tripletParameter.index(A_t)
+
+                elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
+                    rkhs_ss_scaling = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)
+                    
+                    # if non_molscat_so_parameter was None and the set of spin-orbit parameters
+                    # was not defined while creating the SMatrixCollection object,
+                    # we take the scaling of the spin-spin term in RKHS from the molscat output
+                    if rkhs_ss_scaling != 1.0 and non_molscat_so_parameter is not None:
+                        raise ValueError(f"The spin-spin term was scaled internally in molscat. You can't use the non_molscat_so_parameter in this case (I don't know how to do compare/multiply this parameters).")
+                    if non_molscat_so_parameter is None:
+                        if self.spinOrbitParameter == (None,) and spin_spin:
+                            self.spinOrbitParameter = (rkhs_ss_scaling,)
+                        rounded_spinOrbitParameter = tuple(round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
+                        assert rkhs_ss_scaling in rounded_spinOrbitParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
+                        so_param_index = rounded_spinOrbitParameter.index(rkhs_ss_scaling)
 
                 elif "INPUT ENERGY LIST IS" in line:
                     while "CALCULATIONS WILL BE PERFORMED FOR" not in line:
@@ -516,7 +556,7 @@ class SMatrixCollection:
                         line = next(molscat_output)
                     energy_tuple = tuple(energy_list)
 
-                    if self.collisionEnergy == None: self.collisionEnergy = energy_tuple
+                    if self.collisionEnergy == (None,): self.collisionEnergy = energy_tuple
                     rounded_collisionEnergy = tuple(round(energy, sigfigs = 11) for energy in self.collisionEnergy )
                     assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies from the molscat output should be equal to {self}.collisionEnergy."
 
@@ -531,7 +571,7 @@ class SMatrixCollection:
                 elif "MAGNETIC Z FIELD =" in line:
                     magnetic_field = float(line.split()[13])
 
-                    if self.magneticField == None: self.magneticField = (magnetic_field,)
+                    if self.magneticField == (None,): self.magneticField = (magnetic_field,)
                     assert magnetic_field in self.magneticField, f"The magnetic field from the molscat output should be an element of {self}.magneticField."
                     magnetic_field_index = self.magneticField.index(magnetic_field)
 
@@ -571,11 +611,11 @@ class SMatrixCollection:
                             matrix[(channels[channel_out_index], channels[channel_in_index])] = cmath.rect(np.sqrt(float(line.split()[2])), 2*np.pi*float(line.split()[3]))
                         line = next(molscat_output)
                     
-                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = self.C4[C4_index], singletParameter = self.singletParameter[A_s_index], tripletParameter = self.tripletParameter[A_t_index], reducedMass = self.reducedMass[reduced_mass_index], magneticField = self.magneticField[magnetic_field_index], collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
-                    if (C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
-                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
+                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = self.C4[C4_index], singletParameter = self.singletParameter[A_s_index], tripletParameter = self.tripletParameter[A_t_index], spinOrbitParameter = self.spinOrbitParameter[so_param_index], reducedMass = self.reducedMass[reduced_mass_index], magneticField = self.magneticField[magnetic_field_index], collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
+                    if (C4_index, A_s_index, A_t_index, so_param_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
+                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, so_param_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:
-                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
+                        self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, so_param_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
                     energy_counter +=1
             
             del self.Qn
