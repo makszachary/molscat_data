@@ -79,14 +79,14 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...], spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
     s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = tripletParameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
-        s_matrix_collection.update_from_output(file_path = output_path)
+        s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
     
     pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir))
     pickle_path = pickle_path.parent / (pickle_path.name + '.pickle')
@@ -113,13 +113,16 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values) 
 
     return output_dirs
 
-def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling = None, dLMax: int = 4):
+def calculate_and_save_the_peff_parallel(pickle_path, phases = None, dLMax: int = 4):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     fs = semiclassical_phase_function(singlet_scaling_path)
     ft = semiclassical_phase_function(triplet_scaling_path)
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
     
+    so_scaling = s_matrix_collection.spinOrbitParameter
+    # if len(so_scaling) == 1: so_scaling = float(so_scaling)
+
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
@@ -150,7 +153,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
         pickles_dir = data_produced_dir.joinpath('pickles')
         txt_dir = data_produced_dir.joinpath('arrays')
         txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir)).with_suffix('')
-        so_scaling = txt_path.name
+        # so_scaling = txt_path.name
         output_state_res_txt_path = txt_path.parent / f"dLMax_{dLMax}" / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
         txt_path = txt_path.parent / f"dLMax_{dLMax}" / (txt_path.name + '_' + abbreviation + '.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
@@ -172,7 +175,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, so_scaling 
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
         
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'The bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
         np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
         
         duration = time.perf_counter() - t
@@ -202,8 +205,8 @@ def main():
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = set()
-    for output_dir in output_dirs:
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING )
+    for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING, so_scaling )
         pickle_paths.add(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
