@@ -8,6 +8,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 from _molscat_data.effective_probability import effective_probability, p0
+from _molscat_data.visualize import Barplot_Wide
 
 
 def plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max = False):
@@ -38,7 +39,7 @@ def plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max = False):
     
     ax.scatter(so_scaling_values, ss_dominated_rates, s = 4**2, color = 'k', marker = 'o', label = data_label)
     ax.plot(xx, max(ss_dominated_rates) * xx**2, color = 'red', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^2$')
-    ax.plot(xx, max(ss_dominated_rates) * xx, color = 'orange', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}$')
+    ax.plot(xx, max(ss_dominated_rates) * xx**1.8, color = 'orange', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^{1.8}$')
 
     ax.set_yscale('log')
     ax.set_xscale('log')
@@ -91,9 +92,34 @@ def plot_and_save_peff_Cso(singlet_phase, triplet_phase):
 
 def main():
     singlet_phase, triplet_phase = 0.04, 0.24
-    # plot_and_save_p0_Cso(singlet_phase, triplet_phase)
-    # plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max=True)
-    plot_and_save_peff_Cso(singlet_phase, triplet_phase)
+    plot_and_save_p0_Cso(singlet_phase, triplet_phase)
+    plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max=True)
+    # plot_and_save_peff_Cso(singlet_phase, triplet_phase)
+
+
+    # so_scaling = 0.38
+    # exp_data_dir = Path(__file__).parents[1] / 'data' / 'exp_data'
+    # exp_hpf = exp_data_dir / 'single_ion_hpf.dat'
+    # exp_cold_higher = exp_data_dir / 'single_ion_cold_higher.dat'
+    # exp_cold_lower = exp_data_dir / 'single_ion_cold_lower.dat'
+
+    # theory_data_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4'
+    # theory_hpf = theory_data_dir / f'{so_scaling:.4f}_hpf.txt'
+    # theory_cold_higher = theory_data_dir / f'{so_scaling:.4f}_cold_higher.txt'
+    # theory_cold_lower = theory_data_dir / f'{so_scaling:.4f}_cold_lower.txt'
+    # fig, ax1, ax2, ax3 = Barplot_Wide.barplot_from_files(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
+    
+    # props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+    # textstring = (f'($\\tilde{{\\Phi}}_\mathrm{{s}}, \\tilde{{\\Phi}}_\mathrm{{t}}$) = ({singlet_phase}, {triplet_phase})\n'
+    #                 f'$c_\\mathrm{{so}} = {so_scaling}$')
+    # fig.text(14.5/16, 0.23, textstring, ha = 'center', fontsize = 'x-large', bbox = props)
+
+    # image_path = Path(__file__).parents[1] / 'plots' / 'for MT' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
+    # image_path.parent.mkdir(parents=True, exist_ok=True)
+    # plt.savefig(image_path)
+    # # plt.close()
+    
+    # plt.show()
 
     
 
