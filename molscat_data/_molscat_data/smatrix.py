@@ -479,10 +479,10 @@ class SMatrixCollection:
                     if non_molscat_so_parameter is not None:
                         if self.spinOrbitParameter == (None,):
                             self.spinOrbitParameter = (non_molscat_so_parameter,)
-                        else:
-                            rounded_spinOrbitParameter = tuple( round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
-                            if round(non_molscat_so_parameter, sigfigs = 11) not in rounded_spinOrbitParameter:
-                                raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
+                        
+                        rounded_spinOrbitParameter = tuple( round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
+                        if round(non_molscat_so_parameter, sigfigs = 11) not in rounded_spinOrbitParameter:
+                            raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
                         
                         so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, sigfigs = 11))
                     ## now, if non_molscat_so_parameter is not None, we are sure that it is an element of self.spinOrbitParameter
