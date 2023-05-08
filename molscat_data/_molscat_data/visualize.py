@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 
 from matplotlib import pyplot as plt
@@ -25,7 +27,7 @@ class BicolorHandler:
         handlebox.add_artist(patch)
         
         return patch
-    
+
 
 class BarplotWide:
     """Wide bar plot for the single-ion RbSr+ experiment."""
@@ -41,8 +43,8 @@ class BarplotWide:
         
         return fig, ax1, ax2, ax3, legend_ax
     
-    @staticmethod
-    def barplot(theory_data, exp_data, std_data, SE_theory_data = None, figsize = (16,5), dpi = 100):
+    @classmethod
+    def barplot(cls, theory_data, exp_data, std_data, SE_theory_data = None, figsize = (16,5), dpi = 100):
         """barplot
         
         :param theory_data: dictionary of the form {'hpf': (p(-2), p(-1), ..., p(2)),
@@ -51,7 +53,7 @@ class BarplotWide:
         'cold_higher': (p(-2), p(-1), ..., p(2)), 'cold_lower': (p(-1), p(0), p(1)) }
         """
 
-        fig, ax1, ax2, ax3, legend_ax = BarplotWide._initiate_plot(figsize, dpi)
+        fig, ax1, ax2, ax3, legend_ax = cls._initiate_plot(figsize, dpi)
 
         probabilities_theory_f_max_hot = theory_data['hpf']
         probabilities_theory_f_max_cold = theory_data['cold_higher']
@@ -189,7 +191,7 @@ class BarplotWide:
         return theory_data, exp_data, std_data
 
     @staticmethod
-    def compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, pmf_array = None):
+    def compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, SE_theory_data = None, pmf_array = None):
 
         if pmf_array is None:
             pmf_array = np.array([[1.0, 1.0]])
@@ -222,9 +224,13 @@ class BarplotWide:
         ax3.scatter(positions_theory_f_min, from_matrix_elements_f_min_cold_grouped, marker = '2', s = 200, c = 'orange')
 
         ### Recreate legend
-        legend_ax.legends = []
         cold_color, hot_color = 'midnightblue', 'firebrick'
+        exp_cold_color, exp_hot_color = 'midnightblue', 'firebrick'
         exp_hatch, theory_hatch = '////', ''
+
+        if SE_theory_data is not None:
+            SE_cold_color, SE_hot_color = 'midnightblue', 'firebrick'
+            cold_color, hot_color = 'royalblue', 'indianred'
 
         labels_and_colors = { 'hyperfine relaxation': hot_color, 'cold spin change': cold_color } 
         labels_and_hatch = { 'coupled-channel\ncalculations': '', 'experiment': '////' }
@@ -235,11 +241,21 @@ class BarplotWide:
         handles_interlude = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'white', hatch = '' ) ]
         handles_lines = [ lines.Line2D([0], [0], color = labels_and_lines[line_label][0], linewidth = 3, marker = labels_and_lines[line_label][1], markersize = labels_and_lines[line_label][2]) for line_label in labels_and_lines.keys() ]
 
-        
+        colors = [ *[ (exp_hot_color, exp_hot_color), (exp_cold_color, exp_cold_color) ],
+                   *[('white', 'white') for hh in [*handles_hatch, handles_interlude] ]
+                   ]
+        if SE_theory_data is not None:
+            labels_and_colors = { 'hyperfine relaxation\n(w/o & with $\\lambda_\\mathrm{so}$)': exp_hot_color,
+                                  'cold spin change\n(w/o & with $\\lambda_\\mathrm{so}$)': exp_cold_color}
+            colors = [ *[ (SE_hot_color, hot_color), (SE_cold_color, cold_color) ],
+                    *[('white', 'white') for hh in [*handles_hatch, handles_interlude] ]
+                    ]
+
         labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()), interlude, *list(labels_and_lines.keys()) ]
         handles = [ *handles_colors, *handles_hatch, *handles_interlude, *handles_lines ]
 
-        legend_ax.legend(handles, labels, loc = 'upper center', bbox_to_anchor = (8/16, 1.00), fontsize = 'large', labelspacing = 1)
+        hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors] ))
+        legend_ax.legend(handles, labels, handler_map = hmap, loc = 'upper center', bbox_to_anchor = (8/16, 1.00), fontsize = 'large', labelspacing = 0.7)
         
         return fig, ax1, ax2, ax3
 
@@ -259,37 +275,81 @@ class BarplotWide:
         param_frame_ax = fig.add_axes([legend_extent.x0/fig_extent.width,
                     legend_ax_extent.y0/fig_extent.height,
                     legend_extent.width/fig_extent.width,
-                    (legend_extent.y0-legend_ax_extent.y0)/fig_extent.height])
+                    (legend_extent.y0-legend_ax_extent.y0)/fig_extent.height if (legend_extent.y0-legend_ax_extent.y0)/fig_extent.height > 0 else 0])
 
         param_frame_ax.text(0.5, 0.5, textstring, fontsize = 'x-large', va = 'center', ha = 'center', bbox = props)
         param_frame_ax.axis('off')
 
         return param_frame_ax
 
+
+class ProbabilityVersusSpinOrbit:
+    """Plot of the calculated probability as a function of the spin-orbit coupling parameter."""
+
     @staticmethod
-    def compareWithSpinExchange(fig, ax1, ax2, ax3, theory_data):
+    def _initiate_plot(figsize = (6.4,4.8), dpi = 100):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
+        return fig, ax
+    
+    @classmethod
+    def plotBareProbability(cls, so_parameter, probability, relative = False, figsize = (6.4,4.8), dpi = 100):
         
-        cold_color, hot_color = 'royalblue', 'indianred'
-        theory_hatch = 'oo'
-        y_max = 1
+        data_label = '$p_0(c_\mathrm{so})$'
+        plot_title = 'Probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
-        f_max = 2.
-        f_min = f_max-1
-        f_ion = 0.5
-
-        positions_f_max = np.array([ [3*k+1, 3*k+2] for k in np.arange(2*f_max+1) ]).flatten()
-        positions_theory_f_max = np.array([3*k+1 for k in np.arange(2*f_max+1)])
-        positions_exp_f_max = np.array([3*k+2 for k in np.arange(2*f_max+1)])
-        positions_f_min = np.array([ [3*k+1, 3*k+2] for k in np.arange(2*f_min+1) ]).flatten()
-        positions_theory_f_min = np.array([3*k+1 for k in np.arange(2*f_min+1)])
-        positions_exp_f_min = np.array([3*k+2 for k in np.arange(2*f_min+1)])
-
-        ticks_f_max = [ 3*k + 3/2 for k in np.arange(2*f_max+1)]
-        ticks_f_min = [ 3*k + 3/2 for k in np.arange(2*f_min+1)]
-
-        labels_f_max = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
-        labels_f_min = [ '$\\left|\\right.$'+str(int(f_min))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_min, f_min+1)]
-
-        ax1.bar(positions_theory_f_max, theory_data['hpf'], width = 1, facecolor = hot_color, hatch = theory_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)
+        if relative:
+            data_label = '$p_0(c_\mathrm{so}) / p_0(c_\mathrm{so} = 1)$'
+            plot_title = 'Probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state\n(relative to the result for the original spin-orbit coupling from M.T.)'
+            probability = probability / max(probability)
         
-        pass
+        xx = np.logspace(-4, 1, 100)
+
+        fig, ax = cls._initiate_plot(figsize, dpi)
+
+        ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
+        ax.plot(xx, max(probability) * xx**2, color = 'red', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^2$')
+        ax.plot(xx, max(probability) * xx**1.8, color = 'orange', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^{1.8}$')
+
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        ax.set_ylim(0.1*min(probability), 10*max(probability))
+        ax.set_xlim(0.1*min(so_parameter), 10*max(so_parameter))
+        ax.set_xlabel('spin-orbit coupling scaling factor $c_\mathrm{so}$', fontsize = 'large')
+        ax.set_ylabel('$p_0$', fontsize = 'large')
+        ax.set_title(plot_title, fontsize = 10)
+        ax.legend()
+        
+        plt.tight_layout()
+
+        return fig, ax
+
+    @classmethod
+    def plotEffectiveProbability(cls, so_parameter, probability, pmf_array = None, figsize = (6.4,4.8), dpi = 100):
+        
+        data_label = '$p_\mathrm{eff}(c_\mathrm{so})$'
+        plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
+        
+        if pmf_array is None:
+            pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+            pmf_array = np.loadtxt(pmf_path)
+        
+        xx = np.logspace(-4, 0, 100)
+
+        fig, ax = cls._initiate_plot(figsize, dpi)
+
+        ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
+        ax.plot(xx, effective_probability(p0(max(probability), pmf_array = pmf_array) * xx**2, pmf_array = pmf_array), color = 'red', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^2$')
+        ax.plot(xx, effective_probability(p0(max(probability), pmf_array = pmf_array) * xx**1.8, pmf_array = pmf_array), color = 'orange', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^{1.8}$')
+
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        ax.set_ylim(0.1*min(probability), 10*max(probability))
+        ax.set_xlim(0.1*min(so_parameter), 10*max(so_parameter))
+        ax.set_xlabel('spin-orbit coupling scaling factor $c_\mathrm{so}$', fontsize = 'large')
+        ax.set_ylabel('$p_\mathrm{eff}$', fontsize = 'large')
+        ax.set_title(plot_title, fontsize = 10)
+        ax.legend()
+        
+        plt.tight_layout()
+
+        return fig, ax
