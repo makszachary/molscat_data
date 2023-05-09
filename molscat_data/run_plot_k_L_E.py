@@ -148,6 +148,15 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
     return array_paths, averaged_rates
 
+def plot_rate_vs_phase_sum(phase_sum, rate):
+    fig, ax = plt.subplots()
+    ax.plot(phase_sum, rate)
+    ax.grid()
+    ax.set_xlabel('$\Phi_\mathrm{s}+\Phi_\mathrm{t}$')
+    ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
+    ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
+    return fig, ax
+
 def _plot_energy_grid_density(T = 5e-4, E_min = 4e-7, E_max = 4e-3, nenergies = 100, n = 3):
     fig, ax = plt.subplots()
     
@@ -189,6 +198,10 @@ def main():
 
     array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
+    fig, ax = plot_rate_vs_phase_sum(averaged_rates[0], averaged_rates[1])
+    image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.txt'
+    fig.savefig(image_path)
+    plt.close()
 
     # # print(default_singlet_parameter_from_phase(.99), default_triplet_parameter_from_phase(0.99))
 

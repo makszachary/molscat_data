@@ -491,6 +491,7 @@ class SMatrixCollection:
 
                 elif "SPIN-SPIN TERM OMITTED" in line:
                     spin_spin = False
+                    so_param_index = 0
                     if non_molscat_so_parameter is not None:
                         raise ValueError(f"You defined the {non_molscat_so_parameter=}, but the spin-spin term is not included in this molscat calculation!")
                     if self.spinOrbitParameter != (None,):
