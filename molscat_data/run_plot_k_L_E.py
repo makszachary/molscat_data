@@ -144,6 +144,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
         plt.close()
 
     averaged_rates_path = arrays_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{(phases[0][1]-phases[0][0]) % 1:.4f}.txt'
+    averaged_rates_path.parent.mkdir(parents=True, exist_ok=True)
     averaged_rates = np.array([[phase[0]+phase[1] for phase in phases], averaged_rates])
     np.savetxt(averaged_rates_path, averaged_rates, fmt='%.8e', header = f'The difference of phases (triplet phase - singlet phase): {(phases[0][1]-phases[0][0]) % 1:.4f}.')
 
