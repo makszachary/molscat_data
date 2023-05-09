@@ -25,6 +25,11 @@ E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 2
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
+pickle_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
+pickle_dir_path.mkdir(parents=True, exist_ok=True)
+arrays_dir_path = pickle_dir_path.parent / 'arrays'
+arrays_dir_path.mkdir(parents=True, exist_ok=True)
+plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 
 def create_and_run_SE(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float) -> tuple[float, float, float]:
@@ -88,8 +93,9 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
     
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path)
-    
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir))
+
+
+    pickle_path = pickle_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
     pickle_path = pickle_path.parent / (pickle_path.name + '.pickle')
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -109,7 +115,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
     array_paths = []
     averaged_rates = []
     for k_L_E_array, phase, pickle_path, s_matrix_collection in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections):
-        array_path = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'k_L_E' / pickle_path.relative_to(Path(__file__).parents[1] / 'data_produced' / 'pickles').with_suffix('.txt')
+        array_path = arrays_dir_path / 'k_L_E' / pickle_path.relative_to(Path(__file__).parents[1] / 'data_produced' / 'pickles').with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         array_paths.append(array_path)
         np.savetxt(array_path, k_L_E_array)
@@ -124,7 +130,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
         ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
         ax.set_xlabel('collision energy (K)')
 
-        image_path = Path(__file__).parents[1] / 'plots' / 'resonance_for_MF' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
+        image_path = plots_dir_path / 'resonance_for_MF' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
         image_path.parent.mkdir(parents=True, exist_ok=True)
         ax.set_ylim(np.max(total_k_L_E_array)*1e-3, np.max(total_k_L_E_array)*5)
         fig.savefig(image_path)
@@ -136,7 +142,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
         plt.close()
 
-    averaged_rates_path = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'averaged_rates_vs_sum_of_phases' / f'{(phases[0][1]-phases[0][0]) % 1:.4f}.txt'
+    averaged_rates_path = arrays_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{(phases[0][1]-phases[0][0]) % 1:.4f}.txt'
     averaged_rates = np.array([[phase[0]+phase[1] for phase in phases], averaged_rates])
     np.savetxt(averaged_rates_path, averaged_rates, fmt='%.8e', header = f'The difference of phases (triplet phase - singlet phase): {(phases[0][1]-phases[0][0]) % 1:.4f}.')
 
