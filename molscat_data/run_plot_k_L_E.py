@@ -21,7 +21,7 @@ from _molscat_data.utils import probability
 
 from _molscat_data.visualize import PartialRateVsEnergy
 
-E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 2
+E_min, E_max, nenergies, n = 4e-7, 8e-3, 4, 2
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -115,7 +115,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
     array_paths = []
     averaged_rates = []
     for k_L_E_array, phase, pickle_path, s_matrix_collection in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections):
-        array_path = arrays_dir_path / 'k_L_E' / pickle_path.relative_to(Path(__file__).parents[1] / 'data_produced' / 'pickles').with_suffix('.txt')
+        array_path = arrays_dir_path / 'k_L_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         array_paths.append(array_path)
         np.savetxt(array_path, k_L_E_array)
