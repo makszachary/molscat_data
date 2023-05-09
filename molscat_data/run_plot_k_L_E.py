@@ -21,7 +21,7 @@ from _molscat_data.utils import probability
 
 from _molscat_data.visualize import PartialRateVsEnergy
 
-E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 2
+E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
