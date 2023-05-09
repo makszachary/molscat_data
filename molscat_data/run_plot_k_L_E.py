@@ -21,7 +21,7 @@ from _molscat_data.utils import probability
 
 from _molscat_data.visualize import PartialRateVsEnergy
 
-E_min, E_max, nenergies, n = 4e-7, 8e-3, 4, 2
+E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 2
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -154,8 +154,8 @@ def plot_rate_vs_phase_sum(phase_sum, rate):
     fig, ax = plt.subplots()
     ax.plot(phase_sum, rate)
     ax.grid()
-    ax.set_xlabel('$\Phi_\mathrm{s}+\Phi_\mathrm{t}$')
-    ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
+    ax.set_xlabel('$\Phi_\\mathrm{s}+\Phi_\\mathrm{t}$', fontsize = 'large')
+    ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
     ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
     return fig, ax
 
