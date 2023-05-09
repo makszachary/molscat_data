@@ -12,6 +12,10 @@ from scipy import optimize
 # from more_itertools import unique_everseen
 from .physical_constants import red_mass_87Rb_88Sr
 
+default_singlet_scaling_path = Path(__file__).parents[2] / 'data' / 'scaling_old' / 'singlet_vs_coeff.json'
+default_triplet_scaling_path = default_singlet_scaling_path.parent / 'triplet_vs_coeff.json'
+
+
 class ComplexEncoder(json.JSONEncoder):
     def default(self, z):
         if isinstance(z, complex):
@@ -110,7 +114,6 @@ def semiclassical_phase_function(single_channel_data_path: str | Path):
         print("Supplied %s file is not a .json file or doesn't exist. Try again:)" % single_channel_data_path)
         return None
 
-
 def inverse_function(y, function, starting_point):
     fun = lambda x: function(x) - y
     inverse = optimize.newton(fun, starting_point)
@@ -123,3 +126,15 @@ def parameter_from_semiclassical_phase(phase, single_channel_data_path, starting
     except ValueError:
         parameter = inverse_function(phase, f, starting_points[1])
     return parameter
+
+default_singlet_phase_function = semiclassical_phase_function(default_singlet_scaling_path)
+
+default_triplet_phase_function = semiclassical_phase_function(default_triplet_scaling_path)
+
+def default_singlet_parameter_from_phase(phase):
+    """Wrapper around parameter_from_semiclassical_phase."""
+    return parameter_from_semiclassical_phase(phase, single_channel_data_path = default_singlet_scaling_path, starting_points = [1.000,1.010])
+
+def default_triplet_parameter_from_phase(phase):
+    """Wrapper around parameter_from_semiclassical_phase."""
+    return parameter_from_semiclassical_phase(phase, single_channel_data_path = default_triplet_scaling_path, starting_points = [1.000,0.996])

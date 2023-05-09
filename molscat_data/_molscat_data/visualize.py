@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import lines
 import matplotlib as mpl
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from .effective_probability import effective_probability, p0
 from .analytical import probabilities_from_matrix_elements_cold, probabilities_from_matrix_elements_hot
@@ -353,3 +354,42 @@ class ProbabilityVersusSpinOrbit:
         plt.tight_layout()
 
         return fig, ax
+
+
+class PartialRateVsEnergy:
+    """Plot of the partial and total collision rates as a function of the collision energy."""
+
+    def _initiate_plot(figsize = (8, 6), dpi = 100):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
+        return fig, ax
+    
+    @classmethod
+    def plotRate(cls, energy, rate, figsize = (9.5, 7.2), dpi = 100):
+        
+        rate = np.array(rate)
+        l_max = rate.shape[0] - 1
+
+
+        fig, ax = cls._initiate_plot(figsize, dpi)
+
+        for l in range(l_max+1):
+            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.cm.get_cmap('cividis')(l/30) )
+        
+        ax.set_xlim(np.min(energy), np.max(energy))
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.tick_params(axis = 'both', labelsize= 'x-large')
+        ax.grid(color = 'gray')
+
+        # create an axes on the right side of ax. The width of cax will be 5%
+        # of ax and the padding between cax and ax will be fixed at 0.1 inch.
+        divider = make_axes_locatable(ax)
+        ax_bar = divider.append_axes("right", size="3%", pad=0.1)
+        cb = mpl.colorbar.ColorbarBase(ax_bar, cmap='cividis', norm = mpl.colors.Normalize(0, l_max+1), ticks = [0, 10, 20, 30])
+        ax_bar.tick_params(axis = 'both', labelsize = 'x-large')
+        ax_bar.get_yaxis().labelpad = 4
+        ax_bar.set_ylabel('L', rotation = 0, fontsize = 'xx-large')
+
+        return fig, ax
+    
+    
