@@ -202,6 +202,7 @@ def main():
 
     fig, ax = plot_rate_vs_phase_sum(averaged_rates[0], averaged_rates[1])
     image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
+    image_path.parent.mkdir(parents=True,exist_ok=True)
     fig.savefig(image_path)
     plt.close()
 
