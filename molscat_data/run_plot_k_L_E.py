@@ -118,10 +118,10 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
         array_path = arrays_dir_path / 'k_L_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         array_paths.append(array_path)
-        np.savetxt(array_path, k_L_E_array)
+        np.savetxt(array_path, k_L_E_array.squeeze())
 
         energy_array = np.array(s_matrix_collection.collisionEnergy, dtype = float)
-        total_k_L_E_array = k_L_E_array.sum(axis = 0)
+        total_k_L_E_array = k_L_E_array.sum(axis = 0).squeeze()
         averaged_rates.append(s_matrix_collection.thermalAverage(total_k_L_E_array))
 
         fig, ax = PartialRateVsEnergy.plotRate(energy_array, k_L_E_array)
