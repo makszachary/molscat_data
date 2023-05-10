@@ -133,12 +133,12 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
         image_path = plots_dir_path / 'resonance_for_MF' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
         image_path.parent.mkdir(parents=True, exist_ok=True)
-        ax.set_ylim(np.max(total_k_L_E_array)*1e-3, np.max(total_k_L_E_array)*5)
+        ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 10**(-9)]))
         fig.savefig(image_path)
 
         image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}.png'
         ax.set_yscale('linear')
-        ax.set_ylim(0, np.max(total_k_L_E_array)*1.25)
+        ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 10**(-9)]))
         fig.savefig(image_path)
 
         plt.close()
@@ -201,6 +201,8 @@ def main():
 
     fig, ax = plot_rate_vs_phase_sum((averaged_rates[0]+averaged_rates[1] ) % 1, averaged_rates[2])
     ax.set_title(f'$\left|1,-1\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow $\left|1,0\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>, \\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}} = {phase_difference}.$.')
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
 
     image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
     image_path.parent.mkdir(parents=True,exist_ok=True)
