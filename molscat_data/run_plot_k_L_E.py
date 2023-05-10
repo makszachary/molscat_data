@@ -145,8 +145,8 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
     averaged_rates_path = arrays_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{(phases[0][1]-phases[0][0]) % 1:.4f}.txt'
     averaged_rates_path.parent.mkdir(parents=True, exist_ok=True)
-    averaged_rates = np.array([[(phase[0]+phase[1]) % 1 for phase in phases], averaged_rates])
-    np.savetxt(averaged_rates_path, averaged_rates, fmt='%.8e', header = f'The difference of phases (triplet phase - singlet phase): {(phases[0][1]-phases[0][0]) % 1:.4f}.')
+    averaged_rates = np.array([[phase[0] for phase in phases], [[phase[1] for phase in phases]], averaged_rates])
+    np.savetxt(averaged_rates_path, averaged_rates, fmt='%.8e', header = f'The difference of phases (triplet phase - singlet phase) is fixed: {(phases[0][1]-phases[0][0]) % 1:.4f}.')
 
     return array_paths, averaged_rates
 
@@ -199,7 +199,7 @@ def main():
 
     array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
-    fig, ax = plot_rate_vs_phase_sum(averaged_rates[0], averaged_rates[1])
+    fig, ax = plot_rate_vs_phase_sum((averaged_rates[0]+averaged_rates[1] ) % 1, averaged_rates[2])
     ax.set_title(f'$\left|1,-1\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow $\left|1,0\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>, \\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}} = {phase_difference}.$.')
 
     image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
