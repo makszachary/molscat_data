@@ -21,7 +21,7 @@ from _molscat_data.utils import probability
 
 from _molscat_data.visualize import PartialRateVsEnergy
 
-E_min, E_max, nenergies, n = 4e-7, 8e-3, 200, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 200, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -145,7 +145,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
     averaged_rates_path = arrays_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{(phases[0][1]-phases[0][0]) % 1:.4f}.txt'
     averaged_rates_path.parent.mkdir(parents=True, exist_ok=True)
-    averaged_rates = np.array([[phase[0]+phase[1] for phase in phases], averaged_rates])
+    averaged_rates = np.array([[(phase[0]+phase[1]) % 1 for phase in phases], averaged_rates])
     np.savetxt(averaged_rates_path, averaged_rates, fmt='%.8e', header = f'The difference of phases (triplet phase - singlet phase): {(phases[0][1]-phases[0][0]) % 1:.4f}.')
 
     return array_paths, averaged_rates
@@ -154,9 +154,8 @@ def plot_rate_vs_phase_sum(phase_sum, rate):
     fig, ax = plt.subplots()
     ax.plot(phase_sum, rate)
     ax.grid()
-    ax.set_xlabel('$\Phi_\\mathrm{s}+\Phi_\\mathrm{t}$', fontsize = 'large')
+    ax.set_xlabel('$(\Phi_\\mathrm{s}+\Phi_\\mathrm{t}) \mathrm{mod}\pi \hspace{0.1}/ \hspace{0.1} \pi$', fontsize = 'large')
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
-    ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
     return fig, ax
 
 def _plot_energy_grid_density(T = 5e-4, E_min = 4e-7, E_max = 4e-3, nenergies = 100, n = 3):
@@ -201,69 +200,12 @@ def main():
     array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
     fig, ax = plot_rate_vs_phase_sum(averaged_rates[0], averaged_rates[1])
+    ax.set_title(f'$\left|1,-1\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow $\left|1,0\\right>\hspace{{0.2}}\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>, \\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}} = {phase_difference}.$.')
+
     image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
     image_path.parent.mkdir(parents=True,exist_ok=True)
     fig.savefig(image_path)
     plt.close()
-
-    # # print(default_singlet_parameter_from_phase(.99), default_triplet_parameter_from_phase(0.99))
-
-    # fig, ax = _plot_energy_grid_density(E_min = 4e-7, E_max=1e-2, nenergies = 200, n=2)
-    # ax.set_xscale('log')
-    # ax.legend()
-    # plt.show()
-
-    # singlet_scaling_path = Path(__file__).parents[1] / 'data' / 'scaling_old' / 'singlet_vs_coeff.json'
-    # triplet_scaling_path = singlet_scaling_path.with_stem('triplet_vs_coeff')
-
-    # singlet_phase, triplet_phase = 0.68, 0.84
-    # phases = (singlet_phase, triplet_phase)
-    # so_scaling = 1e-4
-
-    # output_dir = Path(__file__).parents[1] / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}'
-    # pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
-    # pickle_path.parent.mkdir(parents=True, exist_ok=True)
-    # k_L_E_array_path = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'k_L_E' / pickle_path.relative_to(Path(__file__).parents[1] / 'data_produced' / 'pickles').with_suffix('.txt')
-    # k_L_E_array_path.parent.mkdir(parents=True, exist_ok=True)
-    # image_path = Path(__file__).parents[1] / 'plots' / 'resonance_for_MF' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
-    # image_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # smatrix_collection = SMatrixCollection(spinOrbitParameter=(so_scaling,))
-    # for output_path in output_dir.iterdir():
-    #     smatrix_collection.update_from_output(output_path, non_molscat_so_parameter=so_scaling)
-
-    # smatrix_collection.toPickle(pickle_path)
-
-    # new_s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
-
-    # # # param_indices = { "singletParameter": (new_s_matrix_collection.singletParameter.index(parameter_from_semiclassical_phase(phases[0], singlet_scaling_path, starting_points=[1.000,1.010])),), "tripletParameter": (new_s_matrix_collection.tripletParameter.index( parameter_from_semiclassical_phase(phases[1], triplet_scaling_path, starting_points=[1.000,0.996]) ), ) } if phases is not None else None
-
-    # print("start!")
-    # time_0 = time.perf_counter()
-
-    # k_L_E_array = rate_fmfsms_vs_L_multiprocessing(new_s_matrix_collection, 2, 0, 1, -1, 2, -2, 1, 1, unit = 'cm**3/s', param_indices = None).squeeze()
-    # np.savetxt(k_L_E_array_path, k_L_E_array)
-
-    # dur = time.perf_counter() - time_0
-
-    # print(k_L_E_array)
-    # print(k_L_E_array.shape)
-    # print(f'The time of calculations was {dur:.2f} s.')
-
-    # k_L_E_array = np.loadtxt(k_L_E_array_path)
-    # energy_array = np.array(new_s_matrix_collection.collisionEnergy, dtype = float)
-    # total_k_L_E_array = k_L_E_array.sum(axis = 0)
-
-    # fig, ax = PartialRateVsEnergy.plotRate(energy_array, k_L_E_array)
-    # ax.plot(energy_array, total_k_L_E_array, label = "total", linewidth = 3, linestyle = 'solid', color = 'k')
-    # ax.set_ylim(np.max(total_k_L_E_array)*1e-3, np.max(total_k_L_E_array)*5)
-    
-    # ax.set_yscale('linear')
-    # ax.set_ylim(0, np.max(total_k_L_E_array)*1.25)
-    
-    # # ax.legend()
-    # fig.savefig(image_path)
-    # plt.show()
 
 if __name__ == '__main__':
     main()
