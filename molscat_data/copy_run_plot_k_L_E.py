@@ -12,6 +12,7 @@ from sigfig import round
 import itertools
 
 from matplotlib import pyplot as plt
+import matplotlib as mpl
 
 from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
@@ -173,21 +174,26 @@ def only_save_average(phases, pickle_dir, k_L_E_array_dir):
 
     for (phase, energy_array, k_L_E_array) in zip(phases, energy_arrays, k_L_E_arrays):
         total_k_L_E_array = k_L_E_array.sum(axis=0).squeeze() 
-        fig, ax = PartialRateVsEnergy.plotRate(energy_array, k_L_E_array)
-        ax.plot(energy_array, total_k_L_E_array, label = "total", linewidth = 3, linestyle = 'solid', color = 'k')
-        ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.', fontsize = 'x-large')
-        ax.set_ylabel('rate ($\\mathrm{cm}^3 / \\mathrm{s}$)', fontsize = 'x-large')
-        ax.set_xlabel('collision energy (K)', fontsize = 'x-large')
+
+        fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
         image_path = plots_dir_path / 'resonance_for_MF' / f'{(phase[1]-phase[0]) % 1:.4f}' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
         image_path.parent.mkdir(parents=True, exist_ok=True)
         ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 5*10**(-9)]))
-        
+        ax.set_yscale('log')
+        for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+            ax.text(en*1., ra*1.5, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
+
         fig.savefig(image_path)
+        plt.close()
+
+        fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
         image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}.png'
         ax.set_yscale('linear')
         ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 5*10**(-9)]))
+        for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+            ax.text(en, ra + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
         fig.savefig(image_path)
 
         plt.close()
@@ -224,6 +230,29 @@ def _plot_energy_grid_density(T = 5e-4, E_min = 4e-7, E_max = 4e-3, nenergies = 
     
     return fig, ax
 
+def plot_k_L_E(energy_array, k_L_E_array):
+    total_k_L_E_array = k_L_E_array.sum(axis=0).squeeze() 
+    fig, ax = PartialRateVsEnergy.plotRate(energy_array, k_L_E_array)
+    ax.plot(energy_array, total_k_L_E_array, label = "total", linewidth = 3, linestyle = 'solid', color = 'k')
+    ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.', fontsize = 'x-large')
+    ax.set_ylabel('rate ($\\mathrm{cm}^3 / \\mathrm{s}$)', fontsize = 'x-large')
+    ax.set_xlabel('collision energy (K)', fontsize = 'x-large')
+    return fig, ax
+
+def get_L_label_coords(energy_array, k_L_E_array):
+    total_k_L_E_array = k_L_E_array.sum(axis = 0)
+    filter_max_arr = np.equal(np.full_like(k_L_E_array.transpose(), np.amax(k_L_E_array, axis = 1)).transpose(), k_L_E_array)
+    filter_enough_arr = k_L_E_array > 0.1*total_k_L_E_array
+    filter_max_enough_arr = np.logical_and(filter_max_arr, filter_enough_arr)
+    coords_vs_l = tuple( (l, energy_array[filter_max_enough_arr[l]], k_L_E_array[l][filter_max_enough_arr[l]]) for l in range(filter_max_enough_arr.shape[0]) if np.any(filter_max_enough_arr[l]))
+    return coords_vs_l
+    for l in range(filter_max_enough_arr.shape[0]):
+        if np.any(filter_max_enough_arr[l]):
+            energy = energy_array[filter_max_enough_arr[l]]
+            rate = k_L_E_array[l][filter_max_enough_arr[l]]
+            textstring = f'{l}'
+      
+
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
@@ -252,6 +281,8 @@ def main():
 
     #array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
+    ######## only plotting
+
     k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
     k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
 
@@ -266,6 +297,54 @@ def main():
     image_path.parent.mkdir(parents=True,exist_ok=True)
     fig.savefig(image_path)
     plt.close()
+
+    #######
+
+    # energy_array = np.array([ round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) ])
+    # array_path = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'k_L_E' / 'trash1' / '0.0900_0.2900.txt'
+    # k_L_E_array = np.loadtxt(array_path)
+    # k_L_E_array = k_L_E_array.squeeze()
+    # total_k_L_E_array = k_L_E_array.sum(axis = 0)
+    # # np.savetxt(array_path, k_L_E_array)
+
+    # filter_max_arr = np.equal(np.full_like(k_L_E_array.transpose(), np.amax(k_L_E_array, axis = 1)).transpose(), k_L_E_array)
+    # filter_enough_arr = k_L_E_array > 0.1*total_k_L_E_array
+    # filter_max_enough_arr = np.logical_and(filter_max_arr, filter_enough_arr)
+    # np.savetxt(array_path.parent / (array_path.with_suffix('').name + '_filter_max_enough'), filter_max_enough_arr, fmt = '%5i' )
+
+
+    # # fig, ax = PartialRateVsEnergy.plotRate(energy_array, k_L_E_array)
+    # # ax.plot(energy_array, total_k_L_E_array, label = "total", linewidth = 3, linestyle = 'solid', color = 'k')
+    # # ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
+    # # ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s}$)')
+    # # ax.set_xlabel('collision energy (K)')
+
+    # fig, ax = plot_k_L_E(energy_array, k_L_E_array)
+
+    # props = dict(boxstyle = 'round', pad = .2, facecolor = 'white', edgecolor = 'k', alpha = 1.)
+    # props = None
+
+    # for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+    #     ax.text(en*1., ra*1.5, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center', bbox = props)
+
+    # image_path = plots_dir_path / 'resonance_for_MF' / f'loglog_{array_path.with_suffix("").name}.png'
+    # image_path.parent.mkdir(parents=True, exist_ok=True)
+    # ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 5*10**(-9)]))
+    # fig.savefig(image_path)
+    # plt.show()
+
+
+    # fig, ax = plot_k_L_E(energy_array, k_L_E_array)
+    # # image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}.png'
+    
+    # ax.set_yscale('linear')
+    # ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 5e-9]))
+    # for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+    #     ax.text(en, ra + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
+    # plt.show()
+    # # fig.savefig(image_path)
+
+    # # plt.close()
 
 if __name__ == '__main__':
     main()

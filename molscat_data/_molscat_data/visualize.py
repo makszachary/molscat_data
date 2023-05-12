@@ -373,7 +373,7 @@ class PartialRateVsEnergy:
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         for l in range(l_max+1):
-            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.cm.get_cmap('cividis')(l/30) )
+            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.colormaps['cividis'](l/30) )
         
         ax.set_xlim(np.min(energy), np.max(energy))
         ax.set_xscale('log')
