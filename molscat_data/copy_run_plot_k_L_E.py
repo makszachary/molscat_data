@@ -164,7 +164,7 @@ def only_save_average(phases, pickle_dir, k_L_E_array_dir):
         print("arrays loaded")
         
         s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
-        energy_arrays = tuple( s.collisionEnergy for s in s_matrix_collections )
+        energy_arrays = tuple( np.array(s.collisionEnergy) for s in s_matrix_collections )
         
         arguments = tuple( zip(s_matrix_collections, k_L_E_arrays) )
         
@@ -240,7 +240,7 @@ def plot_k_L_E(energy_array, k_L_E_array):
     return fig, ax
 
 def get_L_label_coords(energy_array, k_L_E_array):
-    energy_array, k_L_E_array = np.array(energy_array), np.array(k_L_E_array)
+    # energy_array, k_L_E_array = np.array(energy_array), np.array(k_L_E_array)
     total_k_L_E_array = k_L_E_array.sum(axis = 0)
     filter_max_arr = np.equal(np.full_like(k_L_E_array.transpose(), np.amax(k_L_E_array, axis = 1)).transpose(), k_L_E_array)
     filter_enough_arr = k_L_E_array > 0.1*total_k_L_E_array
