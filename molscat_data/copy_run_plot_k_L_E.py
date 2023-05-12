@@ -247,6 +247,7 @@ def get_L_label_coords(energy_array, k_L_E_array):
     print(filter_max_enough_arr)
     print(type(filter_max_enough_arr))
     print(filter_max_enough_arr.shape)
+    for l in range(filter_max_enough_arr.shape[0]): print([filter_max_enough_arr[l]])
     coords_vs_l = tuple( (l, energy_array[filter_max_enough_arr[l]], k_L_E_array[l][filter_max_enough_arr[l]]) for l in range(filter_max_enough_arr.shape[0]) if np.any(filter_max_enough_arr[l]))
     
     return coords_vs_l
