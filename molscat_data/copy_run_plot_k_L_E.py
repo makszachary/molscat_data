@@ -244,13 +244,12 @@ def get_L_label_coords(energy_array, k_L_E_array):
     filter_max_arr = np.equal(np.full_like(k_L_E_array.transpose(), np.amax(k_L_E_array, axis = 1)).transpose(), k_L_E_array)
     filter_enough_arr = k_L_E_array > 0.1*total_k_L_E_array
     filter_max_enough_arr = np.logical_and(filter_max_arr, filter_enough_arr)
+    print(filter_max_enough_arr)
+    print(type(filter_max_enough_arr))
+    print(filter_max_enough_arr.shape)
     coords_vs_l = tuple( (l, energy_array[filter_max_enough_arr[l]], k_L_E_array[l][filter_max_enough_arr[l]]) for l in range(filter_max_enough_arr.shape[0]) if np.any(filter_max_enough_arr[l]))
+    
     return coords_vs_l
-    for l in range(filter_max_enough_arr.shape[0]):
-        if np.any(filter_max_enough_arr[l]):
-            energy = energy_array[filter_max_enough_arr[l]]
-            rate = k_L_E_array[l][filter_max_enough_arr[l]]
-            textstring = f'{l}'
       
 
 def main():
