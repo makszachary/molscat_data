@@ -155,6 +155,51 @@ def av_rate(s_matrix_collection, k_L_E_array):
     k_E_array = k_L_E_array.sum(axis=0).squeeze()
     return s_matrix_collection.thermalAverage(k_E_array)
 
+def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
+    # pickle_paths = ( Path(pickle_dir) / f'{phase[0]:.4f}_{phase[1]:.4f}.pickle' for phase in phases )
+    k_L_E_array_paths = ( Path(k_L_E_array_dir)/ f'{phase[0]:.4f}_{phase[1]:.4f}.txt' for phase in phases )
+    energy_array = np.array([ round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) ])
+    phi_s_array = np.array([phase[0] for phase in phases])
+    k_L_E_arrays = np.array([ np.loadtxt(arr_path) for arr_path in k_L_E_array_paths ] ).transpose(1,2,0)
+    phase_difference = (phases[0][1]-phases[0][0]) % 1
+    # energy = 7.5e-4
+    # E_index = np.abs(energy_array-energy).argmin()
+
+    filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
+    
+
+    for E_index in range(k_L_E_arrays.shape[1]):
+        energy = energy_array[E_index]
+        fig, ax = plt.subplots()
+        ax.set_xlabel(r"$(\Phi_\mathrm{s} + \pi/4)\,\mathrm{mod}\,\pi \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
+        ax.set_xlim(0,1)
+        ax.set_ylim(0, 1.2*np.amax(k_L_E_arrays[:,E_index,:]) )
+        
+        for L in range(k_L_E_arrays.shape[0]):
+            ax.plot(phi_s_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
+        
+        coords_vs_L = tuple( (l, phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+        for coord in coords_vs_L:
+            ax.text(coord[1].flatten()[0], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+
+        ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.')
+        plt.tight_layout()
+        image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
+        image_path.parent.mkdir(parents=True,exist_ok=True)
+        fig.savefig(image_path)
+        plt.close()
+        # plt.show()
+        
+        # s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
+        # energy_arrays = tuple( np.array(s.collisionEnergy) for s in s_matrix_collections )
+        
+        # arguments = tuple( zip(s_matrix_collections, k_L_E_arrays) )
+        
+        # averaged_rates = pool.starmap(av_rate, arguments)
+        # print(len(averaged_rates))
+        # print("rates averaged")
+
 def only_save_average(phases, pickle_dir, k_L_E_array_dir):
     with Pool() as pool:
         pickle_paths = ( Path(pickle_dir) / f'{phase[0]:.4f}_{phase[1]:.4f}.pickle' for phase in phases )
@@ -280,20 +325,27 @@ def main():
 
     ######## only plotting
 
-    k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
 
-    averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir)
+    # averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir)
 
-    fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
-    ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
-    plt.tight_layout()
-    image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
-    image_path.parent.mkdir(parents=True,exist_ok=True)
-    fig.savefig(image_path)
-    plt.close()
+    # fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
+    # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
+    # ax.set_xlim(0, 1)
+    # ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
+    # plt.tight_layout()
+    # image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
+    # image_path.parent.mkdir(parents=True,exist_ok=True)
+    # fig.savefig(image_path)
+    # plt.close()
+
+    #######
+
+    ####### Plot k_L,E as a function of Phi_s
+
+    k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
 
     #######
 

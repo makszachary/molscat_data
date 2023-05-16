@@ -97,26 +97,26 @@ def main():
     singlet_phase, triplet_phase = 0.04, 0.24
     so_scaling_values = (1e-4, 1e-3, 1e-2, 0.25, 0.5, 0.75, 1.0)
 
-    array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4' / f'out_state_res_{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
-    output_state_resolved_arrays = list( np.loadtxt(array_path).reshape(3,2,5) for array_path in array_paths )
-    ss_dominated_p0 = np.fromiter( (array.sum(axis = (0,1))[4] for array in output_state_resolved_arrays), dtype = float )
+    # array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4' / f'out_state_res_{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
+    # output_state_resolved_arrays = list( np.loadtxt(array_path).reshape(3,2,5) for array_path in array_paths )
+    # ss_dominated_p0 = np.fromiter( (array.sum(axis = (0,1))[4] for array in output_state_resolved_arrays), dtype = float )
 
-    image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'p0_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
-    # if relative_to_max:
-        # image_path = image_path.with_name(f'p0_rel_to_max_{singlet_phase:.4f}_{triplet_phase:.4f}.png')
-    image_path.parent.mkdir(parents = True, exist_ok = True)
+    # image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'p0_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    # # if relative_to_max:
+    #     # image_path = image_path.with_name(f'p0_rel_to_max_{singlet_phase:.4f}_{triplet_phase:.4f}.png')
+    # image_path.parent.mkdir(parents = True, exist_ok = True)
 
-    fig1, ax1 = ProbabilityVersusSpinOrbit.plotBareProbability(so_parameter=so_scaling_values, probability=ss_dominated_p0, relative = True)
-    # plt.show()
+    # fig1, ax1 = ProbabilityVersusSpinOrbit.plotBareProbability(so_parameter=so_scaling_values, probability=ss_dominated_p0, relative = True)
+    # # plt.show()
     
-    array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4' / f'{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
-    output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
-    ss_dominated_peff = np.fromiter( (array[4] for array in output_state_resolved_arrays), dtype = float )
+    # array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / '100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'dLMax_4' / f'{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
+    # output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
+    # ss_dominated_peff = np.fromiter( (array[4] for array in output_state_resolved_arrays), dtype = float )
 
-    image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'mod_peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
-    image_path.parent.mkdir(parents = True, exist_ok = True)    
-    fig2, ax2 = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_parameter=so_scaling_values, probability = ss_dominated_peff)
-    plt.show()
+    # image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'mod_peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    # image_path.parent.mkdir(parents = True, exist_ok = True)    
+    # fig2, ax2 = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_parameter=so_scaling_values, probability = ss_dominated_peff)
+    # plt.show()
 
     # plot_and_save_p0_Cso(singlet_phase, triplet_phase)
     # plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max=True)
@@ -139,20 +139,20 @@ def main():
     theory_cold_lower = theory_data_dir / f'{so_scaling:.4f}_cold_lower.txt'
     SE_theory_hpf, SE_theory_cold_higher, SE_theory_cold_lower = ( theory_data_dir / f'{SE_so_scaling:.4f}_{name}.txt' for name in ( 'hpf', 'cold_higher', 'cold_lower' ) )
     
-    # theory_data, exp_data, std_data = BarplotWide.prepareDataFromFiles(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
-    # SE_theory_data, _, __ = BarplotWide.prepareDataFromFiles(theory_hpf=SE_theory_hpf, theory_cold_higher=SE_theory_cold_higher, theory_cold_lower=SE_theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
-    # fig, ax1, ax2, ax3, legend_ax = BarplotWide.barplot(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
+    theory_data, exp_data, std_data = BarplotWide.prepareDataFromFiles(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
+    SE_theory_data, _, __ = BarplotWide.prepareDataFromFiles(theory_hpf=SE_theory_hpf, theory_cold_higher=SE_theory_cold_higher, theory_cold_lower=SE_theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
+    fig, ax1, ax2, ax3, legend_ax = BarplotWide.barplot(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
     # BarplotWide.compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, pmf_array)
     
-    # BarplotWide.addParams(fig, legend_ax, singlet_phase, triplet_phase, so_scaling)
-    # # print(fig.axes)
+    BarplotWide.addParams(fig, legend_ax, singlet_phase, triplet_phase, so_scaling)
+    # print(fig.axes)
 
-    # image_path = Path(__file__).parents[1] / 'plots' / 'for MT' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
-    # image_path.parent.mkdir(parents=True, exist_ok=True)
-    # fig.savefig(image_path)
+    image_path = Path(__file__).parents[1] / 'plots' / 'for MT' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
+    image_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(image_path)
     # # plt.close()
     
-    # plt.show()
+    plt.show()
 
     
 
