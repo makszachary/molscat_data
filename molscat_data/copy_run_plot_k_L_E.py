@@ -110,7 +110,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
     with Pool() as pool:
         s_matrix_collections = pool.map(SMatrixCollection.fromPickle, pickle_paths)
         phases = tuple( (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]) ) for s_matrix_collection in s_matrix_collections )
-        arguments = ( (s_matrix_collection, 2, 0, 1, 1, 2, 2, 1, -1, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
+        arguments = ( (s_matrix_collection, 2, 0, 1, -1, 2, -2, 1, 1, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
         k_L_E_arrays = pool.starmap(rate_fmfsms_vs_L_SE, arguments)
     
     array_paths = []
@@ -322,7 +322,7 @@ def main():
     #    pickle_paths.append(pickle_path)
     #    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
-    array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
+    # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
     ######## only plotting
 
