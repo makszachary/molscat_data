@@ -110,7 +110,7 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
     with Pool() as pool:
         s_matrix_collections = pool.map(SMatrixCollection.fromPickle, pickle_paths)
         phases = tuple( (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]) ) for s_matrix_collection in s_matrix_collections )
-        arguments = ( (s_matrix_collection, 2, 0, 1, -1, 2, -2, 1, 1, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
+        arguments = ( (s_matrix_collection, 2, 0, 1, 1, 2, 2, 1, -1, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
         k_L_E_arrays = pool.starmap(rate_fmfsms_vs_L_SE, arguments)
     
     array_paths = []
@@ -315,13 +315,14 @@ def main():
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
+    pickle_paths = [ pickle_dir_path.joinpath('RbSr+_tcpld_SE', '200_E', f'{phase[0]:.4f}_{phase[1]:.4f}.txt') for phase in phases ]
     #pickle_paths = []
     #for output_dir in output_dirs:
     #    _, duration, output_dir, pickle_path = collect_and_pickle_SE( output_dir )
     #    pickle_paths.append(pickle_path)
     #    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
-    #array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
+    array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
     ######## only plotting
 
@@ -344,8 +345,8 @@ def main():
 
     ####### Plot k_L,E as a function of Phi_s
 
-    k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    # k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
 
     #######
 
