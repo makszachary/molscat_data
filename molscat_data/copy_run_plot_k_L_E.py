@@ -18,6 +18,7 @@ from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
 from _molscat_data.utils import rate_fmfsms_vs_L_SE, rate_fmfsms_vs_L_multiprocessing
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
+from _molscat_data.analytical import MonoAlkaliEnergy
 from _molscat_data.utils import probability
 
 from _molscat_data.visualize import PartialRateVsEnergy
@@ -200,7 +201,7 @@ def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
         # print(len(averaged_rates))
         # print("rates averaged")
 
-def only_save_average(phases, pickle_dir, k_L_E_array_dir):
+def only_save_average(phases, pickle_dir, k_L_E_array_dir, energy_threshold: float = None):
     with Pool() as pool:
         pickle_paths = ( Path(pickle_dir) / f'{phase[0]:.4f}_{phase[1]:.4f}.pickle' for phase in phases )
         k_L_E_array_paths = ( Path(k_L_E_array_dir)/ f'{phase[0]:.4f}_{phase[1]:.4f}.txt' for phase in phases )
@@ -210,6 +211,9 @@ def only_save_average(phases, pickle_dir, k_L_E_array_dir):
         
         s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
         energy_arrays = tuple( np.array(s.collisionEnergy) for s in s_matrix_collections )
+        
+        if energy_threshold is not None:
+            k_L_E_arrays = tuple( np.where(energy_array > energy_threshold, arr, 0) for arr, energy_array in zip(k_L_E_arrays, energy_arrays) )
         
         arguments = tuple( zip(s_matrix_collections, k_L_E_arrays) )
         
@@ -326,20 +330,24 @@ def main():
 
     ######## only plotting
 
-    # k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    # k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    B = 2.97
+    energy_threshold = (MonoAlkaliEnergy(B, f = 1, mf = 0, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = 1/2, i = 0)) - ( MonoAlkaliEnergy(B, f = 1, mf = 1, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = -1/2, i = 0) )
+    print(f'Thermal averages will be calculated for the endothermic channel with the energy threshold  = {energy_threshold:.4e} K.')
 
-    # averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir)
+    k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
 
-    # fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
-    # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
-    # ax.set_xlim(0, 1)
-    # ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
-    # plt.tight_layout()
-    # image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
-    # image_path.parent.mkdir(parents=True,exist_ok=True)
-    # fig.savefig(image_path)
-    # plt.close()
+    averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir, energy_threshold = energy_threshold)
+
+    fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
+    ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
+    plt.tight_layout()
+    image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
+    image_path.parent.mkdir(parents=True,exist_ok=True)
+    fig.savefig(image_path)
+    plt.close()
 
     #######
 
