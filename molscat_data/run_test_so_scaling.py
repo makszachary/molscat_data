@@ -204,7 +204,7 @@ def main():
     # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
@@ -217,7 +217,7 @@ def main():
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
-    pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
+    pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}.pickle' for so_scaling in so_scaling_values )
     # for pickle_path in pickle_paths:
     #     calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
 
