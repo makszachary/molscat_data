@@ -125,7 +125,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
 
         fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
-        image_path = plots_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / f'{(phase[1]-phase[0]) % 1:.4f}' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
+        image_path = plots_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / f'{(phase[1]-phase[0]) % 1:.4f}' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}_{spin_orbit_scaling:.4f}.png'
         image_path.parent.mkdir(parents=True, exist_ok=True)
         ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 3*10**(-9)]))
         ax.set_yscale('log')
