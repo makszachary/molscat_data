@@ -609,7 +609,7 @@ class SMatrixCollection:
                             matrix[(channels[channel_out_index], channels[channel_in_index])] = cmath.rect(np.sqrt(float(line.split()[2])), 2*np.pi*float(line.split()[3]))
                         line = next(molscat_output)
                     
-                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = self.C4[C4_index], singletParameter = self.singletParameter[A_s_index], tripletParameter = self.tripletParameter[A_t_index], spinOrbitParameter = self.spinOrbitParameter[so_param_index], reducedMass = self.reducedMass[reduced_mass_index], magneticField = self.magneticField[magnetic_field_index], collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
+                    S = SMatrix(basis = basis, diagonal = self.diagonal, C4 = self.C4[C4_index], singletParameter = self.singletParameter[A_s_index], tripletParameter = self.tripletParameter[A_t_index], reducedMass = self.reducedMass[reduced_mass_index], magneticField = self.magneticField[magnetic_field_index], collisionEnergy = self.collisionEnergy[energy_counter], matrix = matrix)
                     if (C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter) in self.matrixCollection.keys():
                         self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:

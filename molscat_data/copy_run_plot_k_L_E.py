@@ -15,7 +15,7 @@ from matplotlib import pyplot as plt
 import matplotlib as mpl
 
 from _molscat_data.smatrix import SMatrixCollection
-from _molscat_data.smatrix import SMatrixCollection as SMatrixCollectionV0
+from _molscat_data.smatrix_compatibility_copy import SMatrixCollection as SMatrixCollectionV0
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
 from _molscat_data.utils import rate_fmfsms_vs_L_SE, rate_fmfsms_vs_L_multiprocessing
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
