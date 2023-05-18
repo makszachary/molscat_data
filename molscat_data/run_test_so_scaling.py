@@ -224,6 +224,8 @@ def main():
     ### Calculate k_L(E) for the cold spin change from |2,2,up> state
     
     for pickle_path in pickle_paths:
+        s = SMatrixCollection.fromPickle(pickle_path)
+        print(s)
         save_and_plot_k_L_E_spinspin(pickle_path)
 
 
