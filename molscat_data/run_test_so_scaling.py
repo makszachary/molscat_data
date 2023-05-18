@@ -200,25 +200,25 @@ def main():
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.37, 0.38, 0.5, 0.75, 1.00)
-    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
+    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.37, 0.38, 0.5, 0.75, 1.00)
+    # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
-    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
-    # pickle_paths = []
+    pickle_paths = []
     # output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
-    # for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
-    #     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, so_scaling )
-    #     pickle_paths.append(pickle_path)
-    #     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, so_scaling )
+        pickle_paths.append(pickle_path)
+        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
-    pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}.pickle' for so_scaling in so_scaling_values )
+    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}.pickle' for so_scaling in so_scaling_values )
     # for pickle_path in pickle_paths:
     #     calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
 
