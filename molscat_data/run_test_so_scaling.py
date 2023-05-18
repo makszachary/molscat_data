@@ -200,8 +200,8 @@ def main():
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.37, 0.38, 0.5, 0.75, 1.00)
-    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
+    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.37, 0.38, 0.5, 0.75, 1.00)
+    # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
