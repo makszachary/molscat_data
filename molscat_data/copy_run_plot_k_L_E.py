@@ -15,6 +15,7 @@ from matplotlib import pyplot as plt
 import matplotlib as mpl
 
 from _molscat_data.smatrix import SMatrixCollection
+from _molscat_data.smatrix import SMatrixCollection as SMatrixCollectionV0
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
 from _molscat_data.utils import rate_fmfsms_vs_L_SE, rate_fmfsms_vs_L_multiprocessing
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
@@ -107,11 +108,10 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
-def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, phase: tuple[float, float]):
-    s_matrix_collection = SMatrixCollection.fromPickle(file_path=pickle_path)
+def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, phase: tuple[float, float], spin_orbit_scaling: float):
+    s_matrix_collection = SMatrixCollectionV0.fromPickle(file_path=pickle_path)
     k_L_E_arrays = np.array([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
     energy_array = np.array(s_matrix_collection.collisionEnergy)
-    spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
     
     with Pool() as pool:
         arguments = ((s_matrix_collection, k_L_E_array) for k_L_E_array in k_L_E_arrays)
@@ -371,7 +371,7 @@ def main():
     phase = phases[0]
     spin_orbit_scaling = 0.38
     pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'RbSr+_tcpld_so_scaling' / f'100_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
-    save_and_plot_k_L_E_spinspin(pickle_path, phase)
+    save_and_plot_k_L_E_spinspin(pickle_path, phase, spin_orbit_scaling)
 
     ######## only plotting
 
