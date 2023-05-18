@@ -110,7 +110,7 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
 
 def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
     s_matrix_collection = SMatrixCollection.fromPickle(file_path=pickle_path)
-    phase = (s_matrix_collection.singletParameter[0], s_matrix_collection.tripletParameter[0])
+    phase = (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]))
     spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
     k_L_E_arrays = np.array([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
     energy_array = np.array(s_matrix_collection.collisionEnergy)
