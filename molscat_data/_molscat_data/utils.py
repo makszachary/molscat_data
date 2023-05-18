@@ -54,7 +54,7 @@ def rate_fmfsms_vs_L_multiprocessing(s_matrix_collection: SMatrixCollection, F_o
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
 
     with Pool() as pool:
-        arguments = ( (s_matrix_collection, L_in, *(args[name] for name in args), param_indices, dLMax, unit) for L_in in range(0, L_max + 1, 2))
+        arguments = tuple( (s_matrix_collection, L_in, *(args[name] for name in args), param_indices, dLMax, unit) for L_in in range(0, L_max + 1, 2))
         print(arguments)
         results = pool.starmap(rate_Lfmfsms, arguments)
         rate = np.array(results)
