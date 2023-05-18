@@ -85,11 +85,11 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, singletParameter: tuple[float, ...], tripletParameter: tuple[float, ...], spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
-    s_matrix_collection = SMatrixCollection(singletParameter = singletParameter, tripletParameter = tripletParameter, collisionEnergy = energy_tuple)
+    s_matrix_collection = SMatrixCollection(collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
@@ -192,15 +192,15 @@ def main():
     parser.add_argument("--dLMax", type = int, default = 4, help = "The maximum change of the orbital angular momentum L durign the collision.")
     args = parser.parse_args()
 
-    number_of_parameters = 24
-    all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
-    SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
-    TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
+    # number_of_parameters = 24
+    # all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
+    # SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
+    # TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
     phases = ((args.singlet_phase, args.triplet_phase),)
-    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
+    so_scaling_values = (1e-4, 1e-3, 1e-2, 0.37, 0.38, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
     output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
@@ -209,7 +209,7 @@ def main():
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = set()
     for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, SINGLETSCALING, TRIPLETSCALING, so_scaling )
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, so_scaling )
         pickle_paths.add(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 

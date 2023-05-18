@@ -370,6 +370,11 @@ def main():
 
     # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
+    phase = phases[0]
+    spin_orbit_scaling = 0.38
+    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'test_so_in_smatrix' / f'2_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
+    save_and_plot_k_L_E_spinspin(pickle_path)
+
     ######## only plotting
 
     # B = 2.97
