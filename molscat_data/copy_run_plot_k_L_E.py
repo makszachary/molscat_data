@@ -143,7 +143,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
         ax.set_yscale('linear')
         ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 3*10**(-9)]))
         ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.2f}$.', fontsize = 'x-large')
-        ax.plot(energy_array, average_rate, linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
+        ax.plot(energy_array, np.full_like(energy_array, average_rate), linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
         for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
             ax.text(en, ra + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
         fig.savefig(image_path)
