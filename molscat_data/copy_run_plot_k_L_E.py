@@ -368,10 +368,10 @@ def main():
 
     # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
-    singlet_phase, triplet_phase = 0.04, 0.24
+    phase = phases[0]
     spin_orbit_scaling = 0.38
-    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'RbSr+_tcpld_so_scaling' / f'100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
-    save_and_plot_k_L_E_spinspin(pickle_path, phase = (singlet_phase, triplet_phase))
+    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'RbSr+_tcpld_so_scaling' / f'100_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
+    save_and_plot_k_L_E_spinspin(pickle_path, phase)
 
     ######## only plotting
 
