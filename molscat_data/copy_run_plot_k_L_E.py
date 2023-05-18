@@ -121,6 +121,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
 
     for MF_out, k_L_E_array, average_rate in zip(range(-4, 4+1, 2), k_L_E_arrays, averaged_rates):
         total_k_L_E_array = k_L_E_array.sum(axis=0).squeeze() 
+        k_L_E_array = k_L_E_array.squeeze()
 
         fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 

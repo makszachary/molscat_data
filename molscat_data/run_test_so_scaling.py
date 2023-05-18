@@ -204,12 +204,12 @@ def main():
     # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = []
-    # output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
+    output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
     for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, so_scaling )
         pickle_paths.append(pickle_path)
@@ -225,8 +225,6 @@ def main():
     ### Calculate k_L(E) for the cold spin change from |2,2,up> state
     
     for pickle_path in pickle_paths:
-        s = SMatrixCollection.fromPickle(pickle_path)
-        print(s)
         save_and_plot_k_L_E_spinspin(pickle_path)
 
 
