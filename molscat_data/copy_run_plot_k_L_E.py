@@ -107,6 +107,46 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
+def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, phase: tuple[float, float]):
+    s_matrix_collection = SMatrixCollection.fromPickle(file_path=pickle_path)
+    k_L_E_arrays = np.array([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
+    energy_array = np.array(s_matrix_collection.collisionEnergy)
+    spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
+    
+    with Pool() as pool:
+        arguments = ((s_matrix_collection, k_L_E_array) for k_L_E_array in k_L_E_arrays)
+        averaged_rates = pool.starmap(av_rate, arguments)
+
+    for MF_out, k_L_E_array, average_rate in zip(range(-4, 4+1, 2), k_L_E_arrays, averaged_rates):
+        total_k_L_E_array = k_L_E_array.sum(axis=0).squeeze() 
+
+        fig, ax = plot_k_L_E(energy_array, k_L_E_array)
+
+        image_path = plots_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / f'{(phase[1]-phase[0]) % 1:.4f}' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}.png'
+        image_path.parent.mkdir(parents=True, exist_ok=True)
+        ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 3*10**(-9)]))
+        ax.set_yscale('log')
+        ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.2f}$.', fontsize = 'x-large')
+        ax.plot(energy_array, average_rate, linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
+        for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+            ax.text(en*1., ra*1.5, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
+
+        fig.savefig(image_path)
+        plt.close()
+
+        fig, ax = plot_k_L_E(energy_array, k_L_E_array)
+
+        image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}.png'
+        ax.set_yscale('linear')
+        ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 3*10**(-9)]))
+        ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.2f}$.', fontsize = 'x-large')
+        ax.plot(energy_array, average_rate, linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
+        for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
+            ax.text(en, ra + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
+        fig.savefig(image_path)
+
+        plt.close()
+
 def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
     with Pool() as pool:
         s_matrix_collections = pool.map(SMatrixCollection.fromPickle, pickle_paths)
@@ -328,33 +368,38 @@ def main():
 
     # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
 
+    singlet_phase, triplet_phase = 0.04, 0.24
+    spin_orbit_scaling = 0.38
+    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'RbSr+_tcpld_so_scaling' / f'100_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
+    save_and_plot_k_L_E_spinspin(pickle_path, phase = (singlet_phase, triplet_phase))
+
     ######## only plotting
 
-    B = 2.97
-    energy_threshold = (MonoAlkaliEnergy(B, f = 1, mf = 0, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = 1/2, i = 0)) - ( MonoAlkaliEnergy(B, f = 1, mf = 1, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = -1/2, i = 0) )
-    print(f'Thermal averages will be calculated for the endothermic channel with the energy threshold  = {energy_threshold:.4e} K.')
+    # B = 2.97
+    # energy_threshold = (MonoAlkaliEnergy(B, f = 1, mf = 0, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = 1/2, i = 0)) - ( MonoAlkaliEnergy(B, f = 1, mf = 1, i = 3/2) + MonoAlkaliEnergy(B, f = 1/2, mf = -1/2, i = 0) )
+    # print(f'Thermal averages will be calculated for the endothermic channel with the energy threshold  = {energy_threshold:.4e} K.')
 
-    k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # k_L_E_pickles_dir = pickle_dir_path / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # k_L_E_arrays_dir = arrays_dir_path / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
 
-    averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir, energy_threshold = energy_threshold)
+    # averaged_rates = only_save_average(phases, k_L_E_pickles_dir, k_L_E_arrays_dir, energy_threshold = energy_threshold)
 
-    fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
-    ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
-    plt.tight_layout()
-    image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
-    image_path.parent.mkdir(parents=True,exist_ok=True)
-    fig.savefig(image_path)
-    plt.close()
+    # fig, ax = plot_rate_vs_singlet_phase(averaged_rates[0], averaged_rates[2])
+    # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference} \\pi\\,\\mathrm{{mod}}\\,\\pi$.')
+    # ax.set_xlim(0, 1)
+    # ax.set_ylim(0, max(10**(-9), max(averaged_rates[2])))
+    # plt.tight_layout()
+    # image_path = plots_dir_path / 'averaged_rates_vs_sum_of_phases' / f'{phase_difference:.4f}.png'
+    # image_path.parent.mkdir(parents=True,exist_ok=True)
+    # fig.savefig(image_path)
+    # plt.close()
 
     #######
 
     ####### Plot k_L,E as a function of Phi_s
 
-    # k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    # plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
 
     #######
 
