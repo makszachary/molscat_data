@@ -139,7 +139,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
 
         fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
-        image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}.png'
+        image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}_{spin_orbit_scaling:.4f}.png'
         ax.set_yscale('linear')
         ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 3*10**(-9)]))
         ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.2f}$.', fontsize = 'x-large')
