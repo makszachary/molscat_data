@@ -24,6 +24,7 @@ from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
 from prepare_so_coupling import scale_so_and_write
+from copy_run_plot_k_L_E import save_and_plot_k_L_E_spinspin
 
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
@@ -32,6 +33,12 @@ E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
+
+pickles_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
+pickles_dir_path.mkdir(parents=True, exist_ok=True)
+arrays_dir_path = pickles_dir_path.parent / 'arrays'
+arrays_dir_path.mkdir(parents=True, exist_ok=True)
+plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float) -> tuple[float, float, float]:
     
@@ -87,7 +94,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singletParamet
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
     
-    pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', molscat_output_directory_path.relative_to(molscat_out_dir))
+    pickle_path = pickles_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
     pickle_path = pickle_path.parent / (pickle_path.name + '.pickle')
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -148,10 +155,7 @@ def calculate_and_save_the_peff_parallel(pickle_path, phases = None, dLMax: int 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
 
-        data_produced_dir = Path(__file__).parents[1].joinpath('data_produced')
-        pickles_dir = data_produced_dir.joinpath('pickles')
-        txt_dir = data_produced_dir.joinpath('arrays')
-        txt_path = txt_dir.joinpath(pickle_path.relative_to(pickles_dir)).with_suffix('')
+        txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
         # so_scaling = txt_path.name
         output_state_res_txt_path = txt_path.parent / f"dLMax_{dLMax}" / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
         txt_path = txt_path.parent / f"dLMax_{dLMax}" / (txt_path.name + '_' + abbreviation + '.txt')
@@ -212,8 +216,13 @@ def main():
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
+    
     for pickle_path in pickle_paths:
         calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
+
+    ### Calculate k_L(E) for the cold spin change from |2,2,up> state
+    for pickle_path in pickle_paths:
+        save_and_plot_k_L_E_spinspin(pickle_path)
 
 
 if __name__ == '__main__':

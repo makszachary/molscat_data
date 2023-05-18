@@ -108,10 +108,11 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
-def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, phase: tuple[float, float], spin_orbit_scaling: float):
+def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
     s_matrix_collection = SMatrixCollection.fromPickle(file_path=pickle_path)
-    print(s_matrix_collection.matrixCollection)
-    k_L_E_arrays = np.array([rate_fmfsms_vs_L(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
+    phase = (s_matrix_collection.singletParameter[0], s_matrix_collection.tripletParameter[0])
+    spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
+    k_L_E_arrays = np.array([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
     energy_array = np.array(s_matrix_collection.collisionEnergy)
     
     with Pool() as pool:
@@ -356,23 +357,18 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_SE').iterdir()
     
     ### RUN MOLSCAT ###
-    # output_dirs = create_and_run_parallel_SE(molscat_input_templates, phases)
+    output_dirs = create_and_run_parallel_SE(molscat_input_templates, phases)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
-    pickle_paths = [ pickle_dir_path.joinpath('RbSr+_tcpld_SE', '200_E', f'{phase[0]:.4f}_{phase[1]:.4f}.pickle') for phase in phases ]
-    #pickle_paths = []
-    #for output_dir in output_dirs:
+    # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_scaling', f'{nenergies}_E', f'{args.singlet_phase:.4f}_{args.triplet_phase:.4f}')
+    # pickle_paths = [ pickle_dir_path.joinpath('RbSr+_tcpld_SE', '200_E', f'{phase[0]:.4f}_{phase[1]:.4f}.pickle') for phase in phases ]
+    # pickle_paths = []
+    # for output_dir in output_dirs:
     #    _, duration, output_dir, pickle_path = collect_and_pickle_SE( output_dir )
     #    pickle_paths.append(pickle_path)
     #    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
-
-    phase = phases[0]
-    spin_orbit_scaling = 0.38
-    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'test_so_in_smatrix' / f'2_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
-    save_and_plot_k_L_E_spinspin(pickle_path, phase, spin_orbit_scaling)
 
     ######## only plotting
 
@@ -399,8 +395,8 @@ def main():
 
     ####### Plot k_L,E as a function of Phi_s
 
-    k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    # k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    # plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
 
     #######
 
