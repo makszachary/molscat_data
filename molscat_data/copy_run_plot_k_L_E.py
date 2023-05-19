@@ -127,7 +127,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
         array_path = arrays_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         name = f"|f = 2, m_f = 2, m_s = 1/2> to |f = 2, m_f = {int(MF_out/2)}, m_s = -1/2> collisions."
-        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%.15f', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phase}. The scaling of the short-range part of lambda_SO: {spin_orbit_scaling}.')
+        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phase}. The scaling of the short-range part of lambda_SO: {spin_orbit_scaling}.')
 
         fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
