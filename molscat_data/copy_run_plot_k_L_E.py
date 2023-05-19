@@ -126,8 +126,8 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
         k_L_E_array = k_L_E_array.squeeze()
         array_path = arrays_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
-        name = f"cold ion\'s spin change for the |f = 2, m_f = {int(MF_out/2)}, m_s = 1/2> initial state."
-        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phase}. The scaling of the short-range part of lambda_SO: {spin_orbit_scaling}.')
+        name = f"|f = 2, m_f = 2, m_s = 1/2> to |f = 2, m_f = {inf(MF_out/2)}, m_s = -1/2> collisions."
+        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%.15f', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phase}. The scaling of the short-range part of lambda_SO: {spin_orbit_scaling}.')
 
         fig, ax = plot_k_L_E(energy_array, k_L_E_array)
 
@@ -135,7 +135,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
         image_path.parent.mkdir(parents=True, exist_ok=True)
         ax.set_ylim(np.min([1e-14, np.max(total_k_L_E_array)*1e-3]), (np.max([np.max(total_k_L_E_array)*10, 3e-9]) if np.max([np.max(total_k_L_E_array)*10, 3e-9]) < 1e10*np.max(total_k_L_E_array) else 1e10*np.max(total_k_L_E_array) ))
         ax.set_yscale('log')
-        ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.4f}$.', fontsize = 'x-large')
+        ax.set_title(f'The rate of the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \\left|2,{int(MF_out/2)}\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collisions.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.4f}$.', fontsize = 'x-large')
         ax.plot(energy_array, np.full_like(energy_array, average_rate), linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
         for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
             ax.text(en*1., ra*1.5, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
@@ -148,7 +148,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
         image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}_{spin_orbit_scaling:.4f}.png'
         ax.set_yscale('linear')
         ax.set_ylim(0, (np.max([np.max(total_k_L_E_array)*1.25, 3e-9]) if np.max([np.max(total_k_L_E_array)*1.25, 3e-9]) < 10*np.max(total_k_L_E_array) else 10*np.max(total_k_L_E_array)))
-        ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.4f}$.', fontsize = 'x-large')
+        ax.set_title(f'The rate of the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \\left|2,{int(MF_out/2)}\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collisions.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.4f}$.', fontsize = 'x-large')
         ax.plot(energy_array, np.full_like(energy_array, average_rate), linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
         for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
             ax.text(en, ra + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{l}', fontsize = 'large', color = mpl.colormaps['cividis'](l/30), fontweight = 'bold', va = 'center', ha = 'center')
