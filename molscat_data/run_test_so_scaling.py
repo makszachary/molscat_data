@@ -221,8 +221,9 @@ def main():
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
     # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}.pickle' for so_scaling in so_scaling_values )
-    for pickle_path in pickle_paths:
-        calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
+    
+    # for pickle_path in pickle_paths:
+    #     calculate_and_save_the_peff_parallel(pickle_path, phases[0], dLMax = args.dLMax)
 
     ### Calculate k_L(E) for the cold spin change from |2,2,up> state
     
