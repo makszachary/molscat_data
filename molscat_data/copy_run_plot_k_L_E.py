@@ -133,7 +133,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
 
         image_path = plots_dir_path / '4411_cold_vs_E' / f'MF_out_{MF_out}' / f'{(phase[1]-phase[0]) % 1:.4f}' / f'loglog_{phase[0]:.4f}_{phase[1]:.4f}_{spin_orbit_scaling:.4f}.png'
         image_path.parent.mkdir(parents=True, exist_ok=True)
-        ax.set_ylim(np.min([10**(-14), np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 3*10**(-9)]))
+        ax.set_ylim(np.min([1e-14, np.max(total_k_L_E_array)*1e-3]), np.max([np.max(total_k_L_E_array)*5, 1e-9]))
         ax.set_yscale('log')
         ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.4f}$.', fontsize = 'x-large')
         ax.plot(energy_array, np.full_like(energy_array, average_rate), linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
@@ -147,7 +147,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
 
         image_path = image_path.parent / f'loglin_{phase[0]:.4f}_{phase[1]:.4f}_{spin_orbit_scaling:.4f}.png'
         ax.set_yscale('linear')
-        ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 3*10**(-9)]))
+        ax.set_ylim(0, np.max([np.max(total_k_L_E_array)*1.25, 1e-9]))
         ax.set_title(f'The rate of the cold ion\'s spin flip for the $\\left|2,2\\right>\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right>$ initial state.\n$(\\tilde{{\\Phi}}_\\mathrm{{s}}, \\tilde{{\\Phi}}_\\mathrm{{t}}) = ({phase[0]:.2f}, {phase[1]:.2f}), c_\\mathrm{{so}} = {spin_orbit_scaling:.2f}$.', fontsize = 'x-large')
         ax.plot(energy_array, np.full_like(energy_array, average_rate), linewidth = 4, linestyle='--', color = 'dodgerblue', label = 'thermal average')
         for l, en, ra in get_L_label_coords(energy_array, k_L_E_array):
