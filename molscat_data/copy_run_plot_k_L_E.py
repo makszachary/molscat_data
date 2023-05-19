@@ -114,6 +114,7 @@ def save_and_plot_k_L_E_spinspin(pickle_path: Path | str):
     spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
     k_L_E_arrays = np.array([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
     energy_array = np.array(s_matrix_collection.collisionEnergy)
+    print("The rates have been summed. Averaging and plotting begins.")
     
     with Pool() as pool:
         arguments = ((s_matrix_collection, k_L_E_array) for k_L_E_array in k_L_E_arrays)
@@ -197,7 +198,8 @@ def save_and_plot_k_L_E_multiprocessing(pickle_paths: tuple[Path, ...]):
 
 def av_rate(s_matrix_collection, k_L_E_array):
     k_E_array = k_L_E_array.sum(axis=0).squeeze()
-    return s_matrix_collection.thermalAverage(k_E_array)
+    average = s_matrix_collection.thermalAverage(k_E_array)
+    return average
 
 def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
     # pickle_paths = ( Path(pickle_dir) / f'{phase[0]:.4f}_{phase[1]:.4f}.pickle' for phase in phases )
