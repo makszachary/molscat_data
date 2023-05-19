@@ -19,7 +19,7 @@ import time
 
 from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale
-from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function
+from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
@@ -85,11 +85,13 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, phases, spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
-    s_matrix_collection = SMatrixCollection(collisionEnergy = energy_tuple)
+    singlet_parameter = tuple( default_singlet_parameter_from_phase(phase[0]) for phase in sorted(phases, key = lambda phase: phase[0]))
+    triplet_parameter = tuple( default_singlet_parameter_from_phase(phase[1]) for phase in sorted(phases, key = lambda phase: phase[0]))
+    s_matrix_collection = SMatrixCollection(singletParameter = singlet_parameter, tripletParameter = triplet_parameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
@@ -204,14 +206,14 @@ def main():
     # so_scaling_values = (1e-4, 1e-3, 1e-2, 0.1, 0.25, 0.5, 0.75, 1.00)
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = []
-    # output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
+    output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}' for so_scaling in so_scaling_values )
     for output_dir, so_scaling in zip(output_dirs, so_scaling_values):
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, so_scaling )
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, phases, so_scaling )
         pickle_paths.append(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
