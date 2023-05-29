@@ -40,7 +40,8 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, magnetic_field: float) -> tuple[float, float, float]:
     
     time_0 = time.perf_counter()
-
+    F1, F2 = 2, 1
+    MF1, MF2 = -2, 1
     singlet_scaling = default_singlet_parameter_from_phase(singlet_phase)
     triplet_scaling = default_triplet_parameter_from_phase(triplet_phase)
 
@@ -58,6 +59,11 @@ def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phas
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
+        input_content = re.sub("MFTOT", str(MF1+MF2), input_content, flags = re.M)
+        input_content = re.sub("FFRb", str(F1), input_content, flags = re.M)
+        input_content = re.sub("MFRb", str(MF1), input_content, flags = re.M)
+        input_content = re.sub("FFSr", str(F2), input_content, flags = re.M)
+        input_content = re.sub("MFSr", str(MF2), input_content, flags = re.M)
         input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)

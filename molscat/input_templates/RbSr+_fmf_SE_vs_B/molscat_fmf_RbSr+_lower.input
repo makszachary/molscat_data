@@ -5,9 +5,9 @@
     RMIN   =   5.5,  RMID   =  21.0,   RMAX   = 15.0E3, IRMSET = 0,
     IPROPS =   6,    DR     =   0.002,
     IPROPL =   9,    TOLHIL =   1.E-7,
-    JTOTL  =   -1,    JTOTU  = -1,     IBFIX  =  0,           JSTEP  = 2,
+    JTOTL  =   MFTOT,    JTOTU  = -1,     IBFIX  =  0,           JSTEP  = 2,
     EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
-                     DTOL   =   1.E-6, MONQN  =  2, -2, 1, 1,
+                     DTOL   =   1.E-6, MONQN  =  FFRb, MFRb, FFSr, MFSr,
     FLDMIN = MAGNETICFIELD, FLDMAX =  MAGNETICFIELD, DFIELD = 1.0,
     ICHAN  =   1,
  /
@@ -29,8 +29,8 @@
     GB     =  0,		! 88Sr+
     LMAX   =  29,
     NREQ   =   30,
-    LREQ   =   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    MFREQ  =   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+    LREQ   =   0,         1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+    MFREQ  =   MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT,
     ISPSP  =  -1,
     NEXTRA =  2,
  /
