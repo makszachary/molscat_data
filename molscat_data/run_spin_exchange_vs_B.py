@@ -156,11 +156,8 @@ def main():
     parser.add_argument("--dB", type = float, default = 1.0)
     args = parser.parse_args()
     
-    triplet_phase = args.singlet_phase
-    singlet_phase = args.triplet_phase
+
     phases = ((args.singlet_phase, args.triplet_phase),)
-    print(phases)
-    print(len(phases))
     magnetic_fields = np.arange(args.Bmin, args.Bmax+0.1*args.dB, args.dB)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_fmf_SE_vs_B').iterdir()
