@@ -5,7 +5,7 @@
     RMIN   =   5.5,  RMID   =  21.0,   RMAX   = 15.0E3, IRMSET = 0,
     IPROPS =   6,    DR     =   0.002,
     IPROPL =   9,    TOLHIL =   1.E-7,
-    JTOTL  =   1,    JTOTU  = 1,     IBFIX  =  0,           JSTEP  = 2,
+    JTOTL  =   -1,    JTOTU  = -1,     IBFIX  =  0,           JSTEP  = 2,
     EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
                      DTOL   =   1.E-6, MONQN  =  2, -2, 1, 1,
     FLDMIN = MAGNETICFIELD, FLDMAX =  MAGNETICFIELD, DFIELD = 1.0,
