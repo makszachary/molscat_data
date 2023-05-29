@@ -235,6 +235,10 @@ def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
             ax.text(coord[1].flatten()[0], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
 
         ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.')
+        ax.minorticks_on()
+        ax.tick_params(axis = 'y', which='minor', left = False)
+        # ax.tick_params(which = 'both', direction = 'inout')
+        # ax.tick_params(axis='x', which='minor')
         plt.tight_layout()
         image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
         image_path.parent.mkdir(parents=True,exist_ok=True)
@@ -365,7 +369,7 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_SE').iterdir()
     
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel_SE(molscat_input_templates, phases)
+    # output_dirs = create_and_run_parallel_SE(molscat_input_templates, phases)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_scaling', f'{nenergies}_E', f'{args.singlet_phase:.4f}_{args.triplet_phase:.4f}')
@@ -377,11 +381,6 @@ def main():
     #    print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     # array_paths, averaged_rates = save_and_plot_k_L_E_multiprocessing(pickle_paths)
-
-    phase = phases[0]
-    spin_orbit_scaling = 0.38
-    pickle_path = Path(__file__).parents[1] / 'data_produced' / 'pickles' / 'test_so_in_smatrix' / f'2_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{spin_orbit_scaling:.4f}.pickle'
-    save_and_plot_k_L_E_spinspin(pickle_path)
 
     ######## only plotting
 
@@ -408,8 +407,8 @@ def main():
 
     ####### Plot k_L,E as a function of Phi_s
 
-    # k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    # plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
+    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
 
     #######
 

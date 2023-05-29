@@ -22,6 +22,7 @@ import pstats
 from .physical_constants import i87Rb, ahfs87Rb, ge, gi87Rb, i87Sr, ahfs87Sr, gi87Sr, bohrmagneton_MHzperG, MHz_to_K, K_to_cm, amu_to_au, bohrtoAngstrom, Hartree_to_K, rate_from_au_to_SI
 from . import quantum_numbers as qn
 from .thermal_averaging import n_root_iterator
+from .analytical import allThresholds
 
 
 class CollectionParameters(NamedTuple):
@@ -446,6 +447,12 @@ class SMatrixCollection:
         self.matrixCollection.update(s_collection.matrixCollection)
 
 
+    @staticmethod
+    def get_channels_fmfbasis(line):
+        pass
+
+        return
+
     def update_from_output(self, file_path: str, non_molscat_so_parameter = None):
         """Update the S-matrix collection with data from a single molscat output file in tcpld basis.
 
@@ -455,6 +462,7 @@ class SMatrixCollection:
         """
         
         with open(file_path,'r') as molscat_output:
+            nextra = 0
             for line in molscat_output:
                 if "REDUCED MASS FOR INTERACTION =" in line:
                     # reduced mass is given F14.9 format in amu in MOLSCAT output, we convert it to atomic units and round
@@ -467,12 +475,26 @@ class SMatrixCollection:
                 # determine which basis set is used in the output
                 elif "in a total angular momentum basis" in line:
                     tcpld = True
+                    fmfbasis = False
                     basis = ('L', 'F1', 'F2', 'F12', 'T', 'MT')
                     self.Qn = qn.Tcpld
                     self.diagonal = ('T', 'MT')
 
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
+
+                elif "ATOM A WITH S" in line:
+                    S1 = int(line.split()[5].split(r'/')[0])
+                    line = next(molscat_output)
+                    I1 = int(line.split()[2].split(r'/')[0])
+
+                elif "ATOM B WITH S" in line:
+                    S2 = int(line.split()[5].split(r'/')[0])
+                    line = next(molscat_output)
+                    I2 = int(line.split()[2].split(r'/')[0])
+
+                elif "L UP TO" in line:
+                    L_max = 2*int(line.split()[3])
 
                 elif "SPIN-SPIN TERM INCLUDED" in line:
                     spin_spin = True
@@ -499,9 +521,13 @@ class SMatrixCollection:
                     ## we don't want to fake data (on purpose or accidentaly) ;)
 
                 elif "INTERACTION TYPE IS  ATOM - ATOM IN UNCOUPLED BASIS" in line:
-                    raise NotImplementedError("Only the (L F1 F2 F12 T MT) basis can be used in the molscat outputs in the current implementation.")
                     tcpld = False
+                    fmfbasis = True
+                    # extra_operator_values = []
+                    # raise NotImplementedError("Only the (L F1 F2 F12 T MT) basis can be used in the molscat outputs in the current implementation.")
                     basis = ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2')
+                    self.Qn = qn.LF1F2
+                    if spin_spin == False: self.diagonal = ('ML')
                     if self.basis == None: self.basis = basis
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
                 
@@ -564,13 +590,25 @@ class SMatrixCollection:
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
                 #     f1ref, mf1ref, f2ref, mf2ref = int(line.split()[14])/2, int(line.split()[15])/2, int(line.split()[16])/2, int(line.split()[17])/2 
 
+                elif "EXTRA OPERATORS WILL BE USED TO RESOLVE ASYMPTOTIC DEGENERACIES" in line:
+                    line = next(molscat_output)
+                    line = next(molscat_output)
+                    nextra = int(line.split()[2])
+                    sums_of_MF_squares = {}
+                    sums_of_MF = {}
+                
                 elif "*****************************  ANGULAR MOMENTUM JTOT  =" in line and tcpld:
                     T = int(line.split()[5])  
-                    # print(T)              
+                    energy_counter = 0
+
+                elif "TOTAL ANGULAR MOMENTUM JTOT =" in line and fmfbasis:
+                    MT = int(line.split()[5])
                     energy_counter = 0
 
                 elif "MAGNETIC Z FIELD =" in line:
                     magnetic_field = float(line.split()[13])
+
+                    if fmfbasis: thresholds = allThresholds(magnetic_field, 0, L_max, MT, I1, I2, identical = False)
 
                     if self.magneticField == (None,): self.magneticField = (magnetic_field,)
                     assert magnetic_field in self.magneticField, f"The magnetic field from the molscat output should be an element of {self}.magneticField."
@@ -587,6 +625,16 @@ class SMatrixCollection:
                         channels[channel_index] = self.Qn(2*int(line.split()[6]), int(line.split()[2]), int(line.split()[3]), int(line.split()[4]), T, int(line.split()[5]))
                         line = next(molscat_output)
                 
+                elif "Eigenvalues of all operators for" in line and fmfbasis:
+                    line = next(molscat_output)
+                    while line.strip():
+                        if nextra == 2:
+                            sums_of_MF_squares[int(line.split()[1])] = float(line.split()[3])
+                            sums_of_MF[int(line.split()[1])] = float(line.split()[4])
+                        elif nextra == 1:
+                            sums_of_MF_squares[int(line.split()[1])] = float(line.split()[3])
+                        line = next(molscat_output)
+
                 elif "OPEN CHANNEL   WVEC (1/ANG.)    CHANNEL" in line and tcpld:
                     line = next(molscat_output)
                     # create a list of indices of the channels which match the declared collision energy
@@ -602,6 +650,45 @@ class SMatrixCollection:
                         if np.around(channel_collision_energy/self.collisionEnergy[energy_counter] - 1, decimals = 6) == 0: channel_in_indices.append(channel_index)
                         line = next(molscat_output)
                 
+                elif "OPEN CHANNEL   WVEC (1/ANG.)    CHANNEL" in line and fmfbasis:
+                    channels = {}
+                    channel_in_indices = []
+                    line = next(molscat_output)
+                    while line.strip():
+                        # get the open-channel index
+                        open_channel_index = int(line.split()[0])
+                        # convert the wavevector from 1/angstrom to 1/bohr
+                        wavevector = float(line.split()[1])*bohrtoAngstrom
+                        # convert the channel collision energy from hartrees to kelvins
+                        channel_collision_energy = Hartree_to_K*(wavevector)**2/(2*reduced_mass)  
+                        # get the index of the channel
+                        channel_index = int(line.split()[2])
+                        # append the index of the channel if matching the collision energy with the tolerance of 1e-6
+                        if np.around(channel_collision_energy/self.collisionEnergy[energy_counter] - 1, decimals = 6) == 0: channel_in_indices.append(channel_index)
+                        # get the doubled L quantum number
+                        L = 2*int(line.split()[3])
+                        # convert the channel's pair energy from cm-1 to kelvins
+                        channel_pair_energy = float(line.split()[4]) / K_to_cm
+                        # get the open channel's sum of MF, sum of MF squares, and ML
+                        _sum_of_MF = sums_of_MF[channel_index]
+                        _sum_of_MF_squares = sums_of_MF_squares[channel_index]
+                        _ML = MT - _sum_of_MF
+                        # get the possible MF1, MF2 values
+                        _delta_square_root = np.sqrt(2*_sum_of_MF_squares - _sum_of_MF**2)
+                        possible_MF_pairs = ( (_sum_of_MF - _delta_square_root)/2, (_sum_of_MF + _delta_square_root)/2 )
+                        possible_MF_pairs = tuple( MF_pair for MF_pair in itertools.permutations(possible_MF_pairs)
+                                              if MF_pair[0] in range(-(I1+S1), I1+S1+1, 2)
+                                               if MF_pair[1] in range(-(I2+S2), I2+S2+1, 2) )
+                        # get the possible channels (matching the pair energy and extra operator values)
+                        possible_channels = tuple( qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])
+                                                    for MF_pair in possible_MF_pairs
+                                                        for F1 in range(abs(I1-S1), I1+S1+1, 2)
+                                                            for F2 in range(abs(I2-S2), I2+S2+1, 2)
+                                                                if np.around(channel_pair_energy/thresholds[qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])] - 1, decimals = 6) == 0)
+                        if len(possible_channels) == 0 or len(possible_channels) > 1: raise ValueError(f"Couldn't resolve degeneracies: found {len(possible_channels)} channels matching the pair energy and extra operator values from the output.")
+                        channels[open_channel_index] = possible_channels[0]
+                        line = next(molscat_output)
+
                 elif "ROW  COL       S**2                  PHASE/2PI" in line:
                     line = next(molscat_output)
                     matrix = {}
@@ -617,7 +704,8 @@ class SMatrixCollection:
                         self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, so_param_index, reduced_mass_index, magnetic_field_index, energy_counter)].update(S)
                     else:
                         self.matrixCollection[CollectionParametersIndices(C4_index, A_s_index, A_t_index, so_param_index, reduced_mass_index, magnetic_field_index, energy_counter)] = S
-                    energy_counter +=1
+
+                    energy_counter = (energy_counter + 1) % len(self.collisionEnergy)
             
             del self.Qn
             

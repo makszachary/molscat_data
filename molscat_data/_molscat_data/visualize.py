@@ -393,3 +393,22 @@ class PartialRateVsEnergy:
         return fig, ax
     
     
+class RateVsMagneticField:
+    """Plot of the thermally averaged collision rate as a function of the magnetic field."""
+
+    def _initiate_plot(figsize = (9.5, 7.2), dpi = 100):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
+        return fig, ax
+    
+    @classmethod
+    def plotRate(cls, magnetic_field, rate, figsize = (9.5, 7.2), dpi = 100):
+        rate = np.array(rate)
+
+        fig, ax = cls._initiate_plot(figsize, dpi)
+
+        ax.plot(magnetic_field, rate, linewidth = 2, linestyle = 'solid', marker = '.', markersize = 2, color = 'midnightblue')
+        ax.set_xlim(np.min(magnetic_field), np.max(magnetic_field))
+        ax.tick_params(axis = 'both', labelsize= 'x-large')
+        ax.grid(color = 'gray')
+
+        return fig, ax
