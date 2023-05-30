@@ -175,7 +175,7 @@ def main():
     
 
     phases = ((args.singlet_phase, args.triplet_phase),)
-    magnetic_fields = np.arange(args.Bmin, args.Bmax+0.1*args.dB, args.dB)
+    magnetic_fields = np.arange(args.B_min, args.B_max+0.1*args.dB, args.dB)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_fmf_SE_vs_B').iterdir()
 
