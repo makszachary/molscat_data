@@ -146,7 +146,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...]):
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
     ax.set_xlabel('magnetic field (G)')
 
-    image_path = plots_dir_path / 'spin_exchange_vs_B' / f'{phase[0]:.4f}_{phase[1]:.4f}.png'
+    image_path = plots_dir_path / 'spin_exchange_vs_B' / '2-211_SE_vs_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
 
