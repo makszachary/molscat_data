@@ -37,18 +37,18 @@ arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 
-def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, magnetic_field: float) -> tuple[float, float, float]:
+def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, magnetic_field: float, MF_in: int, MS_in: int) -> tuple[float, float, float]:
     
     time_0 = time.perf_counter()
     F1, F2 = 2, 1
-    MF1, MF2 = -2, 1
+    MF1, MF2 = MF_in, MS_in
     singlet_scaling = default_singlet_parameter_from_phase(singlet_phase)
     triplet_scaling = default_triplet_parameter_from_phase(triplet_phase)
 
     molscat_executable_path = Path.home().joinpath('molscat-RKHS', 'molscat-exe', 'molscat-alk_alk-RKHS')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{magnetic_field}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{magnetic_field}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path = Path(__file__).parents[1].joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{F1}{MF1}{F2}{MF2}', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{magnetic_field}', molscat_input_template_path.stem).with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{nenergies}_E', f'{F1}{MF1}{F2}{MF2}', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{magnetic_field}', molscat_input_template_path.stem).with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -82,11 +82,11 @@ def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phas
     
     return duration, molscat_input_path, molscat_output_path
 
-def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], phases: tuple[tuple[float, float], ...], magnetic_fields: tuple[float, ...]) -> list[Path]:
+def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], phases: tuple[tuple[float, float], ...], magnetic_fields: tuple[float, ...], MF_in: int, MS_in: int) -> list[Path]:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, *y, z) for x, y, z in itertools.product( molscat_input_templates, phases, magnetic_fields))
+       arguments = ( (x, *y, z, MF_in, MS_in) for x, y, z in itertools.product( molscat_input_templates, phases, magnetic_fields))
        results = pool.starmap(create_and_run_SE_vs_B, arguments)
     
        for duration, input_path, output_path in results:
@@ -140,7 +140,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     array_paths = []
     averaged_rates = []
     for k_L_E_array, phase, pickle_path, s_matrix_collection, magnetic_field in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections, magnetic_fields):
-        array_path = arrays_dir_path / f'2{MF_in:d}1{MS_in:d}_SE_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
+        array_path = arrays_dir_path / f'SE_vs_B_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         name = f"|f = 1, m_f = -1, m_s = 1/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
         np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field}.')
@@ -155,7 +155,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
     ax.set_xlabel('magnetic field (G)')
 
-    image_path = plots_dir_path / 'spin_exchange_vs_B' / f'2{MF_in:d}1{MS_in:d}_SE_vs_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
+    image_path = plots_dir_path / 'SE_vs_B' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
 
