@@ -26,7 +26,7 @@ from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.visualize import PartialRateVsEnergy, RateVsMagneticField
 
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+E_min, E_max, nenergies, n = 4e-7, 4e-3, 2, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -118,20 +118,29 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
-def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...]):
+def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, MS_in: int = 1):
     # pickle_paths = tuple(Path(pickle_dir).iterdir())
     s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
     phases = tuple( (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]) ) for s_matrix_collection in s_matrix_collections )
     magnetic_fields = tuple( s_matrix_collection.magneticField[0] for s_matrix_collection in s_matrix_collections )
     
+    if MS_in == 1 and MF_in == -2 or MF_in == 0:
+        MS_out = -1
+        MF_out = MF_in + 2
+    elif MS_in == -1 and MF_in == 0 or MF_in == 2:
+        MS_out = 1
+        MF_out = MF_in - 2
+    else:
+        raise ValueError("Possible doubled (MF_in, MS_in) values for spin exchange are (-2, 1), (0, 1), (0, -1) and (-2, 1).")
+
     with Pool() as pool:
-        arguments = ( (s_matrix_collection, 2, 0, 1, -1, 2, -2, 1, 1, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
+        arguments = ( (s_matrix_collection, 2, MF_out, 1, MS_out, 2, MF_in, 1, MS_in, None, 'cm**3/s') for s_matrix_collection in s_matrix_collections )
         k_L_E_arrays = pool.starmap(rate_fmfsms_vs_L_SE, arguments)
     
     array_paths = []
     averaged_rates = []
     for k_L_E_array, phase, pickle_path, s_matrix_collection, magnetic_field in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections, magnetic_fields):
-        array_path = arrays_dir_path / '2-211_SE_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
+        array_path = arrays_dir_path / f'2{MF_in:d}1{MS_in:d}_SE_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         name = f"|f = 1, m_f = -1, m_s = 1/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
         np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field}.')
@@ -146,7 +155,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...]):
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
     ax.set_xlabel('magnetic field (G)')
 
-    image_path = plots_dir_path / 'spin_exchange_vs_B' / '2-211_SE_vs_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
+    image_path = plots_dir_path / 'spin_exchange_vs_B' / f'2{MF_in:d}1{MS_in:d}_SE_vs_E' / f'{phase[0]:.4f}_{phase[1]:.4f}' / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
 
@@ -157,9 +166,11 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-s", "--singlet_phase", type = float, default = 0.04, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = 0.24, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("--Bmin", type = float, default = 0.0)
-    parser.add_argument("--Bmax", type = float, default = 98.0)
+    parser.add_argument("--B_min", type = float, default = 0.0)
+    parser.add_argument("--B_max", type = float, default = 98.0)
     parser.add_argument("--dB", type = float, default = 1.0)
+    parser.add_argument("--MF_in", type = int, default = -2)
+    parser.add_argument("--MS_in", type = int, default = 1)
     args = parser.parse_args()
     
 
@@ -180,7 +191,7 @@ def main():
        pickle_paths.append(pickle_path)
        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
-    array_paths = save_and_plot_average_vs_B(pickle_paths)
+    array_paths = save_and_plot_average_vs_B(pickle_paths, MF_in = args.MF_in, MS_in = args.MS_in)
 
 if __name__ == "__main__":
     main()
