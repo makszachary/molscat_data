@@ -152,7 +152,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     
     fig, ax  = RateVsMagneticField.plotRate(magnetic_fields, averaged_rates)
     ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
-    ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s})')
+    ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s}$)')
     ax.set_xlabel('magnetic field (G)')
 
     image_path = plots_dir_path / 'SE_vs_B' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'

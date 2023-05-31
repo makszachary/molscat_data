@@ -664,7 +664,7 @@ class SMatrixCollection:
                         # get the index of the channel
                         channel_index = int(line.split()[2])
                         # append the index of the channel if matching the collision energy with the tolerance of 1e-6
-                        if np.around(channel_collision_energy/self.collisionEnergy[energy_counter] - 1, decimals = 6) == 0: channel_in_indices.append(channel_index)
+                        if np.around(channel_collision_energy/self.collisionEnergy[energy_counter] - 1, decimals = 6) == 0: channel_in_indices.append(open_channel_index)
                         # get the doubled L quantum number
                         L = 2*int(line.split()[3])
                         # convert the channel's pair energy from cm-1 to kelvins
