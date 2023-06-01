@@ -142,7 +142,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     for k_L_E_array, phase, pickle_path, s_matrix_collection, magnetic_field in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections, magnetic_fields):
         array_path = arrays_dir_path / f'SE_vs_B_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
-        name = f"|f = 1, m_f = -1, m_s = 1/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
+        name = f"|f = 1, m_f = {int(MF_in / 2)}, m_s = {int(MS_in)}/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
         np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field}.')
         array_paths.append(array_path)
 
@@ -154,7 +154,14 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s}$)')
     ax.set_xlabel('magnetic field (G)')
+    ax.minorticks_on()
+    ax.tick_params(which = 'both', direction = 'in')
 
+    image_path = plots_dir_path / 'SE_vs_B_exaggerated' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
+    image_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(image_path)
+
+    ax.set_ylim(0, 1.25*max(averaged_rates))
     image_path = plots_dir_path / 'SE_vs_B' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
