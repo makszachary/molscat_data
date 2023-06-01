@@ -150,8 +150,9 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
         total_k_E_array = k_L_E_array.sum(axis = 0)
         averaged_rates.append(s_matrix_collection.thermalAverage(total_k_E_array))
     
+    arrow = '\\uparrow' if MS_in == 1 else '\\downarrow'
     fig, ax  = RateVsMagneticField.plotRate(magnetic_fields, averaged_rates)
-    ax.set_title('The rate of the spin-exchange for the $\left|1,-1\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state.')
+    ax.set_title(f'The rate of the spin-exchange for the $\\left|1,{int(MF_in/2)}\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}{arrow}\\hspace{{-.2}}\\right>$ initial state.')
     ax.set_ylabel('rate ($\\mathrm{cm}^3/\mathrm{s}$)')
     ax.set_xlabel('magnetic field (G)')
     ax.minorticks_on()
