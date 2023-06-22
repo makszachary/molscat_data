@@ -14,16 +14,20 @@ import itertools
 import numpy as np
 from sigfig import round
 
+from matplotlib import pyplot as plt
+
 import time
 
 from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
-from _molscat_data.effective_probability import effective_probability
+from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
+from _molscat_data.visualize import BarplotWide, ProbabilityVersusSpinOrbit
 from prepare_so_coupling import scale_so_and_write
 from copy_run_plot_k_L_E import save_and_plot_k_L_E_spinspin
+
 
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
@@ -158,8 +162,8 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
 
         txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
         # so_scaling = txt_path.name
-        output_state_res_txt_path = txt_path.parent / f"dLMax_{dLMax}" / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
-        txt_path = txt_path.parent / f"dLMax_{dLMax}" / (txt_path.name + '_' + abbreviation + '.txt')
+        output_state_res_txt_path = txt_path.parent / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
+        txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         probability_array = probability(*arg)
@@ -184,6 +188,69 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
+
+def plot_and_save_p0_Cso(so_scaling_values, singlet_phase, triplet_phase):
+    array_paths = ( arrays_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'out_state_res_{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
+    output_state_resolved_arrays = list( np.loadtxt(array_path).reshape(3,2,5) for array_path in array_paths )
+    image_path = plots_dir_path / 'probability_scaling' / 'so_scaling' / f'p0_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path.parent.mkdir(parents = True, exist_ok = True)
+    image_path_for_paper = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling_for_paper' / f'p0_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path_for_paper.parent.mkdir(parents = True, exist_ok = True)
+    image_path_for_paper_linlin = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling_for_paper_linlin' / f'p0_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path_for_paper_linlin.parent.mkdir(parents = True, exist_ok = True)
+    pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+    pmf_array = np.loadtxt(pmf_path)
+
+    p_eff_exp = 0.0895
+    p_eff_exp_std = 0.0242
+    p0_exp = p0(p_eff_exp, pmf_array=pmf_array)
+    dpeff = 1e-3
+    p0_exp_std = (p0(p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(p_eff_exp+dpeff/2, pmf_array=pmf_array))/dpeff * p_eff_exp_std
+    ss_dominated_rates = np.fromiter( (array.sum(axis = (0,1))[4] for array in output_state_resolved_arrays), dtype = float )
+
+
+    
+    fig, ax = ProbabilityVersusSpinOrbit.plotBareProbability(so_scaling_values, ss_dominated_rates, p0_exp = p0_exp, p0_exp_std = p0_exp_std)
+    fig.savefig(image_path)
+
+    ax.get_legend().remove()
+    ax.set_title('')
+    fig.savefig(image_path_for_paper)
+
+    ax.set_yscale('lin')
+    ax.set_xscale('lin')
+    fig.savefig(image_path_for_paper_linlin)
+
+    plt.close()
+
+def plot_and_save_peff_Cso(so_scaling_values, singlet_phase, triplet_phase):
+    array_paths = ( Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for so_scaling in so_scaling_values )
+    output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
+    image_path = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling' / f'peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path.parent.mkdir(parents = True, exist_ok = True)
+    image_path_for_paper = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling_for_paper' / f'peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    image_path_for_paper.parent.mkdir(parents = True, exist_ok = True)
+    image_path_for_paper_linlin = Path(__file__).parents[1] / 'plots' / 'probability_scaling' / 'so_scaling_for_paper_linlin' / f'peff_{singlet_phase:.4f}_{triplet_phase:.4f}.png'
+    pmf_path = Path(__file__).parents[1] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+    pmf_array = np.loadtxt(pmf_path)
+
+    p_eff_exp = 0.0895
+    p_eff_exp_std = 0.0242
+    ss_dominated_rates = np.fromiter( (array[4] for array in output_state_resolved_arrays), dtype = float )
+
+    fig, ax = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_scaling_values, ss_dominated_rates, p_eff_exp=p_eff_exp, p_eff_exp_std=p_eff_exp_std, pmf_array = pmf_array)
+    fig.savefig(image_path)
+
+    ax.get_legend().remove()
+    ax.set_title('')
+    fig.savefig(image_path_for_paper)
+
+    ax.set_yscale('lin')
+    ax.set_xscale('lin')
+    fig.savefig(image_path_for_paper_linlin)
+
+    plt.close()
+
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
@@ -224,6 +291,9 @@ def main():
     for pickle_path in pickle_paths:
         save_and_plot_k_L_E_spinspin(pickle_path)
         calculate_and_save_the_peff_parallel(pickle_path, phases[0])
+
+    plot_and_save_p0_Cso(so_scaling_values, singlet_phase, triplet_phase)
+    plot_and_save_peff_Cso(so_scaling_values, singlet_phase, triplet_phase)
 
     ### Calculate k_L(E) for the cold spin change from |2,2,up> state
     

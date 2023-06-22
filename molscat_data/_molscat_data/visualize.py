@@ -287,15 +287,32 @@ class BarplotWide:
 class ProbabilityVersusSpinOrbit:
     """Plot of the calculated probability as a function of the spin-orbit coupling parameter."""
 
+    p_eff_exp = 0.0895
+    p_eff_exp_std = 0.0242
+
     @staticmethod
     def _initiate_plot(figsize = (6.4,4.8), dpi = 100):
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
         return fig, ax
     
     @classmethod
-    def plotBareProbability(cls, so_parameter, probability, relative = False, figsize = (6.4,4.8), dpi = 100):
+    def plotBareProbability(cls, so_parameter, probability, p0_exp = None, p0_exp_std = None, relative = False, figsize = (6.4,4.8), dpi = 100):
         
+        pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+        pmf_array = np.loadtxt(pmf_path)
+
+        if p0_exp is None:
+            p0_exp = p0(cls.p_eff_exp, pmf_array=pmf_array)
+        if p0_exp_std is None:
+            dpeff = 1e-3
+            p0_exp_std = (p0(cls.p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(cls.p_eff_exp+dpeff/2, pmf_array=pmf_array))/dpeff * cls.p_eff_exp_std
+
+        so_parameter = np.asarray(so_parameter)
+        probability = np.asarray(probability)
+        nearest_idx = np.abs(probability - p0_exp).argmin()
+
         data_label = '$p_0(c_\mathrm{so})$'
+        fit_label = '$p_0 \sim c_\mathrm{so}^2$'
         plot_title = 'Probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
         if relative:
@@ -303,19 +320,21 @@ class ProbabilityVersusSpinOrbit:
             plot_title = 'Probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state\n(relative to the result for the original spin-orbit coupling from M.T.)'
             probability = probability / max(probability)
         
-        xx = np.logspace(-4, 1, 100)
+        xx = np.logspace(-1, 1, 100)
 
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
-        ax.plot(xx, max(probability) * xx**2, color = 'red', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^2$')
-        ax.plot(xx, max(probability) * xx**1.8, color = 'orange', linewidth = 1, linestyle = '--', label = '$p_0 \sim c_\mathrm{so}^{1.8}$')
+        ax.plot(xx, probability[nearest_idx] * xx**2, color = 'red', linewidth = 1, linestyle = '--', label = fit_label)
+
+        ax.axhline(p0_exp, color = 'k', linewidth = 1, linestyle = '--', label = 'experimental value')
+        ax.axhspan(p0_exp-p0_exp_std, p0_exp+p0_exp_std, color='0.5', alpha=0.5)
 
         ax.set_yscale('log')
         ax.set_xscale('log')
-        ax.set_ylim(0.1*min(probability), 10*max(probability))
-        ax.set_xlim(0.1*min(so_parameter), 10*max(so_parameter))
-        ax.set_xlabel('spin-orbit coupling scaling factor $c_\mathrm{so}$', fontsize = 'large')
+        ax.set_ylim(0.25*p0_exp, 4*p0_exp)
+        ax.set_xlim(0.5*probability[nearest_idx], 2*probability[nearest_idx])
+        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'large')
         ax.set_ylabel('$p_0$', fontsize = 'large')
         ax.set_title(plot_title, fontsize = 10)
         ax.legend()
@@ -325,28 +344,40 @@ class ProbabilityVersusSpinOrbit:
         return fig, ax
 
     @classmethod
-    def plotEffectiveProbability(cls, so_parameter, probability, pmf_array = None, figsize = (6.4,4.8), dpi = 100):
-        
-        data_label = '$p_\mathrm{eff}(c_\mathrm{so})$'
-        plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
+    def plotEffectiveProbability(cls, so_parameter, probability, p_eff_exp = None, p_eff_exp_std = None, pmf_array = None, figsize = (6.4,4.8), dpi = 100):
         
         if pmf_array is None:
             pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
             pmf_array = np.loadtxt(pmf_path)
+        
+        if p_eff_exp is None:
+            p_eff_exp = cls.p_eff_exp
+        if p_eff_exp_std is None:
+            p_eff_exp_std = cls.p_eff_exp_std
+
+        so_parameter = np.asarray(so_parameter)
+        probability = np.asarray(probability)
+        nearest_idx = np.abs(probability - p_eff_exp).argmin()
+
+        data_label = '$p_\mathrm{eff}(c_\mathrm{so})$'
+        fit_label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^2$'
+        plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
         xx = np.logspace(-4, 0, 100)
 
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
-        ax.plot(xx, effective_probability(p0(max(probability), pmf_array = pmf_array) * xx**2, pmf_array = pmf_array), color = 'red', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^2$')
-        ax.plot(xx, effective_probability(p0(max(probability), pmf_array = pmf_array) * xx**1.8, pmf_array = pmf_array), color = 'orange', linewidth = 1, linestyle = '--', label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^{1.8}$')
+        ax.plot(xx, effective_probability(p0(probability[nearest_idx], pmf_array = pmf_array) * xx**2, pmf_array = pmf_array), color = 'red', linewidth = 1, linestyle = '--', label = fit_label)
+
+        ax.axhline(p_eff_exp, color = 'k', linewidth = 1, linestyle = '--', label = 'experimental value')
+        ax.axhspan(p_eff_exp-p_eff_exp_std, p_eff_exp+p_eff_exp_std, color='0.5', alpha=0.5)
 
         ax.set_yscale('log')
         ax.set_xscale('log')
-        ax.set_ylim(0.1*min(probability), 10*max(probability))
-        ax.set_xlim(0.1*min(so_parameter), 10*max(so_parameter))
-        ax.set_xlabel('spin-orbit coupling scaling factor $c_\mathrm{so}$', fontsize = 'large')
+        ax.set_ylim(0.25*p_eff_exp, 4*p_eff_exp)
+        ax.set_xlim(0.5*probability[nearest_idx], 2*probability[nearest_idx])
+        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'large')
         ax.set_ylabel('$p_\mathrm{eff}$', fontsize = 'large')
         ax.set_title(plot_title, fontsize = 10)
         ax.legend()
