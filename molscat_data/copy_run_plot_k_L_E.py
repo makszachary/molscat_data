@@ -213,34 +213,47 @@ def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
     phi_s_array = np.array([phase[0] for phase in phases])
     k_L_E_arrays = np.array([ np.loadtxt(arr_path) for arr_path in k_L_E_array_paths ] ).transpose(1,2,0)
     phase_difference = (phases[0][1]-phases[0][0]) % 1
+    phi_bar_array = phi_s_array + 3/8*phase_difference
     # energy = 7.5e-4
     # E_index = np.abs(energy_array-energy).argmin()
+    total_k_vs_Phi_vs_E_array = k_L_E_arrays.sum(axis = 0)
 
     filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
     
 
     for E_index in range(k_L_E_arrays.shape[1]):
         energy = energy_array[E_index]
+        total_k_vs_Phi_at_E_array = total_k_vs_Phi_vs_E_array[E_index]
         fig, ax = plt.subplots()
-        ax.set_xlabel(r"$(\Phi_\mathrm{s} + \pi/4)\,\mathrm{mod}\,\pi \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        # ax.set_xlabel(r"$(\Phi_\mathrm{s} + \pi/4)\,\mathrm{mod}\,\pi \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        ax.set_xlabel(r"$(\overline{\Phi} + \pi/4)\,\mathrm{mod}\,\pi \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
         ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
         ax.set_xlim(0,1)
-        ax.set_ylim(0, 1.2*np.amax(k_L_E_arrays[:,E_index,:]) )
+        # ax.set_ylim(0, 1.2*np.amax(k_L_E_arrays[:,E_index,:]) )
+        ax.set_ylim(0, 1.2*np.amax(total_k_vs_Phi_at_E_array) )
         
         for L in range(k_L_E_arrays.shape[0]):
-            ax.plot(phi_s_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
+            # ax.plot(phi_s_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
+            ax.plot(phi_bar_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
         
-        coords_vs_L = tuple( (l, phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
-        for coord in coords_vs_L:
-            ax.text(coord[1].flatten()[0], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+        # ax.plot(phi_s_array, total_k_vs_Phi_at_E_array, color = 'k', linewidth = 2, label = 'total')
+        ax.plot(phi_bar_array, total_k_vs_Phi_at_E_array, color = 'k', linewidth = 2, label = 'total')
 
-        ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.')
+        coords_vs_L = tuple( (l, phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+
+        for coord in coords_vs_L:
+            # ax.text(coord[1].flatten()[0], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+            ax.text(coord[1].flatten()[0]+ 3/8*phase_difference, coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+
+        # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate. \n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.')
+        ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.\n $\\overline{{\\Phi}}:= \\frac{{5}}{{8}}\\tilde{{\\Phi}}_\\mathrm{{s}}+\\frac{{3}}{{8}}\\tilde{{\\Phi}}_\\mathrm{{t}}.$')
         ax.minorticks_on()
         ax.tick_params(axis = 'y', which='minor', left = False)
         # ax.tick_params(which = 'both', direction = 'inout')
         # ax.tick_params(axis='x', which='minor')
         plt.tight_layout()
-        image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
+        # image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
+        image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase_phi_bar' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
         image_path.parent.mkdir(parents=True,exist_ok=True)
         fig.savefig(image_path)
         plt.close()
@@ -254,6 +267,69 @@ def plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir):
         # averaged_rates = pool.starmap(av_rate, arguments)
         # print(len(averaged_rates))
         # print("rates averaged")
+
+def plot_k_L_E_vs_Phi_bar(phases, k_L_E_array_dir):
+    # pickle_paths = ( Path(pickle_dir) / f'{phase[0]:.4f}_{phase[1]:.4f}.pickle' for phase in phases )
+    k_L_E_array_paths = ( Path(k_L_E_array_dir)/ f'{phase[0]:.4f}_{phase[1]:.4f}.txt' for phase in phases )
+    energy_array = np.array([ round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) ])
+    phi_s_array = np.array([phase[0] for phase in phases])
+    k_L_E_arrays = np.array([ np.loadtxt(arr_path) for arr_path in k_L_E_array_paths ] ).transpose(1,2,0)
+    phase_difference = (phases[0][1]-phases[0][0]) % 1
+    phi_bar_array = (phi_s_array + 3/8*phase_difference)
+    # energy = 7.5e-4
+    # E_index = np.abs(energy_array-energy).argmin()
+    total_k_vs_Phi_vs_E_array = k_L_E_arrays.sum(axis = 0)
+
+    filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
+    
+
+    for E_index in range(k_L_E_arrays.shape[1]):
+        energy = energy_array[E_index]
+        total_k_vs_Phi_at_E_array = total_k_vs_Phi_vs_E_array[E_index]
+        fig, ax = plt.subplots()
+        # ax.set_xlabel(r"$(\Phi_\mathrm{s} + \pi/4)\,\mathrm{mod}\,\pi \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        ax.set_xlabel(r"$\overline{\Phi} \hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
+        ax.set_xlim(3/8*phase_difference,1+3/8*phase_difference)
+        # ax.set_ylim(0, 1.2*np.amax(k_L_E_arrays[:,E_index,:]) )
+        ax.set_ylim(0, 1.2*np.amax(total_k_vs_Phi_at_E_array) )
+        
+        for L in range(k_L_E_arrays.shape[0]):
+            # ax.plot(phi_s_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
+            ax.plot(phi_bar_array, k_L_E_arrays[L, E_index], color = mpl.colormaps['cividis'](L/30))
+        
+        # ax.plot(phi_s_array, total_k_vs_Phi_at_E_array, color = 'k', linewidth = 2, label = 'total')
+        ax.plot(phi_bar_array, total_k_vs_Phi_at_E_array, color = 'k', linewidth = 2, label = 'total')
+
+        coords_vs_L = tuple( (l, phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+
+        for coord in coords_vs_L:
+            # ax.text(coord[1].flatten()[0], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+            ax.text((coord[1].flatten()[0]+ 3/8*phase_difference), coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = mpl.colormaps['cividis'](coord[0]/30), fontweight = 'bold', va = 'center', ha = 'center')
+
+        # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate. \n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.')
+        ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.\n$(\\Phi_\\mathrm{{t}}-\\Phi_\\mathrm{{s}}) = {phase_difference:.4f} \\pi\\,\\mathrm{{mod}}\\,\\pi,\\hspace{{0.5}} E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}$.\n $\\overline{{\\Phi}}:= \\frac{{5}}{{8}}\\tilde{{\\Phi}}_\\mathrm{{s}}+\\frac{{3}}{{8}}\\tilde{{\\Phi}}_\\mathrm{{t}}.$')
+        ax.minorticks_on()
+        ax.tick_params(axis = 'y', which='minor', left = False)
+        # ax.tick_params(which = 'both', direction = 'inout')
+        # ax.tick_params(axis='x', which='minor')
+        plt.tight_layout()
+        # image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
+        image_path = Path(__file__).parents[1] / 'plots' / 'ascratch' / 'partial_rate_vs_phase_phi_bar' / f'{phase_difference:.4f}' / f'{energy:.8f}.png'
+        image_path.parent.mkdir(parents=True,exist_ok=True)
+        fig.savefig(image_path)
+        plt.close()
+        # plt.show()
+        
+        # s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
+        # energy_arrays = tuple( np.array(s.collisionEnergy) for s in s_matrix_collections )
+        
+        # arguments = tuple( zip(s_matrix_collections, k_L_E_arrays) )
+        
+        # averaged_rates = pool.starmap(av_rate, arguments)
+        # print(len(averaged_rates))
+        # print("rates averaged")
+
 
 def only_save_average(phases, pickle_dir, k_L_E_array_dir, energy_threshold: float = None):
     with Pool() as pool:
@@ -408,7 +484,8 @@ def main():
     ####### Plot k_L,E as a function of Phi_s
 
     k_L_E_array_dir = Path(__file__).parents[1] / 'data_produced' / 'arrays' / 'ascratch' / 'k_L_E' / 'RbSr+_tcpld_SE' / f'{nenergies}_E'
-    plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    # plot_k_L_E_vs_Phi_s(phases, k_L_E_array_dir)
+    plot_k_L_E_vs_Phi_bar(phases, k_L_E_array_dir)
 
     #######
 
