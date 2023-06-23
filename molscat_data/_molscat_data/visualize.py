@@ -11,14 +11,15 @@ from .effective_probability import effective_probability, p0
 from .analytical import probabilities_from_matrix_elements_cold, probabilities_from_matrix_elements_hot
 
 class BicolorHandler:
-    def __init__(self, color1, color2):
+    def __init__(self, color1, color2, hatch):
         self.color1=color1
         self.color2=color2
+        self.hatch=hatch
     def legend_artist(self, legend, orig_handle, fontsize, handlebox):
         x0, y0 = handlebox.xdescent, handlebox.ydescent
         width, height = handlebox.width, handlebox.height
         patch = plt.Rectangle([x0, y0], width, height, facecolor='none',
-                                   edgecolor='k', transform=handlebox.get_transform())
+                                   edgecolor='k', transform=handlebox.get_transform(), hatch=self.hatch)
         patch1 = plt.Rectangle([x0, y0], width*2/3, height, facecolor=self.color1,
                                    edgecolor='none', transform=handlebox.get_transform())
         patch2 = plt.Rectangle([x0+width*2/3., y0], width*1/3., height, facecolor=self.color2,
@@ -137,19 +138,21 @@ class BarplotWide:
         interlude = 'estimation from the\nmatrix elements:'
         labels_and_lines = { 'normalized\nto $p_\\mathrm{hot}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('k', 'D', 8), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('magenta', 'x', 10), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(1))+', '+str(int(-1))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('orange', '2', 16) }
         handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
-        handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = labels_and_hatch[hatch_label] ) for hatch_label in labels_and_hatch.keys() ]
+        handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
         handles_interlude = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'white', hatch = '' ) ]
         handles_lines = [ lines.Line2D([0], [0], color = labels_and_lines[line_label][0], linewidth = 3, marker = labels_and_lines[line_label][1], markersize = labels_and_lines[line_label][2]) for line_label in labels_and_lines.keys() ]
 
 
-        colors = [ *[ (exp_hot_color, exp_hot_color), (exp_cold_color, exp_cold_color) ],
-                   *[('white', 'white') for hh in [*handles_hatch, handles_interlude] ]
-                   ]
+        colors_and_hatches = [ *[ (exp_hot_color, exp_hot_color, ''), (exp_cold_color, exp_cold_color, '') ],
+                    *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
+                     *[('white', 'white', '') for hh in handles_interlude]
+                    ]
         if SE_theory_data is not None:
             labels_and_colors = { 'hyperfine relaxation\n(w/o & with $\\lambda_\\mathrm{so}$)': exp_hot_color,
                                   'cold spin change\n(w/o & with $\\lambda_\\mathrm{so}$)': exp_cold_color}
-            colors = [ *[ (SE_hot_color, hot_color), (SE_cold_color, cold_color) ],
-                    *[('white', 'white') for hh in [*handles_hatch, handles_interlude] ]
+            colors_and_hatches = [ *[ (SE_hot_color, hot_color, ''), (SE_cold_color, cold_color, '') ],
+                    *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
+                     *[('white', 'white', '') for hh in handles_interlude]
                     ]
             
 
@@ -158,7 +161,7 @@ class BarplotWide:
         handles = [ *handles_colors, *handles_hatch, *handles_interlude,]# *handles_lines ]
 
         
-        hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors] ))
+        hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
         legend_ax.legend(handles, labels, handler_map = hmap, loc = 'center', bbox_to_anchor = (8/16, 0.50), fontsize = 'large', labelspacing = 1)
 
         plt.tight_layout()
