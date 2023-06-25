@@ -118,7 +118,7 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
-def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, MS_in: int = 1):
+def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, MS_in: int = 1, exp_rate: float = 0.):
     # pickle_paths = tuple(Path(pickle_dir).iterdir())
     s_matrix_collections = tuple(SMatrixCollection.fromPickle(pickle_path) for pickle_path in pickle_paths)
     phases = tuple( (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]) ) for s_matrix_collection in s_matrix_collections )

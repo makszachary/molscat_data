@@ -141,18 +141,21 @@ def main():
     
     theory_data, exp_data, std_data = BarplotWide.prepareDataFromFiles(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
     SE_theory_data, _, __ = BarplotWide.prepareDataFromFiles(theory_hpf=SE_theory_hpf, theory_cold_higher=SE_theory_cold_higher, theory_cold_lower=SE_theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
-    fig, ax1, ax2, ax3, legend_ax = BarplotWide.barplot(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
-    # BarplotWide.compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, pmf_array)
+    # fig, ax1, ax2, ax3, legend_ax = BarplotWide.barplot(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
+    fig, ax1, ax2 = BarplotWide.barplot_ten_bars(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
+    # # BarplotWide.compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, pmf_array)
     
-    BarplotWide.addParams(fig, legend_ax, singlet_phase, triplet_phase, so_scaling)
+    # BarplotWide.addParams(fig, legend_ax, singlet_phase, triplet_phase, so_scaling)
     # print(fig.axes)
+    ax1.set_ylim(0,0.6)
 
-    image_path = Path(__file__).parents[1] / 'plots' / 'for MT' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
+    ax2.set_ylim(0,0.6)
+    image_path = Path(__file__).parents[1] / 'plots' / 'poster' / 'barplot_ten_bars' / f'{singlet_phase:.4f}_{triplet_phase:.4f}_{so_scaling:.4f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
-    # # plt.close()
+    plt.close()
     
-    plt.show()
+    # plt.show()
 
     
 
