@@ -38,7 +38,7 @@ bohrmagneton_MHzperG = 1.39962449361 # Bohr magneton in MHz/G
 rate_from_au_to_SI = bohr_in_SI**2 * (hartree_in_SI/electron_mass)**0.5
 
 i85Rb = 5/2
-ahfs85Rb = 3035.732440300/3     # it should BE CHANGED # NOT LONGER
+ahfs85Rb = 3035.732440300/3
 gs85Rb = 2.00231930     # it should be changed to fine structure Lande g-factor (in molscat input also)
 gi85Rb = -2.936400e-4
 

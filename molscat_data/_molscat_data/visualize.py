@@ -4,6 +4,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 from matplotlib import lines
+from matplotlib import ticker
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -417,21 +418,22 @@ class ProbabilityVersusSpinOrbit:
     p_eff_exp_std = 0.0242
 
     @staticmethod
-    def _initiate_plot(figsize = (6.4,4.8), dpi = 100):
+    def _initiate_plot(figsize = (6.4,4.8), dpi = 300):
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
         return fig, ax
     
     @classmethod
-    def plotBareProbability(cls, so_parameter, probability, p0_exp = None, p0_exp_std = None, relative = False, figsize = (6.4,4.8), dpi = 100):
+    def plotBareProbability(cls, so_parameter, probability, p0_exp = None, p0_exp_std = None, relative = False, figsize = (6.4,4.8), dpi = 300):
         
         pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
         pmf_array = np.loadtxt(pmf_path)
 
         if p0_exp is None:
+            p_eff_exp = cls.p_eff_exp
             p0_exp = p0(cls.p_eff_exp, pmf_array=pmf_array)
         if p0_exp_std is None:
             dpeff = 1e-3
-            p0_exp_std = (p0(cls.p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(cls.p_eff_exp+dpeff/2, pmf_array=pmf_array))/dpeff * cls.p_eff_exp_std
+            p0_exp_std = (p0(p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(p_eff_exp-dpeff/2, pmf_array=pmf_array))/dpeff * cls.p_eff_exp_std
 
         so_parameter = np.asarray(so_parameter)
         probability = np.asarray(probability)
@@ -450,18 +452,24 @@ class ProbabilityVersusSpinOrbit:
 
         fig, ax = cls._initiate_plot(figsize, dpi)
 
-        ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
-        ax.plot(xx, probability[nearest_idx] * xx**2, color = 'red', linewidth = 1, linestyle = '--', label = fit_label)
+        ax.scatter(so_parameter, probability, s = 6**2, color = 'k', marker = 'o', label = data_label)
+        ax.plot(so_parameter[nearest_idx]*xx, probability[nearest_idx] * xx**2, color = 'red', linewidth = 1.5, linestyle = '--', label = fit_label)
 
-        ax.axhline(p0_exp, color = 'k', linewidth = 1, linestyle = '--', label = 'experimental value')
+        ax.axhline(p0_exp, color = 'k', linewidth = 1.5, linestyle = '--', label = 'experimental value')
         ax.axhspan(p0_exp-p0_exp_std, p0_exp+p0_exp_std, color='0.5', alpha=0.5)
 
         ax.set_yscale('log')
         ax.set_xscale('log')
-        ax.set_ylim(0.25*p0_exp, 4*p0_exp)
-        ax.set_xlim(0.5*probability[nearest_idx], 2*probability[nearest_idx])
-        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'large')
-        ax.set_ylabel('$p_0$', fontsize = 'large')
+        ax.tick_params(which='both', direction='in', labelsize = 12)
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+
+        ax.set_ylim(0.25*p0_exp, 2*p0_exp)
+        ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
+        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'xx-large')
+        ax.set_ylabel('$p_0$', fontsize = 'xx-large')
         ax.set_title(plot_title, fontsize = 10)
         ax.legend()
         
@@ -470,10 +478,10 @@ class ProbabilityVersusSpinOrbit:
         return fig, ax
 
     @classmethod
-    def plotEffectiveProbability(cls, so_parameter, probability, p_eff_exp = None, p_eff_exp_std = None, pmf_array = None, figsize = (6.4,4.8), dpi = 100):
+    def plotEffectiveProbability(cls, so_parameter, probability, p_eff_exp = None, p_eff_exp_std = None, pmf_array = None, figsize = (6.4,4.8), dpi = 300):
         
         if pmf_array is None:
-            pmf_path = Path(__file__).parents[2] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+            pmf_path = Path(__file__).parents[1] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
             pmf_array = np.loadtxt(pmf_path)
         
         if p_eff_exp is None:
@@ -489,22 +497,30 @@ class ProbabilityVersusSpinOrbit:
         fit_label = '$p_\mathrm{eff}$ for $p_0 \sim c_\mathrm{so}^2$'
         plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
-        xx = np.logspace(-4, 0, 100)
-
+        xx = np.logspace(-2, 0.5*np.log10(0.99/probability[nearest_idx]), 100)
+        print( so_parameter[nearest_idx], p0(probability[nearest_idx], pmf_array = pmf_array) )
         fig, ax = cls._initiate_plot(figsize, dpi)
 
-        ax.scatter(so_parameter, probability, s = 4**2, color = 'k', marker = 'o', label = data_label)
-        ax.plot(xx, effective_probability(p0(probability[nearest_idx], pmf_array = pmf_array) * xx**2, pmf_array = pmf_array), color = 'red', linewidth = 1, linestyle = '--', label = fit_label)
+        ax.scatter(so_parameter, probability, s = 6**2, color = 'k', marker = 'o', label = data_label)
+        # print(xx)
+        ax.plot(so_parameter[nearest_idx]*xx, effective_probability(p0(probability[nearest_idx], pmf_array = pmf_array) * xx**2, pmf_array = pmf_array), color = 'red', linewidth = 1.5, linestyle = '--', label = fit_label)
+        # print(effective_probability(p0(probability[nearest_idx], pmf_array = pmf_array) * xx**2, pmf_array = pmf_array) )
 
-        ax.axhline(p_eff_exp, color = 'k', linewidth = 1, linestyle = '--', label = 'experimental value')
+        ax.axhline(p_eff_exp, color = 'k', linewidth = 1.5, linestyle = '--', label = 'experimental value')
         ax.axhspan(p_eff_exp-p_eff_exp_std, p_eff_exp+p_eff_exp_std, color='0.5', alpha=0.5)
 
         ax.set_yscale('log')
         ax.set_xscale('log')
-        ax.set_ylim(0.25*p_eff_exp, 4*p_eff_exp)
-        ax.set_xlim(0.5*probability[nearest_idx], 2*probability[nearest_idx])
-        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'large')
-        ax.set_ylabel('$p_\mathrm{eff}$', fontsize = 'large')
+        ax.tick_params(which='both', direction='in', labelsize = 12)
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+
+        ax.set_ylim(0.25*p_eff_exp, 2*p_eff_exp)
+        ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
+        ax.set_xlabel('$c_\mathrm{so}$', fontsize = 'xx-large')
+        ax.set_ylabel('$p_\mathrm{eff}$', fontsize = 'xx-large')
         ax.set_title(plot_title, fontsize = 10)
         ax.legend()
         
