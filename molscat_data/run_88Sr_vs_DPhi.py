@@ -189,7 +189,7 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-def plot_probability_vs_singlet_phase():
+def plot_probability_vs_singlet_phase(array_path):
     pass
 
 def main():
