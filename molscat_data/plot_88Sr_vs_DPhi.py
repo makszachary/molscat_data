@@ -105,7 +105,7 @@ def main():
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     singlet_phase_distinguished = 0.0450
     triplet_phases_distinguished = np.array([( singlet_phase_distinguished + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (args.singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], singlet_phase_distinguished, triplet_phases_distinguished)
+    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
 
 
 if __name__ == '__main__':
