@@ -10,6 +10,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from .effective_probability import effective_probability, p0
 from .analytical import probabilities_from_matrix_elements_cold, probabilities_from_matrix_elements_hot
+from .chi_squared import chi_squared
 
 class BicolorHandler:
     def __init__(self, color1, color2, hatch):
@@ -569,12 +570,12 @@ class PartialRateVsEnergy:
 class RateVsMagneticField:
     """Plot of the thermally averaged collision rate as a function of the magnetic field."""
 
-    def _initiate_plot(figsize = (9.5, 7.2), dpi = 100):
+    def _initiate_plot(figsize = (9.5, 7.2), dpi = 300):
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)        
         return fig, ax
     
     @classmethod
-    def plotRate(cls, magnetic_field, rate, figsize = (9.5, 7.2), dpi = 100):
+    def plotRate(cls, magnetic_field, rate, figsize = (9.5, 7.2), dpi = 300):
         rate = np.array(rate)
 
         fig, ax = cls._initiate_plot(figsize, dpi)
@@ -585,3 +586,74 @@ class RateVsMagneticField:
         ax.grid(color = 'gray')
 
         return fig, ax
+    
+
+class ValuesVsModelParameters:
+    """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
+
+    def _initiate_plot(figsize = (9.5, 7.2), dpi = 300):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+        ax_chisq = ax.twinx()
+        return fig, ax, ax_chisq
+    
+    @classmethod
+    def plotValuesAndChiSquared(cls, xx, theory, experiment, std, theory_distinguished = None, figsize = (9.5, 7.2), dpi = 300):
+        chi_sq = chi_squared(theory, experiment, std)
+
+        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin']
+        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
+
+        fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
+
+        for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
+            ax.plot(xx, yy.transpose(), color = theory_colors[i], linewidth = .1)
+            ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
+            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+
+        ax_chisq.plot(xx, chi_sq.transpose(), color = '0.7', linewidth = 0.1)
+
+        if theory_distinguished is not None:
+            
+            chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+            
+            for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
+                ax.plot(xx, yy.transpose(), color = theory_distinguished_colors[i], linewidth = 4)
+                
+            ax_chisq.plot(xx, chi_sq_distinguished, 'k', linewidth = 4)
+        
+        ax.set_xlim(min(xx), max(xx))
+
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='minor', length = 5)
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+
+        ax_chisq.set_yscale('log')
+        ax_chisq.tick_params(which='both', direction='in', labelsize = 30, length = 10)
+        ax_chisq.tick_params(which='minor', length = 5)
+        
+        return fig, ax, ax_chisq
+    
+    @classmethod
+    def plotPeffAndChiSquaredVsDPhi(cls, xx, theory, experiment, std, theory_distinguished = None, figsize = (9.5, 7.2), dpi = 300):
+        fig, ax, ax_chisq = cls.plotValuesAndChiSquared(xx, theory, experiment, std, theory_distinguished, figsize, dpi)
+        
+        ax.set_xlim(0,1)
+        
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(
+        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        ))
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+
+        ax.set_xlabel(f'$\\Delta\\Phi$', fontsize = 36)
+        ax.set_ylabel(f'Effective probability $p_\\mathrm{{eff}}$', fontsize = 36)
+        ax_chisq.set_ylabel(f'$\\chi^2$', fontsize = 36, rotation = 0, labelpad = 20)
+        
+        
+        fig.tight_layout()
+
+        return fig, ax, ax_chisq

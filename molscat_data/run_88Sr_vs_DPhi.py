@@ -24,7 +24,7 @@ from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semicl
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
-from _molscat_data.visualize import BarplotWide, ProbabilityVersusSpinOrbit
+from _molscat_data.visualize import ValuesVsModelParameters
 from prepare_so_coupling import scale_so_and_write
 
 
@@ -37,6 +37,7 @@ energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), s
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
+data_dir_path = Path(__file__).parents[1] / 'data'
 pickles_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
 pickles_dir_path.mkdir(parents=True, exist_ok=True)
 arrays_dir_path = pickles_dir_path.parent / 'arrays'
@@ -189,15 +190,39 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-def plot_probability_vs_singlet_phase(array_path):
-    pass
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling):
+    array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
+    array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
+    arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ])
+    arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] )
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'two_point_one_singlet' / f'SE_peff_vs_DPhi_{singlet_phase:.4f}.png'
+    svg_path = png_path.with_suffix('.svg')
+    png_path.parent.mkdir(parents = True, exist_ok = True)
+    # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+    # pmf_array = np.loadtxt(pmf_path)
+
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
+    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
+    # exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
+
+    experiment = np.array( [ exp_hot[0,0], exp_cold_higher[0,0] ] )
+    std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
+
+    xx = np.array(triplet_phases) - singlet_phase
+    theory_distinguished = np.array( [ arrays_hot[:,0], arrays_cold_higher[:,0] ] ).transpose()
+    theory = theory_distinguished
+
+    fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
+    fig.savefig(png_path)
+    fig.savefig(svg_path)
+
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The step of the phase difference in multiples of pi.")
     args = parser.parse_args()
 
     # number_of_parameters = 24
@@ -206,7 +231,7 @@ def main():
     # TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
+    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
     singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
     if args.phase_step is None:
         triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
@@ -228,18 +253,12 @@ def main():
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
 
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
-    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld_100_E.pickle')
-    # pickle_path = Path(__file__).parents[1].joinpath('data_produced', 'pickles', 'RbSr+_tcpld', '10_E', f'{args.singlet_phase}_{args.triplet_phase}.pickle')
-    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_so_scaling' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{phases[0][1]:.4f}' / f'{so_scaling:.4f}.pickle' for so_scaling in so_scaling_values )
+    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     
     for pickle_path in pickle_paths:
         calculate_and_save_the_peff_parallel(pickle_path, phases[0])
-
-
-    ### Calculate k_L(E) for the cold spin change from |2,2,up> state
     
-    # for pickle_path in pickle_paths:
-    #     save_and_plot_k_L_E_spinspin(pickle_path)
+    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0])
 
 
 if __name__ == '__main__':

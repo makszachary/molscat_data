@@ -2,7 +2,9 @@ import numpy as np
 from typing import Any
 
 def chi_squared(theory: np.ndarray[Any, float], experiment: float | np.ndarray[Any, float], std: float | np.ndarray[Any, float] = None) -> float | np.ndarray[Any, float]:
-
+    """
+    theory: the len of last axis should match len of experiment
+    """
     theory = np.array(theory)
     experiment = np.array(experiment)
     if std is None:
