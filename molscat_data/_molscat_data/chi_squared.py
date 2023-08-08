@@ -2,9 +2,18 @@ import numpy as np
 from typing import Any
 
 def chi_squared(theory: np.ndarray[Any, float], experiment: float | np.ndarray[Any, float], std: float | np.ndarray[Any, float] = None) -> float | np.ndarray[Any, float]:
+    """Evaluate chi-squared from a set of models.
+    
+    :param theory: values obtained from the set of models;
+    the last axes of theory should match the shape of experiment
+    :param experiment: measured values
+    :param std: standard devations of the measuered values
+    
+    :return: array of the chi-squared values corresponding to each model;
+    the shape of this array is determined by the first axes of theory,
+    without the part matching the shape of experiment
     """
-    theory: the len of last axis should match len of experiment
-    """
+
     theory = np.array(theory)
     experiment = np.array(experiment)
     if std is None:
