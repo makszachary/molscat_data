@@ -607,6 +607,7 @@ class ValuesVsModelParameters:
 
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             ax.plot(xx, yy.transpose(), color = theory_colors[i], linewidth = .1)
+            print(f'{xx=}', yy.transpose())
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
@@ -618,10 +619,11 @@ class ValuesVsModelParameters:
             
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 ax.plot(xx, yy.transpose(), color = theory_distinguished_colors[i], linewidth = 4)
+                print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
-            ax_chisq.plot(xx, chi_sq_distinguished, 'k', linewidth = 4)
+            ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
         
-        ax.set_xlim(min(xx), max(xx))
+        ax.set_xlim(np.min(xx), np.max(xx))
 
         ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
         ax.tick_params(which='minor', length = 5)
