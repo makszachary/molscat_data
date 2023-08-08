@@ -45,7 +45,8 @@ arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 
-def plot_probability_vs_DPhi(singlet_phases, triplet_phases, so_scaling, singlet_phase_distinguished = None, triplet_phases_distinguished = None):
+def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, singlet_phase_distinguished: float = None, triplet_phases_distinguished: float = None):
+    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
     array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
     array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
     arrays_hot = np.array([ [np.loadtxt(array_path) for array_path in sublist] for sublist in array_paths_hot ])
@@ -82,31 +83,21 @@ def plot_probability_vs_DPhi(singlet_phases, triplet_phases, so_scaling, singlet
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
+    parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The distinguished value of the singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
     args = parser.parse_args()
 
-    # number_of_parameters = 24
-    # all_phases = np.linspace(0.00, 1.00, (number_of_parameters+2) )[1:-1]
-    # SINGLETSCALING = [parameter_from_semiclassical_phase(phase, singlet_scaling_path, starting_points=[1.000,1.010]) for phase in all_phases]
-    # TRIPLETSCALING = [parameter_from_semiclassical_phase(phase, triplet_scaling_path, starting_points=[1.000,0.996]) for phase in all_phases]
-    # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
-
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_so_scaling').iterdir()
-    singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
-    if args.phase_step is None:
-        triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
-    else:
-        triplet_phase = np.array([( args.singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (args.singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
-    phases = np.around(tuple(zip(singlet_phase, triplet_phase, strict = True)), decimals = 2)
+    # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
+    singlet_phase = default_singlet_phase_function(1.0) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step)
+    triplet_phase = default_triplet_phase_function(1.0) if args.phase_step is None else np.array([( args.singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (args.singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
     so_scaling_values = (0.375,)
 
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
-    singlet_phase_distinguished = 0.0450
-    triplet_phases_distinguished = np.array([( singlet_phase_distinguished + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (args.singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
-
+    # default (ab initio) singlet phase is 0.0450\pi and default triplet phase is 0.7179\pi
+    singlet_phase_distinguished = singlet_phase if args.singlet_phase is None else args.singlet_phase
+    triplet_phases_distinguished = triplet_phase if args.phase_step is None else np.array([( singlet_phase_distinguished + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (args.singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
+    plot_probability_vs_DPhi(singlet_phases = singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
 
 if __name__ == '__main__':
     main()

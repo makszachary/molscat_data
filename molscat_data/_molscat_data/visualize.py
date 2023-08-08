@@ -646,8 +646,13 @@ class ValuesVsModelParameters:
         lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
         ))
         ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        ax.xaxis.set_minor_formatter('')
+        ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
+        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
 
         ax.set_xlabel(f'$\\Delta\\Phi$', fontsize = 36)
         ax.set_ylabel(f'Effective probability $p_\\mathrm{{eff}}$', fontsize = 36)
