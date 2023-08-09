@@ -125,7 +125,7 @@ def probability_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int 
 
     if array_like:
         arguments = ( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax) for index in np.ndindex(arg_shapes[0]))
-        results = map(rate_fmfsms, arguments)
+        results = list(map(rate_fmfsms, arguments))
         rate_shape = results[0].shape
         rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
 
