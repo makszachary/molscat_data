@@ -170,7 +170,7 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         probability_array = probability(*arg)
         output_state_resolved_probability_array = probability_array.squeeze()
         probability_array = probability_array.sum(axis = (0, 1)).squeeze()
-        print(f'output_state_resolved_probability_array=}')
+        print(f'{output_state_resolved_probability_array=}')
         print(f'{probability_array=}')
         effective_probability_array = effective_probability(probability_array, pmf_array)
 
