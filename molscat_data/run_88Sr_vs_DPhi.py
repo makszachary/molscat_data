@@ -23,7 +23,7 @@ from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
-from _molscat_data.utils import probability
+from _molscat_data.utils import probability, probability_not_parallel
 from _molscat_data.visualize import ValuesVsModelParameters
 from prepare_so_coupling import scale_so_and_write
 
@@ -32,7 +32,7 @@ singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
-E_min, E_max, nenergies, n = 8e-7, 8e-2, 10, 3
+E_min, E_max, nenergies, n = 8e-7, 8e-2, 5, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -190,6 +190,72 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
+def calculate_and_save_the_peff_not_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4):
+    ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
+    t4 = time.perf_counter()
+    fs = semiclassical_phase_function(singlet_scaling_path)
+    ft = semiclassical_phase_function(triplet_scaling_path)
+    s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    
+    so_scaling = s_matrix_collection.spinOrbitParameter
+    # if len(so_scaling) == 1: so_scaling = float(so_scaling)
+
+    pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_array = np.loadtxt(pmf_path)
+
+    param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(parameter_from_semiclassical_phase(phases[0], singlet_scaling_path, starting_points=[1.000,1.010])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( parameter_from_semiclassical_phase(phases[1], triplet_scaling_path, starting_points=[1.000,0.996]) ), ) } if phases is not None else None
+
+    F_out, F_in, S = 2, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    F_out, F_in, S = 4, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    F_out, F_in, S = 2, 2, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
+    names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', 
+             f'cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states',
+             f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
+    abbreviations = ['hpf', 'cold_higher', 'cold_lower']
+
+    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
+        t = time.perf_counter()
+
+        txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
+        # so_scaling = txt_path.name
+        output_state_res_txt_path = txt_path.parent / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
+        txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
+        txt_path.parent.mkdir(parents = True, exist_ok = True)
+
+        probability_array = probability_not_parallel(*arg)
+        output_state_resolved_probability_array = probability_array.squeeze()
+        probability_array = probability_array.sum(axis = (0, 1)).squeeze()
+        effective_probability_array = effective_probability(probability_array, pmf_array)
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(output_state_resolved_probability_array, '\n')
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(probability_array, '\n')
+
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(effective_probability_array)
+        print("------------------------------------------------------------------------")
+        
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
+        
+        duration = time.perf_counter() - t
+        print(f"It took {duration:.2f} s.")
+
+
 def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling):
     array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
     array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
@@ -260,7 +326,8 @@ def main():
     for singlet_phase, triplet_phase in phases:
         so_scaling = so_scaling_values[0]
         pickle_path = pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
-        calculate_and_save_the_peff_parallel(pickle_path, (singlet_phase, triplet_phase))
+        # calculate_and_save_the_peff_parallel(pickle_path, (singlet_phase, triplet_phase))
+        calculate_and_save_the_peff_not_parallel(pickle_path, (singlet_phase, triplet_phase))
 
     # for i, pickle_path in enumerate(pickle_paths):
     #     calculate_and_save_the_peff_parallel(pickle_path, phases[i])

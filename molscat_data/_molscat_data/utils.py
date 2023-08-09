@@ -100,3 +100,43 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
     probability = averaged_rate / averaged_momentum_transfer_rate
 
     return probability
+
+def probability_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:
+    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    args.pop('dLMax')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
+        
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+
+    if array_like:
+        arguments = ( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax) for index in np.ndindex(arg_shapes[0]))
+        results = map(rate_fmfsms, arguments)
+        rate_shape = results[0].shape
+        rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+
+        averaged_rate = s_matrix_collection.thermalAverage(rate)
+        averaged_momentum_transfer_rate = np.full_like(averaged_rate, averaged_momentum_transfer_rate)
+        probability = averaged_rate / averaged_momentum_transfer_rate
+
+        return probability
+    
+    rate = rate_fmfsms(s_matrix_collection, **args)
+    averaged_rate = s_matrix_collection.thermalAverage(rate)
+    probability = averaged_rate / averaged_momentum_transfer_rate
+
+    return probability
