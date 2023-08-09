@@ -170,6 +170,8 @@ def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None,
         probability_array = probability(*arg)
         output_state_resolved_probability_array = probability_array.squeeze()
         probability_array = probability_array.sum(axis = (0, 1)).squeeze()
+        print(f'output_state_resolved_probability_array=}')
+        print(f'{probability_array=}')
         effective_probability_array = effective_probability(probability_array, pmf_array)
 
         print("------------------------------------------------------------------------")
@@ -237,8 +239,8 @@ def main():
     if args.phase_step is None:
         triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
     else:
-        triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
-    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 2)
+        triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
+    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 4)
     so_scaling_values = (0.375,)
 
     ### RUN MOLSCAT ###
