@@ -324,6 +324,8 @@ def main():
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     
     with Pool() as pool:
+        so_scaling = so_scaling_values[0]
+        pickle_path = pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
         arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for singlet_phase, triplet_phase in phases )
         pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
 
