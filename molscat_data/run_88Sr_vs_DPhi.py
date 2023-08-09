@@ -32,7 +32,7 @@ singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
-E_min, E_max, nenergies, n = 8e-7, 8e-2, 200, 3
+E_min, E_max, nenergies, n = 8e-7, 8e-2, 2, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
