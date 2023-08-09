@@ -232,7 +232,7 @@ def main():
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
-    singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
+    singlet_phase = np.array([default_singlet_phase_function(1.0),]) if args.singlet_phase is None else np.array([args.singlet_phase,])
     if args.phase_step is None:
         triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
     else:
@@ -258,7 +258,7 @@ def main():
     for pickle_path in pickle_paths:
         calculate_and_save_the_peff_parallel(pickle_path, phases[0])
     
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0])
+    plot_probability_vs_DPhi(singlet_phase[0], triplet_phases = triplet_phase, so_scaling = so_scaling_values[0])
 
 
 if __name__ == '__main__':
