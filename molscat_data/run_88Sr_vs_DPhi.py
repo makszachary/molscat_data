@@ -232,13 +232,13 @@ def main():
     # scaling_combinations = itertools.product(SINGLETSCALING, TRIPLETSCALING)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
-    singlet_phase = np.array([default_singlet_phase_function(1.0),]) if args.singlet_phase is None else np.array([args.singlet_phase,])
+    # singlet_phase = np.array([default_singlet_phase_function(1.0),]) if args.singlet_phase is None else np.array([args.singlet_phase,])
     singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
     if args.phase_step is None:
         triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
     else:
         triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=2)
-    phases = np.around(tuple(zip(singlet_phase, triplet_phase, strict = True)), decimals = 2)
+    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 2)
     so_scaling_values = (0.375,)
 
     ### RUN MOLSCAT ###
