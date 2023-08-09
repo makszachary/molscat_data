@@ -255,7 +255,6 @@ def calculate_and_save_the_peff_not_parallel(pickle_path: Path | str, phases = N
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-
 def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling):
     array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
     array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
@@ -325,8 +324,9 @@ def main():
     
     with Pool() as pool:
         so_scaling = so_scaling_values[0]
-        pickle_path = pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
-        arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for singlet_phase, triplet_phase in phases )
+        pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
+        arguments = tuple(zip(pickle_paths, phases))
+        # arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for pickle_path, singlet_phase, triplet_phase in phases )
         pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
 
 
