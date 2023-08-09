@@ -322,12 +322,13 @@ def main():
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     
-    with Pool() as pool:
-        so_scaling = so_scaling_values[0]
-        pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-        arguments = tuple(zip(pickle_paths, phases))
-        # arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for pickle_path, singlet_phase, triplet_phase in phases )
-        pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
+    # with Pool() as pool:
+    #     t0 = time.perf_counter()
+    #     so_scaling = so_scaling_values[0]
+    #     pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
+    #     arguments = tuple(zip(pickle_paths, phases))
+    #     pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
+    #     print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 
     # for singlet_phase, triplet_phase in phases:
