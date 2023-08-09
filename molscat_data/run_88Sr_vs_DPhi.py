@@ -323,16 +323,16 @@ def main():
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     
-    # with Pool() as pool:
-    #     arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for singlet_phase, triplet_phase in phases )
-    #     pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
+    with Pool() as pool:
+        arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for singlet_phase, triplet_phase in phases )
+        pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
 
 
-    for singlet_phase, triplet_phase in phases:
-        so_scaling = so_scaling_values[0]
-        pickle_path = pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
-        # calculate_and_save_the_peff_parallel(pickle_path, (singlet_phase, triplet_phase))
-        calculate_and_save_the_peff_not_parallel(pickle_path, (singlet_phase, triplet_phase))
+    # for singlet_phase, triplet_phase in phases:
+    #     so_scaling = so_scaling_values[0]
+    #     pickle_path = pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle'
+    #     # calculate_and_save_the_peff_parallel(pickle_path, (singlet_phase, triplet_phase))
+    #     calculate_and_save_the_peff_not_parallel(pickle_path, (singlet_phase, triplet_phase))
 
     # for i, pickle_path in enumerate(pickle_paths):
     #     calculate_and_save_the_peff_parallel(pickle_path, phases[i])
