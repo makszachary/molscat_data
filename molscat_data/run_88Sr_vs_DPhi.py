@@ -325,6 +325,7 @@ def main():
     
     # with Pool() as pool:
     #     arguments = ( (pickle_path, (singlet_phase, triplet_phase)) for singlet_phase, triplet_phase in phases )
+    #     pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
 
 
     for singlet_phase, triplet_phase in phases:
