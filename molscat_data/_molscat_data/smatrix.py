@@ -536,7 +536,7 @@ class SMatrixCollection:
                     A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)      
                     if self.singletParameter == (None,): self.singletParameter = (A_s,)
                     rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 11) for singlet_parameter in self.singletParameter)
-                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter from the molscat output should be an element of {self}.singletParameter."
+                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter ({A_s=}) from the molscat output ({file_path=}) should be an element of {self}.singletParameter."
                     A_s_index = rounded_singletParameter.index(A_s)
 
                     for i in range(2):
@@ -552,7 +552,7 @@ class SMatrixCollection:
                     
                     if self.tripletParameter == (None,): self.tripletParameter = (A_t,)
                     rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 11) for triplet_parameter in self.tripletParameter)
-                    assert A_t in rounded_tripletParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
+                    assert A_t in rounded_tripletParameter, f"The triplet scaling parameter ({A_t=}) from the molscat output ({file_path=}) should be an element of {self}.tripletParameter."
                     A_t_index = rounded_tripletParameter.index(A_t)
 
                 elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
@@ -567,7 +567,7 @@ class SMatrixCollection:
                         if self.spinOrbitParameter == (None,) and spin_spin:
                             self.spinOrbitParameter = (rkhs_ss_scaling,)
                         rounded_spinOrbitParameter = tuple(round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
-                        assert rkhs_ss_scaling in rounded_spinOrbitParameter, f"The triplet scaling parameter from the molscat output should be an element of {self}.tripletParameter."
+                        assert rkhs_ss_scaling in rounded_spinOrbitParameter, f"The spin-orbit scaling parameter {rkhs_ss_scaling=} from the molscat output ({file_path=}) should be an element of {self}.tripletParameter."
                         so_param_index = rounded_spinOrbitParameter.index(rkhs_ss_scaling)
 
                 elif "INPUT ENERGY LIST IS" in line:
@@ -585,7 +585,7 @@ class SMatrixCollection:
 
                     if self.collisionEnergy == (None,): self.collisionEnergy = energy_tuple
                     rounded_collisionEnergy = tuple(round(energy, sigfigs = 11) for energy in self.collisionEnergy )
-                    assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies from the molscat output should be equal to {self}.collisionEnergy."
+                    assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies ({energy_list=}) from the molscat output ({file_path=}) should be equal to {self}.collisionEnergy."
 
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
                 #     f1ref, mf1ref, f2ref, mf2ref = int(line.split()[14])/2, int(line.split()[15])/2, int(line.split()[16])/2, int(line.split()[17])/2 
