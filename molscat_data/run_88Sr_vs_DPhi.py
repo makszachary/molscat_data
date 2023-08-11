@@ -125,7 +125,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values) 
     t1 = time.perf_counter()
     print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
 
-    return output_dirs
+    return np.unique(output_dirs)
 
 def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
