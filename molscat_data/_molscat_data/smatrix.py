@@ -507,7 +507,7 @@ class SMatrixCollection:
                         if round(non_molscat_so_parameter, decimals = 12) not in rounded_spinOrbitParameter:
                             raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
                         
-                        so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, sigfigs = 11))
+                        so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, decimals = 12))
                     ## now, if non_molscat_so_parameter is not None, we are sure that it is an element of self.spinOrbitParameter
                     ## if non_molscat_so_parameter is None, we do nothing
 
