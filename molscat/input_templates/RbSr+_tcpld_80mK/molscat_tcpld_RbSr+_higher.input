@@ -48,5 +48,5 @@
     LAMNUM    = "NUM",
     NPOT      = 3,
     csn_print = .true.,
-    xscl      = SINGLETSCALING, TRIPLETSCALING, 1.00,
+    xscl      = SINGLETSCALING, TRIPLETSCALING, SOSCALING,
  /

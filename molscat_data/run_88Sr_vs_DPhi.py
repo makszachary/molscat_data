@@ -34,9 +34,8 @@ triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 # we want to calculate rates at T from 0.1 mK to 10 mK, so we need E_min = 0.8e-6 K and E_max = 80 mK
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
 # we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
-E_min, E_max, nenergies, n = 8e-7, 8e-2, 200, 3
-energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
+E_min, E_max, n = 8e-7, 8e-2, 3
+
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
@@ -46,9 +45,12 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, nenergies: int = 100) -> tuple[float, float, float]:
     
     time_0 = time.perf_counter()
+
+    energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
+    molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
     triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
@@ -91,10 +93,12 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     return duration, molscat_input_path, molscat_output_path
 
-def collect_and_pickle(molscat_output_directory_path: Path | str, phases, spinOrbitParameter: float | tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle(molscat_output_directory_path: Path | str, phases, spinOrbitParameter: float | tuple[float, ...], nenergies: int = 100 ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
+
+    energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
     singlet_parameter = tuple( np.unique( [ default_singlet_parameter_from_phase(phase[0]) for phase in sorted(phases, key = lambda phase: phase[0]) ] ) )
     triplet_parameter = tuple( np.unique( [ default_triplet_parameter_from_phase(phase[1]) for phase in sorted(phases, key = lambda phase: phase[1]) ] ) )
     s_matrix_collection = SMatrixCollection(singletParameter = singlet_parameter, tripletParameter = triplet_parameter, collisionEnergy = energy_tuple)
@@ -112,11 +116,11 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, phases, spinOr
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
-def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values) -> set:
+def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, nenergies: int = 100) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, *y, z) for x, y, z in itertools.product( molscat_input_templates, phases, so_scaling_values ))
+       arguments = ( (x, *y, z, nenergies) for x, y, z in itertools.product( molscat_input_templates, phases, so_scaling_values ))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -257,7 +261,7 @@ def calculate_and_save_the_peff_not_parallel(pickle_path: Path | str, phases = N
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling):
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, nenergies):
     array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
     array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
     arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ])
@@ -290,6 +294,7 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The step of the phase difference in multiples of pi.")
+    parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
     args = parser.parse_args()
 
     # number_of_parameters = 24
@@ -307,9 +312,10 @@ def main():
         triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 4)
     so_scaling_values = (0.375,)
+    nenergies = args.nenergies
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, nenergies)
 
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
@@ -317,7 +323,7 @@ def main():
     output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' for singlet_phase, triplet_phase in phases for so_scaling in so_scaling_values )
     for output_dir in output_dirs:
         so_scaling = so_scaling_values[0]
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, phases, so_scaling )
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, phases, so_scaling, nenergies )
         pickle_paths.append(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
     pickle_paths = np.unique(pickle_paths)
@@ -333,7 +339,7 @@ def main():
         pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0])
+    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], nenergies = nenergies)
 
 
 if __name__ == '__main__':
