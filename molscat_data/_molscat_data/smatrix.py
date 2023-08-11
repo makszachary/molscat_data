@@ -503,13 +503,11 @@ class SMatrixCollection:
                             self.spinOrbitParameter = (non_molscat_so_parameter,)
                         
                         # since the scaling in molscat output has anyway 12 digits after the decimal point
-                        # rounded_spinOrbitParameter = tuple( round(so_param, decimals = 12) for so_param in self.spinOrbitParameter)
-                        rounded_spinOrbitParameter = np.around(self.spinOrbitParameter, decimals = 12)
-                        # if round(non_molscat_so_parameter, decimals = 12) not in rounded_spinOrbitParameter:
-                        #     raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
-                        if not np.any(np.around(rounded_spinOrbitParameter - non_molscat_so_parameter, decimals = 12) == 0):
-                            raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}, , at least with precision to 12 decimals.")
-                        so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, decimals = 12))
+                        rounded_spinOrbitParameter = tuple( round(so_param, decimals = 12) for so_param in self.spinOrbitParameter)
+                        if round(non_molscat_so_parameter, decimals = 12) not in rounded_spinOrbitParameter:
+                            raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
+                        
+                        so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, sigfigs = 11))
                     ## now, if non_molscat_so_parameter is not None, we are sure that it is an element of self.spinOrbitParameter
                     ## if non_molscat_so_parameter is None, we do nothing
 
@@ -539,11 +537,8 @@ class SMatrixCollection:
                     # the scaling in molscat output has anyway 12 digits after the decimal point
                     A_s = round(float(line.split()[9])*float(line.split()[11]), decimals = 12)      
                     if self.singletParameter == (None,): self.singletParameter = (A_s,)
-                    # rounded_singletParameter = tuple(round(singlet_parameter, decimals = 12) for singlet_parameter in self.singletParameter)
-                    # assert A_s in rounded_singletParameter, f"The singlet scaling parameter ({A_s=}) from the molscat output ({file_path=}) should be an element of {self}.singletParameter."
-                    rounded_singletParameter = np.around(self.singletParameter, decimals = 12)
-                    if not np.any(np.around(rounded_singletParameter - A_s, decimals = 12) == 0):
-                        raise ValueError(f"The singlet scaling parameter ({A_s=}) from the molscat output ({file_path=}) should be an element of {self}.singletParameter, at least with precision to 12 decimals.")
+                    rounded_singletParameter = tuple(round(singlet_parameter, decimals = 12) for singlet_parameter in self.singletParameter)
+                    assert A_s in rounded_singletParameter, f"The singlet scaling parameter ({A_s=}) from the molscat output ({file_path=}) should be an element of {self}.singletParameter."
                     A_s_index = rounded_singletParameter.index(A_s)
 
                     for i in range(2):
@@ -561,9 +556,6 @@ class SMatrixCollection:
                     if self.tripletParameter == (None,): self.tripletParameter = (A_t,)
                     rounded_tripletParameter = tuple(round(triplet_parameter, decimals = 12) for triplet_parameter in self.tripletParameter)
                     assert A_t in rounded_tripletParameter, f"The triplet scaling parameter ({A_t=}) from the molscat output ({file_path=}) should be an element of {self}.tripletParameter."
-                    rounded_tripletParameter = np.around(self.tripletParameter, decimals = 12)
-                    if not np.any(np.around(rounded_tripletParameter - A_t, decimals = 12) == 0):
-                        raise ValueError(f"The triplet scaling parameter ({A_t=}) from the molscat output ({file_path=}) should be an element of {self}.tripletParameter, at least with precision to 12 decimals.")
                     A_t_index = rounded_tripletParameter.index(A_t)
 
                 elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
@@ -593,12 +585,11 @@ class SMatrixCollection:
                         # the energies in the molscat outputs are listed in G17.10 format here anyway
                         energy_list.append(round(float(line.split()[6]), decimals = 10))
                         line = next(molscat_output)
-                    energy_array = np.array(energy_list)
+                    energy_tuple = tuple(energy_list)
 
-                    if self.collisionEnergy == (None,): self.collisionEnergy = tuple(energy_list)
-                    # rounded_collisionEnergy = tuple(round(energy, decimals = 10) for energy in self.collisionEnergy )
-                    rounded_collisionEnergy = np.around(self.collisionEnergy, decimals = 10)
-                    assert (np.around(energy_array-rounded_collisionEnergy, decimals = 8) == 0).all(), f"The list of collision energies ({energy_list=}) from the molscat output ({file_path=}) should be equal to {self}.collisionEnergy."
+                    if self.collisionEnergy == (None,): self.collisionEnergy = energy_tuple
+                    rounded_collisionEnergy = tuple(round(energy, decimals = 10) for energy in self.collisionEnergy )
+                    assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies ({energy_list=}) from the molscat output ({file_path=}) should be equal to {self}.collisionEnergy."
 
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
                 #     f1ref, mf1ref, f2ref, mf2ref = int(line.split()[14])/2, int(line.split()[15])/2, int(line.split()[16])/2, int(line.split()[17])/2 
