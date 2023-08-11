@@ -319,8 +319,8 @@ def main():
         so_scaling = so_scaling_values[0]
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, phases, so_scaling )
         pickle_paths.append(pickle_path)
-        pickle_paths = np.unique(pickle_paths)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    pickle_paths = np.unique(pickle_paths)
 
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
