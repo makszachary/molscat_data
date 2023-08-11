@@ -95,8 +95,8 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, phases, spinOr
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
-    singlet_parameter = tuple( default_singlet_parameter_from_phase(phase[0]) for phase in sorted(phases, key = lambda phase: phase[0]))
-    triplet_parameter = tuple( default_triplet_parameter_from_phase(phase[1]) for phase in sorted(phases, key = lambda phase: phase[0]))
+    singlet_parameter = tuple( np.unique( [ default_singlet_parameter_from_phase(phase[0]) for phase in sorted(phases, key = lambda phase: phase[0]) ] ) )
+    triplet_parameter = tuple( np.unique( [ default_triplet_parameter_from_phase(phase[1]) for phase in sorted(phases, key = lambda phase: phase[1]) ] ) )
     s_matrix_collection = SMatrixCollection(singletParameter = singlet_parameter, tripletParameter = triplet_parameter, collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
