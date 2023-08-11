@@ -502,8 +502,9 @@ class SMatrixCollection:
                         if self.spinOrbitParameter == (None,):
                             self.spinOrbitParameter = (non_molscat_so_parameter,)
                         
-                        rounded_spinOrbitParameter = tuple( round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
-                        if round(non_molscat_so_parameter, sigfigs = 11) not in rounded_spinOrbitParameter:
+                        # since the scaling in molscat output has anyway 12 digits after the decimal point
+                        rounded_spinOrbitParameter = tuple( round(so_param, decimals = 12) for so_param in self.spinOrbitParameter)
+                        if round(non_molscat_so_parameter, decimals = 12) not in rounded_spinOrbitParameter:
                             raise ValueError(f"{non_molscat_so_parameter=} should be an element of {self.spinOrbitParameter=}")
                         
                         so_param_index = rounded_spinOrbitParameter.index(round(non_molscat_so_parameter, sigfigs = 11))
@@ -532,10 +533,11 @@ class SMatrixCollection:
                     assert basis == self.basis, f"The basis set used in the molscat output should match {self}.basis."
                 
                 elif "SHORT-RANGE POTENTIAL 1 SCALING FACTOR" in line:
-                    #  find values of short-range factors and C4
-                    A_s = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)      
+                    # find values of short-range factors and C4
+                    # the scaling in molscat output has anyway 12 digits after the decimal point
+                    A_s = round(float(line.split()[9])*float(line.split()[11]), decimals = 12)      
                     if self.singletParameter == (None,): self.singletParameter = (A_s,)
-                    rounded_singletParameter = tuple(round(singlet_parameter, sigfigs = 11) for singlet_parameter in self.singletParameter)
+                    rounded_singletParameter = tuple(round(singlet_parameter, decimals = 12) for singlet_parameter in self.singletParameter)
                     assert A_s in rounded_singletParameter, f"The singlet scaling parameter ({A_s=}) from the molscat output ({file_path=}) should be an element of {self}.singletParameter."
                     A_s_index = rounded_singletParameter.index(A_s)
 
@@ -548,15 +550,17 @@ class SMatrixCollection:
                     C4_index = self.C4.index(C4)
                 
                 elif "SHORT-RANGE POTENTIAL 2 SCALING FACTOR" in line:
-                    A_t = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)
+                    # the scaling in my molscat outputs has anyway 12 digits after the decimal point
+                    A_t = round(float(line.split()[9])*float(line.split()[11]), decimals = 12)
                     
                     if self.tripletParameter == (None,): self.tripletParameter = (A_t,)
-                    rounded_tripletParameter = tuple(round(triplet_parameter, sigfigs = 11) for triplet_parameter in self.tripletParameter)
+                    rounded_tripletParameter = tuple(round(triplet_parameter, decimals = 12) for triplet_parameter in self.tripletParameter)
                     assert A_t in rounded_tripletParameter, f"The triplet scaling parameter ({A_t=}) from the molscat output ({file_path=}) should be an element of {self}.tripletParameter."
                     A_t_index = rounded_tripletParameter.index(A_t)
 
                 elif "SHORT-RANGE POTENTIAL 3 SCALING FACTOR" in line:
-                    rkhs_ss_scaling = round(float(line.split()[9])*float(line.split()[11]), sigfigs = 11)
+                    # the scaling in molscat output has anyway 12 digits after the decimal point
+                    rkhs_ss_scaling = round(float(line.split()[9])*float(line.split()[11]), decimals = 12)
                     
                     # if non_molscat_so_parameter was None and the set of spin-orbit parameters
                     # was not defined while creating the SMatrixCollection object,
@@ -566,7 +570,7 @@ class SMatrixCollection:
                     if non_molscat_so_parameter is None:
                         if self.spinOrbitParameter == (None,) and spin_spin:
                             self.spinOrbitParameter = (rkhs_ss_scaling,)
-                        rounded_spinOrbitParameter = tuple(round(so_param, sigfigs = 11) for so_param in self.spinOrbitParameter)
+                        rounded_spinOrbitParameter = tuple(round(so_param, decimals = 12) for so_param in self.spinOrbitParameter)
                         assert rkhs_ss_scaling in rounded_spinOrbitParameter, f"The spin-orbit scaling parameter {rkhs_ss_scaling=} from the molscat output ({file_path=}) should be an element of {self}.tripletParameter."
                         so_param_index = rounded_spinOrbitParameter.index(rkhs_ss_scaling)
 
@@ -579,12 +583,12 @@ class SMatrixCollection:
                     # append each energy value from the output to the list of energies
                     while line.strip():
                         # the energies in the molscat outputs are listed in G17.10 format here anyway
-                        energy_list.append(round(float(line.split()[6]), sigfigs = 11))
+                        energy_list.append(round(float(line.split()[6]), decimals = 10))
                         line = next(molscat_output)
                     energy_tuple = tuple(energy_list)
 
                     if self.collisionEnergy == (None,): self.collisionEnergy = energy_tuple
-                    rounded_collisionEnergy = tuple(round(energy, sigfigs = 11) for energy in self.collisionEnergy )
+                    rounded_collisionEnergy = tuple(round(energy, decimals = 10) for energy in self.collisionEnergy )
                     assert energy_tuple == rounded_collisionEnergy, f"The list of collision energies ({energy_list=}) from the molscat output ({file_path=}) should be equal to {self}.collisionEnergy."
 
                 # elif "THESE ENERGY VALUES ARE RELATIVE TO THE REFERENCE ENERGY SPECIFIED BY MONOMER QUANTUM NUMBERS" in line:
