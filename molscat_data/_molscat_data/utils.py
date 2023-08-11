@@ -70,7 +70,7 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
     args.pop('dLMax')
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
-    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
+    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 1, MF2 = -1), param_indices = param_indices)
 
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
     array_like = False
@@ -112,7 +112,7 @@ def probability_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int 
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
     t0=time.perf_counter()
-    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = 2, F2 = 1, MF2 = -1), param_indices = param_indices)
+    averaged_momentum_transfer_rate = s_matrix_collection.getThermallyAveragedMomentumTransferRate(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 1, MF2 = -1), param_indices = param_indices)
     print(f'{averaged_momentum_transfer_rate=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
 
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
