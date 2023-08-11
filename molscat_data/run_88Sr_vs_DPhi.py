@@ -33,8 +33,8 @@ triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 
 # we want to calculate rates at T from 0.1 mK to 10 mK, so we need E_min = 0.8e-6 K and E_max = 80 mK
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
-# we probably cannot afford for more than 100 energy values in the grid (its ~2h of molscat and ~9h of python per one singlet, triplet phase combinations, making up to ~36 hours for 100 triplet phases and with 34 cores)
-E_min, E_max, nenergies, n = 8e-7, 8e-2, 100, 3
+# we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
+E_min, E_max, nenergies, n = 8e-7, 8e-2, 200, 3
 energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -63,7 +63,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
     triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
     original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
-    scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.3f}_scaling.dat'
+    scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling.dat'
     scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
 
     scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
@@ -309,7 +309,7 @@ def main():
     so_scaling_values = (0.375,)
 
     ### RUN MOLSCAT ###
-    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
+    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values)
 
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
