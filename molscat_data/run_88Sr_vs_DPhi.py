@@ -34,7 +34,6 @@ triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old',
 # we want to calculate rates at T from 0.1 mK to 10 mK, so we need E_min = 0.8e-6 K and E_max = 80 mK
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
 # we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
-E_min, E_max, n = 8e-7, 8e-2, 3
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
@@ -51,6 +50,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
     nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
 
     singlet_scaling = parameter_from_semiclassical_phase(singlet_phase, singlet_scaling_path, starting_points=[1.000,1.010])
     triplet_scaling = parameter_from_semiclassical_phase(triplet_phase, triplet_scaling_path, starting_points=[1.000,0.996])
