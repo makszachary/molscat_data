@@ -109,10 +109,11 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[S
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
-def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, param_values: dict):
+def save_and_plot_k_L_E_spinspin(pickle_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float):
     s_matrix_collection = SMatrixCollection.fromPickle(file_path=pickle_path)
-    print(s_matrix_collection)
-    phase = (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]))
+    # phase = (default_singlet_phase_function(s_matrix_collection.singletParameter[0]), default_triplet_phase_function(s_matrix_collection.tripletParameter[0]))
+    phase = (singlet_phase, triplet_phase)
+    param_values = {'singletParameter': (default_singlet_parameter_from_phase(singlet_phase),), 'tripletParameter': (default_triplet_parameter_from_phase(triplet_phase),)}
     spin_orbit_scaling = s_matrix_collection.spinOrbitParameter[0]
     k_L_E_arrays = tuple([rate_fmfsms_vs_L_multiprocessing(s_matrix_collection, 4, MF_out, 1, -1, 4, 4, 1, 1, param_values = param_values, unit = 'cm**3/s') for MF_out in range(-4, 4+1, 2) ] )
     energy_array = np.array(s_matrix_collection.collisionEnergy)
