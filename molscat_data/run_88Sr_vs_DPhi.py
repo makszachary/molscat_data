@@ -327,9 +327,9 @@ def main():
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = []
     output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' for singlet_phase, triplet_phase in phases for so_scaling in so_scaling_values )
-    for output_dir in output_dirs:
+    for output_dir, (singlet_phase, triplet_phase), so_scaling in zip(output_dirs, itertools.product(phases, so_scaling_values)):
         so_scaling = so_scaling_values[0]
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, phases, so_scaling, energy_tuple )
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, ((singlet_phase, triplet_phase),), so_scaling, energy_tuple )
         pickle_paths.append(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
     pickle_paths = np.unique(pickle_paths)
