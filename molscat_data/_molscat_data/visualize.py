@@ -659,7 +659,7 @@ class ValuesVsModelParameters:
         ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
         ax.xaxis.set_minor_formatter('')
         ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
-        ax.xaxis.get_major_ticks()[0].set_visible(False)
+        ax.xaxis.get_major_ticks()[0].label1.set_visible(False)
 
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
