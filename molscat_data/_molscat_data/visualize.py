@@ -613,6 +613,8 @@ class ValuesVsModelParameters:
             yy_mask = np.isfinite(yy)
             print(f'{xx.shape=}')
             print(f'{yy.shape=}')
+            print(f'{xx[yy_mask].shape}')
+            print(f'{yy[yy_mask].shape}')
             ax.plot(xx, yy, color = theory_colors[i], linewidth = .1)
             # print(f'{xx=}', yy.transpose())
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
