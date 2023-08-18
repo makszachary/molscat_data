@@ -625,8 +625,8 @@ class ValuesVsModelParameters:
                 yy = yy.transpose()
                 print(yy.shape)
                 print(f'{xx.shape=}')
-                yy_mask = np.isfinite(np.full_like(xx,yy))
-                ax.plot(xx[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                yy_mask = np.isfinite(np.full_like(xx.transpose(),yy))
+                ax.plot(xx.transpose()[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
