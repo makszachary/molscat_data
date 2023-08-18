@@ -630,7 +630,7 @@ class ValuesVsModelParameters:
 
             chi_sq_distinguished = chi_sq_distinguished.transpose()
             chi_sq_distinguished_mask = np.isfinite(chi_sq_distinguished)
-            ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))][chi_sq_distinguished_mask], chi_sq_distinguished[chi_sq_distinguished_mask], 'k', linewidth = 4)
+            ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))][chi_sq_distinguished_mask], chi_sq_distinguished[chi_sq_distinguished_mask], 'k--', linewidth = 4, label = '$\chi^2$')
         
         ax.set_xlim(np.min(xx), np.max(xx))
 
