@@ -344,7 +344,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         print(f"It took {duration:.2f} s.")
 
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple):
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple, temperature):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -405,7 +405,7 @@ def main():
     
 
     ### RUN MOLSCAT ###
-    #output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, energy_tuple)
+    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, energy_tuple)
 
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
@@ -432,7 +432,7 @@ def main():
         # [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
+    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperature = args.temperature)
 
 if __name__ == '__main__':
     main()
