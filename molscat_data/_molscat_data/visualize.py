@@ -617,7 +617,7 @@ class ValuesVsModelParameters:
             print(f'{yy_mask.shape=}')
             print(f'{xx[yy_mask].reshape(-1, xx.shape[1]).shape=}')
             print(f'{yy[yy_mask].reshape(-1, xx.shape[1]).shape=}')
-            ax.plot(xx, yy, color = theory_colors[i], linewidth = .1)
+            ax.plot(xx[yy_mask].reshape(-1, xx.shape[1]), yy[yy_mask].reshape(-1, xx.shape[1]), color = theory_colors[i], linewidth = .1)
             # print(f'{xx=}', yy.transpose())
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
