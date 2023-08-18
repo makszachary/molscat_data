@@ -323,9 +323,9 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
             np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F = 2, MF = -2>|S = 1, MS = -1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
 
         print(list(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)))
-        distribution_iterator = n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)
-        average_rate_array = s_matrix_collection.thermalAverage(rate_array, distribution_iterator)
-        average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array, distribution_iterator)
+        distribution_array = np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float)
+        average_rate_array = s_matrix_collection.thermalAverage(rate_array, distribution_array)
+        average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array, distribution_array)
         probability_array = average_rate_array / average_momentum_transfer_array
         output_state_resolved_probability_array = probability_array.squeeze()
         probability_array = probability_array.sum(axis = (0, 1)).squeeze()
