@@ -427,6 +427,7 @@ def main():
         # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
         pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
         arguments = (*tuple(zip(pickle_paths, phases)), args.temperature)
+        print(arguments)
         # pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
         # pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
         [calculate_and_save_k_L_E_and_peff_not_parallel(arg) for arg in arguments]
