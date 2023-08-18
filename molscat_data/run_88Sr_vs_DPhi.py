@@ -288,8 +288,6 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
     F_out, F_in, S = 2, 2, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    # only for test:
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, -F_out+3, 2), -S, np.arange(-F_in, -F_in+3, 2), S, indexing = 'ij')
     arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
 
     args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
@@ -308,9 +306,6 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
-        # print(rate_array.shape)
-        # rate_array, momentum_transfer_rate_array = rate_array.squeeze(), momentum_transfer_rate_array.squeeze()
-        # print(rate_array.shape)
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
@@ -318,11 +313,10 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
             k_m_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
-            k_m_E_txt_path = k_m_E_txt_path.parent / f'k_m_L_E' / f'{k_m_E_txt_path.name}_{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_m_E_txt_path = k_m_E_txt_path.parent / f'k_m_E' / f'{k_m_E_txt_path.name}_{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_m_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F = 2, MF = -2>|S = 1, MS = -1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
 
-        # print(list(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)))
         distribution_array = np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float)
         average_rate_array = s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array)
         average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array)
