@@ -124,7 +124,7 @@ def main():
     # # so_scaling_values = (0.25,)
     
     
-    plot_probability_vs_DPhi(singlet_phases = singlet_phases, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
+    plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_step= args.phase_step, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
 
 
 if __name__ == '__main__':
