@@ -603,11 +603,16 @@ class ValuesVsModelParameters:
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin']
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
 
+        # theory_distinguished_mask = np.isfinite(theory_distinguished)
+        # theory_mask = np.isfinite(theory)
+
         fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
 
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
-            ax.plot(xx, yy.transpose(), color = theory_colors[i], linewidth = .1)
-            print(f'{xx=}', yy.transpose())
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            ax.plot(xx[yy_mask], yy[yy_mask], color = theory_colors[i], linewidth = .1)
+            # print(f'{xx=}', yy.transpose())
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
@@ -618,7 +623,9 @@ class ValuesVsModelParameters:
             chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
             
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
-                ax.plot(xx, yy.transpose(), color = theory_distinguished_colors[i], linewidth = 4)
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                ax.plot(xx[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)

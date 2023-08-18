@@ -82,7 +82,6 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,0],], [arrays_cold_higher_distinguished[:,0], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,0], arrays_cold_higher[:,:,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
-
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
     print(f'{xx=}')
     print(f'{theory_distinguished=}')
