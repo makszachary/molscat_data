@@ -288,6 +288,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
     F_out, F_in, S = 2, 2, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    # TEST:
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, -F_out+3, 2), -S, np.arange(-F_in, -F_in+3, 2), S, indexing = 'ij')
     arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
 
     args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
@@ -306,6 +308,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
+        print(f'{momentum_transfer_rate_array=}')
+        print(f'{momentum_transfer_rate_array.shape=}')
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
@@ -405,7 +409,7 @@ def main():
     
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, energy_tuple)
+    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, energy_tuple)
 
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
@@ -428,8 +432,8 @@ def main():
         arguments = tuple( (pickle_path, phase, 4, args.temperature) for pickle_path, phase in zip(pickle_paths, phases) )
         # print(arguments)
         # pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
-        pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
-        # [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
+        # pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
+        [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperature = args.temperature)
