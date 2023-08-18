@@ -306,16 +306,17 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
+        rate_array, momentum_transfer_rate_array = rate_array.squeeze(), momentum_transfer_rate_array.squueze()
         quantum_numbers = [ np.full_like(arg[1], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[1].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_L_E_txt_path = k_L_E_txt_path.parent / f'k_L_E_{abbreviation}' / f'{txt_path.name}' / f'IN_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_{quantum_numbers[4][index]}_OUT_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}_{quantum_numbers[8][index]}.txt'
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_L_E_txt_path, rate_array[index])
+            np.savetxt(k_L_E_txt_path, rate_array[index], fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[5][index]}, MF={quantum_numbers[6][index]}>|S={quantum_numbers[7][index]}, MS={quantum_numbers[8][index]}> -> |F={quantum_numbers[1][index]}, MF={quantum_numbers[2][index]}>|S={quantum_numbers[3][index]}, MS={quantum_numbers[4][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
             k_m_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_m_L_E_txt_path = k_L_E_txt_path.parent / f'k_m_L_E_{abbreviation}' / f'{txt_path.name}' / f'IN_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_{quantum_numbers[4][index]}_OUT_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}_{quantum_numbers[8][index]}.txt'
             k_m_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate_array[index])
+            np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate_array[index], fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F = 2, MF = -2>|S = 1, MS = -1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
 
         distribution_iterator = n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)
         average_rate_array = s_matrix_collection.thermalAverage(rate_array, distribution_iterator)
@@ -326,19 +327,19 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         effective_probability_array = effective_probability(probability_array, pmf_array)
 
         print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperature=:.4e} are:')
         print(output_state_resolved_probability_array, '\n')
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperature=:.4e} are:')
         print(probability_array, '\n')
 
-        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=} are:')
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperature=:.4e} are:')
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
         
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -387,6 +388,7 @@ def main():
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("-T", "--temperature", type = float, default = 5e-4, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -424,9 +426,10 @@ def main():
         so_scaling = so_scaling_values[0]
         # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
         pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-        arguments = tuple(zip(pickle_paths, phases))
+        arguments = (*tuple(zip(pickle_paths, phases)), args.temperature)
         # pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
-        pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
+        # pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
+        [calculate_and_save_k_L_E_and_peff_not_parallel(arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
