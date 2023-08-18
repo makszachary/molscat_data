@@ -313,10 +313,10 @@ def main():
     # singlet_phase = np.array([default_singlet_phase_function(1.0),]) if args.singlet_phase is None else np.array([args.singlet_phase,])
     singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
     if args.phase_step is None:
-        triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
+        triplet_phases = (default_triplet_phase_function(1.0),) if args.triplet_phase is None else args.triplet_phase
     else:
-        triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
-    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 4)
+        triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
+    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
     so_scaling_values = (0.375,)
     
 
@@ -345,7 +345,7 @@ def main():
         pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
+    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
 
 
 if __name__ == '__main__':
