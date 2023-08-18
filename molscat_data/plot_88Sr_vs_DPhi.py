@@ -31,10 +31,6 @@ from prepare_so_coupling import scale_so_and_write
 singlet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'singlet_vs_coeff.json')
 triplet_scaling_path = Path(__file__).parents[1].joinpath('data', 'scaling_old', 'triplet_vs_coeff.json')
 
-# 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
-E_min, E_max, nenergies, n = 8e-7, 8e-2, 200, 3
-# energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-# molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
@@ -50,16 +46,19 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 # plots_dir_path = Path(__file__).parents[1] / 'plots'
 
 
-def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, singlet_phase_distinguished: float = None, triplet_phases_distinguished: float = None):
+def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, triplet_phases_distinguished: float = None):
+    nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
     singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
-    array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
-    array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
+    array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
+    array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
     arrays_hot = np.array([ [np.loadtxt(array_path) for array_path in sublist] for sublist in array_paths_hot ])
     arrays_cold_higher = np.array( [ [np.loadtxt(array_path) for array_path in sublist] for sublist in array_paths_cold_higher ] )
 
     if singlet_phase_distinguished is not None and triplet_phases_distinguished is not None:
-        array_paths_hot_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases_distinguished]
-        array_paths_cold_higher_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases_distinguished]
+        array_paths_hot_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases_distinguished]
+        array_paths_cold_higher_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases_distinguished]
         arrays_hot_distinguished = np.array( [np.loadtxt(array_path) for array_path in array_paths_hot_distinguished ] )
         arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher_distinguished ] )
     
@@ -91,14 +90,21 @@ def main():
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The distinguished value of the singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
+    parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+    parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     args = parser.parse_args()
+
+    nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
+    energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=2)
     triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=2)
     so_scaling_values = (0.375,)
 
-    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
+    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     # default (ab initio) singlet phase is 0.0450\pi and default triplet phase is 0.7179\pi
     singlet_phase_distinguished = singlet_phases[0] if args.phase_step is None else default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
     triplet_phases_distinguished = triplet_phases if args.phase_step is None else np.array([( singlet_phase_distinguished + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase_distinguished + phase_difference ) % 1 != 0. ] ).round(decimals=4)
