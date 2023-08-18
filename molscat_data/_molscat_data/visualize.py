@@ -626,7 +626,7 @@ class ValuesVsModelParameters:
                 print(yy.shape)
                 print(f'{xx.shape=}')
                 yy_mask = np.isfinite(yy)
-                ax.plot(xx.transpose()[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                ax.plot(xx[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
