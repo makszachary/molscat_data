@@ -46,7 +46,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 # plots_dir_path = Path(__file__).parents[1] / 'plots'
 
 
-def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None)
+def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
