@@ -499,7 +499,7 @@ class ProbabilityVersusSpinOrbit:
         plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
         xx = np.logspace(-2, 0.5*np.log10(0.99/probability[nearest_idx]), 100)
-        print( so_parameter[nearest_idx], p0(probability[nearest_idx], pmf_array = pmf_array) )
+        # print( so_parameter[nearest_idx], p0(probability[nearest_idx], pmf_array = pmf_array) )
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         ax.scatter(so_parameter, probability, s = 6**2, color = 'k', marker = 'o', label = data_label)
