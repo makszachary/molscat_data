@@ -979,7 +979,7 @@ class SMatrixCollection:
         """
 
 
-        if distribution_array == None:
+        if distribution_array is None:
             distribution_array = np.fromiter( n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3), dtype = float )
 
         integrand = array_to_average * distribution_array
