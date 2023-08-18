@@ -967,22 +967,21 @@ class SMatrixCollection:
         return rate_coefficient_array
 
 
-    def thermalAverage(self, array_to_average: np.ndarray[Any, float], distribution_iterator: Iterable = None) -> np.ndarray[Any, float]:
+    def thermalAverage(self, array_to_average: np.ndarray[Any, float], distribution_array: np.ndarray[Any, float] = None) -> np.ndarray[Any, float]:
         """Thermally average an array of values.
 
         :param array_to_average: array of energy-depending values
           in the last axis.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
         :return: array of the thermally averaged values,
           with the last axis contracted with respect to array_to_average.
         """
 
 
-        if distribution_iterator == None:
-            distribution_iterator = n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3)
+        if distribution_array == None:
+            distribution_array = np.fromiter( n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3), dtype = float )
 
-        distribution_array = np.fromiter( distribution_iterator, dtype = float )
         integrand = array_to_average * distribution_array
         integral = scipy.integrate.simpson( integrand )
         norm = scipy.integrate.simpson( distribution_array )
@@ -992,13 +991,13 @@ class SMatrixCollection:
         return averaged_array
 
 
-    def getThermallyAveragedRate(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedRate(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_array: np.ndarray[Any, float] = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged rate coefficient for the given final
           and initial state as an array for the given parameter values.
 
         :param qn_out: quantum numbers for the final state.
         :param qn_in: quantum numbers for the initial state.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1014,17 +1013,17 @@ class SMatrixCollection:
         """       
 
         rate_array_to_average = self.getRateCoefficient(qn_out, qn_in, unit, **kwargs)
-        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_array)
         return averaged_rate_array
 
 
-    def getThermallyAveragedMomentumTransferRate(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedMomentumTransferRate(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_array: np.ndarray[Any, float] = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged momentum-transfer rate coefficient
           for the given final and initial state as an array
             for the given parameter values.
 
         :param qn_in: quantum numbers for the initial state.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1040,7 +1039,7 @@ class SMatrixCollection:
         """   
 
         rate_array_to_average = self.getMomentumTransferRateCoefficient(qn_in, unit, **kwargs)
-        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_array)
         return averaged_rate_array
 
 
@@ -1077,7 +1076,7 @@ class SMatrixCollection:
         return probability_array
 
 
-    def getThermallyAveragedProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_array: np.ndarray[Any, float] = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged probability of collision calculated
           as the ratio of the energy-dependent rate coefficient for the
             transition from the given initial to the final state, and
@@ -1087,7 +1086,7 @@ class SMatrixCollection:
         :param qn_in: quantum numbers for the initial state.
         :param qn_momentum_transfer: quantum numbers for the initial state
           for calculating the momentum-transfer rate coefficient.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1103,11 +1102,11 @@ class SMatrixCollection:
         """ 
 
         probability_array_to_average = self.getProbability(qn_out, qn_in, qn_momentum_transfer, **kwargs)
-        averaged_probability_array = self.thermalAverage(probability_array_to_average, distribution_iterator)
+        averaged_probability_array = self.thermalAverage(probability_array_to_average, distribution_array)
         return averaged_probability_array
 
 
-    def getProbabilityFromThermalAverages(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
+    def getProbabilityFromThermalAverages(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_array: np.ndarray[Any, float] = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the probability of collision calculated as the ratio of the
           thermally averaged rate coefficient for the transition from
             the given initial to the final state, and the momentum-transfer
@@ -1117,7 +1116,7 @@ class SMatrixCollection:
         :param qn_in: quantum numbers for the initial state.
         :param qn_momentum_transfer: quantum numbers for the initial state
           for calculating the momentum-transfer rate coefficient.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1132,7 +1131,7 @@ class SMatrixCollection:
             in the collection, if they weren't specified).
         """ 
 
-        averaged_rate_array = self.getThermallyAveragedRate(qn_out, qn_in, distribution_iterator, **kwargs)
+        averaged_rate_array = self.getThermallyAveragedRate(qn_out, qn_in, distribution_array, **kwargs)
         averaged_momentum_transfer_rate_array = self.getThermallyAveragedMomentumTransferRate(qn_momentum_transfer, **kwargs)
         probability_from_averages_array = averaged_rate_array / averaged_momentum_transfer_rate_array
         return probability_from_averages_array
