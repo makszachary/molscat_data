@@ -624,6 +624,7 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 print(yy.shape)
+                print(f'{xx.shape=}')
                 yy_mask = np.isfinite(yy)
                 ax.plot(xx.transpose()[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
