@@ -301,8 +301,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
         txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
         # so_scaling = txt_path.name
-        output_state_res_txt_path = txt_path.parent / 'probabilities' / ('out_state_res_' + txt_path.name + '_' + abbreviation + '.txt')
-        txt_path = txt_path.parent / 'probabilities' / (txt_path.name + '_' + abbreviation + '.txt')
+        output_state_res_txt_path = txt_path / 'probabilities' / f'out_state_res_{temperature:.2e}_{abbreviation}.txt'
+        txt_path = txt_path / 'probabilities' / f'{temperature:.2e}_{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
