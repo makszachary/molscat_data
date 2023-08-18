@@ -308,7 +308,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
-        print(f'{momentum_transfer_rate_array=}')
+        # print(f'{momentum_transfer_rate_array=}')
         print(f'{momentum_transfer_rate_array.shape=}')
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
