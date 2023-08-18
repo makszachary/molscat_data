@@ -629,7 +629,7 @@ class ValuesVsModelParameters:
                 print(f'{xx[tuple(map(slice, yy.shape))].shape=}')
                 print(f'{yy[yy_mask]=}')
                 print(f'{yy[yy_mask].shape=}')
-                ax.plot(xx[tuple(map(slice, yy.shape))], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
