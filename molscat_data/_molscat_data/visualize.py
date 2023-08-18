@@ -623,9 +623,9 @@ class ValuesVsModelParameters:
             chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
             
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
-                yy = yy.transpose()
+                # yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                ax.plot(xx[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                ax.plot(xx[yy_mask], yy[yy_mask].transpose(), color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
