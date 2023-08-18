@@ -324,8 +324,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
         print(list(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)))
         distribution_array = np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float)
-        average_rate_array = s_matrix_collection.thermalAverage(rate_array, distribution_array)
-        average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array, distribution_array)
+        average_rate_array = s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array)
+        average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array)
         probability_array = average_rate_array / average_momentum_transfer_array
         output_state_resolved_probability_array = probability_array.squeeze()
         probability_array = probability_array.sum(axis = (0, 1)).squeeze()
