@@ -288,7 +288,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
     F_out, F_in, S = 2, 2, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    # TEST:
+    ### TEST:
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, -F_out+3, 2), -S, np.arange(-F_in, -F_in+3, 2), S, indexing = 'ij')
     arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
 
@@ -309,7 +309,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
         # print(f'{momentum_transfer_rate_array=}')
-        print(f'{momentum_transfer_rate_array.shape=}')
+        # print(f'{momentum_transfer_rate_array.shape=}')
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
@@ -341,8 +341,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         print(effective_probability_array)
         print("------------------------------------------------------------------------")
         
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K. The momentum-transfer rate: {average_momentum_transfer_array[0]} cm**3/s.')
-        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K. The momentum-transfer rate: {average_momentum_transfer_array[0]} cm**3/s.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_array.reshape(output_state_resolved_probability_array.shape[0], -1), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K. The momentum-transfer rate: {average_momentum_transfer_array.flatten()[0]} cm**3/s.')
+        np.savetxt(txt_path, effective_probability_array, fmt = '%.10f', header = f'The effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Temperature: {temperature:.4e} K. The momentum-transfer rate: {average_momentum_transfer_array.flatten()[0]} cm**3/s.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -432,8 +432,8 @@ def main():
         arguments = tuple( (pickle_path, phase, 4, args.temperature) for pickle_path, phase in zip(pickle_paths, phases) )
         # print(arguments)
         # pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
-        # pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
-        [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
+        pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
+        # [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperature = args.temperature)

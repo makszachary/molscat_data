@@ -177,7 +177,7 @@ def k_L_E_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.n
         results = [ rate_fmfsms_vs_L(*arg) for arg in arguments ]
         rate_shape = results[0].shape
         rate = np.array(results).reshape((*arg_shapes[0], *rate_shape)).take(range(momentum_transfer_rate.shape[0]), axis = len(arg_shapes[0]) )
-        print(f'{rate.shape=}')
+        # print(f'{rate.shape=}')
         momentum_transfer_rate = np.full_like(rate, momentum_transfer_rate)
 
         return rate, momentum_transfer_rate
