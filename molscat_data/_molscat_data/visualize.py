@@ -611,14 +611,7 @@ class ValuesVsModelParameters:
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
-            print(f'{xx.shape=}')
-            print(f'{yy.shape=}')
-            print(f'{yy_mask=}')
-            print(f'{yy_mask.shape=}')
-            print(f'{xx[yy_mask].reshape(-1, xx.shape[1]).shape=}')
-            print(f'{yy[yy_mask].reshape(-1, xx.shape[1]).shape=}')
             ax.plot(xx[yy_mask].reshape(-1, xx.shape[1]), yy[yy_mask].reshape(-1, xx.shape[1]), color = theory_colors[i], linewidth = .1)
-            # print(f'{xx=}', yy.transpose())
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
@@ -631,12 +624,7 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                print(f'{xx[tuple(map(slice, yy.shape))]=}')
-                print(f'{xx[tuple(map(slice, yy.shape))].shape=}')
-                print(f'{yy[yy_mask]=}')
-                print(f'{yy[yy_mask].shape=}')
                 ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
-                # print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
         
