@@ -79,7 +79,8 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_st
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
 
-    xx = (np.meshgrid(singlet_phases, triplet_phases)[1]-np.meshgrid(singlet_phases, triplet_phases)[0]) % 1
+    # xx = (np.meshgrid(singlet_phases, triplet_phases)[1]-np.meshgrid(singlet_phases, triplet_phases)[0]) % 1
+    xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences)
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,0],], [arrays_cold_higher_distinguished[:,0], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,0], arrays_cold_higher[:,:,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
 
