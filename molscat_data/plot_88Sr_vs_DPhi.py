@@ -65,7 +65,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_st
         arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_hot_distinguished ] )
         arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
     
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'two_point_all_curves' / f'SE_peff_vs_DPhi.png'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
