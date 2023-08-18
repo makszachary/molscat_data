@@ -309,7 +309,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
 
         rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
         rate_array, momentum_transfer_rate_array = rate_array.squeeze(), momentum_transfer_rate_array.squeeze()
-        quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
+        quantum_numbers = [ np.full_like(rate_array.shape[:-2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[1].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_L_E_txt_path = k_L_E_txt_path.parent / f'k_L_E_{abbreviation}' / f'{txt_path.name}' / f'IN_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_{quantum_numbers[4][index]}_OUT_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}_{quantum_numbers[8][index]}.txt'
