@@ -56,7 +56,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_st
     array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
     arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
-    singlet_phases = np.full(len(phase_differences), (len(singlet_phases)), singlet_phases).transpose()
+    singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
     triplet_phases = singlet_phases+phase_differences
 
     if singlet_phase_distinguished is not None and triplet_phases_distinguished is not None:
