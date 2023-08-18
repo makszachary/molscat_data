@@ -622,7 +622,7 @@ class ValuesVsModelParameters:
             
             chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
-                yy = yy.transpose()
+                # yy = yy.transpose()
                 print(yy.shape)
                 print(f'{xx.shape=}')
                 yy_mask = np.isfinite(np.full_like(xx.transpose(),yy))
