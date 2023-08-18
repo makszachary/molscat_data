@@ -665,8 +665,8 @@ class ValuesVsModelParameters:
         ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
         ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
 
-        ax.set_xlabel(f'$\\Delta\\Phi$', fontsize = 36)
-        ax.set_ylabel(f'Effective probability $p_\\mathrm{{eff}}$', fontsize = 36)
+        ax.set_xlabel(f'Singlet-triplet phase difference', fontsize = 36)
+        ax.set_ylabel(f'Effective probability', fontsize = 36)
         ax_chisq.set_ylabel(f'$\\chi^2$', fontsize = 36, rotation = 0, labelpad = 20)
         
         
