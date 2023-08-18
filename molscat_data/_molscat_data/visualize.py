@@ -611,11 +611,13 @@ class ValuesVsModelParameters:
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
-            ax.plot(xx[yy_mask].reshape(-1, xx.shape[1]), yy[yy_mask].reshape(-1, xx.shape[1]), color = theory_colors[i], linewidth = .1)
+            ax.plot(xx[yy_mask].reshape(-1, xx.shape[1]), yy[yy_mask].reshape(-1, yy.shape[1]), color = theory_colors[i], linewidth = .1)
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
-        ax_chisq.plot(xx, chi_sq.transpose(), color = '0.7', linewidth = 0.1)
+        chi_sq = chi_sq.transpose()
+        chi_sq_mask = np.isfinite(chi_sq)
+        ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[1]), color = '0.7', linewidth = 0.1)
 
         if theory_distinguished is not None:
             
