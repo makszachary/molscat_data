@@ -50,7 +50,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_st
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
+    # singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
     phase_differences = np.arange(0, 1., phase_step).round(decimals=4)
     array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{singlet_phase+phase_difference:.4f}' / f'{so_scaling:.4f}_hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
     array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{singlet_phase+phase_difference:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
@@ -124,6 +124,7 @@ def main():
     # # so_scaling_values = (0.25,)
     
     
+
     plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_step= args.phase_step, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
 
 
