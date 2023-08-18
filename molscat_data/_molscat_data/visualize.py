@@ -625,9 +625,9 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                print(f'{np.full_like(yy, xx)=}')
-                print(f'{np.full_like(yy, xx).shape=}')
-                ax.plot(np.full_like(yy, xx), yy.transpose(), color = theory_distinguished_colors[i], linewidth = 4)
+                print(f'{xx[tuple(map(slice, yy.shape))]=}')
+                print(f'{xx[tuple(map(slice, yy.shape))].shape=}')
+                ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
             ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
