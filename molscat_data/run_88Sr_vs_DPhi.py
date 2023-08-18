@@ -23,6 +23,7 @@ from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
+from _molscat_data.thermal_averaging import n_root_iterator
 from _molscat_data.utils import probability, probability_not_parallel, k_L_E_not_parallel
 from _molscat_data.visualize import ValuesVsModelParameters
 from prepare_so_coupling import scale_so_and_write
@@ -262,7 +263,7 @@ def calculate_and_save_the_peff_not_parallel(pickle_path: Path | str, phases = N
         print(f"It took {duration:.2f} s.")
 
 
-def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4):
+def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4, temperature = 5e-4):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     fs = semiclassical_phase_function(singlet_scaling_path)
@@ -304,16 +305,22 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         txt_path = txt_path.parent / (txt_path.name + '_' + abbreviation + '.txt')
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
-        rate_array, momentum_rate_array = k_L_E_not_parallel(*arg)
+        rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
         quantum_numbers = [ np.full_like(arg[1], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[1].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_L_E_txt_path = k_L_E_txt_path.parent / f'k_L_E_{abbreviation}' / f'{txt_path.name}' / f'IN_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_{quantum_numbers[4][index]}_OUT_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}_{quantum_numbers[8][index]}.txt'
+            k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_L_E_txt_path, rate_array[index])
             k_m_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_m_L_E_txt_path = k_L_E_txt_path.parent / f'k_m_L_E_{abbreviation}' / f'{txt_path.name}' / f'IN_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_{quantum_numbers[4][index]}_OUT_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}_{quantum_numbers[8][index]}.txt'
-            np.savetxt(k_m_L_E_txt_path, momentum_rate_array[index])
+            k_m_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
+            np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate_array[index])
 
+        distribution_iterator = n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3)
+        average_rate_array = s_matrix_collection.thermalAverage(rate_array, distribution_iterator)
+        average_momentum_transfer_array = s_matrix_collection.thermalAverage(momentum_transfer_rate_array, distribution_iterator)
+        probability_array = average_rate_array / average_momentum_transfer_array
         output_state_resolved_probability_array = probability_array.squeeze()
         probability_array = probability_array.sum(axis = (0, 1)).squeeze()
         effective_probability_array = effective_probability(probability_array, pmf_array)
