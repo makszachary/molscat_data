@@ -621,10 +621,10 @@ class ValuesVsModelParameters:
         if theory_distinguished is not None:
             
             chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
-            yy_mask = np.isfinite(theory_distinguished)
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
-                # yy_mask = np.isfinite(yy)
+                print(yy.shape)
+                yy_mask = np.isfinite(yy)
                 ax.plot(xx[yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
                 
