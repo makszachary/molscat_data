@@ -628,7 +628,7 @@ class ValuesVsModelParameters:
                 yy_mask = np.isfinite(yy)
                 ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
 
-            chi_sq = chi_sq_distinguished.transpose()
+            chi_sq_distinguished = chi_sq_distinguished.transpose()
             chi_sq_distinguished_mask = np.isfinite(chi_sq_distinguished)
             ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))][chi_sq_distinguished_mask].reshape(-1, xx.shape[1]), chi_sq_distinguished[chi_sq_distinguished_mask].reshape(-1, chi_sq.shape[1]), 'k', linewidth = 4)
         
