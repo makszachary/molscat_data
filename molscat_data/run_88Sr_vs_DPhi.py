@@ -430,7 +430,7 @@ def main():
         print(arguments)
         # pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
         # pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
-        [calculate_and_save_k_L_E_and_peff_not_parallel(arg) for arg in arguments]
+        [calculate_and_save_k_L_E_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
