@@ -104,8 +104,8 @@ def main():
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     # molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
-    singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1.+args.phase_step, args.phase_step).round(decimals=4)
-    phase_differences = np.array([(default_triplet_phase_function(1.0)-default_singlet_phase_function(1.0)) % 1,]) if args.phase_step is None else np.arange(args.phase_step, 1.+args.phase_step, args.phase_step).round(decimals=4)
+    singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
+    phase_differences = np.array([(default_triplet_phase_function(1.0)-default_singlet_phase_function(1.0)) % 1,]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     so_scaling_values = (0.375,)
 
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
