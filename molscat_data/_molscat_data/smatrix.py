@@ -1024,7 +1024,7 @@ class SMatrixCollection:
         """
 
         param_indices = self.getParamIndicesAsArray(**kwargs)
-        rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficientVsL(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
+        rate_coefficient_array = np.array( [ self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficientVsL(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices ) ] ).reshape( *(len(index_tuple) for index_tuple in param_indices), -1  )
         return rate_coefficient_array
 
 
