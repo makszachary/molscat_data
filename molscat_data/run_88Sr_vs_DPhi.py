@@ -378,7 +378,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     experiment = np.array( [ exp_hot[0,0], exp_cold_higher[0,0] ] )
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
-    xx = np.full((2,10), (np.array(triplet_phases) - singlet_phase) % 1).transpose()
+    xx = np.full((2,triplet_phases.shape[0]), (np.array(triplet_phases) - singlet_phase) % 1).transpose()
     print(xx.shape)
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
