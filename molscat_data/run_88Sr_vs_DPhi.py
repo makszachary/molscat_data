@@ -380,7 +380,8 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
 
     xx = (np.array(triplet_phases) - singlet_phase) % 1
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
+    theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).squeeze().transpose()
+    print(theory_distinguished.shape)
     theory = theory_distinguished
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
