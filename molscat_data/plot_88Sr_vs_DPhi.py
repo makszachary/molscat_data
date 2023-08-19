@@ -46,25 +46,25 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 # plots_dir_path = Path(__file__).parents[1] / 'plots'
 
 
-def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, triplet_phases_distinguished: float = None):
+def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, triplet_phases_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK'):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
-    array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}_hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
-    array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
+    array_paths_hot = [ [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probability' / 'hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
+    array_paths_cold_higher = [  [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probability' / 'cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
     arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
     singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
     triplet_phases = singlet_phases+phase_differences
 
     if singlet_phase_distinguished is not None and triplet_phases_distinguished is not None:
-        array_paths_hot_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}_hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
-        array_paths_cold_higher_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
+        array_paths_hot_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probability' / 'hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
+        array_paths_cold_higher_distinguished = [arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probability' / 'cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
         arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_hot_distinguished ] )
         arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
     
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi.png'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'all_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -80,8 +80,9 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
 
     # xx = (np.meshgrid(singlet_phases, triplet_phases)[1]-np.meshgrid(singlet_phases, triplet_phases)[0]) % 1
     xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
-    theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,0],], [arrays_cold_higher_distinguished[:,0], ]] ), 0, -1)
-    theory = np.moveaxis(np.array( [ arrays_hot[:,:,0], arrays_cold_higher[:,:,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index,0],], [arrays_cold_higher_distinguished[:,T_index,0], ]] ), 0, -1)
+    theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], arrays_cold_higher[:,:,T_index,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
@@ -99,6 +100,8 @@ def main():
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -109,6 +112,13 @@ def main():
     triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     phase_differences = np.arange(0, 1.+args.phase_step, args.phase_step).round(decimals=4)
     so_scaling_values = (0.375,)
+
+    if args.temperatures is None:
+        temperatures = list(np.logspace(-3, -2, 10))
+        temperatures.append(5e-4)
+        temperatures = np.array(sorted(temperatures))
+    else:
+        temperatures = np.array(args.temperatures)
 
     # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     # default (ab initio) singlet phase is 0.0450\pi and default triplet phase is 0.7179\pi
@@ -128,7 +138,7 @@ def main():
     
     
 
-    plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished)
+    [plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished, temperatures = temperatures, plot_temperature = temperature) for temperature in temperatures]
 
 
 if __name__ == '__main__':

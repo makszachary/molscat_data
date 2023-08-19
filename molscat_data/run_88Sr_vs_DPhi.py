@@ -350,7 +350,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix(''))
+    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent)
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
@@ -365,7 +365,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ]).reshape(len(temperatures), -1)
     arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(temperatures), -1)
     # png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{nenergies}_E' / 'two_point_one_singlet' / f'SE_peff_vs_DPhi_{singlet_phase:.4f}.png'
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'two_point_one_singlet' / f'{singlet_phase:.4f}' / f'{so_scaling:.4f}' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}' / f'{so_scaling:.4f}' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -379,7 +379,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
     xx = (np.array(triplet_phases) - singlet_phase) % 1
-    T_index = np.nonzero(temperatures == plot_temperature)
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
     theory = theory_distinguished
 
