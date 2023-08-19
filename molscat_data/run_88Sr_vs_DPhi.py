@@ -354,18 +354,18 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
         return
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple, temperature, input_dir_name):
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     # array_paths_hot = ( arrays_dir_path / args.input_dir_name / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
     # array_paths_cold_higher = ( arrays_dir_path / args.input_dir_name / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
-    array_paths_hot = ( arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'hpf_{temperature:.2e}.txt' for triplet_phase in triplet_phases)
-    array_paths_cold_higher = ( arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'cold_higher_{temperature:.2e}.txt' for triplet_phase in triplet_phases)
-    arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ])
-    arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] )
+    array_paths_hot = ( arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'hpf.txt' for triplet_phase in triplet_phases)
+    array_paths_cold_higher = ( arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'cold_higher.txt' for triplet_phase in triplet_phases)
+    arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ]).reshape(len(temperatures), -1)
+    arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(temperatures), -1)
     # png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{nenergies}_E' / 'two_point_one_singlet' / f'SE_peff_vs_DPhi_{singlet_phase:.4f}.png'
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'two_point_one_singlet' / f'{singlet_phase:.4f}' / f'{so_scaling:.4f}' / f'SE_peff_vs_DPhi_{temperature:.2e}.png'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'two_point_one_singlet' / f'{singlet_phase:.4f}' / f'{so_scaling:.4f}' / f'SE_peff_vs_DPhi.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -379,7 +379,8 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
     xx = (np.array(triplet_phases) - singlet_phase) % 1
-    theory_distinguished = np.array( [ arrays_hot[:,0], arrays_cold_higher[:,0] ] ).transpose()
+    T_index = np.where(temperatures == plot_temperature)
+    theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
     theory = theory_distinguished
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
@@ -415,7 +416,7 @@ def main():
     so_scaling_values = (0.375,)
 
     if args.temperatures is None:
-        temperatures = list(np.logspace(-4, -2, 20))
+        temperatures = list(np.logspace(-3, -2, 20))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:
