@@ -331,14 +331,14 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         effective_probability_arrays = effective_probability(probability_arrays, pmf_array)
 
         print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperatures=} are:')
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
         print(output_state_resolved_probability_arrays, '\n')
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperatures} are:')
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
         print(probability_arrays, '\n')
 
-        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=}, {temperatures} are:')
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
 
@@ -379,7 +379,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
     xx = (np.array(triplet_phases) - singlet_phase) % 1
-    T_index = np.where(temperatures == plot_temperature)
+    T_index = np.nonzero(temperatures == plot_temperature)
     theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
     theory = theory_distinguished
 
