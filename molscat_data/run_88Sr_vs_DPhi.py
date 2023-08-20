@@ -351,7 +351,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
         print(f"It took {duration:.2f} s.")
 
     shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent)
-    [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
+    [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
 def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4):
