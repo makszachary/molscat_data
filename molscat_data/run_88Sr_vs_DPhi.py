@@ -384,6 +384,9 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     theory = theory_distinguished
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
+    ax.set_ylim(0,1)
+    ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
+    ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
 
@@ -452,6 +455,9 @@ def main():
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
+    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    shutil.make_archive(_images_path, 'zip' , _images_path)
+    shutil.rmtree(_images_path, ignore_errors=True)
 
 if __name__ == '__main__':
     main()
