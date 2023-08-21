@@ -174,7 +174,7 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. Spin-orbit and spin-spin terms are NOT included.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}')
             k_m_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
-            k_m_E_txt_path = k_m_E_txt_path / f'k_m_L_E' / f'hpf' / f'IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_m_E_txt_path = k_m_E_txt_path / f'k_m_L_E' / f'{abbreviation}' / f'IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_m_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. Spin-orbit and spin-spin terms are NOT included.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
@@ -285,7 +285,7 @@ def calculate_peff_not_parallel_from_arrays(pickle_path: Path | str, momentum_pi
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         k_L_E_array_paths = [ k_L_E_dir / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt' for index in np.ndindex(arg[2].shape)]
         # k_m_L_E_array_paths = [ k_m_L_E_dir / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt' for index in np.ndindex(arg[2].shape)]
-        k_m_L_E_array_paths = [ k_m_L_E_dir / f'{abbreviation}' / f'IN_4_4_1_1.txt' for index in np.ndindex(arg[2].shape)]
+        k_m_L_E_array_paths = [ k_m_L_E_dir / f'hpf' / f'IN_4_4_1_1.txt' for index in np.ndindex(arg[2].shape)]
 
         rate_array = np.array([ k_L_E_array := np.loadtxt(k_L_E_array_path) for k_L_E_array_path in k_L_E_array_paths]).reshape((*(arg[2].shape), *(k_L_E_array.shape)))
         momentum_transfer_rate_array = np.array([ k_m_L_E_array := np.loadtxt(k_m_L_E_array_path) for k_m_L_E_array_path in k_m_L_E_array_paths]).reshape((*(arg[2].shape), *(k_m_L_E_array.shape)))
