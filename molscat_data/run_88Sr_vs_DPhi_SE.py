@@ -337,7 +337,9 @@ def calculate_peff_not_parallel_from_arrays(pickle_path: Path | str, momentum_pi
 def unpack_and_calculate_peff_from_arrays_and_remove(archive_paths: tuple[Path | str, ...], *args):
     archive_paths = tuple( Path(archive_path) for archive_path in archive_paths)
     unpack_paths = tuple( archive_path.parent / 'temp' / archive_path.name.with_suffix('') for archive_path in archive_paths)
+    print('A')
     [ shutil.unpack_archive(archive_path, unpack_path, 'zip') for archive_path, unpack_path in zip(archive_paths, unpack_paths) ]
+    print('B')
     calculate_peff_not_parallel_from_arrays(*args)
     [ shutil.rmtree(unpack_path, ignore_errors=True) for unpack_path in unpack_paths ]
     
