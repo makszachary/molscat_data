@@ -421,7 +421,8 @@ def main():
         t0 = time.perf_counter()
         args = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
         # pool.starmap(calculate_peff_not_parallel_from_arrays, args)
-        pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, args)
+        # pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, args)
+        [unpack_and_calculate_peff_from_arrays_and_remove(arg) for arg in args]
         print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
 
