@@ -288,7 +288,7 @@ def calculate_peff_not_parallel_from_arrays(pickle_path: Path | str, momentum_pi
         k_m_L_E_array_paths = [ k_m_L_E_dir / f'hpf' / f'IN_4_4_1_1.txt' for index in np.ndindex(arg[2].shape)]
 
         rate_array = np.array([ k_L_E_array := np.loadtxt(k_L_E_array_path) for k_L_E_array_path in k_L_E_array_paths]).reshape((*(arg[2].shape), *(k_L_E_array.shape)))
-        momentum_transfer_rate_array = np.array([ k_m_L_E_array := np.loadtxt(k_m_L_E_array_path) for k_m_L_E_array_path in k_m_L_E_array_paths]).reshape((*(arg[2].shape), *(k_m_L_E_array.shape)))
+        momentum_transfer_rate_array = np.array([ np.loadtxt(k_m_L_E_array_path) for k_m_L_E_array_path in k_m_L_E_array_paths]).reshape((*(arg[2].shape), *( np.loadtxt(k_m_L_E_array_paths[0]).shape)))
 
         # output_state_res_txt_path = k_L_E_dir.parent / 'probabilities_hybrid' / f'out_state_res_{abbreviation}.txt'
         # txt_path = k_L_E_dir.parent / 'probabilities_hybrid' / f'{abbreviation}.txt'
