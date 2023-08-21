@@ -224,6 +224,6 @@ def k_L_E_SE_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | n
         return rate, momentum_transfer_rate
     
     rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
-    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(**args_momentum)
+    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, *(args_momentum.values())) )
 
     return rate, momentum_transfer_rate
