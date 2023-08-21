@@ -411,7 +411,7 @@ def main():
     ####
     so_input_dir_name = args.input_dir_name[:args.input_dir_name.rfind('SE')]
     ####
-    archive_paths = [ tuple(arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip' , arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
+    archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
     
     pickle_paths = tuple( pickles_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
     momentum_pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.pickle' for singlet_phase, triplet_phase in phases)
