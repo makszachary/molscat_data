@@ -411,7 +411,7 @@ def main():
 
     so_scaling = 0.375
     ####
-    so_input_dir_name = args.input_dir_name[:args.input_dir_name.rfind('SE')]
+    so_input_dir_name = args.input_dir_name[:args.input_dir_name.rfind('_SE')]
     ####
     archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
     
