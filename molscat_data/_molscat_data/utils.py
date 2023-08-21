@@ -215,7 +215,7 @@ def k_L_E_SE_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | n
         rate_shape = results[0].shape
         rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
 
-        arguments_momentum = tuple( (s_matrix_collection, *(args_momentum[name][index] for name in args_momentum), 'cm**3/s', param_indices) for index in np.ndindex(arg_shapes[0]))
+        arguments_momentum = tuple( (qn.LF1F2(None, None, *(args_momentum[name][index] for name in args_momentum)), 'cm**3/s', param_indices) for index in np.ndindex(arg_shapes[0]))
         momentum_transfer_results = [ s_matrix_collection.getMomentumTransferRateCoefficientVsL(*arg) for arg in arguments_momentum ]
         momentum_transfer_rate_shape = momentum_transfer_results[0].shape
         momentum_transfer_rate = np.array(momentum_transfer_results).reshape((*arg_shapes[0], *momentum_transfer_rate_shape))
