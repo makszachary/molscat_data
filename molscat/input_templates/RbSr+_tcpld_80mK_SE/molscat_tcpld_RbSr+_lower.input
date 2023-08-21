@@ -30,23 +30,23 @@
     LMIN   =  0,
     LMAX   =  79,
     LSTEP  =  1,
-    ISPSP  =  1,
+    ISPSP  =  -1,
     NEXTRA =  2,
  /
 
  &POTL
     RM     =   0.52917720859,
     EPSIL  =   219474.6313705,
-    MXLAM  =   3,
-    LAMBDA =   0, 1, 3,
-    NTERM  =   -1, -1, -1,
+    MXLAM  =   2,
+    LAMBDA =   0, 1,
+    NTERM  =   -1, -1,
  /
  
  &RKHS_CONTROL
-    FILENAMES = SINGLETPATH, TRIPLETPATH, SOPATH,
-    INUM      = 1, 2, 3,
+    FILENAMES = SINGLETPATH, TRIPLETPATH,
+    INUM      = 1, 2,
     LAMNUM    = "NUM",
-    NPOT      = 3,
+    NPOT      = 2,
     csn_print = .true.,
-    xscl      = SINGLETSCALING, TRIPLETSCALING, SOSCALING,
+    xscl      = SINGLETSCALING, TRIPLETSCALING,
  /
