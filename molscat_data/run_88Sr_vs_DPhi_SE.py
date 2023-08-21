@@ -378,7 +378,7 @@ def main():
     
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, phases, energy_tuple)
+    #output_dirs = create_and_run_parallel(molscat_input_templates, phases, energy_tuple)
 
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
