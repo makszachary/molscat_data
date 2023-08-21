@@ -115,7 +115,7 @@ def create_and_run_parallel(molscat_input_templates, phases, energy_tuple: tuple
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, *y, z, energy_tuple) for x, y, z in itertools.product( molscat_input_templates, phases ))
+       arguments = ( (x, *y, energy_tuple) for x, y in itertools.product( molscat_input_templates, phases ))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -416,7 +416,7 @@ def main():
     
     k_L_E_dirs = tuple( arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'k_L_E' for singlet_phase, triplet_phase in phases)
     k_m_L_E_dirs = tuple( arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'k_m_L_E' for singlet_phase, triplet_phase in phases)
-    
+
     with Pool() as pool:
         t0 = time.perf_counter()
         args = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
