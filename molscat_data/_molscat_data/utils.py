@@ -192,9 +192,9 @@ def k_L_E_SE_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | n
     args.pop('param_indices')
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
-    # t0=time.perf_counter()
-    # momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
-    # print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
+    t0=time.perf_counter()
+    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
+    print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
 
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
     array_like = False
@@ -215,15 +215,15 @@ def k_L_E_SE_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | n
         rate_shape = results[0].shape
         rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
 
-        momentum_quantum_numbers = tuple( qn.LF1F2(None, None, *(args_momentum[name][index] for name in args_momentum)) for index in np.ndindex(arg_shapes[0]))
-        momentum_transfer_results = [ s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn, unit = 'cm**3/s', param_indices = param_indices) for qn in momentum_quantum_numbers ]
-        momentum_transfer_rate_shape = momentum_transfer_results[0].shape
-        momentum_transfer_rate = np.array(momentum_transfer_results).reshape((*arg_shapes[0], *momentum_transfer_rate_shape))
-        # momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
+        # momentum_quantum_numbers = tuple( qn.LF1F2(None, None, *(args_momentum[name][index] for name in args_momentum)) for index in np.ndindex(arg_shapes[0]))
+        # momentum_transfer_results = [ s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn, unit = 'cm**3/s', param_indices = param_indices) for qn in momentum_quantum_numbers ]
+        # momentum_transfer_rate_shape = momentum_transfer_results[0].shape
+        # momentum_transfer_rate = np.array(momentum_transfer_results).reshape((*arg_shapes[0], *momentum_transfer_rate_shape))
+        momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
 
         return rate, momentum_transfer_rate
     
     rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
-    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, *(args_momentum.values())) )
+    # momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, *(args_momentum.values())) )
 
     return rate, momentum_transfer_rate
