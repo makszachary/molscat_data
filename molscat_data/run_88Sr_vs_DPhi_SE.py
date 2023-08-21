@@ -181,7 +181,7 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
-        average_momentum_transfer_arrays = average_momentum_transfer_arrays[( np.all(quantum_numbers[4:8] == np.array([4,4,1,1])) )]
+        average_momentum_transfer_arrays = average_momentum_transfer_arrays[( quantum_numbers[4] == 4 and quantum_numbers[5] == 4 and quantum_numbers[6] == 1 and quantum_numbers[7] == 1 )]
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
         output_state_resolved_probability_arrays = probability_arrays.squeeze()
         probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
