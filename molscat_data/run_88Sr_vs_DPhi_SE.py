@@ -230,7 +230,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temper
     arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(array_paths_cold_higher), len(temperatures), -1)
 
     interfix = '' if (SE_input_dir_name is None or SE_input_dir_name == input_dir_name) else 'hybrid_'
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}' / f'SE_peff_{interfix}vs_DPhi_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}' / f'SE_peff_{interfix}vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -439,7 +439,7 @@ def main():
         print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.SO_input_dir_name, plot_temperature=temperature, SE_input_dir_name= args.input_dir_name) for temperature in temperatures]
-    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.SO_input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
     shutil.make_archive(_images_path, 'zip' , _images_path)
     shutil.rmtree(_images_path, ignore_errors=True)
 
