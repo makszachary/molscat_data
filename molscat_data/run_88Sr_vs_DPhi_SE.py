@@ -255,6 +255,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temper
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
+    plt.close()
 
 def calculate_peff_not_parallel_from_arrays(pickle_path: Path | str, momentum_pickle_path: Path | str, k_L_E_dir: Path | str, k_m_L_E_dir: Path | str, phases = None, temperatures = (5e-4,)):
 
