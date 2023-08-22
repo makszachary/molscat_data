@@ -214,17 +214,23 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4):
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4, SE_input_dir_name = None):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
 
-    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'probabilities' / f'hpf.txt' for triplet_phase in triplet_phases]
-    array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'probabilities' / f'cold_higher.txt' for triplet_phase in triplet_phases]
+    if SE_input_dir_name is None or SE_input_dir_name == input_dir_name:
+        probability_dir_name = 'probabilities'
+    else:
+        probability_dir_name = 'probabilities_hybrid'
+        
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'hpf.txt' for triplet_phase in triplet_phases]
+    array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'cold_higher.txt' for triplet_phase in triplet_phases]
     arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ]).reshape(len(array_paths_hot), len(temperatures), -1)
     arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(array_paths_cold_higher), len(temperatures), -1)
 
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'  / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
+    interfix = '' if (SE_input_dir_name is None or SE_input_dir_name == input_dir_name) else 'hybrid_'
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}' / f'SE_peff_{interfix}vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -376,8 +382,8 @@ def main():
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
 
     if args.temperatures is None:
-        temperatures = list(np.logspace(-4, -2, 20))
-        # temperatures = list(np.logspace(-3, -2, 10))
+        # temperatures = list(np.logspace(-4, -2, 20))
+        temperatures = list(np.logspace(-3, -2, 10))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:
@@ -432,6 +438,10 @@ def main():
         pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, args)
         print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
+    [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.SO_input_dir_name, plot_temperature=temperature, SE_input_dir_name= args.input_dir_name) for temperature in temperatures]
+    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    shutil.make_archive(_images_path, 'zip' , _images_path)
+    shutil.rmtree(_images_path, ignore_errors=True)
 
 
 if __name__ == '__main__':
