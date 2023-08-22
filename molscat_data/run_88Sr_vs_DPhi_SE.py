@@ -416,34 +416,34 @@ def main():
         # [calculate_and_save_k_L_E_SE_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
-    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
-    shutil.make_archive(_images_path, 'zip' , _images_path)
-    shutil.rmtree(_images_path, ignore_errors=True)
+    # [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
+    # _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    # shutil.make_archive(_images_path, 'zip' , _images_path)
+    # shutil.rmtree(_images_path, ignore_errors=True)
 
-    so_scaling = 0.375
-    ####
-    so_input_dir_name = args.SO_input_dir_name if args.SO_input_dir_name is not None else  args.input_dir_name[:args.input_dir_name.rfind('_SE')]
-    ####
-    archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
+    # so_scaling = 0.375
+    # ####
+    # so_input_dir_name = args.SO_input_dir_name if args.SO_input_dir_name is not None else  args.input_dir_name[:args.input_dir_name.rfind('_SE')]
+    # ####
+    # archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
     
-    pickle_paths = tuple( pickles_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-    momentum_pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.pickle' for singlet_phase, triplet_phase in phases)
+    # pickle_paths = tuple( pickles_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
+    # momentum_pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.pickle' for singlet_phase, triplet_phase in phases)
     
-    k_L_E_dirs = tuple( arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'k_L_E' for singlet_phase, triplet_phase in phases)
-    k_m_L_E_dirs = tuple( arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'k_m_L_E' for singlet_phase, triplet_phase in phases)
+    # k_L_E_dirs = tuple( arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'k_L_E' for singlet_phase, triplet_phase in phases)
+    # k_m_L_E_dirs = tuple( arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'k_m_L_E' for singlet_phase, triplet_phase in phases)
 
-    with Pool() as pool:
-        t0 = time.perf_counter()
-        arguments = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
-        # pool.starmap(calculate_peff_not_parallel_from_arrays, arguments)
-        pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, arguments)
-        print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
+    # with Pool() as pool:
+    #     t0 = time.perf_counter()
+    #     arguments = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
+    #     # pool.starmap(calculate_peff_not_parallel_from_arrays, arguments)
+    #     pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, arguments)
+    #     print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.SO_input_dir_name, plot_temperature=temperature, SE_input_dir_name= args.input_dir_name) for temperature in temperatures]
-    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.SO_input_dir_name}_hybrid' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
-    shutil.make_archive(_images_path, 'zip' , _images_path)
-    shutil.rmtree(_images_path, ignore_errors=True)
+    # [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.SO_input_dir_name, plot_temperature=temperature, SE_input_dir_name= args.input_dir_name) for temperature in temperatures]
+    # _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.SO_input_dir_name}_hybrid' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    # shutil.make_archive(_images_path, 'zip' , _images_path)
+    # shutil.rmtree(_images_path, ignore_errors=True)
 
 
 if __name__ == '__main__':
