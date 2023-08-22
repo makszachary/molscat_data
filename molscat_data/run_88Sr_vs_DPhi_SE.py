@@ -20,6 +20,7 @@ from matplotlib import pyplot as plt
 import time
 
 from _molscat_data.smatrix import SMatrixCollection
+from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
@@ -180,7 +181,8 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
-        average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        correct_momentum_transfer_rate_array = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
+        average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(correct_momentum_transfer_rate_array.sum(axis=0), distribution_array) for distribution_array in distribution_arrays ] )
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
         output_state_resolved_probability_arrays = probability_arrays.squeeze()
         probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
