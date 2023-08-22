@@ -433,9 +433,9 @@ def main():
 
     with Pool() as pool:
         t0 = time.perf_counter()
-        args = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
-        # pool.starmap(calculate_peff_not_parallel_from_arrays, args)
-        pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, args)
+        arguments = [ (archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase, temperatures) for archive_path, pickle_path, momentum_pickle_path, k_L_E_dir, k_m_L_E_dir, phase in zip(archive_paths, pickle_paths, momentum_pickle_paths, k_L_E_dirs, k_m_L_E_dirs, phases)]
+        # pool.starmap(calculate_peff_not_parallel_from_arrays, arguments)
+        pool.starmap(unpack_and_calculate_peff_from_arrays_and_remove, arguments)
         print(f'The time of calculating all the probabilities from k_L_E (so+ss) and k_m_L_E (w/o so+ss) arrays for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
     [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.SO_input_dir_name, plot_temperature=temperature, SE_input_dir_name= args.input_dir_name) for temperature in temperatures]
