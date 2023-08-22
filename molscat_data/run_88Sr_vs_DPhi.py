@@ -388,6 +388,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
+    plt.close()
 
 
 def main():
