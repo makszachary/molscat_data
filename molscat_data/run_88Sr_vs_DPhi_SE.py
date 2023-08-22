@@ -214,7 +214,7 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4, SE_input_dir_name = None):
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4, SE_input_dir_name = None, so_scaling = 0.3750):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -222,7 +222,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temper
     if SE_input_dir_name is None or SE_input_dir_name == input_dir_name:
         probability_dir_name = 'probabilities'
     else:
-        probability_dir_name = 'probabilities_hybrid'
+        probability_dir_name = f'{so_scaling:.4f} / probabilities_hybrid'
         
     array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'hpf.txt' for triplet_phase in triplet_phases]
     array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'cold_higher.txt' for triplet_phase in triplet_phases]
