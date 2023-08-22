@@ -415,10 +415,10 @@ def main():
         # [calculate_and_save_k_L_E_SE_and_peff_not_parallel(*arg) for arg in arguments]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    # [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
-    # _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
-    # shutil.make_archive(_images_path, 'zip' , _images_path)
-    # shutil.rmtree(_images_path, ignore_errors=True)
+    [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
+    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    shutil.make_archive(_images_path, 'zip' , _images_path)
+    shutil.rmtree(_images_path, ignore_errors=True)
 
     so_scaling = 0.375
     ####
