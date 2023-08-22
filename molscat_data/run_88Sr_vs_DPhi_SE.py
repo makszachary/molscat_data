@@ -222,7 +222,7 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temper
     if SE_input_dir_name is None or SE_input_dir_name == input_dir_name:
         probability_dir = Path('probabilities')
     else:
-        probability_dir = Path(f'{so_scaling:.4f}' / 'probabilities_hybrid')
+        probability_dir = Path(f'{so_scaling:.4f}') / 'probabilities_hybrid'
         
     array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probability_dir / f'hpf.txt' for triplet_phase in triplet_phases]
     array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probability_dir / f'cold_higher.txt' for triplet_phase in triplet_phases]
