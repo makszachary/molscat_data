@@ -220,12 +220,12 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, energy_tuple, temper
     E_max = max(energy_tuple)
 
     if SE_input_dir_name is None or SE_input_dir_name == input_dir_name:
-        probability_dir_name = 'probabilities'
+        probability_dir = Path('probabilities')
     else:
-        probability_dir_name = f'{so_scaling:.4f} / probabilities_hybrid'
+        probability_dir = Path(f'{so_scaling:.4f}' / 'probabilities_hybrid')
         
-    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'hpf.txt' for triplet_phase in triplet_phases]
-    array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{probability_dir_name}' / f'cold_higher.txt' for triplet_phase in triplet_phases]
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probability_dir / f'hpf.txt' for triplet_phase in triplet_phases]
+    array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probability_dir / f'cold_higher.txt' for triplet_phase in triplet_phases]
     arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ]).reshape(len(array_paths_hot), len(temperatures), -1)
     arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(array_paths_cold_higher), len(temperatures), -1)
 
