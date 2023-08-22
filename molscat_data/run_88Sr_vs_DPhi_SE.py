@@ -359,7 +359,8 @@ def main():
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
-    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_SE', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--SO_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -375,8 +376,8 @@ def main():
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
 
     if args.temperatures is None:
-        # temperatures = list(np.logspace(-4, -2, 20))
-        temperatures = list(np.logspace(-3, -2, 10))
+        temperatures = list(np.logspace(-4, -2, 20))
+        # temperatures = list(np.logspace(-3, -2, 10))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:
@@ -414,7 +415,7 @@ def main():
 
     so_scaling = 0.375
     ####
-    so_input_dir_name = args.input_dir_name[:args.input_dir_name.rfind('_SE')]
+    so_input_dir_name = args.SO_input_dir_name if args.SO_input_dir_name is not None else  args.input_dir_name[:args.input_dir_name.rfind('_SE')]
     ####
     archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
     
