@@ -54,17 +54,21 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / 'hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
     array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / 'cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     # arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_hot ]).reshape(*(array_paths_hot.shape), len(temperatures), -1)
-    [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
-    arrays_hot = np.array([ np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]).reshape(*(array_paths_hot.shape), len(temperatures), -1)
-    arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] ).reshape(*(array_paths_cold_higher.shape), len(temperatures), -1)
+    # [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
+    arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_hot ])
+    arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
+    arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
+    arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
     singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
     triplet_phases = singlet_phases+phase_differences
 
     if singlet_phase_distinguished is not None and triplet_phases_distinguished is not None:
         array_paths_hot_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / 'hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
         array_paths_cold_higher_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / 'cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
-        arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_hot_distinguished ] ).reshape(*(array_paths_hot_distinguished.shape), len(temperatures), -1)
-        arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_cold_higher_distinguished ] ).reshape(*(array_paths_cold_higher_distinguished.shape), len(temperatures), -1)
+        arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_hot_distinguished ] )
+        arrays_hot_distinguished = arrays_hot_distinguished.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
+        arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
+        arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
     
     png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'all_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')

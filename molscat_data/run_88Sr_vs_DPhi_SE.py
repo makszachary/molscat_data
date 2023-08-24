@@ -428,13 +428,13 @@ def main():
     archive_paths = [ (arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip', arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.zip') for singlet_phase, triplet_phase in phases ]
     
     pickle_paths = tuple( pickles_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-    if args.input_dir_name is None:
+    if args.input_dir_name == 'None':
         momentum_pickle_paths = pickle_paths
     else:
         momentum_pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}.pickle' for singlet_phase, triplet_phase in phases)
     
     k_L_E_dirs = tuple( arrays_dir_path / so_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'k_L_E' for singlet_phase, triplet_phase in phases)
-    if args.input_dir_name is None:
+    if args.input_dir_name == 'None':
         k_m_L_E_dirs = k_L_E_dirs
     else:
         k_m_L_E_dirs = tuple( arrays_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'temp' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / 'k_m_L_E' for singlet_phase, triplet_phase in phases)
