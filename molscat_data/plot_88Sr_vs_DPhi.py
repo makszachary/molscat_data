@@ -56,8 +56,12 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     # arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full(5, np.nan) for array_path in sublist] for sublist in array_paths_hot ]).reshape(*(array_paths_hot.shape), len(temperatures), -1)
     # [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
     arrays_hot = np.array([ [np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_hot ])
+    ## proposition:
+    # arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_hot ])
     arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
     arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if array_path is not None else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
+    ## proposition:
+    # arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
     arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
     singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
     triplet_phases = singlet_phases+phase_differences
