@@ -96,6 +96,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
+    plt.close()
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
