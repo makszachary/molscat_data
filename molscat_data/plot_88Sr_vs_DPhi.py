@@ -124,7 +124,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
 
     minindex = np.nanargmin(chi_sq_distinguished)
     print(minindex)
-    print(xx[:,0][minindex])
+    print(xx[:,1][minindex])
     print(np.nanmin(chi_sq_distinguished))
 
 def main():
