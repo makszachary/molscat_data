@@ -171,6 +171,14 @@ def main():
 
     res = [[temperature, *plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid)] for temperature in temperatures]
     print(res)
+    res_chosen_temp = res[np.nonzero(temperatures == 5e-4)[0][0]]
+    suffix = '_hybrid' if args.hybrid else ''
+    with open(Path(__file__) / 'data_produced' / 'fitting_data' / 'peff_vs_DPhi' / f'args.input_dir_name{suffix}' / 'DPhi_fitting.dat', 'w') as f:
+        [f.write(x) for x in res]
+    
+    with open(Path(__file__) / 'data_produced' / 'fitting_data' / 'peff_vs_DPhi' / f'args.input_dir_name{suffix}' / f'DPhi_fitting_{5e-4:.2e}.dat', 'w') as f:
+        f.write(res_chosen_temp)
+
 
 
 
