@@ -99,18 +99,16 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index,0],], [arrays_cold_higher_distinguished[:,T_index,0], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], arrays_cold_higher[:,:,T_index,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
     
+    chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+    minindex_distinguished = np.nanargmin(chi_sq_distinguished)
+    xx_min_distinguished = xx[:,1][minindex_distinguished]
+    chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
-    # lines = ax_chisq.lines
-    # data = np.array([line.get_xydata() for line in lines])
-    # print(f'{minima.shape=}')
-    # print(minima[-1])
-    # print(f'{plot_temperature=}')
-    # try:
-    #     # print(np.nanargmin(data[:,:,1], axis=1))
-    #     print(np.nanmin(data[:,:,1], axis=1))
-    # except ValueError:
-    #     print("ValueError raised, passing.")
+    data = np.array([line.get_xydata() for line in ax_chisq.lines])
+    # minindices = np.nanargmin(data[:,:,1])
+    # xx_min = xx[minindices]
+    chi_sq_min = np.nanmin(data[:,:,1], axis=1)
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
@@ -118,14 +116,9 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     fig.savefig(svg_path)
     plt.close()
 
-    chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
-    print(f'{chi_sq_distinguished.shape=}')
-    print(f'{chi_sq_distinguished=}')
+    return chi_sq_min, chi_sq_min_distinguished, xx_min_distinguished
 
-    minindex = np.nanargmin(chi_sq_distinguished)
-    print(minindex)
-    print(xx[:,1][minindex])
-    print(np.nanmin(chi_sq_distinguished))
+
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
@@ -176,7 +169,10 @@ def main():
     
     
 
-    [plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    res = [[temperature, *plot_probability_vs_DPhi(singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, triplet_phases_distinguished = triplet_phases_distinguished, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid)] for temperature in temperatures]
+    print(res)
+
+
 
 
 if __name__ == '__main__':
