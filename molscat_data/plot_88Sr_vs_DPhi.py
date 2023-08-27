@@ -122,8 +122,10 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     print(f'{chi_sq_distinguished.shape=}')
     print(f'{chi_sq_distinguished=}')
 
-    print(np.nanargmin(chi_sq_distinguished[:,1], axis = 0))
-    print(np.nanmin(chi_sq_distinguished[:,1], axis = 0))
+    minindex = np.nanargmin(chi_sq_distinguished)
+    print(minindex)
+    print(xx[:,0][minindex])
+    print(np.nanmin(chi_sq_distinguished))
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
