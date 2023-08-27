@@ -621,7 +621,10 @@ class ValuesVsModelParameters:
 
         chi_sq = chi_sq.transpose()
         chi_sq_mask = np.isfinite(chi_sq)
-        ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = 0.1)
+        try:
+            ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = 0.1)
+        except ValueError:
+            ax_chisq.plot(xx, chi_sq, color = '0.7', linewidth = 0.1)
 
         if theory_distinguished is not None:
             
