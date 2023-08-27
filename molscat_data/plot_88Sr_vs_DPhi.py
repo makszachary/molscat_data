@@ -175,10 +175,10 @@ def main():
     write_path = plots_dir_path.parent / 'fitting_data' / 'peff_vs_DPhi' / f'args.input_dir_name{suffix}' / 'DPhi_fitting.dat'
     write_path.parent.mkdir(parents = True, exist_ok = True)
     with open(write_path, 'w') as f:
-        [f.write(x) for x in res]
+        [f.write(str(x)) for x in res]
     
     with open(write_path.with_name(f'DPhi_fitting_{5e-4:.2e}.dat'), 'w') as f:
-        f.write(res_chosen_temp)
+        f.write(str(res_chosen_temp))
 
 
 
