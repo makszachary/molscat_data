@@ -119,6 +119,9 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     plt.close()
 
     chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+    print(f'{chi_sq_distinguished.shape=}')
+    print(f'{chi_sq_distinguished=}')
+
     print(np.nanargmin(chi_sq_distinguished[:,1], axis = 0))
     print(np.nanmin(chi_sq_distinguished[:,1], axis = 0))
 
