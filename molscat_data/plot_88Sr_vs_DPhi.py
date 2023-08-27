@@ -25,6 +25,7 @@ from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
 from _molscat_data.visualize import ValuesVsModelParameters
+from _molscat_data.chi_squared import chi_squared
 from prepare_so_coupling import scale_so_and_write
 
 
@@ -100,22 +101,26 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
-    lines = ax_chisq.lines
-    data = np.array([line.get_xydata() for line in lines])
+    # lines = ax_chisq.lines
+    # data = np.array([line.get_xydata() for line in lines])
     # print(f'{minima.shape=}')
     # print(minima[-1])
-    print(f'{plot_temperature=}')
-    try:
-        # print(np.nanargmin(data[:,:,1], axis=1))
-        print(np.nanmin(data[:,:,1], axis=1))
-    except ValueError:
-        print("ValueError raised, passing.")
+    # print(f'{plot_temperature=}')
+    # try:
+    #     # print(np.nanargmin(data[:,:,1], axis=1))
+    #     print(np.nanmin(data[:,:,1], axis=1))
+    # except ValueError:
+    #     print("ValueError raised, passing.")
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
     plt.close()
+
+    chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+    print(np.nanargmin(chi_sq_distinguished[:,1], axis = 0))
+    print(np.nanmin(chi_sq_distinguished[:,1], axis = 0))
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
