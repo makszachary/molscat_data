@@ -101,7 +101,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
     lines = ax_chisq.lines
-    minima = np.array([line for line in lines])
+    minima = np.array([line.get_xydata() for line in lines])
     print(f'{minima.shape=}')
     print(minima.min(axis=1))
     ax.set_ylim(0,1)
