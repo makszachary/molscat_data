@@ -76,7 +76,9 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
         arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(5, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
         arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(arrays_cold_higher_distinguished.shape[0], len(temperatures), -1)
     
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'all_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
+    suffix = '_hybrid' if hybrid else ''
+
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'all_singlet' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
