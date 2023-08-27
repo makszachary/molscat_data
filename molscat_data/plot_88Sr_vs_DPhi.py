@@ -103,8 +103,8 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     lines = ax_chisq.lines
     minima = np.array([line.get_xydata() for line in lines])
     print(f'{minima.shape=}')
-    print(minima[-1])
-    # print(minima.min(axis=1))
+    # print(minima[-1])
+    print(minima[:,:,1].min(axis=1))
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
