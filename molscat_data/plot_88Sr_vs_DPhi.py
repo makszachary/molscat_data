@@ -105,8 +105,11 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     # print(f'{minima.shape=}')
     # print(minima[-1])
     print(f'{plot_temperature=}')
-    print(np.nanargmin(data[:,:,1], axis=1))
-    print(np.nanmin(data[:,:,1], axis=1))
+    try:
+        print(np.nanargmin(data[:,:,1], axis=1))
+        print(np.nanmin(data[:,:,1], axis=1))
+    except ValueError:
+        print("ValueError raised, passing.")
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
