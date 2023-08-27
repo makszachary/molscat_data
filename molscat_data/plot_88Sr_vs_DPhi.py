@@ -104,6 +104,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     minima = np.array([line.get_xydata() for line in lines])
     print(f'{minima.shape=}')
     # print(minima[-1])
+    print(f'{plot_temperature=}')
     print(minima[:,:,1].nanmin(axis=1))
     ax.set_ylim(0,1)
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
