@@ -71,10 +71,10 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     if singlet_phase_distinguished is not None and triplet_phases_distinguished is not None:
         array_paths_hot_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
         array_paths_cold_higher_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
-        print(f'{array_paths_cold_higher_distinguished=}')
+        # print(f'{array_paths_cold_higher_distinguished=}')
         arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_hot_distinguished ] )
         arrays_hot_distinguished = arrays_hot_distinguished.reshape(arrays_hot_distinguished.shape[0], len(temperatures), -1)
-        print(arrays_hot_distinguished)
+        # print(arrays_hot_distinguished)
         arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_cold_higher_distinguished ] )
         arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(arrays_cold_higher_distinguished.shape[0], len(temperatures), -1)
     
@@ -99,7 +99,7 @@ def plot_probability_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_di
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index,0],], [arrays_cold_higher_distinguished[:,T_index,0], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], arrays_cold_higher[:,:,T_index,0] ] ), 0, -1) if (singlet_phase_distinguished is not None and triplet_phases_distinguished is not None) else theory_distinguished
-    print(f'{xx.shape=}, {theory.shape=}')
+    # print(f'{xx.shape=}, {theory.shape=}')
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
     ax.set_ylim(0,1)
