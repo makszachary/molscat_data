@@ -547,7 +547,7 @@ class PartialRateVsEnergy:
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         for l in range(l_max+1):
-            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.colormaps['cividis'](l/30) )
+            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.colormaps['cividis'](l/(l_max+1)) )
         
         ax.set_xlim(np.min(energy), np.max(energy))
         ax.set_xscale('log')
@@ -685,3 +685,21 @@ class ValuesVsModelParameters:
         fig.tight_layout()
 
         return fig, ax, ax_chisq
+    
+
+class ContourMap:
+    """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
+
+    def _initiate_plot(figsize = (5.5, 4), dpi=300):
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax = fig.add_subplot(1,100,(1,80))
+        ax_bar = fig.add_subplot(1,100,(96,99))
+        return fig, ax, ax_bar
+    
+    @classmethod
+    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 4), dpi=300):
+        fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
+        im = ax.contourf(FXY, levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (min(X), max(X), min(Y), max(Y)), origin='lower')
+        con = ax.contour(im, linestyles = 'dotted', linewidths = 0.5, colors='k', extent = (min(X), max(X), min(Y), max(Y)), origin='lower')
+        fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+        return fig, ax, ax_bar
