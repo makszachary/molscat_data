@@ -64,7 +64,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory)
 
     bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
-    bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 4)
+    bar.ax.axhline(experiment, color = '1.0', linestyle = '--', linewidth = 1)
 
     fig.tight_layout()
     fig.savefig(png_path)
