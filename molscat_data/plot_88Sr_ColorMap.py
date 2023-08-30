@@ -54,7 +54,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     std = exp_cold_lower[1,0]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = arrays_cold_lower[:,:,T_index,0]
+    theory = arrays_cold_lower[:,:,T_index,0].transpose()
 
     suffix = '_hybrid' if hybrid else ''
     png_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
