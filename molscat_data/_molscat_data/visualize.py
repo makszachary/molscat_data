@@ -692,8 +692,8 @@ class ContourMap:
 
     def _initiate_plot(figsize = (5.5, 5), dpi=300):
         fig = plt.figure(figsize=figsize, dpi=dpi)
-        ax = fig.add_subplot(1,100,(1,90))
-        ax_bar = fig.add_subplot(1,100,(96,99))
+        ax = fig.add_subplot(1,110,(1,100))
+        ax_bar = fig.add_subplot(1,110,(100,110))
         return fig, ax, ax_bar
     
     @classmethod
@@ -705,6 +705,6 @@ class ContourMap:
         con = ax.contour(X, Y, FXY.transpose(), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
         ax.clabel(con, inline=True, fontsize=8)
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
-        bar = fig.colorbar(con, orientation = 'vertical', cax = ax_bar)
+        bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar, padding = 0)
         
         return fig, ax, ax_bar, bar
