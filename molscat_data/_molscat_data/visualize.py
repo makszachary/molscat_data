@@ -691,25 +691,20 @@ class ContourMap:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
 
     def _initiate_plot(figsize = (5.25, 5), dpi=300):
-        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
-        return fig, ax
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ax = fig.add_subplot(1,105,(1,100))
-        ax_bar = fig.add_subplot(1,105,(100,105))
+        ax_bar = fig.add_subplot(1,105,(101,103))
         return fig, ax, ax_bar
     
     @classmethod
     def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 4), dpi=300):
-        fig, ax = cls._initiate_plot(figsize, dpi)
-        con = ax.contour(FXY.transpose(), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
-        ax.clabel(con, inline=True, fontsize=8)
-        im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
-        bar = fig.colorbar(im, orientation = 'vertical', cax=ax, pad = 0.1)
-        return fig, ax, bar
-        
-        # fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
+        fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
         # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
-        # return fig, ax, ax_bar, bar
+        con = ax.contour(FXY.transpose(), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
+        ax.clabel(con, inline=True, fontsize=8)
+        im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
+        bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
         
+        return fig, ax, ax_bar, bar
