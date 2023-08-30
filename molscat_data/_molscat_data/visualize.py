@@ -699,12 +699,12 @@ class ContourMap:
     @classmethod
     def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 4), dpi=300):
         fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
-        # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
-        # con = ax.contour(im, linestyles = 'dotted', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
-        # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
-        con = ax.contour(X, Y, FXY.transpose(), n_levels, colors='black')
-        ax.clabel(con, inline=True, fontsize=8)
-        im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower', alpha=0.5)
+        im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
+        con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+        # con = ax.contour(X, Y, FXY.transpose(), n_levels, colors='black')
+        # ax.clabel(con, inline=True, fontsize=8)
+        # im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower', alpha=0.5)
+        # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
         
         return fig, ax, ax_bar, bar
