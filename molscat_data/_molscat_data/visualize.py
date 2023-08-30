@@ -704,7 +704,7 @@ class ContourMap:
         # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
         con = ax.contour(FXY.transpose(), 3, colors='black')
         ax.clabel(con, inline=True, fontsize=8)
-        im = ax.imshow(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
+        im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
         
         return fig, ax, ax_bar, bar
