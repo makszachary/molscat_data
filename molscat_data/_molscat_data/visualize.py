@@ -703,7 +703,7 @@ class ContourMap:
         # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
         con = ax.contour(FXY.transpose(), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
-        ax.clabel(con, inline=True, fontsize=8)
+        ax.clabel(con, inline=True, fontsize=10)
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
 
