@@ -697,7 +697,7 @@ class ContourMap:
         return fig, ax, ax_bar
     
     @classmethod
-    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 5), dpi=300):
+    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 5.5), dpi=300):
         fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
         # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
