@@ -706,5 +706,8 @@ class ContourMap:
         ax.clabel(con, inline=True, fontsize=8)
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='minor', length = 5)
         
         return fig, ax, ax_bar, bar
