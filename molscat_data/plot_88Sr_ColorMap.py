@@ -46,6 +46,13 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
     arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
 
+    # exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
+    # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
+    exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
+
+    experiment = exp_cold_lower[0,0]
+    std = exp_cold_lower[1,0]
+
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
 
@@ -54,7 +61,11 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    fig, ax, ax_bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory)
+    fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory)
+
+    bar.ax.plot([0, 1], experiment)
+    bar.ax.axhspan(experiment-std, experiment+std, color = '0.4', alpha=0.5)
+    bar.ax.axhline(experiment, color = 'k', linestyle = '-', linewidth = 4)
 
     fig.tight_layout()
     fig.savefig(png_path)
