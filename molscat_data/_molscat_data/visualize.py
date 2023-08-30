@@ -690,7 +690,7 @@ class ValuesVsModelParameters:
 class ContourMap:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
 
-    def _initiate_plot(figsize = (5.25, 5), dpi=300):
+    def _initiate_plot(figsize = (4, 5), dpi=300):
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ax = fig.add_subplot(1,105,(1,100))
         ax_bar = fig.add_subplot(1,105,(100,103))
