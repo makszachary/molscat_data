@@ -721,5 +721,7 @@ class ContourMap:
         ax.yaxis.set_minor_formatter('')
         ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
 
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 12, length = 8)
+        ax.tick_params(which='minor', length = 4)
         
         return fig, ax, ax_bar, bar
