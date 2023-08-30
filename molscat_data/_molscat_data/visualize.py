@@ -693,7 +693,7 @@ class ContourMap:
     def _initiate_plot(figsize = (5.25, 5), dpi=300):
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ax = fig.add_subplot(1,105,(1,100))
-        ax_bar = fig.add_subplot(1,100,(100,105))
+        ax_bar = fig.add_subplot(1,105,(100,105))
         return fig, ax, ax_bar
     
     @classmethod
