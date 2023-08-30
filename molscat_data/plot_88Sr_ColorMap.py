@@ -53,6 +53,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     experiment = exp_cold_lower[0,0]
     std = exp_cold_lower[1,0]
 
+    singlet_phases, triplet_phases = np.meshgrid(singlet_phases, triplet_phases, indexing = 'ij')
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
 
