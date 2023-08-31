@@ -92,7 +92,8 @@ def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The singlet phase step multiples of pi.")
-    parser.add_argument("--phase_difference_step", type = float, default = None, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+    parser.add_argument("--phase_differences", nargs='*', type = float, default = None, help = "The values of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+    # parser.add_argument("--phase_difference_step", type = float, default = None, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--phase_difference", type = float, default = 0.19, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
@@ -109,7 +110,8 @@ def main():
     # args.phase_difference_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
 
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
-    phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 0.7, args.phase_difference_step).round(decimals=4)
+    # phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 0.7, args.phase_difference_step).round(decimals=4)
+    phase_differences = np.array(args.phase_differences) if args.phase_differences is not None else np.arange(0., 0.51, 0.1).round(decimals=4)
     so_scaling_values = (0.375,)
 
     if args.temperatures is None:
