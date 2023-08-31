@@ -30,7 +30,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
+    singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
     probabilities_dir_name = 'probabilities_hybrid' if hybrid else 'probabilities'
 
     # array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
