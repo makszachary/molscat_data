@@ -72,8 +72,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3)
     color_map = matplotlib.colormaps['twilight']
-    theory_colors = [color_map(triplet_phase) for triplet_phase in triplet_phases]
-    theory_distinguished_colors = [color_map(triplet_phase_distinguished),]
+    theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
+    # theory_distinguished_colors = [color_map(phase_difference_distinguished),]
     # theory_colors = ['k' for x in triplet_phases]
     theory_distinguished_colors = ['k', ]
 
@@ -119,7 +119,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotPeffVsPhis(singlet_phases = singlet_phases, phase_differences = phase_differences, triplet_phase_distinguished = args.triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plotPeffVsPhis(singlet_phases = singlet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
