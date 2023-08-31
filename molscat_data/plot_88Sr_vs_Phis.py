@@ -87,7 +87,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # label the curves with the values of the phase difference near the maxima
     for i, (phase_difference, singlet_phase, peff) in enumerate(coords_vs_phase_difference):
-        ax0.text(singlet_phase, peff + (ax0.get_ylim()[1]-ax0.get_ylim()[0])*0.02, f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = color_map[i], fontweight = 'bold', va = 'center', ha = 'center')
+        ax0.text(singlet_phase, peff + (ax0.get_ylim()[1]-ax0.get_ylim()[0])*0.02, f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'center')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
