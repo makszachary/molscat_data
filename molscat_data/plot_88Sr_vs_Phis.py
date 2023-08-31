@@ -68,7 +68,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    color_map = matplotlib.colormaps['twilight']
+    color_map = matplotlib.colormaps['devon'] # or 'twilight'
     theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
     theory_distinguished_colors = ['k', ]
 
@@ -76,7 +76,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
-    color_map = matplotlib.colormaps['plasma'] # or 'inferno'
+    color_map = matplotlib.colormaps['thermal'] # or 'plasma' or 'inferno'
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
     theory_distinguished_colors = ['k', ]
