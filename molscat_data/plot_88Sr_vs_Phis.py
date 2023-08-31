@@ -9,6 +9,7 @@ from sigfig import round
 
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib
 # import palettable
 import cmcrameri
@@ -118,6 +119,16 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
     ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+
+    # create an axes on the right side of ax. The width of cax will be 5%
+    # of ax and the padding between cax and ax will be fixed at 0.1 inch.
+    divider = make_axes_locatable(ax1)
+    ax_bar = divider.append_axes("right", size="3%", pad=0.1)
+    bar = matplotlib.colorbar.ColorbarBase(ax_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2])
+    ax_bar.tick_params(axis = 'both', labelsize = 'x-large')
+    ax_bar.get_yaxis().labelpad = 4
+    ax_bar.set_ylabel('T', rotation = 0, fontsize = 'xx-large')
+
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.98, bottom = 0.15, hspace = .0)
     fig.savefig(png_path)

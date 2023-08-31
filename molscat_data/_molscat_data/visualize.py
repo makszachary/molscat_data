@@ -587,6 +587,7 @@ class RateVsMagneticField:
 
         return fig, ax
 
+
 class PhaseTicks:
     @staticmethod
     def setInMultiplesOfPhi(axis):
@@ -598,6 +599,7 @@ class PhaseTicks:
         axis.set_major_locator(ticker.MultipleLocator(base=1/4))
         axis.set_minor_formatter('')
         axis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+
 
 class ValuesVsModelParameters:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
