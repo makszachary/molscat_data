@@ -74,7 +74,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     color_map = matplotlib.colormaps['twilight']
     theory_colors = [color_map(triplet_phase) for triplet_phase in triplet_phases]
     theory_distinguished_colors = [color_map(triplet_phase_distinguished),]
-    theory_colors = ['k' for x in triplet_phases]
+    # theory_colors = ['k' for x in triplet_phases]
     theory_distinguished_colors = ['k', ]
 
 
