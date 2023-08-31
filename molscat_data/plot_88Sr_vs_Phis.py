@@ -26,7 +26,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], triplet_phase_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False):
+def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], triplet_phase_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -41,7 +41,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     # arrays_cold_higher = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ])
     # arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
 
-    array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
+    array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     [ [print(array_path) for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
     arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
     arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
@@ -91,9 +91,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
-    parser.add_argument("--triplet_phase_step", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-t", "--triplet_phase", type = float, default = 0.19, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The singlet phase step multiples of pi.")
+    parser.add_argument("--phase_difference_step", type = float, default = None, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+    parser.add_argument("--phase_difference", type = float, default = 0.19, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
@@ -109,7 +109,7 @@ def main():
     args.triplet_phase_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
 
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
-    triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.triplet_phase_step is None else np.arange(args.triplet_phase_step, 1., args.triplet_phase_step).round(decimals=4)
+    phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 1., args.phase_difference_step).round(decimals=4)
     so_scaling_values = (0.375,)
 
     if args.temperatures is None:
@@ -119,7 +119,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotPeffVsPhis(singlet_phases = singlet_phases, triplet_phases = triplet_phases, triplet_phase_distinguished = args.triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plotPeffVsPhis(singlet_phases = singlet_phases, phase_differences = phase_differences, triplet_phase_distinguished = args.triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
