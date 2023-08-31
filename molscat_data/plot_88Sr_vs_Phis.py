@@ -44,7 +44,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
     [ [print(array_path) for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
     arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
-    arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
+    arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
 
     if triplet_phase_distinguished is not None:
         array_paths_cold_lower_distinguished = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase_distinguished:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' for singlet_phase in singlet_phases]
@@ -59,7 +59,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     std = [exp_cold_lower[1,0],]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = arrays_cold_lower[:,:,T_index,0]
+    theory = np.moveaxis(arrays_cold_lower[:,:,T_index,0], 0, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
     # print(triplet_phase_distinguished_index)
