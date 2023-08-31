@@ -130,7 +130,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1_bar.set_ylabel('T', rotation = 0, fontsize = 'xx-large')
 
     # fig.tight_layout()
-    fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.98, bottom = 0.15, hspace = .0)
+    fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.8, bottom = 0.15, hspace = .0)
     fig.savefig(png_path)
     fig.savefig(svg_path)
     plt.close()
