@@ -82,7 +82,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
-    color_map = matplotlib.colormaps['inferno'] # or 'plasma'
+    # color_map = matplotlib.colormaps['inferno'] # or 'plasma'
+    color_map = matplotlib.colormaps['plasma'] # or 'plasma'
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
     theory_distinguished_colors = ['k', ]
