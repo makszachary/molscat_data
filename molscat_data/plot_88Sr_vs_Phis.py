@@ -67,7 +67,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     # theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
 
     suffix = '_hybrid' if hybrid else ''
-    png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vsPhis_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
