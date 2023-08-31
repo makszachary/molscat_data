@@ -82,6 +82,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
 
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
+    ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
     for i, phase_difference in enumerate(phase_differences):

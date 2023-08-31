@@ -704,7 +704,7 @@ class ValuesVsModelParameters:
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, labelsize = 16, length = 10)
+        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 16, length = 10)
         ax.tick_params(which='minor', length = 5)
 
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
