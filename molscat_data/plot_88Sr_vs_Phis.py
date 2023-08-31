@@ -69,7 +69,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     theory_distinguished_colors = [color_map(triplet_phase_distinguished),]
 
 
-    fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
+    fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory.transpose(), experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
     PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
     print(singlet_phases)
     print(theory)
