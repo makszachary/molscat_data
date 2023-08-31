@@ -99,10 +99,11 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1 = fig.add_subplot(gs[1], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
+    ax1.set_ylim(ax0.get_ylim())
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
-
+    
     # ax.plot(singlet_phases, np.sin(singlet_phases)**2, 'k')
     ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
