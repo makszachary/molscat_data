@@ -70,7 +70,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
 
     fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
-    PhaseTicks.setInMultiplesOfPhi(ax)
+    PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
     print(singlet_phases)
     print(theory)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
