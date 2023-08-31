@@ -108,8 +108,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:95])
     
     ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,95:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,95:])
+    ax1_bar.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:])
 
     # ax0.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
     # ax1.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
