@@ -69,13 +69,9 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
     bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
-    locs = list(bar.get_ticks())
-    locs.append(experiment)
-    labels = list(bar.ax.get_yticklabels())
-    labels.append(f'p_\\mathrm{{eff}}^{{exp}}')
-    bar.set_ticks(locs)
-    bar.set_ticklabels(labels)
-    # bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
+    for tick, ticklabel in zip(bar.ax.get_yticks(), bar.ax.get_yticklabels()):
+        if np.abs(tick - experiment) < 0.05:
+            plt.setp(ticklabel, visible=False)
 
 
 
