@@ -71,16 +71,11 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
     locs = [ x for x in np.arange(0., 1.01, 0.1) if x < np.amax(theory)]
     locs.append(experiment)
-    labels = [f'{x:.1f}' if np.abs(x-experiment) > 0.08 else '' for x in locs ]
+    labels = [f'{x:.1f}' if np.abs(x-experiment) > 0.05 else '' for x in locs ]
     labels[-1] = f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'
-    # print(labels, locs)
-    # labels.append(f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')
-    # locs.append(experiment)
-    # print(labels, locs)
     bar.set_ticks(locs)
     bar.set_ticklabels(labels)
-    bar.ax.get_yticklabels
-    bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
+    ax_bar.tick_params(axis = 'both', labelsize = 14)
 
 
     fig.subplots_adjust(bottom=0.17)
