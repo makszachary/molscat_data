@@ -56,6 +56,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
     triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
+    print(triplet_phase_distinguished_index)
     theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
 
     suffix = '_hybrid' if hybrid else ''
