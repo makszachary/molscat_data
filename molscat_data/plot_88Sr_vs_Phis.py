@@ -99,7 +99,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1 = fig.add_subplot(gs[1], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
-    ax1.set_ylim(ax0.get_ylim())
+    lim0 = ax0.get_ylim()
+    lim1 = ax1.get_ylim()
+    ax0.set_ylim(min[*lim0, *lim1], max[*lim0, *lim1])
+    ax1.set_ylim(min[*lim0, *lim1], max[*lim0, *lim1])
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
