@@ -678,6 +678,8 @@ class ValuesVsModelParameters:
 
     @classmethod
     def plotValuestoAxis(cls, ax, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
+        # labels = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
+        # label_distinguished = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
