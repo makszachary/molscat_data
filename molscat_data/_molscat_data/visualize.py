@@ -687,13 +687,13 @@ class ValuesVsModelParameters:
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
             try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).flatten().squeeze(), color = theory_colors[i], linewidth = 2)
                 print(f'{xx[yy_mask].reshape(-1, xx.shape[-1])=}')
                 print(f'{yy[yy_mask].reshape(-1, yy.shape[-1])=}')
                 print(f'{theory_colors[i]=}')
-                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).flatten().squeeze(), color = theory_colors[i], linewidth = 4)
             except ValueError:
                 print(f'{xx=}, {yy=}')
-                ax.plot(xx, yy, color = theory_colors[i], linewidth = 4)
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = 2)
 
         if theory_distinguished is not None:           
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
