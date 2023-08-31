@@ -84,21 +84,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
-    # get the positions of the maxima
-    # filter_max_arr = np.equal(np.full_like(theory, np.amax(theory, axis = 0)), theory)
-    # max_indices = np.nanargmax(theory, axis = 0)
-    # coords_vs_phase_difference = tuple( (phase_difference, singlet_phases[max_indices[i]], theory[:,i][max_indices[i]]) for i, phase_difference in enumerate(phase_differences) )
-    # print(coords_vs_phase_difference)
-
-    # label the curves with the values of the phase difference near the maxima
-    # for i, (phase_difference, singlet_phase, peff) in enumerate(coords_vs_phase_difference):
-    #     ax0.text(singlet_phase, peff + (ax0.get_ylim()[1]-ax0.get_ylim()[0])*0.02, f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'center')
-
-    # for i, phase_difference in enumerate(phase_differences):
-    #     ax0.text(1.02, theory[-1, i], f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'left')
     for i, phase_difference in enumerate(phase_differences):
-        labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 4, fontsize = 12, backgroundcolor = "none")
-    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 12, backgroundcolor = "none")
+        labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 14)
+    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 14)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
