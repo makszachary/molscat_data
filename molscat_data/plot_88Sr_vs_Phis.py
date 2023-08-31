@@ -132,8 +132,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
 
     # create the temperature bar
-    bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2], )
-    bar.set_ticklabels(['$0.1$', '$1$', '$10$'])
+    bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
+    bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
     bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
     ax1_bar.tick_params(axis = 'both', labelsize = 14)
     ax1_bar.get_yaxis().labelpad = 4
