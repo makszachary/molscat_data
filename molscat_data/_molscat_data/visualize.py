@@ -7,6 +7,7 @@ mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
 from matplotlib import lines
 from matplotlib import ticker
+from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from .effective_probability import effective_probability, p0
