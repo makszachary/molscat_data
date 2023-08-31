@@ -132,7 +132,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1_bar.tick_params(axis = 'both', labelsize = 16)
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('T', rotation = 0, fontsize = 16)
-    ax1_bar.yaxis.set_label_coords(0.,1.02)
+    ax1_bar.yaxis.set_label_coords(0.5,1.15)
 
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.8, bottom = 0.15, hspace = .0)
