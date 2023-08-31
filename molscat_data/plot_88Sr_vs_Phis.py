@@ -26,7 +26,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False):
+def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], triplet_phase_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -55,12 +55,11 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
-    triplet_phase_distinguished = 0.19
     triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
     theory_distinguished = theory[:,triplet_phase_distinguished_index]
 
     suffix = '_hybrid' if hybrid else ''
-    png_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -108,7 +107,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotPeffVsPhis(singlet_phases = singlet_phases, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plotPeffVsPhis(singlet_phases = singlet_phases, triplet_phases = triplet_phases, triplet_phase_distinguished = 0.19, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
