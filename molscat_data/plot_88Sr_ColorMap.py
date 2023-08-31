@@ -71,7 +71,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
     locs = list(bar.get_ticks())
     locs.append(experiment)
-    labels = list(bar.get_ticklabels())
+    labels = list(bar.ax.get_yticklabels())
     labels.append(f'p_\\mathrm{{eff}}^{{exp}}')
     bar.set_ticks(locs)
     bar.set_ticklabels(labels)
