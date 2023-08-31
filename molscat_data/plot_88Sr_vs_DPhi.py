@@ -14,6 +14,8 @@ import itertools
 import numpy as np
 from sigfig import round
 
+import matplotlib as mpl
+mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
 
 import time
