@@ -83,7 +83,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # get the positions of the maxima
     # filter_max_arr = np.equal(np.full_like(theory, np.amax(theory, axis = 0)), theory)
-    max_indices = np.argmax(theory, axis = 0)
+    max_indices = np.nanargmax(theory, axis = 0)
     coords_vs_phase_difference = tuple( (phase_difference, singlet_phases[max_indices[i]], theory[:,i][max_indices[i]]) for i, phase_difference in enumerate(phase_differences) )
     print(coords_vs_phase_difference)
 
