@@ -586,7 +586,18 @@ class RateVsMagneticField:
         ax.grid(color = 'gray')
 
         return fig, ax
-    
+
+class PhaseTicks:
+    @staticmethod
+    def setInMultiplesOfPhi(axis):
+        """Setting ticks in terms of the multiples of pi/4 (x = 1 -> xtick = pi)"""
+
+        axis.set_major_formatter(ticker.FuncFormatter(
+        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        ))
+        axis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        axis.set_minor_formatter('')
+        axis.set_minor_locator(ticker.MultipleLocator(base=0.05))
 
 class ValuesVsModelParameters:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
@@ -658,19 +669,50 @@ class ValuesVsModelParameters:
         ax_chisq.tick_params(which='minor', length = 5)
         
         return fig, ax, ax_chisq
-    
+
+    @classmethod
+    def plotValues(cls, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (5.5, 1.5), dpi = 300):
+        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
+        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
+
+        fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
+
+        for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = .4)
+            except ValueError:
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = .4)
+            ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
+            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+
+        if theory_distinguished is not None:           
+            for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                try:
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                except ValueError:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+        
+        ax.set_xlim(np.min(xx), np.max(xx))
+
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='minor', length = 5)
+
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
+        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
+        
+        return fig, ax
+
     @classmethod
     def plotPeffAndChiSquaredVsDPhi(cls, xx, theory, experiment, std, theory_distinguished = None, figsize = (9.5, 7.2), dpi = 300):
         fig, ax, ax_chisq = cls.plotValuesAndChiSquared(xx, theory, experiment, std, theory_distinguished, figsize, dpi)
-        
         ax.set_xlim(0,1)
-        
-        ax.xaxis.set_major_formatter(ticker.FuncFormatter(
-        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        ))
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        ax.xaxis.set_minor_formatter('')
-        ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+        PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
@@ -707,19 +749,20 @@ class ContourMap:
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
 
-        ax.xaxis.set_major_formatter(ticker.FuncFormatter(
-        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        ))
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        ax.xaxis.set_minor_formatter('')
-        ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
-
-        ax.yaxis.set_major_formatter(ticker.FuncFormatter(
-        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        ))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        ax.yaxis.set_minor_formatter('')
-        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+        # ax.xaxis.set_major_formatter(ticker.FuncFormatter(
+        # lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        # ))
+        # ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        # ax.xaxis.set_minor_formatter('')
+        # ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+        PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
+        PhaseTicks.setInMultiplesOfPhi(ax.yaxis)
+        # ax.yaxis.set_major_formatter(ticker.FuncFormatter(
+        # lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        # ))
+        # ax.yaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        # ax.yaxis.set_minor_formatter('')
+        # ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
 
         ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 16, length = 10)
         ax.tick_params(which='minor', length = 5)
