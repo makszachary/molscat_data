@@ -86,7 +86,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     for i, phase_difference in enumerate(phase_differences):
         labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 14)
-    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi_\\mathrm{{exp}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 14)
+    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 14)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
