@@ -50,8 +50,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
     exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
 
-    experiment = exp_cold_lower[0,0]
-    std = exp_cold_lower[1,0]
+    experiment = [exp_cold_lower[0,0],]
+    std = [exp_cold_lower[1,0],]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]

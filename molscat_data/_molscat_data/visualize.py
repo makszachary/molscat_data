@@ -675,6 +675,8 @@ class ValuesVsModelParameters:
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
 
+        experiment, std = np.array(experiment), np.array(std)
+
         fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
 
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
@@ -684,8 +686,6 @@ class ValuesVsModelParameters:
                 ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = .4)
             except ValueError:
                 ax.plot(xx, yy, color = theory_colors[i], linewidth = .4)
-            ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
-            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
         if theory_distinguished is not None:           
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
@@ -695,7 +695,10 @@ class ValuesVsModelParameters:
                     ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 except ValueError:
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
-        
+            
+                ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
+                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+
         ax.set_xlim(np.min(xx), np.max(xx))
 
         ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
