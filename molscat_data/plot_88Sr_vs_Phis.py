@@ -106,7 +106,7 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
-    args.triplet_phase_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
+    # args.phase_difference_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
 
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 1., args.phase_difference_step).round(decimals=4)
