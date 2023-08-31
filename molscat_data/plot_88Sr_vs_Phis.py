@@ -124,7 +124,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     # of ax and the padding between cax and ax will be fixed at 0.1 inch.
     divider = make_axes_locatable(ax1)
     ax1_bar = divider.append_axes("right", size="3%", pad=0.1)
-    bar = matplotlib.colorbar.ColorbarBase(ax_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2])
+    bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2])
     ax1_bar.tick_params(axis = 'both', labelsize = 'x-large')
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('T', rotation = 0, fontsize = 'xx-large')
