@@ -71,7 +71,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
 
     fig.subplots_adjust(bottom=0.15)
-    fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.17, hspace = .0)
+    # fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.17, hspace = .0)
     fig.savefig(png_path)
     fig.savefig(svg_path)
     plt.close()
