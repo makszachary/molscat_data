@@ -72,7 +72,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     for tick, ticklabel in zip(bar.ax.get_yticks(), bar.ax.get_yticklabels()):
         if np.abs(tick - experiment) < 0.05:
             plt.setp(ticklabel, visible=False)
-
+    bar.ax.text(1.1, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')
 
 
     fig.subplots_adjust(bottom=0.17)
