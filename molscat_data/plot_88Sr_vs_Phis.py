@@ -83,7 +83,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # get the positions of the maxima
     filter_max_arr = np.equal(np.full_like(theory, np.amax(theory, axis = 0)), theory)  
-    coords_vs_phase_difference = tuple( (phase_difference, singlet_phases[filter_max_arr[i]], theory[i][filter_max_arr[i]]) for i, phase_difference in enumerate(phase_differences) )
+    coords_vs_phase_difference = tuple( (phase_difference, singlet_phases[filter_max_arr[i]], theory[:,i][filter_max_arr[i]]) for i, phase_difference in enumerate(phase_differences) )
 
     # label the curves with the values of the phase difference near the maxima
     for i, (phase_difference, singlet_phase, peff) in enumerate(coords_vs_phase_difference):
