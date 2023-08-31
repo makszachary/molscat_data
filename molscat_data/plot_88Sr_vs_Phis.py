@@ -81,7 +81,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
-    color_map = cmocean.thermal
+    color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
     theory_distinguished_colors = ['k', ]
