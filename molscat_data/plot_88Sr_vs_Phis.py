@@ -7,10 +7,12 @@ from multiprocessing import Pool
 import numpy as np
 from sigfig import round
 
+import matplotlib
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import matplotlib
+
 # import palettable
 import cmcrameri
 import cmocean
@@ -96,7 +98,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     #     ax0.text(1.02, theory[-1, i], f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'left')
     for i, phase_difference in enumerate(phase_differences):
         labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 4, fontsize = 12, backgroundcolor = "none")
-    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 4, fontsize = 12, backgroundcolor = "none")
+    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.03, outline_width = 4, fontsize = 12, backgroundcolor = "none")
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
