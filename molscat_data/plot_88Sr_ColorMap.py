@@ -74,6 +74,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     print(labels, locs)
     labels.append(f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')
     locs.append(exp_cold_lower)
+    print(labels, locs)
     bar.set_ticks(locs)
     bar.set_ticklabels(labels)
     bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
