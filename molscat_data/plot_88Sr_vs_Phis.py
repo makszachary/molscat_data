@@ -46,6 +46,11 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
     arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
 
+    if triplet_phase_distinguished is not None:
+        array_paths_cold_lower_distinguished = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase_distinguished:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' for singlet_phase in singlet_phases]
+        arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in array_paths_cold_lower ])
+        arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
+
     # exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
     # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
     exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
@@ -55,9 +60,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
-    triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
-    print(triplet_phase_distinguished_index)
-    theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
+    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
+    # triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
+    # print(triplet_phase_distinguished_index)
+    # theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
 
     suffix = '_hybrid' if hybrid else ''
     png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
@@ -86,6 +92,7 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
     parser.add_argument("--triplet_phase_step", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phase", type = float, default = 0.19, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
@@ -111,7 +118,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotPeffVsPhis(singlet_phases = singlet_phases, triplet_phases = triplet_phases, triplet_phase_distinguished = 0.19, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plotPeffVsPhis(singlet_phases = singlet_phases, triplet_phases = triplet_phases, triplet_phase_distinguished = args.triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
