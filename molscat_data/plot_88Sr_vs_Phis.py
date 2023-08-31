@@ -143,8 +143,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
-    fig.savefig(png_path)
-    fig.savefig(svg_path)
+    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
 def main():
