@@ -48,7 +48,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
     if triplet_phase_distinguished is not None:
         array_paths_cold_lower_distinguished = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase_distinguished:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_lower.txt' for singlet_phase in singlet_phases]
-        arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in array_paths_cold_lower ])
+        arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in array_paths_cold_lower_distinguished ])
         arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
 
     # exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
