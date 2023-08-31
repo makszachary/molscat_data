@@ -129,10 +129,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     # divider = make_axes_locatable(ax1)
     # ax1_bar = divider.append_axes("right", size="5%", pad=0.1)
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2], )
-    bar.set_ticklabels(['$0.1\\,m\\mathrm{K}$', '$1\\,m\\mathrm{K}$', '$10\\,m\\mathrm{K}$'])
+    bar.set_ticklabels(['$0.1\\,\\mathrm{mK}$', '$1\\,\\mathrm{mK}$', '$10\\,\\mathrm{mK}$'])
     ax1_bar.tick_params(axis = 'both', labelsize = 16)
     ax1_bar.get_yaxis().labelpad = 4
-    ax1_bar.set_ylabel('T', rotation = 0, fontsize = 16)
+    ax1_bar.set_ylabel('temperature', rotation = 0, fontsize = 12)
     ax1_bar.yaxis.set_label_coords(0.5,1.15)
 
     # fig.tight_layout()
