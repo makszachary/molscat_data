@@ -63,15 +63,14 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3, figsize = (5.5, 5.5))
+    fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
 
     bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
 
-    fig.subplots_adjust(bottom=0.15)
-    # fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.17, hspace = .0)
+    fig.subplots_adjust(bottom=0.17)
     fig.savefig(png_path)
     fig.savefig(svg_path)
     plt.close()
