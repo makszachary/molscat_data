@@ -92,7 +92,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     #     ax0.text(singlet_phase, peff + (ax0.get_ylim()[1]-ax0.get_ylim()[0])*0.02, f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'center')
 
     for i, phase_difference in enumerate(phase_differences):
-        ax0.text(1.02, theory[-1, i], f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'center')
+        ax0.text(1.02, theory[-1, i], f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = theory_colors[i], fontweight = 'bold', va = 'center', ha = 'left')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
