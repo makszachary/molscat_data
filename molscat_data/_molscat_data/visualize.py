@@ -775,6 +775,6 @@ class ContourMap:
         ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 16, length = 10)
         ax.tick_params(which='minor', length = 5)
 
-        bar.ax.tick_params(axis ='both', labelsize=14) 
+        bar.ax.tick_params(axis ='both', which = 'both', labelsize=14) 
         
         return fig, ax, ax_bar, bar
