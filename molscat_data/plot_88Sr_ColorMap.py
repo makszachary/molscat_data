@@ -10,7 +10,6 @@ from sigfig import round
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
-from matplotlib import gridspec
 
 import time
 
@@ -71,7 +70,8 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
 
-    fig.subplots_adjust(left = 0.15, right = 0.9, top = 0.82, bottom = 0.18, hspace = .0)
+    fig.subplots_adjust(bottom=0.17)
+    # fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.17, hspace = .0)
     fig.savefig(png_path)
     fig.savefig(svg_path)
     plt.close()
