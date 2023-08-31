@@ -91,10 +91,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
     gs = gridspec.GridSpec(2,1)
-    ax0.set_position(gs[0:1].get_position(fig))
-    ax0.set_subplotspec(gs[0:1])
+    ax0.set_position(gs[0].get_position(fig))
+    ax0.set_subplotspec(gs[0])
 
-    ax1 = fig.add_subplot(gs[2], sharex = ax0)
+    ax1 = fig.add_subplot(gs[1], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
     plt.setp(ax0.get_xticklabels(), visible=False)
