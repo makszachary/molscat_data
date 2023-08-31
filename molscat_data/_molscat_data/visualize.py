@@ -689,6 +689,7 @@ class ValuesVsModelParameters:
             try:
                 print(f'{xx[yy_mask].reshape(-1, xx.shape[-1])=}')
                 print(f'{yy[yy_mask].reshape(-1, yy.shape[-1])=}')
+                print(f'{theory_colors[i]=}')
                 ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = 1)
             except ValueError:
                 print(f'{xx=}, {yy=}')
