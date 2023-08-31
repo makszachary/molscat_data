@@ -602,6 +602,10 @@ class PhaseTicks:
 class ValuesVsModelParameters:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
 
+    def _initiate_simplest_plot(figsize = (9.5, 7.2), dpi = 300):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+        return fig, ax
+
     def _initiate_plot(figsize = (9.5, 7.2), dpi = 300):
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
         ax_chisq = ax.twinx()
@@ -677,7 +681,7 @@ class ValuesVsModelParameters:
 
         experiment, std = np.array(experiment), np.array(std)
 
-        fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
+        fig, ax = cls._initiate_simplest_plot(figsize, dpi)
 
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
