@@ -73,7 +73,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # color_map = matplotlib.colormaps['twilight']
     color_map = cmcrameri.cm.devon
-    theory_colors = reversed([color_map(phase_difference) for phase_difference in phase_differences])
+    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
     theory_distinguished_colors = ['k', ]
 
 
