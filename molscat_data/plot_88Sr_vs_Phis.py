@@ -56,7 +56,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
     triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
-    theory_distinguished = theory[:,triplet_phase_distinguished_index]
+    theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
 
     suffix = '_hybrid' if hybrid else ''
     png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
@@ -72,7 +72,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
     fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
     PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
-    ax.plot(singlet_phases, np.sin(singlet_phases)**2, 'k')
+    # ax.plot(singlet_phases, np.sin(singlet_phases)**2, 'k')
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
 
