@@ -10,6 +10,7 @@ from sigfig import round
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 import matplotlib
+import palettable
 
 import time
 
@@ -68,7 +69,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    color_map = matplotlib.colormaps['devon'] # or 'twilight'
+    # color_map = matplotlib.colormaps['twilight']
+    color_map = palettable.scientific.sequential.Devon_20.mpl_colors
     theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
     theory_distinguished_colors = ['k', ]
 
