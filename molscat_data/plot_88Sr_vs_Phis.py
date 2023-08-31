@@ -59,7 +59,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     std = [exp_cold_lower[1,0],]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis(arrays_cold_lower[:,:,T_index,0], 0, -1)
+    theory = arrays_cold_lower[:,:,T_index,0]
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
     # print(triplet_phase_distinguished_index)
@@ -74,6 +74,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
     color_map = matplotlib.colormaps['twilight']
     theory_colors = [color_map(triplet_phase) for triplet_phase in triplet_phases]
     theory_distinguished_colors = [color_map(triplet_phase_distinguished),]
+    theory_colors = ['k' for x in triplet_phases]
     theory_distinguished_colors = ['k', ]
 
 
