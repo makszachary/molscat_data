@@ -70,7 +70,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
     # color_map = matplotlib.colormaps['twilight']
-    color_map = palettable.scientific.sequential.Devon_20.mpl_colors
+    color_map = palettable.scientific.sequential.Devon_20.mpl_colormap
     theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
     theory_distinguished_colors = ['k', ]
 
