@@ -675,6 +675,45 @@ class ValuesVsModelParameters:
         return fig, ax, ax_chisq
 
     @classmethod
+    def plotValuestoAxis(cls, ax, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
+        for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).flatten().squeeze(), color = theory_colors[i], linewidth = 2)
+                print(f'{xx[yy_mask].reshape(-1, xx.shape[-1])=}')
+                print(f'{yy[yy_mask].reshape(-1, yy.shape[-1])=}')
+                print(f'{theory_colors[i]=}')
+            except ValueError:
+                print(f'{xx=}, {yy=}')
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = 2)
+
+        if theory_distinguished is not None:           
+            for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                try:
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                except ValueError:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+            
+                ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
+                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+
+        ax.set_xlim(np.min(xx), np.max(xx))
+
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='minor', length = 5)
+
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
+        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
+
+        return ax
+
+
+    @classmethod
     def plotValues(cls, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (5.5, 1.5), dpi = 300):
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors

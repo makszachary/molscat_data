@@ -8,6 +8,7 @@ import numpy as np
 from sigfig import round
 
 from matplotlib import pyplot as plt
+from matplotlib import gridspec
 import matplotlib
 
 import time
@@ -78,11 +79,33 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     theory_distinguished_colors = ['k', ]
 
 
-    fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
-    PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
+    fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
+    PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
+
+    color_map = matplotlib.colormaps['inferno'] # or 'plasma'
+    theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
+    theory_distinguished_colors = ['k', ]
+
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
+    theory = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,:, 0], ]), 0, -1)
+    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
+
+    gs = gridspec.GridSpec(2,1)
+    ax0.set_position(gs[0:1].get_position(fig))
+    ax0.set_subplotspec(gs[0:1])
+
+    ax1 = fig.add_subplot(gs[2], sharex = ax0)
+    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+
+    plt.setp(ax0.get_xticklabels(), visible=False)
+    yticks = ax1.yaxis.get_major_ticks()
+    yticks[-1].label1.set_visible(False)
+
     # ax.plot(singlet_phases, np.sin(singlet_phases)**2, 'k')
-    ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
-    ax.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+    ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
+    ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+    ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+    fig.subplots_adjust(hspace=.0)
     fig.tight_layout()
     fig.savefig(png_path)
     fig.savefig(svg_path)
