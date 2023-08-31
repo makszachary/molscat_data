@@ -15,7 +15,7 @@ import time
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
-from _molscat_data.visualize import ContourMap, ValuesVsModelParameters
+from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
@@ -70,6 +70,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], triplet_phases: fl
 
 
     fig, ax = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 3.5))
+    PhaseTicks.setInMultiplesOfPhi(ax)
+    print(singlet_phases)
+    print(theory)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
 
