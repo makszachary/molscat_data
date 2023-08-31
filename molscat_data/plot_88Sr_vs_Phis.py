@@ -81,6 +81,14 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
+    # get the positions of the maxima
+    filter_max_arr = np.equal(np.full_like(theory.transpose(), np.amax(theory, axis = 0)).transpose(), theory)  
+    coords_vs_phase_difference = tuple( (phase_difference, singlet_phases[filter_max_arr[i]], theory[i][filter_max_arr[i]]) for i, phase_difference in enumerate(phase_differences) )
+
+    # label the curves with the values of the phase difference near the maxima
+    for i, (phase_difference, singlet_phase, peff) in enumerate(coords_vs_phase_difference):
+        ax0.text(singlet_phase, peff + (ax1.get_ylim()[1]-ax1.get_ylim()[0])*0.02, f'$\\Delta\\Phi = {phase_difference}\\pi$', fontsize = 12, color = color_map[i], fontweight = 'bold', va = 'center', ha = 'center')
+
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
@@ -124,10 +132,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
     ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
 
-    # create an axes on the right side of ax. The width of cax will be 5%
-    # of ax and the padding between cax and ax will be fixed at 0.1 inch.
-    # divider = make_axes_locatable(ax1)
-    # ax1_bar = divider.append_axes("right", size="5%", pad=0.1)
+    # create the temperature bar
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', '$1$', '$10$'])
     ax1_bar.tick_params(axis = 'both', labelsize = 14)
