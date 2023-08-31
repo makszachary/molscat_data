@@ -699,7 +699,7 @@ class ValuesVsModelParameters:
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 16, length = 10)
         ax.tick_params(which='minor', length = 5)
 
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
@@ -753,7 +753,7 @@ class ContourMap:
         return fig, ax, ax_bar
     
     @classmethod
-    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 5), dpi=300):
+    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (5.5, 5.5), dpi=300):
         fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
         # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
         # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
@@ -763,20 +763,8 @@ class ContourMap:
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
         bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
 
-        # ax.xaxis.set_major_formatter(ticker.FuncFormatter(
-        # lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        # ))
-        # ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        # ax.xaxis.set_minor_formatter('')
-        # ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
         PhaseTicks.setInMultiplesOfPhi(ax.yaxis)
-        # ax.yaxis.set_major_formatter(ticker.FuncFormatter(
-        # lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        # ))
-        # ax.yaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        # ax.yaxis.set_minor_formatter('')
-        # ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
 
         ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 16, length = 10)
         ax.tick_params(which='minor', length = 5)

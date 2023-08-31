@@ -62,28 +62,21 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-    # triplet_phase_distinguished_index = np.nonzero(triplet_phases == triplet_phase_distinguished)
-    # print(triplet_phase_distinguished_index)
-    # theory_distinguished = theory[:,triplet_phase_distinguished_index].reshape(len(singlet_phases), 1)
 
     suffix = '_hybrid' if hybrid else ''
     png_path = plots_dir_path / 'paper' / 'peff_f=1_SE_vs_Phis_many_DPhi' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_Phis_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    # fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3)
     color_map = matplotlib.colormaps['twilight']
     theory_colors = [color_map(phase_difference) for phase_difference in phase_differences]
-    # theory_distinguished_colors = [color_map(phase_difference_distinguished),]
-    # theory_colors = ['k' for x in triplet_phases]
     theory_distinguished_colors = ['k', ]
 
 
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=(5.5, 5.5))
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
-    # color_map = matplotlib.colormaps['inferno'] # or 'plasma'
-    color_map = matplotlib.colormaps['plasma'] # or 'plasma'
+    color_map = matplotlib.colormaps['plasma'] # or 'inferno'
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
     theory_distinguished_colors = ['k', ]
