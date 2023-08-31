@@ -91,9 +91,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,:,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
-    gs = gridspec.GridSpec(2,1)
-    ax0.set_position(gs[0].get_position(fig))
-    ax0.set_subplotspec(gs[0])
+    gs = gridspec.GridSpec(2,100)
+    ax0.set_position(gs[0,:].get_position(fig))
+    ax0.set_subplotspec(gs[0,:])
 
     ax1 = fig.add_subplot(gs[1], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
@@ -102,10 +102,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     lim1 = ax1.get_ylim()
 
     gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),1)
-    ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0]))].get_position(fig))
-    ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0]))])
-    ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:].get_position(fig))
-    ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:])
+    ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:95].get_position(fig))
+    ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:95])
+    ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:].get_position(fig))
+    ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:])
 
     # ax0.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
     # ax1.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
