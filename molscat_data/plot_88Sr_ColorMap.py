@@ -72,7 +72,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     locs = list(bar.get_ticks())
     locs.append(experiment)
     labels = list(bar.get_ticklabels())
-    labels.append(f'p_\\mathrm{{eff}^{{exp}}}')
+    labels.append(f'p_\\mathrm{{eff}}^{{exp}}}')
     bar.set_ticks(locs)
     bar.set_ticklabels(labels)
     # bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
