@@ -101,7 +101,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     lim0 = ax0.get_ylim()
     lim1 = ax1.get_ylim()
 
-    gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),1)
+    gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),100)
     ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:95].get_position(fig))
     ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:95])
     ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:].get_position(fig))
