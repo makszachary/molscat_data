@@ -81,7 +81,7 @@ def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
-    parser.add_argument("--triplet_phase_set", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("--triplet_phase_step", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
