@@ -109,7 +109,7 @@ def main():
     # args.phase_difference_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
 
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
-    phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 1., args.phase_difference_step).round(decimals=4)
+    phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 0.7, args.phase_difference_step).round(decimals=4)
     so_scaling_values = (0.375,)
 
     if args.temperatures is None:
