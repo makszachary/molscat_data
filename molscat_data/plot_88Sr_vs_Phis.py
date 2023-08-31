@@ -95,7 +95,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_position(gs[0,:95].get_position(fig))
     ax0.set_subplotspec(gs[0,:95])
 
-    ax1 = fig.add_subplot(gs[1], sharex = ax0)
+    ax1 = fig.add_subplot(gs[1,:95], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
     lim0 = ax0.get_ylim()
@@ -106,6 +106,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:95])
     ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:].get_position(fig))
     ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:])
+    ax1_bar = fig.add_subplot(1,95:)
 
     # ax0.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
     # ax1.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
@@ -122,8 +123,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # create an axes on the right side of ax. The width of cax will be 5%
     # of ax and the padding between cax and ax will be fixed at 0.1 inch.
-    divider = make_axes_locatable(ax1)
-    ax1_bar = divider.append_axes("right", size="3%", pad=0.1)
+    # divider = make_axes_locatable(ax1)
+    # ax1_bar = divider.append_axes("right", size="5%", pad=0.1)
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, 1e-3, 1e-2])
     ax1_bar.tick_params(axis = 'both', labelsize = 'x-large')
     ax1_bar.get_yaxis().labelpad = 4
