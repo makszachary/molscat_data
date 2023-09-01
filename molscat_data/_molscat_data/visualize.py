@@ -785,5 +785,6 @@ class ContourMap:
         ax.tick_params(which='minor', length = 4)
 
         bar.ax.tick_params(axis ='both', which = 'both', labelsize=11) 
+        bar.ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
         
         return fig, ax, ax_bar, bar
