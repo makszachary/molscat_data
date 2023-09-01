@@ -75,17 +75,17 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
     cm = 1/2.54
     figsize = (9*cm, 7.5*cm)
-    dpi = 300
+    dpi = 1000
     fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3, figsize = figsize, dpi = dpi)
-    ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
-    ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+    ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 11)
+    ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 11)#, rotation = 0, lapelpad = 12)
 
     bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
     bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
     for tick, ticklabel in zip(bar.ax.get_yticks(), bar.ax.get_yticklabels()):
         if np.abs(tick - experiment) < 0.05:
             plt.setp(ticklabel, visible=False)
-    bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 16, va = 'center', ha = 'left')
+    bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
 
     fig.subplots_adjust(bottom=0.15)
