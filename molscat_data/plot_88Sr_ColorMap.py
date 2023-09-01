@@ -75,7 +75,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 16, va = 'center', ha = 'left')
 
 
-    fig.subplots_adjust(bottom=0.17)
+    fig.subplots_adjust(bottom=0.15)
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()

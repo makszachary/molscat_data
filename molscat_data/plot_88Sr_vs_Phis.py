@@ -85,6 +85,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
+    ax0_right = ax0.twinx()
+    ax0_right.set_yticks( experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$' )
+
     for i, phase_difference in enumerate(phase_differences):
         labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 14)
     labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 14)
@@ -127,7 +130,6 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     yticks = ax1.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
     
-    # ax.plot(singlet_phases, np.sin(singlet_phases)**2, 'k')
     ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
     ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
