@@ -10,7 +10,6 @@ params = {'text.usetex' : True,
           'axes.labelsize': 11,
           'legend.fontsize': 11,
           'font.family': 'lmodern',
-          'text.latex.unicode': True,
           'text.latex.preamble': (
               r'\usepackage{lmodern}'
           )}
