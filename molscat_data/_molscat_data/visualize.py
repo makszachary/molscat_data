@@ -710,7 +710,7 @@ class ValuesVsModelParameters:
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
             
                 ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
-                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
