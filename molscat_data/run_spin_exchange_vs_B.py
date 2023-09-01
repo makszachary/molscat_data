@@ -28,9 +28,9 @@ from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.visualize import PartialRateVsEnergy, RateVsMagneticField
 
 
-E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
-energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
+# E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
+# energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
+# molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 pickle_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
 pickle_dir_path.mkdir(parents=True, exist_ok=True)
@@ -51,9 +51,15 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, magnetic_field: float, MF_in: int, MS_in: int) -> tuple[float, float, float]:
+def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, magnetic_field: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
     
     time_0 = time.perf_counter()
+
+    molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
+    nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
+
     F1, F2 = 2, 1
     MF1, MF2 = MF_in, MS_in
     singlet_scaling = default_singlet_parameter_from_phase(singlet_phase)
@@ -96,11 +102,11 @@ def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phas
     
     return duration, molscat_input_path, molscat_output_path
 
-def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], phases: tuple[tuple[float, float], ...], magnetic_fields: tuple[float, ...], MF_in: int, MS_in: int) -> list[Path]:
+def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], phases: tuple[tuple[float, float], ...], magnetic_fields: tuple[float, ...], MF_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> list[Path]:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, *y, z, MF_in, MS_in) for x, y, z in itertools.product( molscat_input_templates, phases, magnetic_fields))
+       arguments = ( (x, *y, z, MF_in, MS_in, energy_tuple) for x, y, z in itertools.product( molscat_input_templates, phases, magnetic_fields))
        results = pool.starmap(create_and_run_SE_vs_B, arguments)
     
        for duration, input_path, output_path in results:
@@ -111,7 +117,7 @@ def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], ph
 
     return output_dirs
 
-def collect_and_pickle_SE(molscat_output_directory_path: Path | str ) -> tuple[SMatrixCollection, float, Path, Path]:
+def collect_and_pickle_SE(molscat_output_directory_path: Path | str, energy_tuple: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
 
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
@@ -274,6 +280,8 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
     
+    nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
+    energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     phases = ((args.singlet_phase, args.triplet_phase),)
     singlet_phase = args.singlet_phase
