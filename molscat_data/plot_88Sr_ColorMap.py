@@ -75,7 +75,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
     cm = 1/2.54
     figsize = (9*cm, 7.5*cm)
-    dpi = 1000
+    dpi = 300
     fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3, figsize = figsize, dpi = dpi)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
     ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)

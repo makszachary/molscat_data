@@ -90,8 +90,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
     theory_distinguished_colors = ['k', ]
 
-
-    figsize = (9.5, 8)
+    cm = 1/2.54
+    figsize = (9*cm, 7.5*cm)
     dpi = 1000
     fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     ax0.set_xlim(0,1)
