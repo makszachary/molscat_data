@@ -85,10 +85,6 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
-    ax0_right = ax0.twinx()
-    ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
-    # ax0_right.tick_params(right = True)
-
     for i, phase_difference in enumerate(phase_differences):
         labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 14)
     labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 14)
@@ -123,9 +119,9 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1_bar.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:].get_position(fig))
     ax1_bar.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:])
 
-    # ax0.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
-    # ax1.set_ylim(min([*lim0, *lim1]), max([*lim0, *lim1]))
-
+    # draw the label for the experimental value in the upper plot
+    ax0_right = ax0.twinx()
+    ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
 
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
