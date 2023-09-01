@@ -87,8 +87,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
     for i, phase_difference in enumerate(phase_differences):
-        labelLine(ax0.get_lines()[i], 0.15, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
-    labelLine(ax0.get_lines()[-1], 0.15, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
+        labelLine(ax0.get_lines()[i], 0.2, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
+    labelLine(ax0.get_lines()[-1], 0.2, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
@@ -126,6 +126,10 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 11 )
     ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 11)
 
+    # set math-style ticks for both y axes
+    ax0.set_yticklabels([f'${w.get_text()}$' for w in ax0.get_yticklabels])
+    ax1.set_yticklabels([f'${w.get_text()}$' for w in ax1.get_yticklabels])
+
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
@@ -133,6 +137,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 14)
     ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
     ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
+
+    ax0.tick
 
     # create the temperature bar
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
