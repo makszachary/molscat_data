@@ -10,11 +10,16 @@ from sigfig import round
 import matplotlib
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
-plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+# plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
 params = {'text.usetex' : True,
           'font.size': 11,
+          'axes.labelsize': 11,
+          'legend.labelsize': 11,
           'font.family': 'lmodern',
-          'text.latex.unicode': True}
+          'text.latex.unicode': True,
+          'text.latex.preamble': (
+              r'\usepackage{lmodern}'
+          )}
 plt.rcParams.update(params)
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
