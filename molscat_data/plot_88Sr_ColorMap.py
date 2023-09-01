@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 params = {'text.usetex' : True,
           'font.size': 11,
           'axes.labelsize': 11,
-          'legend.labelsize': 11,
+          'legend.fontsize': 11,
           'font.family': 'lmodern',
           'text.latex.unicode': True,
           'text.latex.preamble': (
