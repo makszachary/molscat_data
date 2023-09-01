@@ -73,7 +73,8 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    figsize = (9, 7.5)
+    cm = 1/2.54
+    figsize = (9*cm, 7.5*cm)
     dpi = 1000
     fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3, figsize = figsize, dpi = dpi)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
