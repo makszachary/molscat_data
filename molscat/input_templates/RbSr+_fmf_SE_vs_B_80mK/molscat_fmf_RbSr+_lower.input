@@ -1,0 +1,53 @@
+ &INPUT
+    LABEL  =  '87Rb-88Sr+ elastic cross section for bb (1 0 1/2 1/2) channel vs collision energy',
+    URED   =  43.70227836,	! NIST DATA
+    IPRINT =   11,
+    RMIN   =   5.5,  RMID   =  21.0,   RMAX   = 15.0E3, IRMSET = 0,
+    IPROPS =   6,    DR     =   0.002,
+    IPROPL =   9,    TOLHIL =   1.E-7,
+    JTOTL  =   MFTOT,    JTOTU  = -1,     IBFIX  =  0,           JSTEP  = 2,
+    EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
+                     DTOL   =   1.E-6, MONQN  =  FFRb, MFRb, FFSr, MFSr,
+    FLDMIN = MAGNETICFIELD, FLDMAX =  MAGNETICFIELD, DFIELD = 1.0,
+    ICHAN  =   1,
+ /
+
+ &BASIS
+    ITYPE  = 9,
+ /
+
+ &BASIS9
+    ISA    =  1,    		! 87-Rb
+    GSA    =  2.00231930,	! simply electron g-factor
+    INUCA  =  3,   		! 87-Rb
+    HFSPLA = +6.83468261090429, ! 87-Rb
+    GA     = -9.951413E-4,	! 87-Rb steck.us
+    ISB    =  1,		! 88Sr+
+    GSB    =  2.00231930,	! simply electron g-factor
+    INUCB  =  0,		! 88Sr+
+    HFSPLB =  0,		! 88Sr+
+    GB     =  0,		! 88Sr+
+    LMAX   =  79,
+    NREQ   =   80,
+    LREQ   =   0,         1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,    30,    31,    32,    33,    34,    35,    36,    37,    38,    39,    40,    41,    42,    43,    44,    45,    46,    47,     48,    49,    50,   51,   52,    53,    54,     55,    56,    57,    58,   59,     60,    61,    62,    63,    64,    65,    66,    67,    68,    69,    70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
+    MFREQ  =   MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT, MFTOT,
+    ISPSP  =  -1,
+    NEXTRA =  2,
+ /
+
+ &POTL
+    RM     =   0.52917720859,
+    EPSIL  =   219474.6313705,
+    MXLAM  =   2,
+    LAMBDA =   0, 1,
+    NTERM  =   -1, -1,
+ /
+ 
+ &RKHS_CONTROL
+    FILENAMES = SINGLETPATH, TRIPLETPATH,
+    INUM      = 1, 2,
+    LAMNUM    = "NUM",
+    NPOT      = 2,
+    csn_print = .true.,
+    xscl      = SINGLETSCALING, TRIPLETSCALING,
+ /
