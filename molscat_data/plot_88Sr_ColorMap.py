@@ -10,6 +10,12 @@ from sigfig import round
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
+plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+params = {'text.usetex' : True,
+          'font.size': 11,
+          'font.family': 'lmodern',
+          'text.latex.unicode': True}
+plt.rcParams.update(params)
 
 import time
 
@@ -63,7 +69,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
-    figsize = (9.5, 8)
+    figsize = (9, 7.5)
     dpi = 1000
     fig, ax, ax_bar, bar = ContourMap.plotMap(singlet_phases, triplet_phases, theory, n_levels=3, figsize = figsize, dpi = dpi)
     ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
