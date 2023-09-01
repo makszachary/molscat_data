@@ -87,7 +87,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     ax0_right = ax0.twinx()
     ax0_right.set_yticks( [experiment, ], [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
-    ax0_right.tick_params(right = True)
+    # ax0_right.tick_params(right = True)
 
     for i, phase_difference in enumerate(phase_differences):
         labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 14)
