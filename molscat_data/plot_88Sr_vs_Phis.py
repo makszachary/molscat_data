@@ -86,7 +86,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
 
     ax0_right = ax0.twinx()
-    ax0_right.set_yticks( [experiment, ], [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
+    ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
     # ax0_right.tick_params(right = True)
 
     for i, phase_difference in enumerate(phase_differences):
