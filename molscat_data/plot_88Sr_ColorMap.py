@@ -69,6 +69,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
     suffix = '_hybrid' if hybrid else ''
     png_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
+    pdf_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.pdf'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -87,7 +88,8 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
 
     fig.subplots_adjust(bottom=0.15)
-    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    # fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
