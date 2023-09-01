@@ -87,8 +87,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
     for i, phase_difference in enumerate(phase_differences):
-        labelLine(ax0.get_lines()[i], 0.25, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
-    labelLine(ax0.get_lines()[-1], 0.25, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
+        labelLine(ax0.get_lines()[i], 0.15, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
+    labelLine(ax0.get_lines()[-1], 0.15, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
@@ -141,7 +141,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax1_bar.tick_params(axis = 'both', labelsize = 10)
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
-    ax1_bar.yaxis.set_label_coords(2.1, 1.25)
+    ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
