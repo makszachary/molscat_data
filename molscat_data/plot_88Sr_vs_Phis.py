@@ -10,16 +10,6 @@ from sigfig import round
 import matplotlib
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
-# plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
-params = {'text.usetex' : True,
-          'font.size': 11,
-          'axes.labelsize': 11,
-          'legend.fontsize': 11,
-          'font.family': 'lmodern',
-          'text.latex.preamble': (
-              r'\usepackage{lmodern}'
-          )}
-plt.rcParams.update(params)
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -133,24 +123,24 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     # draw the label for the experimental value in the upper plot
     ax0_right = ax0.twinx()
     ax0_right.set_ylim(ax0.get_ylim())
-    ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
-    ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 16)
+    ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 11 )
+    ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 11)
 
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
     
-    ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 24)
-    ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
-    ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 24)#, rotation = 0, lapelpad = 12)
+    ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 14)
+    ax0.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
+    ax1.set_ylabel(f'$p_\mathrm{{eff}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
 
     # create the temperature bar
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
     bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
-    ax1_bar.tick_params(axis = 'both', labelsize = 14)
+    ax1_bar.tick_params(axis = 'both', labelsize = 11)
     ax1_bar.get_yaxis().labelpad = 4
-    ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 14)
+    ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 11)
     ax1_bar.yaxis.set_label_coords(2.1, 1.15)
 
     # fig.tight_layout()

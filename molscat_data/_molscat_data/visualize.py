@@ -714,8 +714,8 @@ class ValuesVsModelParameters:
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 16, length = 10)
-        ax.tick_params(which='minor', length = 5)
+        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
+        ax.tick_params(which='minor', length = 4)
 
         ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
@@ -725,7 +725,7 @@ class ValuesVsModelParameters:
         return ax
 
     @classmethod
-    def plotValues(cls, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (5.5, 1.5), dpi = 300):
+    def plotValues(cls, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
 
