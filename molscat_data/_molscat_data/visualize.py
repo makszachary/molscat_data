@@ -473,10 +473,10 @@ class ProbabilityVersusSpinOrbit:
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.tick_params(which='both', direction='in', labelsize = 12)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax.set_ylim(0.25*p0_exp, 2*p0_exp)
         ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
@@ -524,10 +524,10 @@ class ProbabilityVersusSpinOrbit:
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.tick_params(which='both', direction='in', labelsize = 12)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax.set_ylim(0.25*p_eff_exp, 2*p_eff_exp)
         ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
@@ -605,7 +605,7 @@ class PhaseTicks:
         """Setting ticks in terms of the multiples of pi/4 (x = 1 -> xtick = pi)"""
 
         axis.set_major_formatter(ticker.FuncFormatter(
-        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        lambda val,pos: f'$0$' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
         ))
         axis.set_major_locator(ticker.MultipleLocator(base=1/4))
         axis.set_minor_formatter('')
@@ -676,10 +676,10 @@ class ValuesVsModelParameters:
 
         ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
         ax.tick_params(which='minor', length = 5)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax_chisq.set_yscale('log')
         ax_chisq.tick_params(which='both', direction='in', labelsize = 30, length = 10)
@@ -717,7 +717,7 @@ class ValuesVsModelParameters:
         ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
         ax.tick_params(which='minor', length = 4)
 
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
         ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
         ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
@@ -743,7 +743,7 @@ class ValuesVsModelParameters:
         ax.set_xlim(0,1)
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
         ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
         ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
