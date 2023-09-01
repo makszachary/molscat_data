@@ -127,8 +127,8 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
     ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 11)
 
     # set math-style ticks for both y axes
-    ax0.set_yticklabels([f'${w.get_text()}$' for w in ax0.get_yticklabels])
-    ax1.set_yticklabels([f'${w.get_text()}$' for w in ax1.get_yticklabels])
+    ax0.set_yticklabels([f'${w.get_text()}$' for w in ax0.get_yticklabels()])
+    ax1.set_yticklabels([f'${w.get_text()}$' for w in ax1.get_yticklabels()])
 
     plt.setp(ax0.get_xticklabels(), visible=False)
     yticks = ax1.yaxis.get_major_ticks()
