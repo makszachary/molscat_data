@@ -121,6 +121,7 @@ def plotPeffVsPhis(singlet_phases: float | np.ndarray[float], phase_differences:
 
     # draw the label for the experimental value in the upper plot
     ax0_right = ax0.twinx()
+    ax0_right.set_ylim(ax0.get_ylim())
     ax0_right.set_yticks( experiment, [f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$',], fontsize = 16 )
     ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 16)
 
