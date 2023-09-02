@@ -230,7 +230,7 @@ def k_L_E_SE_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | n
 
     t0=time.perf_counter()
     momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
-
+    print(momentum_transfer_rate)
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
     array_like = False
     if any( isinstance(arg, np.ndarray) for arg in args.values() ):
