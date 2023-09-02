@@ -162,7 +162,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
         array_path = arrays_dir_path / f'SE_vs_B_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         name = f"|f = 1, m_f = {int(MF_in / 2)}, m_s = {int(MS_in)}/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
-        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field:.2f}.')
+        np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field:.2f} G.')
         array_paths.append(array_path)
 
         k_L_E_array = k_L_E_array.squeeze()
@@ -240,14 +240,14 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, magn
         momentum_transfer_str = np.array2string(average_momentum_transfer_arrays.reshape(average_momentum_transfer_arrays.shape[0], -1)[:,0], formatter={'float_kind':lambda x: '%.4e' % x} )
 
         print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {magnetic_field=} G, temperatures: {temperatures_str} K are:')
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {magnetic_field=:.2f} G, temperatures: {temperatures_str} K are:')
         print(output_state_resolved_probability_arrays, '\n')
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} for {phases=}, {magnetic_field=} G, temperatures: {temperatures_str} K are:')
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {magnetic_field=:.2f} G, temperatures: {temperatures_str} K are:')
         print(probability_arrays, '\n')
 
-        print(f'The effective probabilities p_eff of the {name} for {phases=}, {magnetic_field=} G, temperatures: {temperatures_str} K are:')
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {magnetic_field=:.2f} G, temperatures: {temperatures_str} K are:')
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
 
