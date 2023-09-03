@@ -196,7 +196,8 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, magn
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
-    param_indices = { "magneticField": (magnetic_field, ), "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])), ), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
+    param_indices = None
+    # param_indices = { "magneticField": (magnetic_field, ), "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])), ), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
     # magnetic_field = s_matrix_collection.magneticField[0]
 
     F_out, S = F_in, 1
