@@ -746,6 +746,7 @@ class SMatrixCollection:
                                               if MF_pair[0] in range(-(I1+S1), I1+S1+1, 2)
                                                if MF_pair[1] in range(-(I2+S2), I2+S2+1, 2) )
                         # get the possible channels (matching the pair energy and extra operator values)
+                        print(thresholds)
                         possible_channels = tuple( qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])
                                                     for MF_pair in possible_MF_pairs
                                                         for F1 in range(abs(I1-S1), I1+S1+1, 2)
