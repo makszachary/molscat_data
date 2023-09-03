@@ -259,7 +259,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, magn
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)), 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)))
+    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix(''), 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') )
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
