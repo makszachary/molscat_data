@@ -751,7 +751,9 @@ class SMatrixCollection:
                                                     for MF_pair in possible_MF_pairs
                                                         for F1 in range(abs(I1-S1), I1+S1+1, 2)
                                                             for F2 in range(abs(I2-S2), I2+S2+1, 2)
-                                                                if np.around(channel_pair_energy/thresholds[qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])] - 1, decimals = 6) == 0)
+                                                                if MF_pair[0] in range(-F1, F1+1, 2)
+                                                                 and MF_pair[1] in range(-F2, F2+1, 2)
+                                                                  and np.around(channel_pair_energy/thresholds[qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])] - 1, decimals = 6) == 0)
                         if len(possible_channels) == 0 or len(possible_channels) > 1: raise ValueError(f"Couldn't resolve degeneracies: found {len(possible_channels)} channels matching the pair energy and extra operator values from the output.")
                         channels[open_channel_index] = possible_channels[0]
                         line = next(molscat_output)
