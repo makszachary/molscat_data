@@ -146,8 +146,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 
     
     ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[:,180:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[:,180:])
+    ax1_bar.set_position(gs[:,181:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[:,181:])
 
     # draw the label for the experimental value in the upper plot
     # ax0_right = ax0.twinx()
@@ -175,7 +175,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.tick_params(axis = 'both', labelsize = 10)
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
-    ax1_bar.yaxis.set_label_coords(2.1, 1.2)
+    ax1_bar.yaxis.set_label_coords(2.1, 1.05)
 
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
