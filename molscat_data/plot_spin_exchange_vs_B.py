@@ -34,7 +34,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def plotPeffVsPhis(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
+def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -160,8 +160,8 @@ def plotPeffVsPhis(phases: tuple[tuple[float, float], ...], phases_distinguished
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-s", "--singlet_phase", type = float, default = 0.04, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-t", "--triplet_phase", type = float, default = 0.24, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
     parser.add_argument("--B_min", type = float, default = 1.0)
@@ -175,15 +175,12 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
+    F1, MF1, F2, MF2 = 2, args.MF_in, 1, args.MS_in
+
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-
-    # args.phase_difference_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
-
-    singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
-    # phase_differences = np.array([args.phase_difference,]) if args.phase_difference_step is None else np.arange(0, 0.7, args.phase_difference_step).round(decimals=4)
-    phase_differences = np.array(args.phase_differences) if args.phase_differences is not None else np.arange(0., 0.51, 0.1).round(decimals=4)
-    so_scaling_values = (0.375,)
+    phases = zip(args.singlet_phases, args.triplet_phases)
+    magnetic_fields = np.arange(args.B_min, args.B_max+0.1*args.dB, args.dB)
 
     if args.temperatures is None:
         temperatures = list(np.logspace(-4, -2, 20))
@@ -192,7 +189,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotPeffVsPhis(singlet_phases = singlet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plot_probability_vs_B(phases = phases, phases_distinguished= (0.04, 0.23), magnetic_fields = magnetic_fields, magnetic_field_experimental = 3., MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, enhancement = True) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
