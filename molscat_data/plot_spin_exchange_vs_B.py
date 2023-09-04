@@ -108,24 +108,24 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
     gs = gridspec.GridSpec(300,185)
-    ax0.set_position(gs[:270,:120].get_position(fig))
-    ax0.set_subplotspec(gs[:,:120])
+    ax0.set_position(gs[30:,:120].get_position(fig))
+    ax0.set_subplotspec(gs[30:,:120])
 
-    ax1 = fig.add_subplot(gs[:90,130:180], sharex = ax0)
+    ax1 = fig.add_subplot(gs[30:120,130:180], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
-    ax2 = fig.add_subplot(gs[90:180,130:180], sharex = ax0)
+    ax2 = fig.add_subplot(gs[120:210,130:180], sharex = ax0)
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
     theory = arrays_cold_lower[2,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
 
-    ax3 = fig.add_subplot(gs[180:270,130:180], sharex = ax0)
+    ax3 = fig.add_subplot(gs[210:,130:180], sharex = ax0)
     ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax3.set_ylim(0, ax3.get_ylim()[1])
 
@@ -137,8 +137,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax3.tick_params(axis='both', labelsize = 10)
     
     ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[:270,181:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[:270,181:])
+    ax1_bar.set_position(gs[30:,181:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[30:,181:])
 
     plt.setp(ax1.get_xticklabels(), visible=False)
     yticks = ax2.yaxis.get_major_ticks()
