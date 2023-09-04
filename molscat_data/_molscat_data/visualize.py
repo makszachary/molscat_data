@@ -715,7 +715,7 @@ class ValuesVsModelParameters:
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
                 lw = 4
-                ls = 'dashed'
+                ls = '-'
                 try:
                     ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
                 except (ValueError, IndexError) as error:
