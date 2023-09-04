@@ -764,19 +764,21 @@ class ValuesVsModelParameters:
 
 class ContourMap:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
-
-    def _initiate_plot(figsize = (9/2.54, 7.5/2.54), dpi = 300):
-        fig = plt.figure(figsize=figsize, dpi=dpi)
+    
+    @staticmethod
+    def _initiate_axes(fig):
         ax = fig.add_subplot(1,100,(1,95))
         ax_bar = fig.add_subplot(1,100,(95,100))
-        return fig, ax, ax_bar
-    
+        return ax, ax_bar
+
     @classmethod
-    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (9/2.54, 7.5/2.54), dpi = 300):
-        fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
-        # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
-        # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
-        # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+    def _initiate_plot(cls, figsize = (9/2.54, 7.5/2.54), dpi = 300):
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax, ax_bar = cls._initiate_axes(fig)
+        return fig, ax, ax_bar
+
+    @staticmethod
+    def plotToFigure(fig, ax, ax_bar, X, Y, FXY, n_levels = 11, cmap_name = 'cividis'):
         con = ax.contour(FXY.transpose(), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
         ax.clabel(con, inline=True, fontsize=9)
         im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
@@ -792,3 +794,10 @@ class ContourMap:
         bar.ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
         
         return fig, ax, ax_bar, bar
+
+    @classmethod
+    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (9/2.54, 7.5/2.54), dpi = 300):
+        fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
+        fig, ax, ax_bar, bar = cls.plotToFigure(fig, ax, ax_bar, X, Y, FXY, n_levels = 11, cmap_name = 'cividis')
+        return fig, ax, ax_bar, bar
+    
