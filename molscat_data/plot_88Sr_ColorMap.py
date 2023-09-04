@@ -88,7 +88,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     theory_distinguished_colors = ['k', ]
     for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
         ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5)
-    ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = .5)
+    ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1)
 
     fig.subplots_adjust(bottom=0.15)
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
