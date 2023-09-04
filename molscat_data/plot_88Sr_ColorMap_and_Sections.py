@@ -130,7 +130,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     theory_distinguished_colors = ['k', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
-    theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
+    theory = np.moveaxis(arrays_cold_lower_distinguished[:,1::2,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
