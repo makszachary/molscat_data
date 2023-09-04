@@ -719,6 +719,7 @@ class ValuesVsModelParameters:
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
             
         if experiment is not None:
+            print("KURWA")
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
             if std is not None:
                 ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
