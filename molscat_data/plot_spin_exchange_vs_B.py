@@ -173,6 +173,7 @@ def main():
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--enhancement", action = 'store_true', help = "If enabled, the effective probabilities will be plotted instead of the short-range p0.")
     args = parser.parse_args()
 
     F1, MF1, F2, MF2 = 2, args.MF_in, 1, args.MS_in
