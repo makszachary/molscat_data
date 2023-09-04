@@ -81,8 +81,8 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
 
     section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
     section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
-    section_distinguished_x = [0.0, 1-0.19]
-    section_distinguished_y = [0.19, 1.]
+    section_distinguished_x = [min(singlet_phases), max(singlet_phases)-0.19]
+    section_distinguished_y = [min(singlet_phases), max(triplet_phases)]
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in [0.0, 0.1, 0.30, 0.40]]))
     theory_distinguished_colors = ['k', ]
