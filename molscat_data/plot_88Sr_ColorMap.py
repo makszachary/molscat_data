@@ -30,7 +30,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False):
+def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False, plot_section_lines = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -81,22 +81,23 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
     ## plotting the section lines and their labels
-    section_phase_differences = [0.0, 0.1, 0.30, 0.40]
-    section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in section_phase_differences ]
-    section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in section_phase_differences ]
-    section_distinguished_x = [min(singlet_phases), max(singlet_phases)-0.19]
-    section_distinguished_y = [min(singlet_phases)+0.19, max(triplet_phases)]
-    color_map = cmcrameri.cm.devon
-    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
-    theory_distinguished_colors = ['k', ]
-    lines = []
-    for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
-        line, =ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5, label = f'$\\Delta\\Phi = {section_phase_differences[i]:.2f}\\pi$')
+    if plot_section_lines:
+        section_phase_differences = [0.0, 0.1, 0.30, 0.40]
+        section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in section_phase_differences ]
+        section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in section_phase_differences ]
+        section_distinguished_x = [min(singlet_phases), max(singlet_phases)-0.19]
+        section_distinguished_y = [min(singlet_phases)+0.19, max(triplet_phases)]
+        color_map = cmcrameri.cm.devon
+        theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
+        theory_distinguished_colors = ['k', ]
+        lines = []
+        for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
+            line, =ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5, label = f'$\\Delta\\Phi = {section_phase_differences[i]:.2f}\\pi$')
+            lines.append(line)
+        line, = ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
         lines.append(line)
-    line, = ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
-    lines.append(line)
 
-    labelLines(lines, align = True, outline_width=2, fontsize = 8,)
+        labelLines(lines, align = True, outline_width=2, fontsize = 8,)
 
 
     fig.subplots_adjust(bottom=0.15)
@@ -118,6 +119,7 @@ def main():
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--hybrid", action = 'store_true', help = "If enabled, the probabilities will be taken from 'probabilities_hybrid' directories.")
+    parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section lines will be drawn.")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -134,7 +136,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotColorMap(singlet_phases = singlet_phases, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid) for temperature in temperatures]
+    [plotColorMap(singlet_phases = singlet_phases, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid, plot_section_lines = args.plot_section_lines) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
