@@ -34,8 +34,10 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
+pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+pmf_array = np.loadtxt(pmf_path)
+
 def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
-    print(vars())
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -43,14 +45,6 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     prefix = '' if enhancement else 'p0_'
     F1, F2 = 2, 1
     MF1, MF2 = MF_in, MS_in
-
-    # array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
-    # arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_hot ])
-    # arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
-
-    # array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
-    # arrays_cold_higher = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ])
-    # arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
 
     abbreviation='cold'
     
@@ -68,8 +62,12 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
     exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
 
-    experiment = [exp_cold_lower[0,0],]
-    std = [exp_cold_lower[1,0],]
+    peff_experiment = np.array([exp_cold_lower[0,0],])
+    peff_std_experiment = np.array([exp_cold_lower[1,0],])
+    dpeff = 1e-3
+    p0_std = (p0(peff_experiment+dpeff/2, pmf_array=pmf_array)-p0(peff_experiment+dpeff/2, pmf_array=pmf_array))/dpeff * peff_std_experiment
+    experiment = peff_experiment if enhancement else p0(peff_experiment, pmf_array)
+    std = peff_std_experiment if enhancement else p0_std
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( arrays_cold_lower[:,:,T_index,0], 0, -1)
