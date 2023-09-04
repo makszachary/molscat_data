@@ -703,20 +703,23 @@ class ValuesVsModelParameters:
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
+            lw = 1
             try:
-                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = 2)
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = lw)
             except (ValueError, IndexError) as error:
                 print(f'{error}; turning off yy_mask')
-                ax.plot(xx, yy, color = theory_colors[i], linewidth = 2)
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = lw)
 
         if theory_distinguished is not None:           
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
+                lw = 2
+                ls = 'dotted'
                 try:
-                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
                 except (ValueError, IndexError) as error:
-                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
             
             if experiment is not None:
                 ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)

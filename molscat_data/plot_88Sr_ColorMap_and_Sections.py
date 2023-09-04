@@ -127,7 +127,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
-    theory_distinguished_colors = ['k', ]
+    theory_distinguished_colors = ['crimson', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,:,0], 1, -1)
