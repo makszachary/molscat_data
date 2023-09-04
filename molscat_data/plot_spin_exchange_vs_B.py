@@ -119,6 +119,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     print(f'{theory.shape=}')
     print(f'{theory_distinguished.shape=}')
     ax1 = fig.add_subplot(gs[120:180,0], sharex = ax0)
+    ax1.set_position(gs[120:180,0].get_position(fig))
+    ax1.set_subplotspec(gs[120:180,0])
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
     
@@ -128,6 +130,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
     print("ax2")
     ax2 = fig.add_subplot(gs[120:180,1], sharex = ax1)
+    ax1.set_position(gs[120:180,1].get_position(fig))
+    ax1.set_subplotspec(gs[120:180,1])
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
     # lim0 = ax0.get_ylim()
