@@ -79,8 +79,8 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
             plt.setp(ticklabel, visible=False)
     bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
-    section_lines_x = [ [0.0, 1-phase_difference] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
-    section_lines_y = [ [phase_difference, 1.] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
+    section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
+    section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
     section_distinguished_x = [0.0, 1-0.19]
     section_distinguished_y = [0.19, 1.]
     color_map = cmcrameri.cm.devon
