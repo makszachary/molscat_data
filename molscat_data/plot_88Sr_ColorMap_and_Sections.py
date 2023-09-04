@@ -67,7 +67,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     figsize = (18.5*cm, 7.5*cm)
     dpi = 1000
 
-    fig = plt.figure(layout='constrained', figsize=figsize, dpi = dpi)
+    fig = plt.figure(figsize=figsize, dpi = dpi)
     fig0, fig1 = fig.subfigures(1, 2, wspace=0.05,)
 
     ## CONTOUR MAP
@@ -177,8 +177,9 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
-    fig0.subplots_adjust(bottom=0.15)
-    fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
+    # fig0.subplots_adjust(bottom=0.15)
+    # fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
+    fig.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
     fig.savefig(png_path)#, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path)#, bbox_inches='tight', pad_inches = 0)
     plt.close()
