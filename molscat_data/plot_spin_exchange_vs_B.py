@@ -107,25 +107,25 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory = arrays_cold_lower[0,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
-    gs = gridspec.GridSpec(300,185)
-    ax0.set_position(gs[30:,:120].get_position(fig))
-    ax0.set_subplotspec(gs[30:,:120])
+    gs = gridspec.GridSpec(3,185)
+    ax0.set_position(gs[:,:120].get_position(fig))
+    ax0.set_subplotspec(gs[:,:120])
 
-    ax1 = fig.add_subplot(gs[30:120,130:180], sharex = ax0)
+    ax1 = fig.add_subplot(gs[0,130:180], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
-    ax2 = fig.add_subplot(gs[120:210,130:180], sharex = ax0)
+    ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
     theory = arrays_cold_lower[2,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
 
-    ax3 = fig.add_subplot(gs[210:,130:180], sharex = ax0)
+    ax3 = fig.add_subplot(gs[2,130:180], sharex = ax0)
     ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax3.set_ylim(0, ax3.get_ylim()[1])
 
@@ -137,8 +137,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax3.tick_params(axis='both', labelsize = 10)
     
     ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[30:,181:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[30:,181:])
+    ax1_bar.set_position(gs[:,181:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[:,181:])
 
     plt.setp(ax1.get_xticklabels(), visible=False)
     yticks = ax2.yaxis.get_major_ticks()
@@ -161,8 +161,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.15, top = 0.95, right = 0.9, bottom = 0.15, hspace = .0)
     # fig.tight_layout()
-    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(png_path)#, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(svg_path)#, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
 def main():
