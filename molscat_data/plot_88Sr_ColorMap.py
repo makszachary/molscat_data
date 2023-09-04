@@ -19,6 +19,7 @@ from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semicl
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap
 from _molscat_data.visualize import ValuesVsModelParameters
+from labellines import labelLines, labelLine
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
@@ -79,16 +80,23 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
             plt.setp(ticklabel, visible=False)
     bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
-    section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
-    section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in [0.0, 0.1, 0.30, 0.40] ]
+    ## plotting the section lines and their labels
+    section_phase_differences = [0.0, 0.1, 0.30, 0.40]
+    section_lines_x = [ [min(singlet_phases), max(singlet_phases)-phase_difference] for phase_difference in section_phase_differences ]
+    section_lines_y = [ [min(singlet_phases)+phase_difference, max(triplet_phases)] for phase_difference in section_phase_differences ]
     section_distinguished_x = [min(singlet_phases), max(singlet_phases)-0.19]
     section_distinguished_y = [min(singlet_phases)+0.19, max(triplet_phases)]
     color_map = cmcrameri.cm.devon
-    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in [0.0, 0.1, 0.30, 0.40]]))
+    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
     theory_distinguished_colors = ['k', ]
+    lines = []
     for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
-        ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5)
+        line, =ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5, label = f'$\\Delta\\Phi = {section_phase_differences[i]:.2f}\\pi$')
+        lines.append(line)
     ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1)
+
+    labelLines(lines, align = True, outline_width=2, fontsize = 9,)
+
 
     fig.subplots_adjust(bottom=0.15)
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
