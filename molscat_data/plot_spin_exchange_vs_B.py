@@ -97,8 +97,9 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
-        ax0.get_lines()[i].set_label(f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
+        ax0.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
     labelLines(ax0.get_lines(), align = False, outline_width=2)
+    ax0.text(0.15, 0.75, f'$\\Delta\\Phi = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', fontsize = 11, transform = ax0.transAxes)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
@@ -118,6 +119,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
+
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
@@ -129,7 +131,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
 
     ax3 = fig.add_subplot(gs[2,130:180], sharex = ax0)
-    ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax3.set_ylim(0, ax3.get_ylim()[1])
 
     PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
