@@ -89,7 +89,9 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     figsize = (18.5*cm, 6*cm)
     dpi = 1000
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
-    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
+    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, None, None, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
+    ax0.scatter(magnetic_field_experimental, experiment, 'd', c = 'k', s = 4)
+    ax0.errorbar(magnetic_field_experimental, experiment, std, ecolor = 'k', capsize = 4)
     ax0.set_ylim(0, ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
@@ -112,14 +114,14 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_subplotspec(gs[:,:120])
 
     ax1 = fig.add_subplot(gs[0,130:180], sharex = ax0)
-    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
     ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
-    ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
     theory = arrays_cold_lower[2,:,:,0]

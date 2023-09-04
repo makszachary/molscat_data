@@ -696,7 +696,7 @@ class ValuesVsModelParameters:
         return fig, ax, ax_chisq
 
     @classmethod
-    def plotValuestoAxis(cls, ax, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
+    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
         # labels = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # label_distinguished = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # print(np.moveaxis(theory, -1, 0).shape)
@@ -718,8 +718,11 @@ class ValuesVsModelParameters:
                 except (ValueError, IndexError) as error:
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
             
+        if experiment is not None:
+            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
+            if std is not None:
                 ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
-                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
+            
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
