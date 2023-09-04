@@ -72,8 +72,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     std = [exp_cold_lower[1,0],]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = arrays_cold_lower[:,:,T_index,0]
-    print(theory.shape)
+    theory = np.moveaxis( arrays_cold_lower[:,:,T_index,0], 0, -1)
+    # print(theory.shape)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # theory_distinguished = None
 
