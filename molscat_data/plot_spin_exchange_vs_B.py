@@ -76,7 +76,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # theory_distinguished = None
 
     prefix_for_path = 'peff_' if enhancement else 'p0_'
-    png_path = plots_dir_path / 'paper' / f'{prefix_for_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_vs_B_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / f'{prefix_for_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_{prefix_for_path}vs_B_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
