@@ -131,8 +131,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
     print("ax2")
     ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
-    ax1.set_position(gs[1,130:180].get_position(fig))
-    ax1.set_subplotspec(gs[1,130:180])
+    ax2.set_position(gs[1,130:180].get_position(fig))
+    ax2.set_subplotspec(gs[1,130:180])
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
