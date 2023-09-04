@@ -38,7 +38,6 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
     probabilities_dir_name = 'probabilities'
     prefix = '' if enhancement else 'p0_'
     F1, F2 = 2, 1
@@ -160,8 +159,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-s", "--singlet_phases", nargs='*', type = list, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phases", nargs='*', type = list, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
     parser.add_argument("--B_min", type = float, default = 1.0)
@@ -172,7 +171,7 @@ def main():
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
-    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
     F1, MF1, F2, MF2 = 2, args.MF_in, 1, args.MS_in
