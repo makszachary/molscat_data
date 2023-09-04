@@ -169,6 +169,9 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
     ax1_bar.yaxis.set_label_coords(2.1, 1.12)
 
+
+    ax0.text(-0.04, 1.00, f'c', fontsize = 10, va = 'top', ha = 'right', transform = ax0.transAxes, fontweight = 'bold')
+    ax1.text(-0.04, 1.00, f'd', fontsize = 10, va = 'top', ha = 'right', transform = ax1.transAxes, fontweight = 'bold')
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.06, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
     # fig.tight_layout()
