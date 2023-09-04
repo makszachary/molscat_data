@@ -86,7 +86,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished_colors = ['k', ]
 
     cm = 1/2.54
-    figsize = (18.5*cm, 7.5*cm)
+    figsize = (18.5*cm, 8*cm)
     dpi = 1000
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
@@ -159,8 +159,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.yaxis.set_label_coords(2.1, 1.08)
 
     # fig.tight_layout()
-    fig.subplots_adjust(left = 0.15, top = 0.85, right = 0.9, bottom = 0.15, hspace = .0)
-    fig.tight_layout()
+    fig.subplots_adjust(left = 0.15, top = 0.95, right = 0.9, bottom = 0.15, hspace = .0)
+    # fig.tight_layout()
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
