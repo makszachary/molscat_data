@@ -89,7 +89,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     cm = 1/2.54
     figsize = (9*cm, 7.5*cm)
     dpi = 1000
-    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
+    # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
+    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
