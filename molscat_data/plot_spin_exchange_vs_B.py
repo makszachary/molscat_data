@@ -34,7 +34,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
 def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
