@@ -139,13 +139,11 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax3.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
     ax3.tick_params(axis='both', labelsize = 10)
     
-    ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[:,181:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[:,181:])
 
     plt.setp(ax1.get_xticklabels(), visible=False)
-    yticks = ax2.yaxis.get_major_ticks()
-    yticks[-1].label1.set_visible(False)
+    plt.setp(ax2.get_xticklabels(), visible=False)
+    ax2.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+    ax3.yaxis.get_major_ticks()[-1].label1.set_visible(False)
     
     ax0.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
     ax2.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
@@ -153,6 +151,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
 
     # create the temperature bar
+    ax1_bar = fig.add_subplot()
+    ax1_bar.set_position(gs[:,181:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[:,181:])
+
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
     bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
