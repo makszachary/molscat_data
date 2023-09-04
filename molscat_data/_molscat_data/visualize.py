@@ -610,6 +610,14 @@ class PhaseTicks:
         axis.set_major_locator(ticker.MultipleLocator(base=1/4))
         axis.set_minor_formatter('')
         axis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+    @staticmethod
+    def linearStr(axis, base_major = 0.2, base_minor = 0.1, str_formatter = '${x:.1f}$'):
+        """Setting ticks in terms of the multiples of pi/4 (x = 1 -> xtick = pi)"""
+
+        axis.set_major_formatter(ticker.StrMethodFormatter(str_formatter))
+        axis.set_major_locator(ticker.MultipleLocator(base=base_major))
+        axis.set_minor_formatter(ticker.StrMethodFormatter(''))
+        axis.set_minor_locator(ticker.MultipleLocator(base=base_minor))
 
 
 class ValuesVsModelParameters:
@@ -717,11 +725,6 @@ class ValuesVsModelParameters:
         ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
         ax.tick_params(which='minor', length = 4)
 
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
-        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
-
         return ax
 
     @classmethod
@@ -743,10 +746,7 @@ class ValuesVsModelParameters:
         ax.set_xlim(0,1)
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
-        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
+        PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
         ax.set_xlabel(f'Singlet-triplet phase difference', fontsize = 36)
         ax.set_ylabel(f'Effective probability', fontsize = 36)
