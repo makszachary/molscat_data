@@ -118,7 +118,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # print(f'{magnetic_fields.shape=}')
     # print(f'{theory.shape=}')
     # print(f'{theory_distinguished.shape=}')
-    ax1 = fig.add_subplot(gs[0,120:180], sharex = ax0)
+    ax1 = fig.add_subplot(gs[0,120:180], sharex = ax0, sharey = ax0)
     # ax1.set_position(gs[0,120:180].get_position(fig))
     # ax1.set_subplotspec(gs[0,120:180])
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
@@ -129,7 +129,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
     print("ax2")
-    ax2 = fig.add_subplot(gs[1,120:180], sharex = ax1)
+    ax2 = fig.add_subplot(gs[1,120:180], sharex = ax0, sharey = ax0)
     # ax1.set_position(gs[1,120:180].get_position(fig))
     # ax1.set_subplotspec(gs[1,120:180])
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
