@@ -108,8 +108,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     # theory = np.moveaxis(arrays_cold_lower_distinguished[:,:,0], 1, -1)
     # theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-    theory = np.moveaxis( arrays_cold_lower[0,:,:,0], 0, -1)
-    theory_distinguished = np.moveaxis( arrays_cold_lower[0,:,T_index,0], 0, -1)
+    theory = arrays_cold_lower[0,:,:,0]
+    theory_distinguished = arrays_cold_lower[0,:,T_index,0]
 
     gs = gridspec.GridSpec(185,2)
     ax0.set_position(gs[:120,:].get_position(fig))
@@ -118,8 +118,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1 = fig.add_subplot(gs[120:180,0], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     
-    theory = np.moveaxis( arrays_cold_lower[1,:,:,0], 0, -1)
-    theory_distinguished = np.moveaxis( arrays_cold_lower[1,:,T_index,0], 0, -1)
+    # theory = np.moveaxis( arrays_cold_lower[1,:,:,0], 0, -1)
+    # theory_distinguished = np.moveaxis( arrays_cold_lower[1,:,T_index,0], 0, -1)
+    theory = arrays_cold_lower[1,:,:,0]
+    theory_distinguished = arrays_cold_lower[1,:,T_index,0]
 
     ax2 = fig.add_subplot(gs[120:180,1], sharex = ax1)
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
