@@ -192,8 +192,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
-    fig0_ax.text(0.01, 0.99, f'$\\mathrm{{a)}}$', fontsize = 11, va = 'top', ha = 'left', transform = fig0_ax.transAxes)
-    fig1_ax0.text(0.01, 0.99, f'$\\mathrm{{b)}}$', fontsize = 11, va = 'top', ha = 'left', transform = fig0_ax.transAxes)
+    fig0_ax.text(-0.02, 0.99, f'a', fontsize = 11, va = 'top', ha = 'left', transform = fig0_ax.transAxes, fontweight = 'bold')
+    fig1_ax0.text(-0.02, 0.99, f'b', fontsize = 11, va = 'top', ha = 'left', transform = fig1_ax0.transAxes, fontweight = 'bold')
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
