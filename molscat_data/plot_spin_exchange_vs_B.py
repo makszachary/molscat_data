@@ -91,8 +91,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     ax0.set_ylim(0, ax0.get_xlim()[1])
-    PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
-    PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
+    # PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
+    # PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         ax0.get_lines()[i].set_label(f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
         # labelLine(ax0.get_lines()[i], min(magnetic_fields)+(0.2*i)*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 2, fontsize = 9, ha = 'left')
@@ -120,6 +120,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     print(f'{theory_distinguished.shape=}')
     ax1 = fig.add_subplot(gs[120:180,0], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+
     
     # theory = np.moveaxis( arrays_cold_lower[1,:,:,0], 0, -1)
     # theory_distinguished = np.moveaxis( arrays_cold_lower[1,:,T_index,0], 0, -1)
@@ -129,9 +130,9 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax2 = fig.add_subplot(gs[120:180,1], sharex = ax1)
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
-    lim0 = ax0.get_ylim()
-    lim1 = ax1.get_ylim()
-    lim2 = ax2.get_ylim()
+    # lim0 = ax0.get_ylim()
+    # lim1 = ax1.get_ylim()
+    # lim2 = ax2.get_ylim()
 
     # gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),100)
     # ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:95].get_position(fig))
@@ -141,8 +142,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 
     
     ax1_bar = fig.add_subplot()
-    ax1_bar.set_position(gs[120:,:].get_position(fig))
-    ax1_bar.set_subplotspec(gs[120:,:])
+    ax1_bar.set_position(gs[180:,:].get_position(fig))
+    ax1_bar.set_subplotspec(gs[180:,:])
 
     # draw the label for the experimental value in the upper plot
     # ax0_right = ax0.twinx()
