@@ -712,6 +712,7 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
+                print(f'{yy.shape=}')
                 try:
                     ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 except (ValueError, IndexError) as error:
