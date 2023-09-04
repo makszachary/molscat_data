@@ -719,7 +719,6 @@ class ValuesVsModelParameters:
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
             
         if experiment is not None:
-            print("KURWA")
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
             if std is not None:
                 ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
@@ -733,7 +732,7 @@ class ValuesVsModelParameters:
         return ax
 
     @classmethod
-    def plotValues(cls, xx, theory, experiment, std, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
+    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
 
