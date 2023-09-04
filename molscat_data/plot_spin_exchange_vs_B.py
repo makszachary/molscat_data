@@ -105,11 +105,11 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
-    theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures]
+    theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_distinguished_colors = ['k', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
-    theory = arrays_cold_lower[0,:,::3,0]
+    theory = arrays_cold_lower[0,:,::2,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
     gs = gridspec.GridSpec(3,185)
@@ -121,14 +121,14 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
 
-    theory = arrays_cold_lower[1,:,::3,0]
+    theory = arrays_cold_lower[1,:,::2,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
     ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
-    theory = arrays_cold_lower[2,:,::3,0]
+    theory = arrays_cold_lower[2,:,::2,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
 
     ax3 = fig.add_subplot(gs[2,130:180], sharex = ax0)
