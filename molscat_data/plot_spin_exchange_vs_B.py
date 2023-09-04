@@ -35,7 +35,7 @@ arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
-    print(list(locals()))
+    print(list(vars()))
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -83,13 +83,13 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 
     # color_map = matplotlib.colormaps['twilight']
     color_map = cmcrameri.cm.devon
-    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
+    theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
     theory_distinguished_colors = ['k', ]
 
     cm = 1/2.54
     figsize = (9*cm, 7.5*cm)
     dpi = 1000
-    fig, ax0 = ValuesVsModelParameters.plotValues(singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
+    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
@@ -111,7 +111,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_subplotspec(gs[0,:95])
 
     ax1 = fig.add_subplot(gs[1,:95], sharex = ax0)
-    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
 
     lim0 = ax0.get_ylim()
     lim1 = ax1.get_ylim()
