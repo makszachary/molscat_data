@@ -129,10 +129,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax3.set_ylim(0, ax3.get_ylim()[1])
 
-    # PhaseTicks.linearStr(ax1.yaxis, 0.1, 0.05, '${x:.1f}$')
+    PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax1.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
     ax1.tick_params(axis='both', labelsize = 10)
-    # PhaseTicks.linearStr(ax2.yaxis, 0.1, 0.05, '${x:.1f}$')
+    PhaseTicks.linearStr(ax2.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax2.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
     ax2.tick_params(axis='both', labelsize = 10)
     # PhaseTicks.linearStr(ax3.yaxis, 0.1, 0.05, '${x:.1f}$')
@@ -146,7 +146,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax3.yaxis.get_major_ticks()[-1].label1.set_visible(False)
     
     ax0.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
-    ax2.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
+    ax3.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
     ylabel = f'$p_\mathrm{{eff}}$' if enhanced else f'$p_0$'
     ax0.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
 
