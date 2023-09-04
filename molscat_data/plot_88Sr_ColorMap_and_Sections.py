@@ -81,8 +81,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig0_ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 14)
     fig0_ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
 
-    fig0_bar.ax.axhspan(experiment-std, experiment+std, color = '0.8', alpha=0.8)
-    fig0_bar.ax.axhline(experiment, color = '1.0', linestyle = '-', linewidth = 2)
+    fig0_bar.ax.axhspan(experiment[0]-std[0], experiment+std, color = '0.8', alpha=0.8)
+    fig0_bar.ax.axhline(experiment[0], color = '1.0', linestyle = '-', linewidth = 2)
     for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
         if np.abs(tick - experiment) < 0.05:
             plt.setp(ticklabel, visible=False)
