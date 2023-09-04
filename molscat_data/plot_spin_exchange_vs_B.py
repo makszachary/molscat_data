@@ -65,7 +65,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     peff_experiment = np.array([exp_cold_lower[0,0],])
     peff_std_experiment = np.array([exp_cold_lower[1,0],])
     dpeff = 1e-3
-    p0_std = (p0(peff_experiment+dpeff/2, pmf_array=pmf_array)-p0(peff_experiment+dpeff/2, pmf_array=pmf_array))/dpeff * peff_std_experiment
+    p0_std = (p0(peff_experiment+dpeff/2, pmf_array=pmf_array)-p0(peff_experiment-dpeff/2, pmf_array=pmf_array))/dpeff * peff_std_experiment
     experiment = peff_experiment if enhanced else p0(peff_experiment, pmf_array)
     std = peff_std_experiment if enhanced else p0_std
 
@@ -91,7 +91,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_colors=theory_colors, theory_distinguished_colors=theory_distinguished_colors, figsize=figsize, dpi=dpi)
     ax0.scatter([magnetic_field_experimental,], experiment, c = 'k', marker = 'd')
-    print(std)
+    # print(std)
     ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = 'k', capsize = 4)
     ax0.set_ylim(0, ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
