@@ -94,7 +94,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         labelLine(ax0.get_lines()[i], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
-    labelLine(ax0.get_lines()[-1], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
+    # labelLine(ax0.get_lines()[-1], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
