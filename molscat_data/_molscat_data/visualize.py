@@ -740,7 +740,7 @@ class ValuesVsModelParameters:
 
         fig, ax = cls._initiate_simplest_plot(figsize, dpi)
 
-        cls.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_colors = theory_colors, theory_distinguished_colors = theory_distinguished_colors)
         
         return fig, ax
 
