@@ -162,7 +162,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:95])
 
     ### Add the axis for the temperature bar
-    fig1_ax1_bar = fig.add_subplot()
+    fig1_ax1_bar = fig1.add_subplot()
     fig1_ax1_bar.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:].get_position(fig))
     fig1_ax1_bar.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:])
 
@@ -176,9 +176,9 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
-    fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
-    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
+    # fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
+    fig.savefig(png_path)#, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(svg_path)#, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
 
