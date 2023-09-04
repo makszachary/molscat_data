@@ -180,8 +180,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     # fig0.subplots_adjust(bottom=0.15)
     # fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
     # fig.subplots_adjust(left = 0.17, top = 1.00, right = 0.9, bottom = 0.14, hspace = .0)
-    fig.savefig(png_path)#, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path)#, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
 
