@@ -205,7 +205,7 @@ def plot_and_save_p0_Cso(so_scaling_values, singlet_phase, triplet_phase):
     p_eff_exp_std = 0.0242
     p0_exp = p0(p_eff_exp, pmf_array=pmf_array)
     dpeff = 1e-3
-    p0_exp_std = (p0(p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(p_eff_exp+dpeff/2, pmf_array=pmf_array))/dpeff * p_eff_exp_std
+    p0_exp_std = (p0(p_eff_exp+dpeff/2, pmf_array=pmf_array)-p0(p_eff_exp-dpeff/2, pmf_array=pmf_array))/dpeff * p_eff_exp_std
     ss_dominated_rates = np.fromiter( (array.sum(axis = (0,1))[4] for array in output_state_resolved_arrays), dtype = float )
 
 

@@ -2,10 +2,21 @@ from pathlib import Path
 
 import numpy as np
 
+import matplotlib as mpl
+mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
+# params = {'text.usetex' : True,
+#           'font.size': 11,
+#           'axes.labelsize': 11,
+#           'legend.fontsize': 11,
+#           'font.family': 'lmodern',
+#           'text.latex.preamble': (
+#               r'\usepackage{lmodern}'
+#           )}
+# plt.rcParams.update(params)
 from matplotlib import lines
 from matplotlib import ticker
-import matplotlib as mpl
+from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from .effective_probability import effective_probability, p0
@@ -462,10 +473,10 @@ class ProbabilityVersusSpinOrbit:
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.tick_params(which='both', direction='in', labelsize = 12)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax.set_ylim(0.25*p0_exp, 2*p0_exp)
         ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
@@ -499,7 +510,7 @@ class ProbabilityVersusSpinOrbit:
         plot_title = 'Effective probability of the hyperfine energy release for $\left|2,2\\right>\hspace{0.2}\left|\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>$ initial state'
         
         xx = np.logspace(-2, 0.5*np.log10(0.99/probability[nearest_idx]), 100)
-        print( so_parameter[nearest_idx], p0(probability[nearest_idx], pmf_array = pmf_array) )
+        # print( so_parameter[nearest_idx], p0(probability[nearest_idx], pmf_array = pmf_array) )
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         ax.scatter(so_parameter, probability, s = 6**2, color = 'k', marker = 'o', label = data_label)
@@ -513,10 +524,10 @@ class ProbabilityVersusSpinOrbit:
         ax.set_yscale('log')
         ax.set_xscale('log')
         ax.tick_params(which='both', direction='in', labelsize = 12)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax.set_ylim(0.25*p_eff_exp, 2*p_eff_exp)
         ax.set_xlim(0.5*so_parameter[nearest_idx], 1.5*so_parameter[nearest_idx])
@@ -547,7 +558,7 @@ class PartialRateVsEnergy:
         fig, ax = cls._initiate_plot(figsize, dpi)
 
         for l in range(l_max+1):
-            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.colormaps['cividis'](l/30) )
+            ax.plot(energy, rate[l], linewidth = 1.5, linestyle = 'solid', marker = '.', markersize = 1, color = mpl.colormaps['cividis'](l/(l_max+1)) )
         
         ax.set_xlim(np.min(energy), np.max(energy))
         ax.set_xscale('log')
@@ -586,10 +597,35 @@ class RateVsMagneticField:
         ax.grid(color = 'gray')
 
         return fig, ax
-    
+
+
+class PhaseTicks:
+    @staticmethod
+    def setInMultiplesOfPhi(axis):
+        """Setting ticks in terms of the multiples of pi/4 (x = 1 -> xtick = pi)"""
+
+        axis.set_major_formatter(ticker.FuncFormatter(
+        lambda val,pos: f'$0$' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
+        ))
+        axis.set_major_locator(ticker.MultipleLocator(base=1/4))
+        axis.set_minor_formatter('')
+        axis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+    @staticmethod
+    def linearStr(axis, base_major = 0.2, base_minor = 0.1, str_formatter = '${x:.1f}$'):
+        """Setting ticks in terms of the multiples of pi/4 (x = 1 -> xtick = pi)"""
+
+        axis.set_major_formatter(ticker.StrMethodFormatter(str_formatter))
+        axis.set_major_locator(ticker.MultipleLocator(base=base_major))
+        axis.set_minor_formatter(ticker.StrMethodFormatter(''))
+        axis.set_minor_locator(ticker.MultipleLocator(base=base_minor))
+
 
 class ValuesVsModelParameters:
     """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
+
+    def _initiate_simplest_plot(figsize = (9.5, 7.2), dpi = 300):
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+        return fig, ax
 
     def _initiate_plot(figsize = (9.5, 7.2), dpi = 300):
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
@@ -603,64 +639,156 @@ class ValuesVsModelParameters:
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin']
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
 
+        # theory_distinguished_mask = np.isfinite(theory_distinguished)
+        # theory_mask = np.isfinite(theory)
+
         fig, ax, ax_chisq = cls._initiate_plot(figsize, dpi)
 
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
-            ax.plot(xx, yy.transpose(), color = theory_colors[i], linewidth = .1)
-            print(f'{xx=}', yy.transpose())
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = .4)
+            except ValueError:
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = .4)
             ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
             ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
 
-        ax_chisq.plot(xx, chi_sq.transpose(), color = '0.7', linewidth = 0.1)
+        chi_sq = chi_sq.transpose()
+        chi_sq_mask = np.isfinite(chi_sq)
+        try:
+            ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = 0.4)
+        except ValueError:
+            ax_chisq.plot(xx, chi_sq, color = '0.7', linewidth = 0.4)
 
         if theory_distinguished is not None:
             
             chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
             
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
-                ax.plot(xx, yy.transpose(), color = theory_distinguished_colors[i], linewidth = 4)
-                print(f'{xx}', f'yy_distinguished = {yy.transpose()}')
-                
-            ax_chisq.plot(xx, chi_sq_distinguished.transpose(), 'k', linewidth = 4)
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                try:
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                except ValueError:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+
+            chi_sq_distinguished = chi_sq_distinguished.transpose()
+            chi_sq_distinguished_mask = np.isfinite(chi_sq_distinguished)
+            try:
+                ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))][chi_sq_distinguished_mask], chi_sq_distinguished[chi_sq_distinguished_mask], 'k--', linewidth = 4, label = '$\chi^2$')
+            except ValueError:
+                ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))], chi_sq_distinguished, 'k--', linewidth = 4, label = '$\chi^2$')
         
         ax.set_xlim(np.min(xx), np.max(xx))
 
         ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
         ax.tick_params(which='minor', length = 5)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.2f}'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('{x:.2f}'))
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax_chisq.set_yscale('log')
         ax_chisq.tick_params(which='both', direction='in', labelsize = 30, length = 10)
         ax_chisq.tick_params(which='minor', length = 5)
         
         return fig, ax, ax_chisq
-    
+
+    @classmethod
+    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
+        # labels = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
+        # label_distinguished = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
+        # print(np.moveaxis(theory, -1, 0).shape)
+        for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = 2)
+            except (ValueError, IndexError) as error:
+                print(f'{error}; turning off yy_mask')
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = 2)
+
+        if theory_distinguished is not None:           
+            for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                try:
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                except (ValueError, IndexError) as error:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+            
+            if experiment is not None:
+                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
+                if std is not None:
+                    ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
+            
+
+        ax.set_xlim(np.min(xx), np.max(xx))
+
+        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
+        ax.tick_params(which='minor', length = 4)
+
+        return ax
+
+    @classmethod
+    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
+        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
+        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
+
+        experiment, std = np.array(experiment), np.array(std)
+
+        fig, ax = cls._initiate_simplest_plot(figsize, dpi)
+
+        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_colors = theory_colors, theory_distinguished_colors = theory_distinguished_colors)
+        
+        return fig, ax
+
     @classmethod
     def plotPeffAndChiSquaredVsDPhi(cls, xx, theory, experiment, std, theory_distinguished = None, figsize = (9.5, 7.2), dpi = 300):
         fig, ax, ax_chisq = cls.plotValuesAndChiSquared(xx, theory, experiment, std, theory_distinguished, figsize, dpi)
-        
         ax.set_xlim(0,1)
-        
-        ax.xaxis.set_major_formatter(ticker.FuncFormatter(
-        lambda val,pos: '0' if val == 0 else f'$\\pi$' if val == 1. else f'$-\\pi$' if val == -1. else f'${val}\\pi$' if val % 1 == 0 else f'$\\frac{{{val*2:.0g}}}{{2}}\\pi$' if (val *2)  % 1 == 0 else f'$\\frac{{{val*4:.0g}}}{{4}}\\pi$' if (val*4) % 1 == 0 else f'${val:.2g}\\pi$'
-        ))
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(base=1/4))
-        ax.xaxis.set_minor_formatter('')
-        ax.xaxis.set_minor_locator(ticker.MultipleLocator(base=0.05))
+        PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('{x:.1f}'))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(base=0.2))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter(''))
-        ax.yaxis.set_minor_locator(ticker.MultipleLocator(base=0.1))
+        PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
-        ax.set_xlabel(f'$\\Delta\\Phi$', fontsize = 36)
-        ax.set_ylabel(f'Effective probability $p_\\mathrm{{eff}}$', fontsize = 36)
+        ax.set_xlabel(f'Singlet-triplet phase difference', fontsize = 36)
+        ax.set_ylabel(f'Effective probability', fontsize = 36)
         ax_chisq.set_ylabel(f'$\\chi^2$', fontsize = 36, rotation = 0, labelpad = 20)
         
         
         fig.tight_layout()
 
         return fig, ax, ax_chisq
+    
+
+class ContourMap:
+    """Plot of the theoretical results and chi-squared as a function of a given parameter together with the experimental ones."""
+
+    def _initiate_plot(figsize = (9/2.54, 7.5/2.54), dpi = 300):
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax = fig.add_subplot(1,100,(1,95))
+        ax_bar = fig.add_subplot(1,100,(95,100))
+        return fig, ax, ax_bar
+    
+    @classmethod
+    def plotMap(cls, X, Y, FXY, n_levels = 11, cmap_name = 'cividis', figsize = (9/2.54, 7.5/2.54), dpi = 300):
+        fig, ax, ax_bar = cls._initiate_plot(figsize, dpi)
+        # im = ax.contourf(FXY.transpose(), levels = n_levels, cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
+        # con = ax.contour(im, linestyles = '-', linewidths = 0.5, colors='k', extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)))#, origin='lower')
+        # bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+        con = ax.contour(FXY.transpose(), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), levels = n_levels, colors='black', linestyles = 'dotted', linewidths = 0.5,)
+        ax.clabel(con, inline=True, fontsize=9)
+        im = ax.imshow(FXY.transpose(), cmap = plt.get_cmap(cmap_name), extent = (np.amin(X), np.amax(X), np.amin(Y), np.amax(Y)), origin='lower')
+        bar = fig.colorbar(im, orientation = 'vertical', cax = ax_bar)
+
+        PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
+        PhaseTicks.setInMultiplesOfPhi(ax.yaxis)
+
+        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
+        ax.tick_params(which='minor', length = 4)
+
+        bar.ax.tick_params(axis ='both', which = 'both', labelsize=11) 
+        bar.ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
+        
+        return fig, ax, ax_bar, bar

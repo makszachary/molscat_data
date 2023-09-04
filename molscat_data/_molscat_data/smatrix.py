@@ -295,9 +295,42 @@ class SMatrix:
 
         return cross_section
 
+    def getMomentumTransferCrossSectionVsL(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
+        """Calculate the momentum-transfer cross section in the given basis.
+        
+        :param qn_in: quantum numbers for the initial state.
+        Ignores all the values of L, ML passed in qn_in.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12').
+        If None (default), then inferred from the data type of qn_in argument.
+
+        Assumes the collision is fully elastic.
+        Uses the expression from [Phys. Rev. A 89, 052705 (2014)](https://doi.org/10.1103/PhysRevA.89.052705).
+        """
+
+
+        L_max = max( [ qns[1].L for qns in self.matrix.keys() ])
+        if basis == None: basis = qn_in._fields
+        match basis:
+            case ('L', 'ML', 'F1', 'F2', 'F12', 'MF12') | ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'):
+                qn_ins = (qn_in.__class__(L, 0, *qn_in[2:]) for L in range(0, L_max+1, 2))
+            case ('L', 'F1', 'F2', 'F12', 'T', 'MT'):
+                raise NotImplementedError(f"The totally coupled basis {basis} cannot be used - it would require decoupling L and F12 before using the expression for the momentum-transfer cross section.")
+            case _:
+                raise NotImplementedError(f"Case {basis=} is not implemented.")
+
+        S = np.array( [ self.getInBasis(qn_out = qn, qn_in = qn, basis = basis) for qn in qn_ins ] )
+        phase_shift = np.angle(S)/2
+
+        cross_section = np.fromiter((2*L+2 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1])**2 - np.fromiter((2*L+4 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1]) * np.sin(phase_shift[1:]) * np.cos(phase_shift[:-1] - phase_shift[1:])
+        cross_section *= 2*np.pi/(2*self.reducedMass*(self.collisionEnergy/Hartree_to_K))
+        cross_section *= (1+self.identical)
+        
+        return cross_section
 
     def getMomentumTransferCrossSection(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
-        """Calculate the momentum-transfer cross section in the given basis.
+        """Calculate the momentum-transfer cross section in the given basis,
+        summed over all the partial waves.
         
         :param qn_in: quantum numbers for the initial state.
         Ignores all the values of L, ML passed in qn_in.
@@ -358,6 +391,35 @@ class SMatrix:
 
         return rate_coefficient
 
+    def getMomentumTransferRateCoefficientVsL(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
+        """Calculate the momentum transfer rate coefficient in the given basis.
+
+        :param qn_in: quantum numbers for the initial state.
+        Ignores all the values of L, ML passed in qn_in.
+        :param basis: Possible values: ('L', 'ML', 'F1', 'MF1', 'F2', 'MF2'),
+        ('L', 'ML', 'F1', 'F2', 'F12', 'MF12'), ('L', 'F1', 'F2', 'F12', 'T', 'MT').
+        If None (default), then inferred from the data type of qn_in argument.
+        :param unit: Name of the unit at the output if other than a.u.
+        Possible values: 'cm**3/s', 'a.u.', None (default).
+        
+        Assumes the collision is fully elastic.
+        Uses the expression from [Phys. Rev. A 89, 052705 (2014)](https://doi.org/10.1103/PhysRevA.89.052705).
+
+        """
+
+        arguments = locals().copy(); del arguments['self']; del arguments['unit']
+
+        rate_coefficient = np.sqrt(2*(self.collisionEnergy/Hartree_to_K)/self.reducedMass) * self.getMomentumTransferCrossSectionVsL(**arguments)
+        
+        match unit:
+            case 'cm**3/s':
+                rate_coefficient *= 10**6 * rate_from_au_to_SI
+            case None | 'a.u.':
+                pass
+            case _:
+                raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
+
+        return rate_coefficient
 
     def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
         """Calculate the momentum transfer rate coefficient in the given basis.
@@ -684,11 +746,14 @@ class SMatrixCollection:
                                               if MF_pair[0] in range(-(I1+S1), I1+S1+1, 2)
                                                if MF_pair[1] in range(-(I2+S2), I2+S2+1, 2) )
                         # get the possible channels (matching the pair energy and extra operator values)
+                        #if MT == 5: print(thresholds)
                         possible_channels = tuple( qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])
                                                     for MF_pair in possible_MF_pairs
                                                         for F1 in range(abs(I1-S1), I1+S1+1, 2)
                                                             for F2 in range(abs(I2-S2), I2+S2+1, 2)
-                                                                if np.around(channel_pair_energy/thresholds[qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])] - 1, decimals = 6) == 0)
+                                                                if MF_pair[0] in range(-F1, F1+1, 2)
+                                                                 and MF_pair[1] in range(-F2, F2+1, 2)
+                                                                  and np.around(channel_pair_energy/thresholds[qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])] - 1, decimals = 6) == 0)
                         if len(possible_channels) == 0 or len(possible_channels) > 1: raise ValueError(f"Couldn't resolve degeneracies: found {len(possible_channels)} channels matching the pair energy and extra operator values from the output.")
                         channels[open_channel_index] = possible_channels[0]
                         line = next(molscat_output)
@@ -943,10 +1008,33 @@ class SMatrixCollection:
         rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getRateCoefficient(qn_out, qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
         return rate_coefficient_array
 
+    def getMomentumTransferRateCoefficientVsL(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, unit = None, **kwargs) -> np.ndarray[Any, float]:
+        """Get the energy-dependent momentum-transfer rate coefficient for
+          the given initial state as an array for the given parameter values.
+
+        :param qn_in: quantum numbers for the initial state.
+
+        \*\*kwargs"
+        :param param_indices: dictionary with entries of the form
+        'parameter_name: tuple(parameter_indices)'
+        :param param_values: dictionary with entries of the form
+        'parameter_name: tuple(parameter_values)'. Ignored if
+        param_indices is provided.
+        
+        :return: array consisting of the rate coefficients for
+          the parameters given in **kwargs (or all parameter values
+            in the collection, if they weren't specified).
+        """
+
+        param_indices = self.getParamIndicesAsArray(**kwargs)
+        rate_coefficient_array = np.array( [ self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficientVsL(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices ) ] ).reshape( -1, *(len(index_tuple) for index_tuple in param_indices)  )
+        return rate_coefficient_array
+
 
     def getMomentumTransferRateCoefficient(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, unit = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the energy-dependent momentum-transfer rate coefficient for
-          the given initial state as an array for the given parameter values.
+          the given initial state as an array for the given parameter values,
+          summed over all partial waves.
 
         :param qn_in: quantum numbers for the initial state.
 
@@ -967,22 +1055,21 @@ class SMatrixCollection:
         return rate_coefficient_array
 
 
-    def thermalAverage(self, array_to_average: np.ndarray[Any, float], distribution_iterator: Iterable = None) -> np.ndarray[Any, float]:
+    def thermalAverage(self, array_to_average: np.ndarray[Any, float], distribution_array: np.ndarray[Any, float] = None) -> np.ndarray[Any, float]:
         """Thermally average an array of values.
 
         :param array_to_average: array of energy-depending values
           in the last axis.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
         :return: array of the thermally averaged values,
           with the last axis contracted with respect to array_to_average.
         """
 
 
-        if distribution_iterator == None:
-            distribution_iterator = n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3)
+        if distribution_array is None:
+            distribution_array = np.fromiter( n_root_iterator(temperature = 5e-4, E_min = min(self.collisionEnergy), E_max = max(self.collisionEnergy), N = len(self.collisionEnergy), n = 3), dtype = float )
 
-        distribution_array = np.fromiter( distribution_iterator, dtype = float )
         integrand = array_to_average * distribution_array
         integral = scipy.integrate.simpson( integrand )
         norm = scipy.integrate.simpson( distribution_array )
@@ -992,13 +1079,13 @@ class SMatrixCollection:
         return averaged_array
 
 
-    def getThermallyAveragedRate(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedRate(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_array: np.ndarray[Any, float] = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged rate coefficient for the given final
           and initial state as an array for the given parameter values.
 
         :param qn_out: quantum numbers for the final state.
         :param qn_in: quantum numbers for the initial state.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1014,17 +1101,42 @@ class SMatrixCollection:
         """       
 
         rate_array_to_average = self.getRateCoefficient(qn_out, qn_in, unit, **kwargs)
-        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_array)
         return averaged_rate_array
 
-
-    def getThermallyAveragedMomentumTransferRate(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_iterator: Iterable = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedMomentumTransferRateVsL(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_array: np.ndarray[Any, float] = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged momentum-transfer rate coefficient
           for the given final and initial state as an array
             for the given parameter values.
 
         :param qn_in: quantum numbers for the initial state.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
+          the distribution factors in the integral.
+
+        \*\*kwargs"
+        :param param_indices: dictionary with entries of the form
+        'parameter_name: tuple(parameter_indices)'
+        :param param_values: dictionary with entries of the form
+        'parameter_name: tuple(parameter_values)'. Ignored if
+        param_indices is provided.
+        
+        :return: array consisting of the thermal momentum-transfer rate
+          coefficients for the parameters given in **kwargs (or all
+            parameter values in the collection, if they weren't specified).
+        """   
+
+        rate_array_to_average = self.getMomentumTransferRateCoefficientVsL(qn_in, unit, **kwargs)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_array)
+        return averaged_rate_array
+
+
+    def getThermallyAveragedMomentumTransferRate(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, distribution_array: np.ndarray[Any, float] = None, unit: str = None, **kwargs) -> np.ndarray[Any, float]:
+        """Get the thermally averaged momentum-transfer rate coefficient
+          for the given final and initial state as an array
+            for the given parameter values, summed over all partial waves.
+
+        :param qn_in: quantum numbers for the initial state.
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1040,7 +1152,7 @@ class SMatrixCollection:
         """   
 
         rate_array_to_average = self.getMomentumTransferRateCoefficient(qn_in, unit, **kwargs)
-        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_iterator)
+        averaged_rate_array = self.thermalAverage(rate_array_to_average, distribution_array)
         return averaged_rate_array
 
 
@@ -1077,7 +1189,7 @@ class SMatrixCollection:
         return probability_array
 
 
-    def getThermallyAveragedProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
+    def getThermallyAveragedProbability(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_array: np.ndarray[Any, float] = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the thermally averaged probability of collision calculated
           as the ratio of the energy-dependent rate coefficient for the
             transition from the given initial to the final state, and
@@ -1087,7 +1199,7 @@ class SMatrixCollection:
         :param qn_in: quantum numbers for the initial state.
         :param qn_momentum_transfer: quantum numbers for the initial state
           for calculating the momentum-transfer rate coefficient.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1103,11 +1215,11 @@ class SMatrixCollection:
         """ 
 
         probability_array_to_average = self.getProbability(qn_out, qn_in, qn_momentum_transfer, **kwargs)
-        averaged_probability_array = self.thermalAverage(probability_array_to_average, distribution_iterator)
+        averaged_probability_array = self.thermalAverage(probability_array_to_average, distribution_array)
         return averaged_probability_array
 
 
-    def getProbabilityFromThermalAverages(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_iterator: Iterable = None, **kwargs) -> np.ndarray[Any, float]:
+    def getProbabilityFromThermalAverages(self, qn_out: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, qn_momentum_transfer: qn.LF1F2 | qn.LF12 | qn.Tcpld = None, distribution_array: np.ndarray[Any, float] = None, **kwargs) -> np.ndarray[Any, float]:
         """Get the probability of collision calculated as the ratio of the
           thermally averaged rate coefficient for the transition from
             the given initial to the final state, and the momentum-transfer
@@ -1117,7 +1229,7 @@ class SMatrixCollection:
         :param qn_in: quantum numbers for the initial state.
         :param qn_momentum_transfer: quantum numbers for the initial state
           for calculating the momentum-transfer rate coefficient.
-        :param distribution_iterator: an iterable object providing
+        :param distribution_array: array providing
           the distribution factors in the integral.
 
         \*\*kwargs"
@@ -1132,7 +1244,7 @@ class SMatrixCollection:
             in the collection, if they weren't specified).
         """ 
 
-        averaged_rate_array = self.getThermallyAveragedRate(qn_out, qn_in, distribution_iterator, **kwargs)
+        averaged_rate_array = self.getThermallyAveragedRate(qn_out, qn_in, distribution_array, **kwargs)
         averaged_momentum_transfer_rate_array = self.getThermallyAveragedMomentumTransferRate(qn_momentum_transfer, **kwargs)
         probability_from_averages_array = averaged_rate_array / averaged_momentum_transfer_rate_array
         return probability_from_averages_array

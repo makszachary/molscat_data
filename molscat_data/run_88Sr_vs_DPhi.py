@@ -4,6 +4,7 @@ from typing import Any
 import subprocess
 import os
 from pathlib import Path
+import shutil
 import re
 import argparse
 
@@ -23,7 +24,8 @@ from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
-from _molscat_data.utils import probability, probability_not_parallel
+from _molscat_data.thermal_averaging import n_root_iterator
+from _molscat_data.utils import probability, probability_not_parallel, k_L_E_not_parallel
 from _molscat_data.visualize import ValuesVsModelParameters
 from prepare_so_coupling import scale_so_and_write
 
@@ -261,18 +263,108 @@ def calculate_and_save_the_peff_not_parallel(pickle_path: Path | str, phases = N
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple):
+def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
+    ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
+    t4 = time.perf_counter()
+    fs = semiclassical_phase_function(singlet_scaling_path)
+    ft = semiclassical_phase_function(triplet_scaling_path)
+    s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    
+    so_scaling = s_matrix_collection.spinOrbitParameter
+    # if len(so_scaling) == 1: so_scaling = float(so_scaling)
+
+    pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_array = np.loadtxt(pmf_path)
+
+    param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(parameter_from_semiclassical_phase(phases[0], singlet_scaling_path, starting_points=[1.000,1.010])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( parameter_from_semiclassical_phase(phases[1], triplet_scaling_path, starting_points=[1.000,0.996]) ), ) } if phases is not None else None
+
+    F_out, F_in, S = 2, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    F_out, F_in, S = 4, 4, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    F_out, F_in, S = 2, 2, 1
+    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
+    ### TEST:
+    ## MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, -F_out+3, 2), -S, np.arange(-F_in, -F_in+3, 2), S, indexing = 'ij')
+    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+
+    args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
+    names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', 
+             f'cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states',
+             f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
+    abbreviations = ['hpf', 'cold_higher', 'cold_lower']
+
+    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
+        t = time.perf_counter()
+
+        txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
+        # so_scaling = txt_path.name
+        output_state_res_txt_path = txt_path / 'probabilities' / f'out_state_res_{abbreviation}.txt'
+        txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
+        txt_path.parent.mkdir(parents = True, exist_ok = True)
+
+        rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
+        # print(f'{momentum_transfer_rate_array=}')
+        # print(f'{momentum_transfer_rate_array.shape=}')
+        quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
+        for index in np.ndindex(arg[2].shape):
+            k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
+            k_L_E_txt_path = k_L_E_txt_path / f'k_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
+            np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
+            k_m_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
+            k_m_E_txt_path = k_m_E_txt_path / f'k_m_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_m_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
+            np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
+
+        distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+        average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
+        output_state_resolved_probability_arrays = probability_arrays.squeeze()
+        probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
+        effective_probability_arrays = effective_probability(probability_arrays, pmf_array)
+
+        temperatures_str = np.array2string( np.array(temperatures),formatter={'float_kind':lambda x: '%.2e' % x} )
+        momentum_transfer_str = np.array2string(average_momentum_transfer_arrays.reshape(average_momentum_transfer_arrays.shape[0], -1)[:,0], formatter={'float_kind':lambda x: '%.4e' % x} )
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
+        print(output_state_resolved_probability_arrays, '\n')
+
+        print("------------------------------------------------------------------------")
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
+        print(probability_arrays, '\n')
+
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {dLMax=}, temperatures: {temperatures_str} K are:')
+        print(effective_probability_arrays)
+        print("------------------------------------------------------------------------")
+
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
+        
+        duration = time.perf_counter() - t
+        print(f"It took {duration:.2f} s.")
+
+    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent)
+    [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
+    return
+
+def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_tuple, temperatures, input_dir_name, plot_temperature = 5e-4):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    # array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
-    # array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
-    array_paths_hot = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_hpf.txt' for triplet_phase in triplet_phases)
-    array_paths_cold_higher = ( arrays_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}_cold_higher.txt' for triplet_phase in triplet_phases)
-    arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ])
-    arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] )
-    # png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{nenergies}_E' / 'two_point_one_singlet' / f'SE_peff_vs_DPhi_{singlet_phase:.4f}.png'
-    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / 'two_point_one_singlet' / f'SE_peff_vs_DPhi_{singlet_phase:.4f}.png'
+
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'hpf.txt' for triplet_phase in triplet_phases]
+    array_paths_cold_higher = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'probabilities' / f'cold_higher.txt' for triplet_phase in triplet_phases]
+    arrays_hot = np.array([ np.loadtxt(array_path) for array_path in array_paths_hot ]).reshape(len(array_paths_hot), len(temperatures), -1)
+    arrays_cold_higher = np.array( [np.loadtxt(array_path) for array_path in array_paths_cold_higher ] ).reshape(len(array_paths_cold_higher), len(temperatures), -1)
+
+    png_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}' / f'{so_scaling:.4f}' / f'SE_peff_vs_DPhi_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     # pmf_path = plots_dir_path / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
@@ -286,12 +378,17 @@ def plot_probability_vs_DPhi(singlet_phase, triplet_phases, so_scaling, energy_t
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
     xx = (np.array(triplet_phases) - singlet_phase) % 1
-    theory_distinguished = np.array( [ arrays_hot[:,0], arrays_cold_higher[:,0] ] ).transpose()
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory_distinguished = np.array( [ arrays_hot[:,T_index,0], arrays_cold_higher[:,T_index,0] ] ).transpose()
     theory = theory_distinguished
 
     fig, ax, ax_chisq = ValuesVsModelParameters.plotPeffAndChiSquaredVsDPhi(xx, theory, experiment, std, theory_distinguished)
+    ax.set_ylim(0,1)
+    ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
+    ax_chisq.legend(fontsize = 30, loc = 'upper left')
     fig.savefig(png_path)
     fig.savefig(svg_path)
+    plt.close()
 
 
 def main():
@@ -304,20 +401,29 @@ def main():
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', 'RbSr+_tcpld_80mK').iterdir()
+    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
     # singlet_phase = np.array([default_singlet_phase_function(1.0),]) if args.singlet_phase is None else np.array([args.singlet_phase,])
     singlet_phase = default_singlet_phase_function(1.0) if args.singlet_phase is None else args.singlet_phase
     if args.phase_step is None:
-        triplet_phase = default_triplet_phase_function(1.0) if args.triplet_phase is None else args.triplet_phase
+        triplet_phases = (default_triplet_phase_function(1.0),) if args.triplet_phase is None else (args.triplet_phase,)
     else:
-        triplet_phase = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
-    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phase), decimals = 4)
+        triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
+    phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
     so_scaling_values = (0.375,)
+
+    if args.temperatures is None:
+        temperatures = list(np.logspace(-4, -2, 20))
+        temperatures.append(5e-4)
+        temperatures = np.array(sorted(temperatures))
+    else:
+        temperatures = np.array(args.temperatures)
     
 
     ### RUN MOLSCAT ###
@@ -326,28 +432,28 @@ def main():
     # ### COLLECT S-MATRIX AND PICKLE IT ####
     # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
     pickle_paths = []
-    output_dirs = tuple( scratch_path / 'molscat' / 'outputs' / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' for singlet_phase, triplet_phase in phases for so_scaling in so_scaling_values )
-    for output_dir, (singlet_phase, triplet_phase), so_scaling in zip(output_dirs, itertools.product(phases, so_scaling_values)):
-        so_scaling = so_scaling_values[0]
+    for ((singlet_phase, triplet_phase), so_scaling) in itertools.product(phases, so_scaling_values):
+        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}'
         s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, ((singlet_phase, triplet_phase),), so_scaling, energy_tuple )
         pickle_paths.append(pickle_path)
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
     pickle_paths = np.unique(pickle_paths)
 
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
-    # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
+    # pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for triplet_phase in phases[1] for so_scaling in so_scaling_values )
     
     with Pool() as pool:
         t0 = time.perf_counter()
         so_scaling = so_scaling_values[0]
-        # pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-        pickle_paths = tuple( pickles_dir_path / 'RbSr+_tcpld_80mK' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
-        arguments = tuple(zip(pickle_paths, phases))
-        pool.starmap(calculate_and_save_the_peff_not_parallel, arguments)
+        pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}.pickle' for singlet_phase, triplet_phase in phases)
+        arguments = tuple( (pickle_path, phase, 4, temperatures) for pickle_path, phase in zip(pickle_paths, phases) )
+        pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
     
-    plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple)
-
+    [plot_probability_vs_DPhi(singlet_phase, triplet_phases = triplet_phases, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, input_dir_name = args.input_dir_name, plot_temperature=temperature) for temperature in temperatures]
+    _images_path = plots_dir_path / 'paper' / 'DPhi_fitting' / 'one_singlet' / f'{args.input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}'
+    shutil.make_archive(_images_path, 'zip' , _images_path)
+    shutil.rmtree(_images_path, ignore_errors=True)
 
 if __name__ == '__main__':
     main()
