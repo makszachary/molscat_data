@@ -37,12 +37,12 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhancement = False):
+def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhanced = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     probabilities_dir_name = 'probabilities'
-    prefix_for_array_path = '' if enhancement else 'p0_'
+    prefix_for_array_path = '' if enhanced else 'p0_'
     F1, F2 = 2, 1
     MF1, MF2 = MF_in, MS_in
 
@@ -67,8 +67,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     peff_std_experiment = np.array([exp_cold_lower[1,0],])
     dpeff = 1e-3
     p0_std = (p0(peff_experiment+dpeff/2, pmf_array=pmf_array)-p0(peff_experiment+dpeff/2, pmf_array=pmf_array))/dpeff * peff_std_experiment
-    experiment = peff_experiment if enhancement else p0(peff_experiment, pmf_array)
-    std = peff_std_experiment if enhancement else p0_std
+    experiment = peff_experiment if enhanced else p0(peff_experiment, pmf_array)
+    std = peff_std_experiment if enhanced else p0_std
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( arrays_cold_lower[:,:,T_index,0], 0, -1)
@@ -76,7 +76,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # theory_distinguished = None
 
-    prefix_for_image_path = 'peff_' if enhancement else 'p0_'
+    prefix_for_image_path = 'peff_' if enhanced else 'p0_'
     png_path = plots_dir_path / 'paper' / f'{prefix_for_image_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_{prefix_for_image_path}vs_B_{plot_temperature:.2e}K.png'
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
@@ -130,7 +130,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # draw the label for the experimental value in the upper plot
     # ax0_right = ax0.twinx()
     # ax0_right.set_ylim(ax0.get_ylim())
-    # ylabel =f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$' if enhancement else f'$p_\\mathrm{{0}}^\\mathrm{{exp}}$'
+    # ylabel =f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$' if enhanced else f'$p_\\mathrm{{0}}^\\mathrm{{exp}}$'
     # ax0_right.set_yticks( experiment, [ylabel,], fontsize = 11 )
     # ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 11)
 
@@ -140,7 +140,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     yticks[-1].label1.set_visible(False)
     
     ax1.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
-    ylabel = f'$p_\mathrm{{eff}}$' if enhancement else f'$p_0$'
+    ylabel = f'$p_\mathrm{{eff}}$' if enhanced else f'$p_0$'
     ax0.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
     ax1.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
 
@@ -175,7 +175,7 @@ def main():
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--enhancement", action = 'store_true', help = "If enabled, the effective probabilities will be plotted instead of the short-range p0.")
+    parser.add_argument("--enhanced", action = 'store_true', help = "If enabled, the effective probabilities will be plotted instead of the short-range p0.")
     args = parser.parse_args()
 
     F1, MF1, F2, MF2 = 2, args.MF_in, 1, args.MS_in
@@ -192,7 +192,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plot_probability_vs_B(phases = phases, phases_distinguished= (0.04, 0.23), magnetic_fields = magnetic_fields, magnetic_field_experimental = 3., MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, enhancement = args.enhancement) for temperature in temperatures]
+    [plot_probability_vs_B(phases = phases, phases_distinguished= (0.04, 0.23), magnetic_fields = magnetic_fields, magnetic_field_experimental = 3., MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, enhanced = args.enhanced) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
