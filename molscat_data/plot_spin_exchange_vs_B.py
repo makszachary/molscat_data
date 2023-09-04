@@ -159,7 +159,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.yaxis.set_label_coords(2.1, 1.12)
 
     # fig.tight_layout()
-    fig.subplots_adjust(left = 0.01, top = 0.9, right = 0.97, bottom = 0.10, hspace = .0)
+    fig.subplots_adjust(left = 0.10, top = 0.9, right = 0.9, bottom = 0.20, hspace = .0)
     # fig.tight_layout()
     fig.savefig(png_path)#, bbox_inches='tight')#, pad_inches = 0.)
     fig.savefig(svg_path)#, bbox_inches='tight')#, pad_inches = 0.)
