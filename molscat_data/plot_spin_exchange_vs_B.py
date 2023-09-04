@@ -115,6 +115,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_position(gs[:120,:].get_position(fig))
     ax0.set_subplotspec(gs[:120,:])
 
+    print(f'{magnetic_fields.shape=}')
+    print(f'{theory.shape=}')
     ax1 = fig.add_subplot(gs[120:180,0], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     
