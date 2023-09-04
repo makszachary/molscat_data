@@ -93,7 +93,7 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
     for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
         line, =ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = .5, label = f'$\\Delta\\Phi = {section_phase_differences[i]:.2f}\\pi$')
         lines.append(line)
-    line, = ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {section_phase_differences[i]:.2f}\\pi$')
+    line, = ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
     lines.append(line)
 
     labelLines(lines, align = True, outline_width=2, fontsize = 8,)
