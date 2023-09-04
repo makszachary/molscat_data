@@ -10,15 +10,7 @@ from sigfig import round
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 from matplotlib import pyplot as plt
-# params = {'text.usetex' : True,
-#           'font.size': 11,
-#           'axes.labelsize': 11,
-#           'legend.fontsize': 11,
-#           'font.family': 'lmodern',
-#           'text.latex.preamble': (
-#               r'\usepackage{lmodern}'
-#           )}
-# plt.rcParams.update(params)
+import cmcrameri
 
 import time
 
@@ -87,6 +79,16 @@ def plotColorMap(singlet_phases: float | np.ndarray[float], triplet_phases: floa
             plt.setp(ticklabel, visible=False)
     bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
+    section_lines_x = np.array([0.0, 1-phase_difference] for phase_difference in [0.0, 0.1, 0.30, 0.40]).transpose()
+    section_lines_y = np.array([phase_difference, 1.]  for phase_difference in [0.0, 0.1, 0.30, 0.40]).transpose()
+    section_distinguished_x = [0.0, 1-0.19]
+    section_distinguished_y = [0.19, 1.]
+    color_map = cmcrameri.cm.devon
+    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in [0.0, 0.1, 0.30, 0.40]]))
+    theory_distinguished_colors = ['k', ]
+    for i, (xx, yy) in enumerate(zip(section_lines_x, section_lines_y)):
+        ax.plot(xx, yy, color = theory_colors[i], linestyle = 'dashed', linewidth = 1)
+    ax.plot(section_distinguished_x, section_distinguished_y, color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1)
 
     fig.subplots_adjust(bottom=0.15)
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
