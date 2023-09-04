@@ -91,12 +91,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, None, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     ax0.set_ylim(0, ax0.get_ylim()[1])
-    # PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
-    # PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
+    PhaseTicks.linearStr(ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
+    PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         ax0.get_lines()[i].set_label(f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
-        # labelLine(ax0.get_lines()[i], min(magnetic_fields)+(0.2*i)*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 2, fontsize = 9, ha = 'left')
-    # labelLine(ax0.get_lines()[-1], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
     labelLines(ax0.get_lines(), align = False, outline_width=2)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
@@ -106,8 +104,6 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished_colors = ['k', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
-    # theory = np.moveaxis(arrays_cold_lower_distinguished[:,:,0], 1, -1)
-    # theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     theory = arrays_cold_lower[0,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
@@ -115,53 +111,27 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_position(gs[:,:120].get_position(fig))
     ax0.set_subplotspec(gs[:,:120])
 
-    # print(f'{magnetic_fields.shape=}')
-    # print(f'{theory.shape=}')
-    # print(f'{theory_distinguished.shape=}')
     ax1 = fig.add_subplot(gs[0,130:180], sharex = ax0)
-    # ax1.set_position(gs[0,120:180].get_position(fig))
-    # ax1.set_subplotspec(gs[0,120:180])
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
-    
-    # theory = np.moveaxis( arrays_cold_lower[1,:,:,0], 0, -1)
-    # theory_distinguished = np.moveaxis( arrays_cold_lower[1,:,T_index,0], 0, -1)
     theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
-    print("ax2")
+
     ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
-    ax2.set_position(gs[1,130:180].get_position(fig))
-    ax2.set_subplotspec(gs[1,130:180])
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
-    # lim0 = ax0.get_ylim()
-    # lim1 = ax1.get_ylim()
-    # lim2 = ax2.get_ylim()
-
-    # gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),100)
-    # ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:95].get_position(fig))
-    # ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:95])
-    # ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:95].get_position(fig))
-    # ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:95])
-
+    PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
+    ax1.tick_params(axis='both', labelsize = 10)
+    PhaseTicks.linearStr(ax2.yaxis, 0.2, 0.1, '${x:.1f}$')
+    ax2.tick_params(axis='both', labelsize = 10)
     
     ax1_bar = fig.add_subplot()
     ax1_bar.set_position(gs[:,181:].get_position(fig))
     ax1_bar.set_subplotspec(gs[:,181:])
 
-    # draw the label for the experimental value in the upper plot
-    # ax0_right = ax0.twinx()
-    # ax0_right.set_ylim(ax0.get_ylim())
-    # ylabel =f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$' if enhanced else f'$p_\\mathrm{{0}}^\\mathrm{{exp}}$'
-    # ax0_right.set_yticks( experiment, [ylabel,], fontsize = 11 )
-    # ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10, labelsize = 11)
-
-
     plt.setp(ax1.get_xticklabels(), visible=False)
-    # ax1.tick_params(which = 'both', left = False, right = True)
-    # ax2.tick_params(which = 'both', left = False, right = True)
     yticks = ax2.yaxis.get_major_ticks()
     yticks[-1].label1.set_visible(False)
     
@@ -169,8 +139,6 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax2.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
     ylabel = f'$p_\mathrm{{eff}}$' if enhanced else f'$p_0$'
     ax0.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
-    # ax1.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
-    # ax2.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
 
     # create the temperature bar
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
