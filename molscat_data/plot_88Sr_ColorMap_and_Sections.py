@@ -58,7 +58,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     theory = arrays_cold_lower[:,:,T_index,0]
 
     suffix = '_hybrid' if hybrid else ''
-    png_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE_with_sections' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / 'ColorMap_f=1_SE_with_sections' / f'{input_dir_name}{suffix}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_peff_ColorMap_with_sections_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
