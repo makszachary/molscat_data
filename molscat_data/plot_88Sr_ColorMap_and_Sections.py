@@ -95,7 +95,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
         # color_map = cmcrameri.cm.devon
         # theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
         theory_distinguished_colors = ['k', 'k']
-        lines,  = fig0_ax.plot(section_distinguished_x[0], section_distinguished_y[0], color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
+        lines  = fig0_ax.plot(section_distinguished_x[0], section_distinguished_y[0], color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
         fig0_ax.plot(section_distinguished_x[1], section_distinguished_y[1], color = theory_distinguished_colors[1], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
         
         labelLines(lines, align = True, outline_width=2, fontsize = 8,)
