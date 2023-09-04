@@ -107,7 +107,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory = arrays_cold_lower[0,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
-    gs = gridspec.GridSpec(2,185)
+    gs = gridspec.GridSpec(3,185)
     ax0.set_position(gs[:,:120].get_position(fig))
     ax0.set_subplotspec(gs[:,:120])
 
@@ -122,10 +122,19 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
+    theory = arrays_cold_lower[2,:,:,0]
+    theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
+
+    ax3 = fig.add_subplot(gs[2,130:180], sharex = ax0)
+    ax3 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax3.set_ylim(0, ax3.get_ylim()[1])
+
     PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax1.tick_params(axis='both', labelsize = 10)
     PhaseTicks.linearStr(ax2.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax2.tick_params(axis='both', labelsize = 10)
+    PhaseTicks.linearStr(ax3.yaxis, 0.2, 0.1, '${x:.1f}$')
+    ax3.tick_params(axis='both', labelsize = 10)
     
     ax1_bar = fig.add_subplot()
     ax1_bar.set_position(gs[:,181:].get_position(fig))
