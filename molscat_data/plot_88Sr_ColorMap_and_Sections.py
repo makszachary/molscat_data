@@ -84,6 +84,21 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
             plt.setp(ticklabel, visible=False)
     fig0_bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', fontsize = 11, va = 'center', ha = 'left')
 
+    ### plotting the section lines and their labels
+    if plot_section_lines:
+        section_distinguished_x = [[min(singlet_phases), max(triplet_phases)-phase_difference_distinguished],
+                                    [(min(triplet_phases) - phase_difference_distinguished ) % 1, max(singlet_phases)]
+                                    ]
+        section_distinguished_y = [[min(singlet_phases)+phase_difference_distinguished, max(triplet_phases)],
+                                   [min(triplet_phases), (max(singlet_phases) + phase_difference_distinguished) % 1 ]
+                                   ]
+        # color_map = cmcrameri.cm.devon
+        # theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
+        theory_distinguished_colors = ['k', 'k']
+        lines,  = fig0_ax.plot(section_distinguished_x[0], section_distinguished_y[0], color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
+        fig0_ax.plot(section_distinguished_x[1], section_distinguished_y[1], color = theory_distinguished_colors[1], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
+        
+        labelLines(lines, align = True, outline_width=2, fontsize = 8,)
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 
