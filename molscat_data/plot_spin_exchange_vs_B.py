@@ -123,7 +123,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     
     # theory = np.moveaxis( arrays_cold_lower[1,:,:,0], 0, -1)
     # theory_distinguished = np.moveaxis( arrays_cold_lower[1,:,T_index,0], 0, -1)
-    theory = np.moveaxis( np.array( [arrays_cold_lower[1,:,:,0], ]), 0, -1)
+    theory = arrays_cold_lower[1,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
     ax2 = fig.add_subplot(gs[120:180,1], sharex = ax1)
