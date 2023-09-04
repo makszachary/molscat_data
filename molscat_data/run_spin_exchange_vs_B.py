@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import time
-from multiprocessing import Pool, get_context
+from multiprocessing import Pool
 import subprocess
 import shutil
 import re
@@ -105,7 +105,7 @@ def create_and_run_SE_vs_B(molscat_input_template_path: Path | str, singlet_phas
 def create_and_run_parallel_SE_vs_B(molscat_input_templates: tuple[str, ...], phases: tuple[tuple[float, float], ...], magnetic_fields: tuple[float, ...], MF_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> list[Path]:
     t0 = time.perf_counter()
     output_dirs = []
-    with get_context("spawn").Pool() as pool:
+    with Pool() as pool:
        arguments = ( (x, *y, z, MF_in, MS_in, energy_tuple) for x, y, z in itertools.product( molscat_input_templates, phases, magnetic_fields))
        results = pool.starmap(create_and_run_SE_vs_B, arguments)
     
