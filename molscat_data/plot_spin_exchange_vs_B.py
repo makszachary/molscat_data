@@ -167,7 +167,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.tick_params(axis = 'both', labelsize = 10)
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
-    ax1_bar.yaxis.set_label_coords(1.8, 1.12)
+    ax1_bar.yaxis.set_label_coords(1.7, 1.12)
 
 
     ax0.text(-0.09, 1.11, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax0.transAxes, fontweight = 'bold')
