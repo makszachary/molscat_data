@@ -177,7 +177,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
     fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
-    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    # fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
