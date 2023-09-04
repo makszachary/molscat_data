@@ -180,7 +180,7 @@ def main():
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-    phases = zip(args.singlet_phases, args.triplet_phases)
+    phases = tuple(zip(args.singlet_phases, args.triplet_phases))
     magnetic_fields = np.arange(args.B_min, args.B_max+0.1*args.dB, args.dB)
 
     if args.temperatures is None:
