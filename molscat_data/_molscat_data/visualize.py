@@ -706,8 +706,8 @@ class ValuesVsModelParameters:
             try:
                 print(f'{xx.shape=}, {xx[yy_mask].shape=}, {yy.shape=}, {yy[yy_mask].shape=}')
                 ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = 2)
-            except ValueError:
-                print('ValueError; turning off yy_mask')
+            except (ValueError, IndexError) as error:
+                print(f'{error}; turning off yy_mask')
                 ax.plot(xx, yy, color = theory_colors[i], linewidth = 2)
 
         if theory_distinguished is not None:           
