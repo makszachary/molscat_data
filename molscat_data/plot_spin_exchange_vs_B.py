@@ -91,11 +91,11 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     figsize = (9*cm, 7.5*cm)
     dpi = 1000
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
-    ax0.set_xlim(0,1)
+    # ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(ax0.xaxis)
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
-        labelLine(ax0.get_lines()[i], 0.2, label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
-    labelLine(ax0.get_lines()[-1], 0.2, label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
+        labelLine(ax0.get_lines()[i], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
+    labelLine(ax0.get_lines()[-1], min(magnetic_fields)+0.2*(max(magnetic_fields-min(magnetic_fields))), label = f'$\\Delta\\Phi = {triplet_phase-singlet_phase:.2f}\\pi,\\, \\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
