@@ -161,8 +161,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-s", "--singlet_phases", nargs='*', type = list, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("-t", "--triplet_phases", nargs='*', type = list, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
     parser.add_argument("--B_min", type = float, default = 1.0)
@@ -180,7 +180,7 @@ def main():
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-    phases = tuple(zip(args.singlet_phases, args.triplet_phases))
+    phases = tuple(zip(list(args.singlet_phases), list(args.triplet_phases)))
     magnetic_fields = np.arange(args.B_min, args.B_max+0.1*args.dB, args.dB)
 
     if args.temperatures is None:
