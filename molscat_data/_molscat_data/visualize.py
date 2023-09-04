@@ -703,6 +703,7 @@ class ValuesVsModelParameters:
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
             try:
+                print(f'{xx.shape=}, {xx[yy_mask].shape=}, {yy.shape=}, {yy[yy_mask]=}')
                 ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = 2)
             except ValueError:
                 print('ValueError; turning off yy_mask')
@@ -712,12 +713,9 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                print(f'{yy.shape=}')
                 try:
                     ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
                 except (ValueError, IndexError) as error:
-                    print(xx.shape, yy.shape)
-                    print(tuple(map(slice, yy.shape)))
                     ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
             
                 ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
