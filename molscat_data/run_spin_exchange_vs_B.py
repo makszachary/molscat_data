@@ -301,7 +301,7 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel_SE_vs_B(molscat_input_templates, phases, magnetic_fields, args.MF_in, args.MS_in, energy_tuple)
+    #output_dirs = create_and_run_parallel_SE_vs_B(molscat_input_templates, phases, magnetic_fields, args.MF_in, args.MS_in, energy_tuple)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_scaling', f'{nenergies}_E', f'{args.singlet_phase:.4f}_{args.triplet_phase:.4f}')
