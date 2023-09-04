@@ -98,8 +98,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         ax0.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
-    labelLines(ax0.get_lines(), align = False, outline_width=2)
-    ax0.text(0.15, 0.75, f'$\\Delta\\Phi = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', fontsize = 11, transform = ax0.transAxes)
+    labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9,)
+    ax0.text(0.10, 0.20, f'$\\Delta\\Phi = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', fontsize = 9, transform = ax0.transAxes)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
