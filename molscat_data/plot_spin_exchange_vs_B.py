@@ -170,8 +170,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.yaxis.set_label_coords(2.1, 1.12)
 
 
-    ax0.text(-0., 1.00, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax0.transAxes, fontweight = 'bold')
-    ax1.text(-0.05, 1.00, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax1.transAxes, fontweight = 'bold')
+    ax0.text(-0.5, 1.05, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax0.transAxes, fontweight = 'bold')
+    ax1.text(-0.10, 1.05, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax1.transAxes, fontweight = 'bold')
     # fig.tight_layout()
     fig.subplots_adjust(left = 0.06, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
     # fig.tight_layout()
