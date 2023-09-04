@@ -108,7 +108,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     # theory = np.moveaxis(arrays_cold_lower_distinguished[:,:,0], 1, -1)
     # theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-    theory = np.moveaxis( np.array( [arrays_cold_lower[0,:,:,0], ]), 0, -1)
+    theory = arrays_cold_lower[0,:,:,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
     gs = gridspec.GridSpec(185,2)
