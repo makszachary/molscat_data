@@ -100,7 +100,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     # experiment = [exp_cold_lower[0,0],]
     # std = [exp_cold_lower[1,0],]
 
-    gs = gridspec.GridSpec(2,100)
+    gs = gridspec.GridSpec(2,100, fig1)
     fig1_ax0 = fig1.add_subplot(gs[0,:95])
     fig1_ax1 = fig1.add_subplot(gs[1,:95], sharex = fig1_ax0)
 
@@ -177,7 +177,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
 
     fig1.subplots_adjust(left = 0.15, top = 0.98, right = 0.9, bottom = 0.15, hspace = .0)
-    # fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
     plt.close()
 
