@@ -703,7 +703,7 @@ class ValuesVsModelParameters:
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
-            lw = 1
+            lw = 1.5
             try:
                 ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = lw)
             except (ValueError, IndexError) as error:
@@ -714,8 +714,8 @@ class ValuesVsModelParameters:
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                lw = 2
-                ls = 'dotted'
+                lw = 3
+                ls = (0,(1,10))
                 try:
                     ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
                 except (ValueError, IndexError) as error:
