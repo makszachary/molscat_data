@@ -56,8 +56,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
     exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_lower.dat')
 
-    experiment = [exp_cold_lower[0,0],]
-    std = [exp_cold_lower[1,0],]
+    experiment = np.array([exp_cold_lower[0,0],])
+    std = np.array([exp_cold_lower[1,0],])
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
@@ -81,7 +81,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig0_ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$', fontsize = 14)
     fig0_ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$', fontsize = 14)#, rotation = 0, lapelpad = 12)
 
-    fig0_bar.ax.axhspan(experiment[0]-std[0], experiment+std, color = '0.8', alpha=0.8)
+    fig0_bar.ax.axhspan((experiment-std)[0], (experiment+std)[0], color = '0.8', alpha=0.8)
     fig0_bar.ax.axhline(experiment[0], color = '1.0', linestyle = '-', linewidth = 2)
     for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
         if np.abs(tick - experiment) < 0.05:
@@ -92,8 +92,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 
-    experiment = [exp_cold_lower[0,0],]
-    std = [exp_cold_lower[1,0],]
+    # experiment = [exp_cold_lower[0,0],]
+    # std = [exp_cold_lower[1,0],]
 
     gs = gridspec.GridSpec(2,100)
     fig1_ax0 = fig1.add_subplot(gs[0,:95])
