@@ -83,7 +83,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # color_map = matplotlib.colormaps['twilight']
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
-    theory_distinguished_colors = ['firebrick', ]
+    theory_distinguished_colors = ['crimson', ]
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
