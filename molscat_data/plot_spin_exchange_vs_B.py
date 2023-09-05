@@ -108,7 +108,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_formattings = [ {'color': color, 'linewidth': 2} for color in theory_colors ]
+    theory_formattings = [ {'color': color, 'linewidth': 1.7} for color in theory_colors ]
     # theory_distinguished_colors = ['firebrick', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
