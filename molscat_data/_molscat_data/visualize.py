@@ -715,11 +715,12 @@ class ValuesVsModelParameters:
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
                 lw = 4
-                ls = '-'
+                # ls = '-'
+                formatting = {'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round'}
                 try:
-                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = lw, **formatting)
                 except (ValueError, IndexError) as error:
-                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = lw, linestyle = ls)
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = lw, **formatting)
             
             if experiment is not None:
                 ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
