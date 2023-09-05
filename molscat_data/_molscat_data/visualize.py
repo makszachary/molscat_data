@@ -696,36 +696,42 @@ class ValuesVsModelParameters:
         return fig, ax, ax_chisq
 
     @classmethod
-    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None):
+    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None):
         # labels = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # label_distinguished = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # print(np.moveaxis(theory, -1, 0).shape)
+        if theory_formattings is None:
+            theory_formattings = [{'linewidth': 2} for i in range(theory.shape[-1])]
+        if theory_distinguished_formattings is None:
+            theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-'} for i in range(theory_distinguished.shape[-1]) ]
+        
+        experiment_formattings = theory_distinguished_formattings.copy()
+        for format in experiment_formattings:
+            format['linestyle'] = '--'
+            format['linewidth'] = '2'
+          
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
-            lw = 2
             try:
-                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), color = theory_colors[i], linewidth = lw)
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]).squeeze(), yy[yy_mask].reshape(-1, yy.shape[-1]).squeeze(), **(theory_formattings[i]))
             except (ValueError, IndexError) as error:
                 print(f'{error}; turning off yy_mask')
-                ax.plot(xx, yy, color = theory_colors[i], linewidth = lw)
+                ax.plot(xx, yy, **(theory_formattings[i]))
 
         if theory_distinguished is not None:           
             for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
-                lw = 4
-                # ls = '-'
-                formatting = {'color': theory_distinguished_colors[i], 'linewidth': 4, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round'}
                 try:
-                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], **formatting)
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], **theory_distinguished_formattings[i])
                 except (ValueError, IndexError) as error:
-                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, **formatting)
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, **theory_distinguished_formattings[i])
             
-            if experiment is not None:
-                ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 2)
-                if std is not None:
-                    ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_distinguished_colors[i], alpha=0.2)
+                if experiment is not None:
+                    ax.axhline(experiment[i], **experiment_formattings[i])
+                    if std is not None:
+                        ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = experiment_formattings[i]['color'], alpha=0.2)
             
 
         ax.set_xlim(np.min(xx), np.max(xx))
@@ -736,7 +742,7 @@ class ValuesVsModelParameters:
         return ax
 
     @classmethod
-    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_colors = None, theory_distinguished_colors = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
+    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
         theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
         theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
 
@@ -744,7 +750,7 @@ class ValuesVsModelParameters:
 
         fig, ax = cls._initiate_simplest_plot(figsize, dpi)
 
-        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_colors = theory_colors, theory_distinguished_colors = theory_distinguished_colors)
+        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
         
         return fig, ax
 

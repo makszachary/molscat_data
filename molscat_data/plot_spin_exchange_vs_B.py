@@ -83,16 +83,17 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # color_map = matplotlib.colormaps['twilight']
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
-    theory_distinguished_colors = ['crimson', ]
+    theory_formattings = [ {'color': color} for color in theory_colors ]
+    theory_distinguished_formatting = {'color': 'crimson', 'linewidth': 3, 'linestyle':  '(0,(0.1,2))', 'dash_capstyle': 'round' }
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
     dpi = 1000
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
-    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_colors=theory_colors, theory_distinguished_colors=theory_distinguished_colors, figsize=figsize, dpi=dpi)
-    ax0.scatter([magnetic_field_experimental,], experiment, s = 12, c = theory_distinguished_colors[0], marker = 'd')
+    fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formatting=theory_distinguished_formatting, figsize=figsize, dpi=dpi)
+    ax0.scatter([magnetic_field_experimental,], experiment, s = 12, c = theory_distinguished_formatting['color'], marker = 'd')
     # print(std)
-    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_colors[0], capsize = 4)
+    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formatting['color'], capsize = 4)
     ax0.set_ylim(0, ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
@@ -106,6 +107,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
+    theory_formattings = [ {'color': color} for color in theory_colors ]
     # theory_distinguished_colors = ['firebrick', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
@@ -117,7 +119,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.set_subplotspec(gs[:,:120])
 
     ax1 = fig.add_subplot(gs[0,130:180], sharex = ax0)
-    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formatting=theory_distinguished_formatting)
     ax1.set_ylim(0, ax1.get_ylim()[1])
 
 
@@ -125,14 +127,14 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[1,:,T_index,0],]), 0, -1)
 
     ax2 = fig.add_subplot(gs[1,130:180], sharex = ax0)
-    ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax2 = ValuesVsModelParameters.plotValuestoAxis(ax2, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formatting=theory_distinguished_formatting)
     ax2.set_ylim(0, ax2.get_ylim()[1])
 
     theory = arrays_cold_lower[2,:,::2,0]
     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[2,:,T_index,0],]), 0, -1)
 
     ax3 = fig.add_subplot(gs[2,130:180], sharex = ax0)
-    ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, None, None, theory_distinguished, theory_colors, theory_distinguished_colors)
+    ax3 = ValuesVsModelParameters.plotValuestoAxis(ax3, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formatting=theory_distinguished_formatting)
     ax3.set_ylim(0, ax3.get_ylim()[1])
 
     PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
