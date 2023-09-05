@@ -85,7 +85,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
     theory_formattings = [ {'color': color} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 3, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
-    theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 3, 'linestyle':  '--' } for exp in experiment]
+    # theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 3, 'linestyle':  '--' } for exp in experiment]
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
@@ -164,9 +164,11 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.set_position(gs[:,181:].get_position(fig))
     ax1_bar.set_subplotspec(gs[:,181:])
 
+    bar_format = theory_distinguished_formattings[0].copy()
+    bar_format['linewidht'] = 4
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
+    bar.ax.axhline(plot_temperature, **bar_format)
     ax1_bar.tick_params(axis = 'both', labelsize = 10)
     ax1_bar.get_yaxis().labelpad = 4
     ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
