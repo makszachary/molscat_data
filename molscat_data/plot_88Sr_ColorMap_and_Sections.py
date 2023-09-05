@@ -181,9 +181,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:95])
 
     ### Add the axis for the temperature bar
-    fig1_ax1_bar = fig1.add_subplot()
-    fig1_ax1_bar.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:].get_position(fig1))
-    fig1_ax1_bar.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:])
+    fig1_ax1_bar = fig1.add_subplot(gs[int(1000*(lim0[1]-lim0[0]))+1:,96:])
 
     
     ### create the temperature bar
