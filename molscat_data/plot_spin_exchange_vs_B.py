@@ -83,16 +83,16 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # color_map = matplotlib.colormaps['twilight']
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
-    theory_distinguished_colors = ['k', ]
+    theory_distinguished_colors = ['firebrick', ]
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
     dpi = 1000
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_colors=theory_colors, theory_distinguished_colors=theory_distinguished_colors, figsize=figsize, dpi=dpi)
-    ax0.scatter([magnetic_field_experimental,], experiment, s = 12, c = 'k', marker = 'd')
+    ax0.scatter([magnetic_field_experimental,], experiment, s = 12, c = theory_distinguished_colors[0], marker = 'd')
     # print(std)
-    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = 'k', capsize = 4)
+    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_colors[0], capsize = 4)
     ax0.set_ylim(0, ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
@@ -106,7 +106,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_distinguished_colors = ['firebrick', ]
+    # theory_distinguished_colors = ['firebrick', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     theory = arrays_cold_lower[0,:,::2,0]
