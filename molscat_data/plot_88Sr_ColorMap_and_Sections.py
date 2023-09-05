@@ -127,8 +127,10 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
 
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
-    theory_distinguished_colors = ['k', ]
-    fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
+    # theory_distinguished_colors = ['k', ]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-' } for exp in experiment]
+    fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
 
     fig1_ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
@@ -142,13 +144,14 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_distinguished_colors = ['k', ]
+    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
-    fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors)
+    fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
 
     # draw the label for the experimental value in the upper plot
@@ -184,9 +187,11 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
 
     
     ### create the temperature bar
+    bar_format = theory_distinguished_formattings[0].copy()
+
     fig1_bar = matplotlib.colorbar.ColorbarBase(fig1_ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     fig1_bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    fig1_bar.ax.axhline(plot_temperature, color = '0.', linestyle = '-', linewidth = 4)
+    fig1_bar.ax.axhline(plot_temperature, **bar_format)
     fig1_ax1_bar.tick_params(axis = 'both', labelsize = 10)
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
