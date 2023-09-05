@@ -696,7 +696,7 @@ class ValuesVsModelParameters:
         return fig, ax, ax_chisq
 
     @classmethod
-    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None):
+    def plotValuestoAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, experiment_formattings = None):
         # labels = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # label_distinguished = ['' for yy in np.moveaxis(theory, -1, 0) ] if labels is None else labels
         # print(np.moveaxis(theory, -1, 0).shape)
@@ -704,11 +704,11 @@ class ValuesVsModelParameters:
             theory_formattings = [{'linewidth': 2} for i in range(theory.shape[-1])]
         if theory_distinguished_formattings is None:
             theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-'} for i in range(theory_distinguished.shape[-1]) ]
-        
-        experiment_formattings = theory_distinguished_formattings.copy()
-        for format in experiment_formattings:
-            format['linestyle'] = '--'
-            format['linewidth'] = '2'
+        if experiment_formattings is None:
+            experiment_formattings = theory_distinguished_formattings.copy()
+            for format in experiment_formattings:
+                format['linestyle'] = '--'
+                format['linewidth'] = '2'
           
         for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
             yy = yy.transpose()
@@ -742,7 +742,7 @@ class ValuesVsModelParameters:
         return ax
 
     @classmethod
-    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
+    def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, experiment_formattings = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
         _colors = ['darksalmon', 'lightsteelblue', 'moccasin']
         _distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
         theory_formattings = [ {'color': color} for color in _colors ] if theory_formattings is None else theory_formattings
@@ -752,7 +752,7 @@ class ValuesVsModelParameters:
 
         fig, ax = cls._initiate_simplest_plot(figsize, dpi)
 
-        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
+        cls.plotValuestoAxis(ax, xx, theory, experiment = experiment, std = std, theory_distinguished = theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
         
         return fig, ax
 
