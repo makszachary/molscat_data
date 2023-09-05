@@ -165,7 +165,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax1_bar.set_subplotspec(gs[:,181:])
 
     bar_format = theory_distinguished_formattings[0].copy()
-    bar_format['linewidht'] = 4
+    bar_format['linewidth'] = 4
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
     bar.ax.axhline(plot_temperature, **bar_format)
