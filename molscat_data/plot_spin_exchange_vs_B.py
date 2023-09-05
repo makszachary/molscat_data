@@ -92,7 +92,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     dpi = 1000
     # fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment, std, theory_distinguished, theory_colors, theory_distinguished_colors, figsize=figsize, dpi=dpi)
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings, figsize=figsize, dpi=dpi)
-    ax0.scatter([magnetic_field_experimental,], experiment, s = 14, c = theory_distinguished_formattings[0]['color'], marker = 'd')
+    ax0.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd')
     # print(std)
     ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
     ax0.set_ylim(0, ax0.get_ylim()[1])
