@@ -84,8 +84,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
     theory_formattings = [ {'color': color} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 4, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
-    # theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 3, 'linestyle':  '--' } for exp in experiment]
+    # theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 4, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '--' } for exp in experiment]
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
@@ -94,7 +94,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     fig, ax0 = ValuesVsModelParameters.plotValues(magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings, figsize=figsize, dpi=dpi)
     ax0.scatter([magnetic_field_experimental,], experiment, s = 12, c = theory_distinguished_formattings[0]['color'], marker = 'd')
     # print(std)
-    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 4)
+    ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 5)
     ax0.set_ylim(0, ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
