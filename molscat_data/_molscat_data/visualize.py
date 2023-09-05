@@ -743,8 +743,10 @@ class ValuesVsModelParameters:
 
     @classmethod
     def plotValues(cls, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, figsize = (9/2.54, 7.5/2.54), dpi = 300):
-        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin'] if theory_colors is None else theory_colors
-        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange'] if theory_distinguished_colors is None else theory_distinguished_colors
+        _colors = ['darksalmon', 'lightsteelblue', 'moccasin']
+        _distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
+        theory_formattings = [ {'color': color} for color in _colors ] if theory_formattings is None else theory_formattings
+        theory_distinguished_formattings = [ {'color': color} for color in _distinguished_colors ] if theory_distinguished_formattings is None else theory_distinguished_formattings
 
         experiment, std = np.array(experiment), np.array(std)
 
