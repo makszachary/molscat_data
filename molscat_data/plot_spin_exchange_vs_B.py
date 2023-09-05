@@ -84,8 +84,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in phases]))
     theory_formattings = [ {'color': color} for color in theory_colors ]
-    # theory_distinguished_formattings = [ {'color': 'crimson', 'linewidth': 4, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '--' } for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (0,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '--' } for exp in experiment]
 
     cm = 1/2.54
     figsize = (18.5*cm, 6*cm)
