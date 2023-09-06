@@ -4,7 +4,7 @@ import numpy as np
 import copy
 import matplotlib as mpl
 # mpl.rcParams['mathtext.fontset'] = 'cm'
-mpl.rcParams['mathtext.fontset'] = 'stixsans'
+# mpl.rcParams['mathtext.fontset'] = 'stixsans'
 mpl.rcParams['svg.fonttype'] = 'none'
 mpl.rcParams['pdf.fonttype'] = 42
 mpl.rcParams['pdf.use14corefonts'] = True
