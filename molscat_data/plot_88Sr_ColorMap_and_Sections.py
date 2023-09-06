@@ -144,7 +144,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
         labelLine(fig1_ax0.get_lines()[i], 0.4, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 2, color = 'white', fontsize = 9)
         labelLine(fig1_ax0.get_lines()[i], 0.4, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
     labelLine(fig1_ax0.get_lines()[-1], 0.4, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 2, fontsize = 9)
-    labelLine(fig1_ax0.get_lines()[i], 0.4, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.04-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.4, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_color = None, fontsize = 9)
     
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
