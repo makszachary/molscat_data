@@ -8,7 +8,8 @@ import numpy as np
 from sigfig import round
 
 import matplotlib
-matplotlib.rcParams['mathtext.fontset'] = 'cm'
+# matplotlib.rcParams['mathtext.fontset'] = 'cm' # sans: 'stixsans'
+matplotlib.rcParams['mathtext.fontset'] = 'stixsans'
 matplotlib.rcParams['svg.fonttype'] = 'none'
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['pdf.use14corefonts'] = True
