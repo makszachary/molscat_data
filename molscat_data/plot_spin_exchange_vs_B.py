@@ -107,8 +107,8 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         ax0.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
     # props = dict(boxstyle='round,pad=-0.05, rounding_size=0.2', facecolor='white', edgecolor='none')
-    labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9, color = 'white', va = 'center', ha = 'center')
-    labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, fontsize = 9, va = 'center', ha = 'center')
+    labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9, color = 'white', va = 'top', ha = 'center')
+    labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, fontsize = 9, va = 'top', ha = 'center')
     props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     ax0.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', fontsize = 10, va = 'bottom', ha = 'left', transform = ax0.transAxes, bbox = props)
 
