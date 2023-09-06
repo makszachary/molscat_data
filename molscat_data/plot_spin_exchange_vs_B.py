@@ -101,7 +101,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax0.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd')
     # print(std)
     ax0.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
-    ax0.set_ylim(0, ax0.get_ylim()[1])
+    ax0.set_ylim(0, 1.05*ax0.get_ylim()[1])
     PhaseTicks.linearStr(ax0.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(ax0.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
