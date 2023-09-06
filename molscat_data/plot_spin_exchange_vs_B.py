@@ -11,9 +11,9 @@ import matplotlib
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
 matplotlib.rcParams['svg.fonttype'] = 'none'
 matplotlib.rcParams['pdf.fonttype'] = 42
-# matplotlib.rcParams['ps.useafm'] = True
-# matplotlib.rcParams['pdf.use14corefonts'] = True
-# matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['ps.useafm'] = True
+matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['text.usetex'] = True
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, ticker
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -82,6 +82,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 
     prefix_for_image_path = 'peff_' if enhanced else 'p0_'
     png_path = plots_dir_path / 'paper' / f'{prefix_for_image_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_{prefix_for_image_path}vs_B_{plot_temperature:.2e}K.png'
+    pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -187,6 +188,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # fig.tight_layout()
     fig.savefig(png_path)#, bbox_inches='tight')#, pad_inches = 0.)
     fig.savefig(svg_path, transparent = True)#, bbox_inches='tight')#, pad_inches = 0.)
+    fig.savefig(pdf_path, transparent = True)
     plt.close()
 
 def main():
