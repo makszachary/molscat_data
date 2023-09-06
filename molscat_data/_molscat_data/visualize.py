@@ -4,16 +4,10 @@ import numpy as np
 import copy
 import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
+mpl.rcParams['svg.fonttype'] = 'none'
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['pdf.use14corefonts'] = True
 from matplotlib import pyplot as plt
-# params = {'text.usetex' : True,
-#           'font.size': 11,
-#           'axes.labelsize': 11,
-#           'legend.fontsize': 11,
-#           'font.family': 'lmodern',
-#           'text.latex.preamble': (
-#               r'\usepackage{lmodern}'
-#           )}
-# plt.rcParams.update(params)
 from matplotlib import lines
 from matplotlib import ticker
 from matplotlib import gridspec

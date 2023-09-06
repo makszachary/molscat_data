@@ -11,6 +11,7 @@ import matplotlib
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
 matplotlib.rcParams['svg.fonttype'] = 'none'
 matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['pdf.use14corefonts'] = True
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -137,9 +138,16 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig1_ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
     PhaseTicks.linearStr(fig1_ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
+    # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9, color = 'white')
+    # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = 9)
     for i, phase_difference in enumerate(phase_differences):
-        labelLine(fig1_ax0.get_lines()[i], 0.2, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 4, fontsize = 9, ha = 'left')
-    labelLine(fig1_ax0.get_lines()[-1], 0.2, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.04, outline_width = 4, fontsize = 9, ha = 'left')
+        fig1_ax0.get_lines()[i].set_label(f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$')
+    fig1_ax0.get_lines()[-1].set_label(f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$')
+    
+    labelLines(fig1_ax0.get_lines()[:-1], align = False, xvals = 0.4, yoffsets = 0.01, outline_width = 2, color = 'white', fontsize = 9)
+    labelLines(fig1_ax0.get_lines()[:-1], align = False, xvals = 0.4, yoffsets = 0.01-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.4, align = False, yoffset = 0.04, outline_width = 2, color = 'white', fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.4, align = False, yoffset = 0.04-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
     
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
