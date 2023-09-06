@@ -144,7 +144,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = 9)
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
     labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, fontsize = 9)
-    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_color = None, fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
     
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
@@ -205,8 +205,8 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     fig0_ax.text(-0.18, 1.00, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig0_ax.transAxes, fontweight = 'bold')
     fig1_ax0.text(-0.18, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig1_ax0.transAxes, fontweight = 'bold')
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0)
+    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+    fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     plt.close()
 
 
