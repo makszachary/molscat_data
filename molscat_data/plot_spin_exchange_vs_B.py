@@ -9,6 +9,11 @@ from sigfig import round
 
 import matplotlib
 matplotlib.rcParams['mathtext.fontset'] = 'cm'
+matplotlib.rcParams['svg.fonttype'] = 'none'
+matplotlib.rcParams['pdf.fonttype'] = 42
+# matplotlib.rcParams['ps.useafm'] = True
+# matplotlib.rcParams['pdf.use14corefonts'] = True
+# matplotlib.rcParams['text.usetex'] = True
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, ticker
 from mpl_toolkits.axes_grid1 import make_axes_locatable
