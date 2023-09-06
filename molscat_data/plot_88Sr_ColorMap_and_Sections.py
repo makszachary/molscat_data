@@ -141,10 +141,10 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9, color = 'white')
     # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = 9)
     for i, phase_difference in enumerate(phase_differences):
-        labelLine(fig1_ax0.get_lines()[i], 0.4, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 2, color = 'white', fontsize = 9)
-        labelLine(fig1_ax0.get_lines()[i], 0.4, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.01-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
-    labelLine(fig1_ax0.get_lines()[-1], 0.4, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.01, outline_width = 2, fontsize = 9)
-    labelLine(fig1_ax0.get_lines()[-1], 0.4, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.01, outline_color = None, fontsize = 9)
+        labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = 9)
+        labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, fontsize = 9)
+    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_color = None, fontsize = 9)
     
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
