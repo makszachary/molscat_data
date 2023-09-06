@@ -66,7 +66,7 @@ def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_p
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
     cm = 1/2.54
-    figsize = (18.5*cm, 7.5*cm)
+    figsize = (18.5*cm, 7.2*cm)
     dpi = 1000
 
     fig = plt.figure(figsize=figsize, dpi = dpi)
