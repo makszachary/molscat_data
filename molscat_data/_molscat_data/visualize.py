@@ -7,7 +7,8 @@ import matplotlib as mpl
 # mpl.rcParams['mathtext.fontset'] = 'stixsans'
 mpl.rcParams['mathtext.fontset'] = 'custom'
 mpl.rcParams['mathtext.it'] = 'Symbol'
-mpl.rcParams['font.family'] ='Helvetica'
+mpl.rcParams['font.family'] ='sans-serif'
+mpl.rcParams['font.sans-serif'] = 'Helvetica'
 mpl.rcParams['svg.fonttype'] = 'none'
 mpl.rcParams['pdf.fonttype'] = 42
 mpl.rcParams['pdf.use14corefonts'] = True

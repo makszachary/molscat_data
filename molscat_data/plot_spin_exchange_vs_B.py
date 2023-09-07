@@ -30,6 +30,7 @@ from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
+# scratch_path = Path(__file__).parents[3]
 
 data_dir_path = Path(__file__).parents[1] / 'data'
 pickles_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
@@ -202,7 +203,7 @@ def main():
     parser.add_argument("--B_min", type = float, default = 1.0)
     parser.add_argument("--B_max", type = float, default = 100.0)
     parser.add_argument("--dB", type = float, default = 1.0)
-    parser.add_argument("--nenergies", type = int, default = 100, help = "Number of energy values in a grid.")
+    parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
