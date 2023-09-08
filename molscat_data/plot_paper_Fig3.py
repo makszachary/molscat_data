@@ -189,9 +189,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
-    
-    fig0.subplots_adjust(left = 0.17, right = 0.97)
-    fig1.subplots_adjust(left = 0.17, right = 0.97, hspace = .0)
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
@@ -327,6 +324,12 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig1_ax0.text(0.5, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig2_ax.text(0., second_row_height/total_height, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig3_axs[0].text(0.67, second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+
+    fig0.subplots_adjust(left = 0.1, right = 0.97)
+    fig1.subplots_adjust(left = 0.17, right = 0.97, hspace = .0)
+    fig2.subplots_adjust(left = 0.1, right = 0.97)
+    fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60)
+
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
