@@ -190,6 +190,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
+    gs1.update(hspace=0.0)
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
@@ -304,7 +305,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    first_row_height = 7.5
+    first_row_height = 7.2
     vpad = 1
     second_row_height = 6
     total_height = first_row_height+vpad+second_row_height
