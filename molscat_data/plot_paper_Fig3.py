@@ -169,9 +169,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
 
-    gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),90)
-    fig1_ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:].get_position(fig1))
-    fig1_ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:])
+    gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),85)
+    fig1_ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
+    fig1_ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:-5])
     fig1_ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5].get_position(fig1))
     fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5])
 
@@ -313,7 +313,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     gs_Figure = gridspec.GridSpec(int(1000*total_height),180, fig)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),:90])
-    fig1 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),90:])
+    fig1 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),95:])
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
     fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
 
