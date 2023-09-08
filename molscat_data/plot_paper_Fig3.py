@@ -73,7 +73,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
         if np.abs(tick - experiment) < 0.05:
             print(f'{tick=}')
             plt.setp(ticklabel, visible=False)
-    fig0_bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', va = 'center', ha = 'left')
+    fig0_bar.ax.text(1.25, experiment, f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$', va = 'center', ha = 'left', fontsize = matplotlib.rcParams["xtick.labelsize"],)
 
     ### plotting the section lines and their labels
     if plot_section_lines:
