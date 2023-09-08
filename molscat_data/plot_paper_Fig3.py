@@ -191,7 +191,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
     
     
-    fig1.subplots_adjust(left = 0.1, right = 0.94, hspace = .0)
+    fig1.subplots_adjust(left = 0.15, right = 0.96, hspace = .0)
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
