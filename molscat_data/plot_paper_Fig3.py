@@ -192,8 +192,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_bar.ax.axhline(plot_temperature, **bar_format)
     fig1_ax1_bar.tick_params(axis = 'both')
     fig1_ax1_bar.get_yaxis().labelpad = 4
-    fig1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
-    fig1_bar.yaxis.set_label_coords(0.0, 1.05)
+    fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
+    fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.05)
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
