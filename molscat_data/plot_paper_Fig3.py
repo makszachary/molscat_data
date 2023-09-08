@@ -271,7 +271,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
     ### create the temperature bar
-    fig3_bar = fig3.add_subplot(gs[:,96:])
+    fig3_bar = fig3.add_subplot(gs[:,-4:])
 
     bar_format = theory_distinguished_formattings[0].copy()
     # bar_format['linewidth'] = 1
