@@ -170,7 +170,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
 
-    gs1 = gridspec.GridSpec(2, 90, fig1, left = 0.17, right = 0.97, hspace = 0., wspace = 0., height_ratios = [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
+    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = 0., wspace = 0., height_ratios = [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
     # fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
     # fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
     # fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
@@ -196,9 +196,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.tick_params(axis = 'both')
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
-    fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.05)
+    fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.15)
 
-    return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
+    return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1
 
 def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhanced = False):
     ## (c) Spin-exchange probabilities vs the magnetic field
@@ -296,7 +296,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
 
-    return fig2, fig2_ax, fig3, fig3_axs
+    return fig2, fig2_ax, fig3, fig3_axs, gs3
 
 def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, magnetic_enhanced = False, plot_section_lines = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
@@ -325,8 +325,8 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
     fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
 
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar = plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases, triplet_phases, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines)
-    fig2, fig2_ax, fig3, fig3_axs = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, MF_in, MS_in, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, enhanced = magnetic_enhanced)
+    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1 = plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases, triplet_phases, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines)
+    fig2, fig2_ax, fig3, fig3_axs, gs3 = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, MF_in, MS_in, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, enhanced = magnetic_enhanced)
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig1_ax0.text(0.5, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
@@ -334,9 +334,11 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig3_axs[0].text(0.67, second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
+    gs1.update(left = 0.17, right = 0.97)
     # fig1.subplots_adjust(left = 0.17, right = 0.97)
     fig2.subplots_adjust(left = 0.1, right = 0.97)
-    fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60, hspace = 0)
+    # fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60)
+    gs3.update(left = 0.17, right = 1-(0.03)*90/60)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
