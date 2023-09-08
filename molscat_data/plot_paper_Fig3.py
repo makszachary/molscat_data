@@ -89,8 +89,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
         lines  = fig0_ax.plot(section_distinguished_x[0], section_distinguished_y[0], color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
         fig0_ax.plot(section_distinguished_x[1], section_distinguished_y[1], color = theory_distinguished_colors[1], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {0.19:.2f}\\pi$')
         
-        labelLines(lines, align = True, outline_width=2, color = 'white', zorder = 3)
-        labelLines(lines, align = True, outline_color=None, zorder = 3)
+        labelLines(lines, align = True, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
+        labelLines(lines, align = True, outline_color=None, fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 

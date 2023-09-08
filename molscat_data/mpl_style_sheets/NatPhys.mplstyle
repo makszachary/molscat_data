@@ -5,4 +5,4 @@ axes.titlesize : 7
 axes.labelsize : 7
 xtick.labelsize : small
 ytick.labelsize : small
-font.size: 13
+font.size: 7
