@@ -227,7 +227,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_formattings = [ {'color': color, 'linewidth': 2} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (0.8,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
-    fig2_ax = fig2.add_subplot()
+    fig2_ax = fig2.add_subplot(1,1)
 
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
     fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd')
@@ -251,8 +251,8 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
 
-    gs = gridspec.GridSpec(3,100, fig3)
-    fig3_axs = [fig3.add_subplot(gs[i,:95], sharex = fig2_ax) for i in range(3)]
+    gs = gridspec.GridSpec(3,65, fig3)
+    fig3_axs = [fig3.add_subplot(gs[i,:-5], sharex = fig2_ax) for i in range(3)]
     
     for i, ax in enumerate(fig3_axs):
         theory = arrays_cold_lower[i,:,::2,0]
@@ -578,7 +578,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig0 = fig.add_subfigure(gs_Figure[:int(1000*7.2),:90])
     fig1 = fig.add_subfigure(gs_Figure[:int(1000*7.2),90:])
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*6):,115:])
-    fig3 = fig.add_subfigure(gs_Figure[-int(1000*6):,115:])
+    fig3 = fig.add_subfigure(gs_Figure[-int(1000*6):,:115])
 
     fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar = plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases, triplet_phases, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines)
     fig2, fig2_ax, fig3, fig3_axs = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, MF_in, MS_in, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, enhanced = magnetic_enhanced)
