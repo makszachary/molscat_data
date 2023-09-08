@@ -189,7 +189,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
-    fig1.subplots_adjust(left = 0.07, top = 1.0, right = 0.95, bottom = 0.1, hspace = .0)
+    # fig1.subplots_adjust(left = 0.07, top = 1.0, right = 0.95, bottom = 0.1, hspace = .0)
+    fig1.tight_layout()
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
