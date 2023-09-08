@@ -311,7 +311,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    first_row_height = 7.2
+    first_row_height = 7.5
     vpad = 1
     second_row_height = 6
     total_height = first_row_height+vpad+second_row_height
