@@ -108,7 +108,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     # std = [exp_cold_lower[1,0],]
 
     gs = gridspec.GridSpec(2,90, fig1)
-    fig1_ax0 = fig1.add_subplot(gs[0,:])
+    fig1_ax0 = fig1.add_subplot(gs[0,:-5])
     fig1_ax1 = fig1.add_subplot(gs[1,:-5], sharex = fig1_ax0)
 
     ### Plot sections for a single temperature but a few values of the phase difference
@@ -170,8 +170,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim1 = fig1_ax1.get_ylim()
 
     gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),90)
-    fig1_ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
-    fig1_ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:-5])
+    fig1_ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:].get_position(fig1))
+    fig1_ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:])
     fig1_ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5].get_position(fig1))
     fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5])
 
