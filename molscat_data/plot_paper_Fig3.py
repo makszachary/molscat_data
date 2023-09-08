@@ -172,11 +172,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     gs = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),85)
     fig1_ax0.set_position(gs[0:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs[0:int(1000*(lim0[1]-lim0[0])),:-5])
-    fig1_ax1.set_position(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5].get_position(fig1))
-    fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0]))+1:,:-5])
+    fig1_ax1.set_position(gs[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
+    fig1_ax1.set_subplotspec(gs[int(1000*(lim0[1]-lim0[0])):,:-5])
 
     ### Add the axis for the temperature bar
-    fig1_ax1_bar = fig1.add_subplot(gs[int(1000*(lim0[1]-lim0[0]))+1:,-4:])
+    fig1_ax1_bar = fig1.add_subplot(gs[int(1000*(lim0[1]-lim0[0])):,-4:])
 
     
     ### create the temperature bar
@@ -189,6 +189,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0)
     fig1_ax1_bar.yaxis.set_label_coords(2.1, 1.2)
+    fig1.subplots_adjust(left = 0.07, top = 1.0, right = 0.95, bottom = 0.1, hspace = .0)
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar
 
