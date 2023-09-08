@@ -140,7 +140,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (0.5,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
@@ -225,7 +225,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in magnetic_phases]))
     theory_formattings = [ {'color': color, 'linewidth': 2} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (0.5,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
     fig2_ax = fig2.add_subplot()
 
