@@ -251,7 +251,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
 
-    gs3 = gridspec.GridSpec(3,65, fig3)
+    gs3 = gridspec.GridSpec(3,60, fig3)
     gs3.update(hspace=0.0)
     fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(3)]
     
@@ -576,12 +576,12 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     figsize = (18*cm, (7.2+6+1)*cm)
     dpi = 1000
     fig = plt.figure(figsize=figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(int(1000*(7.2+6+1)),180, fig)
+    gs_Figure = gridspec.GridSpec(int(1000*(7.2+6+1)),180, fig, wspace = 0., hspace=0.)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[:int(1000*7.2),:90])
     fig1 = fig.add_subfigure(gs_Figure[:int(1000*7.2),90:])
-    fig2 = fig.add_subfigure(gs_Figure[-int(1000*6):,:115])
-    fig3 = fig.add_subfigure(gs_Figure[-int(1000*6):,115:])
+    fig2 = fig.add_subfigure(gs_Figure[-int(1000*6):,:120])
+    fig3 = fig.add_subfigure(gs_Figure[-int(1000*6):,120:])
 
     fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar = plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases, triplet_phases, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines)
     fig2, fig2_ax, fig3, fig3_axs = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, MF_in, MS_in, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, enhanced = magnetic_enhanced)
