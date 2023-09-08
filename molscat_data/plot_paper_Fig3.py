@@ -251,8 +251,9 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
 
-    gs = gridspec.GridSpec(3,65, fig3)
-    fig3_axs = [fig3.add_subplot(gs[i,:-5], sharex = fig2_ax) for i in range(3)]
+    gs3 = gridspec.GridSpec(3,65, fig3)
+    gs3.update(hspace=0.0)
+    fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(3)]
     
     for i, ax in enumerate(fig3_axs):
         theory = arrays_cold_lower[i,:,::2,0]
@@ -271,7 +272,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
     ### create the temperature bar
-    fig3_bar = fig3.add_subplot(gs[:,-4:])
+    fig3_bar = fig3.add_subplot(gs3[:,-4:])
 
     bar_format = theory_distinguished_formattings[0].copy()
     # bar_format['linewidth'] = 1
