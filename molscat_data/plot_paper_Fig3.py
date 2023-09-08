@@ -107,7 +107,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     # experiment = [exp_cold_lower[0,0],]
     # std = [exp_cold_lower[1,0],]
 
-    gs1 = gridspec.GridSpec(2,90, fig1, hspace = 0.01)
+    gs1 = gridspec.GridSpec(2,90, fig1, hspace = 0.0)
     fig1_ax0 = fig1.add_subplot(gs1[0,:-5])
     fig1_ax1 = fig1.add_subplot(gs1[1,:-5], sharex = fig1_ax0)
 
@@ -168,7 +168,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
 
-    gs1 = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),90, fig1, hspace = 0.)
+    gs1 = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))), 90, fig1, hspace = 0.)
     fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
     fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
@@ -303,7 +303,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    first_row_height = 7.2
+    first_row_height = 9
     vpad = 1
     second_row_height = 6
     total_height = first_row_height+vpad+second_row_height
@@ -333,6 +333,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+
     plt.close()
 
 def main():
