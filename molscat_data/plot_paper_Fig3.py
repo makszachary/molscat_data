@@ -107,7 +107,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     # experiment = [exp_cold_lower[0,0],]
     # std = [exp_cold_lower[1,0],]
 
-    gs1 = gridspec.GridSpec(2,90, fig1)
+    gs1 = gridspec.GridSpec(2,90, fig1, hspace = 0.01)
     fig1_ax0 = fig1.add_subplot(gs1[0,:-5])
     fig1_ax1 = fig1.add_subplot(gs1[1,:-5], sharex = fig1_ax0)
 
@@ -120,7 +120,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
-    # theory_distinguished_colors = ['k', ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-' } for exp in experiment]
     fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
 
@@ -169,12 +168,12 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
 
-    gs1 = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),90, fig1)
+    gs1 = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))),90, fig1, hspace = 0.)
     fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
     fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
     fig1_ax1.set_subplotspec(gs1[int(1000*(lim0[1]-lim0[0])):,:-5])
-    gs1.update(hspace=0.0)
+    # gs1.update(hspace=0.0)
 
     ### Add the axis for the temperature bar
     fig1_ax1_bar = fig1.add_subplot(gs1[int(1000*(lim0[1]-lim0[0])):,-4:])
