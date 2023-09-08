@@ -576,10 +576,10 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     figsize = (18*cm, (7.2+6+1)*cm)
     dpi = 1000
     fig = plt.figure(figsize=figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(int(1000*(7.2+6+1)),180, fig, wspace = 0., hspace=0.)
+    gs_Figure = gridspec.GridSpec(int(1000*(7.5+6+1)),180, fig, wspace = 0., hspace=0.)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    fig0 = fig.add_subfigure(gs_Figure[:int(1000*7.2),:90])
-    fig1 = fig.add_subfigure(gs_Figure[:int(1000*7.2),90:])
+    fig0 = fig.add_subfigure(gs_Figure[:int(1000*7.5),:90])
+    fig1 = fig.add_subfigure(gs_Figure[:int(1000*7.5),90:])
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*6):,:120])
     fig3 = fig.add_subfigure(gs_Figure[-int(1000*6):,120:])
 
