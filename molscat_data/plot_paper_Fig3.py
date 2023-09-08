@@ -168,15 +168,20 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
 
-    gs1 = gridspec.GridSpec(int(1000*((lim0[1]-lim0[0])+(lim1[1]-lim1[0]))), 90, fig1, hspace = 0.)
-    fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
-    fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
-    fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
-    fig1_ax1.set_subplotspec(gs1[int(1000*(lim0[1]-lim0[0])):,:-5])
+    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = 0., wspace = 0., height_ratios = [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
+    # fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
+    # fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
+    # fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
+    # fig1_ax1.set_subplotspec(gs1[int(1000*(lim0[1]-lim0[0])):,:-5])
     # gs1.update(hspace=0.0)
+    fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
+    fig1_ax0.set_subplotspec(gs1[0,:-5].get_position(fig1))
+    fig1_ax1.set_position(gs1[1,:-5].get_position(fig1))
+    fig1_ax1.set_subplotspec(gs1[1,:-5].get_position(fig1))
 
     ### Add the axis for the temperature bar
-    fig1_ax1_bar = fig1.add_subplot(gs1[int(1000*(lim0[1]-lim0[0])):,-4:])
+    # fig1_ax1_bar = fig1.add_subplot(gs1[int(1000*(lim0[1]-lim0[0])):,-4:])
+    fig1_ax1_bar = fig1.add_subplot(gs1[1:,-4:])
 
     
     ### create the temperature bar
