@@ -176,10 +176,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     # fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
     # fig1_ax1.set_subplotspec(gs1[int(1000*(lim0[1]-lim0[0])):,:-5])
     # gs1.update(hspace=0.0)
-    fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
-    fig1_ax0.set_subplotspec(gs1[0,:-5])
-    fig1_ax1.set_position(gs1[1,:-5].get_position(fig1))
-    fig1_ax1.set_subplotspec(gs1[1,:-5])
+    
+    # fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
+    # fig1_ax0.set_subplotspec(gs1[0,:-5])
+    # fig1_ax1.set_position(gs1[1,:-5].get_position(fig1))
+    # fig1_ax1.set_subplotspec(gs1[1,:-5])
 
     ### Add the axis for the temperature bar
     # fig1_ax1_bar = fig1.add_subplot(gs1[int(1000*(lim0[1]-lim0[0])):,-4:])
