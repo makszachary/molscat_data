@@ -286,7 +286,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     fig3_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
     fig3_bar.yaxis.set_label_coords(0.0, 1.05)
 
-    fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
+    # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
 
     return fig2, fig2_ax, fig3, fig3_axs
 
