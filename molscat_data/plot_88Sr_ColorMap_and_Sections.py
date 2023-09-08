@@ -8,11 +8,6 @@ import numpy as np
 from sigfig import round
 
 import matplotlib
-# matplotlib.rcParams['mathtext.fontset'] = 'cm' # sans: 'stixsans'
-# matplotlib.rcParams['mathtext.fontset'] = 'stixsans'
-# matplotlib.rcParams['svg.fonttype'] = 'none'
-# matplotlib.rcParams['pdf.fonttype'] = 42
-# matplotlib.rcParams['pdf.use14corefonts'] = True
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -39,7 +34,8 @@ arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
 
-def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False, plot_section_lines = False):
+def plotColorMapAndSections(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.04_step', hybrid = False, plot_section_lines = False, journal_name = 'NatCommun'):
+    plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -226,6 +222,7 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--hybrid", action = 'store_true', help = "If enabled, the probabilities will be taken from 'probabilities_hybrid' directories.")
     parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section line for the distinguished phase difference will be drawn.")
+    parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -244,8 +241,8 @@ def main():
         temperatures = np.array(sorted(temperatures))
     else:
         temperatures = np.array(args.temperatures)
-
-    [plotColorMapAndSections(singlet_phases = singlet_phases, triplet_phases = triplet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid, plot_section_lines = args.plot_section_lines) for temperature in temperatures]
+    
+    [plotColorMapAndSections(singlet_phases = singlet_phases, triplet_phases = triplet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, hybrid = args.hybrid, plot_section_lines = args.plot_section_lines, journal_name = args.journal) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()

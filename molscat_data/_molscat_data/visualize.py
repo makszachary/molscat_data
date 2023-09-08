@@ -4,15 +4,11 @@ import numpy as np
 import copy
 import matplotlib as mpl
 # mpl.rcParams['mathtext.fontset'] = 'cm'
-# mpl.rcParams['mathtext.fontset'] = 'stixsans'
-mpl.rcParams['mathtext.fontset'] = 'custom'
-mpl.rcParams['mathtext.it'] = 'Symbol'
-mpl.rcParams['font.family'] ='sans-serif'
-mpl.rcParams['font.sans-serif'] = 'Helvetica'
-mpl.rcParams['svg.fonttype'] = 'none'
-mpl.rcParams['pdf.fonttype'] = 42
-mpl.rcParams['pdf.use14corefonts'] = True
+# mpl.rcParams['svg.fonttype'] = 'none'
+# mpl.rcParams['pdf.fonttype'] = 42
+# mpl.rcParams['pdf.use14corefonts'] = True
 from matplotlib import pyplot as plt
+# plt.style.use(Path(__file__).parents[1] / 'mpl_style_sheets' / 'nat_phys.mplstyle')
 from matplotlib import lines
 from matplotlib import ticker
 from matplotlib import gridspec
@@ -735,7 +731,7 @@ class ValuesVsModelParameters:
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
+        ax.tick_params(which='both', direction='in', top = True, right = True, length = 8)
         ax.tick_params(which='minor', length = 4)
 
         return ax
@@ -798,10 +794,10 @@ class ContourMap:
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
         PhaseTicks.setInMultiplesOfPhi(ax.yaxis)
 
-        ax.tick_params(which='both', direction='in', top = True, right = True, labelsize = 11, length = 8)
+        ax.tick_params(which='both', direction='in', top = True, right = True, length = 8)
         ax.tick_params(which='minor', length = 4)
 
-        bar.ax.tick_params(axis ='both', which = 'both', labelsize=11) 
+        bar.ax.tick_params(axis ='both', which = 'both') 
         bar.ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
         
         return fig, ax, ax_bar, bar

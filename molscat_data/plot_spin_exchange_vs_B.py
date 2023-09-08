@@ -1,3 +1,4 @@
+import sys
 import os
 from pathlib import Path
 import argparse
@@ -8,11 +9,6 @@ import numpy as np
 from sigfig import round
 
 import matplotlib
-# matplotlib.rcParams['mathtext.fontset'] = 'cm'
-# matplotlib.rcParams['svg.fonttype'] = 'none'
-# matplotlib.rcParams['pdf.fonttype'] = 42
-# matplotlib.rcParams['pdf.use14corefonts'] = True
-# matplotlib.rcParams['text.usetex'] = True
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, ticker
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -30,7 +26,8 @@ from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
-# scratch_path = Path(__file__).parents[3]
+if sys.platform == 'win32':
+    scratch_path = Path(__file__).parents[3]
 
 data_dir_path = Path(__file__).parents[1] / 'data'
 pickles_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
@@ -42,7 +39,9 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhanced = False):
+def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distinguished: tuple[float, float], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', enhanced = False, journal_name = 'NatCommun'):
+    plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
+
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -81,7 +80,7 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     theory_distinguished = None
 
     prefix_for_image_path = 'peff_' if enhanced else 'p0_'
-    png_path = plots_dir_path / 'paper' / f'{prefix_for_image_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_{prefix_for_image_path}vs_B_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / f'{journal_name}' / f'{prefix_for_image_path}f=1_SE_vs_B' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SE_{prefix_for_image_path}vs_B_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
@@ -107,10 +106,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     for i, (singlet_phase, triplet_phase) in enumerate(phases):
         ax0.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
     # props = dict(boxstyle='round,pad=-0.05, rounding_size=0.2', facecolor='white', edgecolor='none')
-    labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 9, color = 'white')
-    labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = 9)
+    labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = 'small', color = 'white')
+    labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = 'small')
     props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
-    ax0.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', fontsize = 10, va = 'bottom', ha = 'left', transform = ax0.transAxes, bbox = props)
+    ax0.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(phases[0][1]-phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax0.transAxes, bbox = props)
 
     # color_map = matplotlib.colormaps['plasma'] or 'inferno'
     color_map = cmocean.cm.thermal
@@ -120,13 +119,13 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     # theory_distinguished_colors = ['firebrick', ]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
-    theory = arrays_cold_lower[0,:,::2,0]
-    theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
 
     gs = gridspec.GridSpec(3,185)
     ax0.set_position(gs[:,:120].get_position(fig))
     ax0.set_subplotspec(gs[:,:120])
 
+    theory = arrays_cold_lower[0,:,::2,0]
+    theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[0,:,T_index,0],]), 0, -1)
     ax1 = fig.add_subplot(gs[0,131:181], sharex = ax0)
     ax1 = ValuesVsModelParameters.plotValuestoAxis(ax1, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
     ax1.set_ylim(0, ax1.get_ylim()[1])
@@ -148,13 +147,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
 
     PhaseTicks.linearStr(ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax1.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-    ax1.tick_params(axis='both', labelsize = 10)
     PhaseTicks.linearStr(ax2.yaxis, 0.2, 0.1, '${x:.1f}$')
     ax2.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-    ax2.tick_params(axis='both', labelsize = 10)
-    # PhaseTicks.linearStr(ax3.yaxis, 0.1, 0.05, '${x:.1f}$')
+    PhaseTicks.linearStr(ax3.yaxis, 0.1, 0.05, '${x:.1f}$')
     ax3.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-    ax3.tick_params(axis='both', labelsize = 10)
     
 
     plt.setp(ax1.get_xticklabels(), visible=False)
@@ -162,10 +158,10 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     ax2.yaxis.get_major_ticks()[-1].label1.set_visible(False)
     ax3.yaxis.get_major_ticks()[-1].label1.set_visible(False)
     
-    ax0.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
-    ax3.set_xlabel(f'$B\\,(\\mathrm{{G}})$', fontsize = 14)
+    ax0.set_xlabel(f'$B\\,(\\mathrm{{G}})$')
+    ax3.set_xlabel(f'$B\\,(\\mathrm{{G}})$')
     ylabel = f'$p_\mathrm{{eff}}$' if enhanced else f'$p_0$'
-    ax0.set_ylabel(ylabel, fontsize = 14)#, rotation = 0, lapelpad = 12)
+    ax0.set_ylabel(ylabel)#, rotation = 0, lapelpad = 12)
 
     # create the temperature bar
     ax1_bar = fig.add_subplot(gs[:,182:])
@@ -177,15 +173,14 @@ def plot_probability_vs_B(phases: tuple[tuple[float, float], ...], phases_distin
     bar = matplotlib.colorbar.ColorbarBase(ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
     bar.ax.axhline(plot_temperature, **bar_format)
-    ax1_bar.tick_params(axis = 'both', labelsize = 10)
+    ax1_bar.tick_params(axis = 'both')
     ax1_bar.get_yaxis().labelpad = 4
-    ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, fontsize = 10)
-    ax1_bar.yaxis.set_label_coords(2.1, 1.12)
+    ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
+    ax1_bar.yaxis.set_label_coords(0.0, 1.05)
 
 
-    ax0.text(-0.09, 1.11, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax0.transAxes, fontweight = 'bold')
-    ax1.text(-0.14, 1.33, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax1.transAxes, fontweight = 'bold')
-    # fig.tight_layout()
+    ax0.text(-0.09, 1.11, f'c', family = 'sans-serif', fontsize = 7, va = 'top', ha = 'left', transform = ax0.transAxes, fontweight = 'bold')
+    ax1.text(-0.14, 1.33, f'd', family = 'sans-serif', fontsize = 7, va = 'top', ha = 'left', transform = ax1.transAxes, fontweight = 'bold')
     fig.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
     # fig.tight_layout()
     fig.savefig(png_path)#, bbox_inches='tight')#, pad_inches = 0.)
@@ -210,6 +205,7 @@ def main():
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--enhanced", action = 'store_true', help = "If enabled, the effective probabilities will be plotted instead of the short-range p0.")
+    parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for")
     args = parser.parse_args()
 
     F1, MF1, F2, MF2 = 2, args.MF_in, 1, args.MS_in
@@ -226,7 +222,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plot_probability_vs_B(phases = phases, phases_distinguished= (0.04, 0.23), magnetic_fields = magnetic_fields, magnetic_field_experimental = 3., MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, enhanced = args.enhanced) for temperature in temperatures]
+    [plot_probability_vs_B(phases = phases, phases_distinguished= (0.04, 0.23), magnetic_fields = magnetic_fields, magnetic_field_experimental = 3., MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, input_dir_name = args.input_dir_name, enhanced = args.enhanced, journal_name = args.journal) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
