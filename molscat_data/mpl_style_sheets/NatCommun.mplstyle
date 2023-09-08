@@ -3,6 +3,6 @@ pdf.fonttype: 42
 pdf.use14corefonts: True
 axes.titlesize : 11
 axes.labelsize : 11
-xtick.labelsize : 9
-ytick.labelsize : 9
+xtick.labelsize : small
+ytick.labelsize : small
 font.size: 11
