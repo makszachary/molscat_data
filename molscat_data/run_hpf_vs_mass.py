@@ -257,7 +257,7 @@ def main():
     so_scaling_value = 0.375
 
     # reduced_masses = np.linspace(args.mass_min, args.mass_max, args.nmasses)
-    reduced_masses = np.arange(args.mass_in, args.mass_max+0.5*args.dmass, args.dmass)
+    reduced_masses = np.arange(args.mass_min, args.mass_max+0.5*args.dmass, args.dmass)
 
     if args.temperatures is None:
         temperatures = list(np.logspace(-4, -2, 20))
