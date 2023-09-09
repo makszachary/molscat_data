@@ -57,6 +57,11 @@ mass_86Sr =  85.9092606    # NIST
 mass_87Sr =  86.9088775    # NIST
 mass_88Sr =  87.9056125    # NIST
 
+red_mass_87Rb_84Sr_amu = amu_to_au*mass_87Rb*mass_84Sr/(mass_87Rb+ mass_84Sr)
+red_mass_87Rb_86Sr_amu = amu_to_au*mass_87Rb*mass_86Sr/(mass_87Rb+ mass_86Sr)
+red_mass_87Rb_87Sr_amu = amu_to_au*mass_87Rb*mass_87Sr/(mass_87Rb+ mass_87Sr)
+red_mass_87Rb_88Sr_amu = amu_to_au*mass_87Rb*mass_88Sr/(mass_87Rb+ mass_88Sr)
+
 red_mass_87Rb_84Sr = amu_to_au*mass_87Rb*mass_84Sr/(mass_87Rb+ mass_84Sr)
 red_mass_87Rb_86Sr = amu_to_au*mass_87Rb*mass_86Sr/(mass_87Rb+ mass_86Sr)
 red_mass_87Rb_87Sr = amu_to_au*mass_87Rb*mass_87Sr/(mass_87Rb+ mass_87Sr)
