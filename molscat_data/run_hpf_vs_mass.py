@@ -231,6 +231,7 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--mass_min", type = float, default = 40.0, help = "Minimum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--mass_max", type = float, default = 44.0, help = "Maximum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--dmass", type = int, default = 0.05, help = "Number of reduced masses in the grid.")
@@ -247,7 +248,7 @@ def main():
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     args.singlet_phase = args.singlet_phase if args.singlet_phase is not None else default_singlet_phase_function(1.0)
-    args.triplet_phase = args.triplet_phase if args.triplet_phase is not None else default_triplet_phase_function(1.0)
+    args.triplet_phase = args.triplet_phase if args.triplet_phase is not None else args.singlet_phase + args.phase_difference if args.phase_difference is not None else default_triplet_phase_function(1.0)
 
     phases = ((args.singlet_phase, args.triplet_phase),)
     singlet_phase = args.singlet_phase
