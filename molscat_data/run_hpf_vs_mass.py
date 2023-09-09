@@ -234,7 +234,7 @@ def main():
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--mass_min", type = float, default = 40.0, help = "Minimum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--mass_max", type = float, default = 44.0, help = "Maximum reduced mass for the grid (in a.m.u.).")
-    parser.add_argument("--dmass", type = int, default = 0.05, help = "Number of reduced masses in the grid.")
+    parser.add_argument("--dmass", type = float, default = 0.05, help = "Number of reduced masses in the grid.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
