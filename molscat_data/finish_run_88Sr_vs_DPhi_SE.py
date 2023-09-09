@@ -157,6 +157,11 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
              f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
     abbreviations = ['hpf', 'cold_higher', 'cold_lower']
 
+    archive_dir_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
+    archive_name = archive_dir_path.parent / (archive_dir_path.name+'.zip')
+    if archive_name.is_file():
+        shutil.unpack_archive(archive_name, archive_dir_path, 'zip')
+
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
 
@@ -165,21 +170,24 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
         txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
+        k_L_E_dir = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / 'k_L_E' / f'{abbreviation}'
+        k_m_L_E_dir = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / 'k_m_L_E' / f'{abbreviation}'
+
+        if txt_path.is_file() and output_state_res_txt_path.is_file() and k_L_E_dir.is_dir() and k_m_L_E_dir.is_dir(): continue
+
         rate_array, momentum_transfer_rate_array = k_L_E_SE_not_parallel(*arg)
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
-            k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
-            k_L_E_txt_path = k_L_E_txt_path / f'k_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_L_E_txt_path = k_L_E_dir / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. Spin-orbit and spin-spin terms are NOT included.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}')
-            k_m_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
-            k_m_E_txt_path = k_m_E_txt_path / f'k_m_L_E' / f'{abbreviation}' / f'IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
+            k_m_E_txt_path = k_m_L_E_dir / f'IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_m_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
             np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. Spin-orbit and spin-spin terms are NOT included.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
-        correct_momentum_transfer_rate_array = momentum_transfer_rate = np.full(momentum_transfer_rate_array.shape, s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices) )
+        correct_momentum_transfer_rate_array = np.full(momentum_transfer_rate_array.shape, s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices) )
         average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(correct_momentum_transfer_rate_array.sum(len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         # average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
@@ -209,6 +217,8 @@ def calculate_and_save_k_L_E_SE_and_peff_not_parallel(pickle_path: Path | str, p
         print(f"It took {duration:.2f} s.")
 
     shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix(''), 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix(''))
+    [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
+    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent)
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
