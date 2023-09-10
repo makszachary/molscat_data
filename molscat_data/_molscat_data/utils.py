@@ -105,6 +105,7 @@ def probability(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[
 
     return probability
 
+
 def probability_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:
     
     args = locals().copy()
@@ -159,7 +160,6 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
     t0=time.perf_counter()
     momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 1, MF2 = -1), unit = 'cm**3/s', param_indices = param_indices)
     print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
-    # print(f'{momentum_transfer_rate.shape=}')
 
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
     array_like = False
@@ -186,6 +186,46 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
     rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
 
     return rate, momentum_transfer_rate
+
+
+def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:
+    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    args.pop('dLMax')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    t0=time.perf_counter()
+    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 10, MF2 = -10), unit = 'cm**3/s', param_indices = param_indices)
+    print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
+        
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+
+    if array_like:
+        with Pool() as pool:
+            arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
+            results = pool.starmap(rate_fmfsms_vs_L, arguments)
+            rate_shape = results[0].shape
+            rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+            momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
+
+            return rate, momentum_transfer_rate
+    
+    rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
+
+    return rate, momentum_transfer_rate
+
 
 
 def k_L_E_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:    
