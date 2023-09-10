@@ -228,7 +228,7 @@ def calculate_and_save_k_L_E_and_peff_not_parallel(pickle_path: Path | str, phas
     return
 
 
-def calculate_and_save_the_peff_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
+def calculate_and_save_peff_parallel(pickle_path: Path | str, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
@@ -380,12 +380,11 @@ def main():
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
     pickle_paths = np.unique(pickle_paths)
 
-    with Pool() as pool:
-        t0 = time.perf_counter()
-        pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle' for reduced_mass in reduced_masses)
-        arguments = tuple( (pickle_path, phase, 4, temperatures) for pickle_path, phase in zip(pickle_paths, phases) )
-        pool.starmap(calculate_and_save_k_L_E_and_peff_not_parallel, arguments)
-        print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
+
+    t0 = time.perf_counter()
+    pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle' for reduced_mass in reduced_masses)
+    [calculate_and_save_peff_parallel(pickle_path, phases[0], 4, temperatures) for pickle_path in pickle_paths]
+    print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 if __name__ == "__main__":
     main()
