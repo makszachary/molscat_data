@@ -400,17 +400,16 @@ def main():
     
 
     # ### RUN MOLSCAT ###
-    # output_dirs = create_and_run_parallel(molscat_input_templates, phases, energy_tuple)
+    output_dirs = create_and_run_parallel(molscat_input_templates, phases, energy_tuple)
 
     # # ### COLLECT S-MATRIX AND PICKLE IT ####
-    # # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld', f'{nenergies}_E', f'{args.singlet_phase}_{args.triplet_phase}')
-    # pickle_paths = []
-    # for singlet_phase, triplet_phase in phases:
-    #     output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' 
-    #     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, ((singlet_phase, triplet_phase),), energy_tuple )
-    #     pickle_paths.append(pickle_path)
-    #     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-    # pickle_paths = np.unique(pickle_paths)
+    pickle_paths = []
+    for singlet_phase, triplet_phase in phases:
+        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' 
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, ((singlet_phase, triplet_phase),), energy_tuple )
+        pickle_paths.append(pickle_path)
+        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    pickle_paths = np.unique(pickle_paths)
 
     # ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     # # pickle_paths = tuple( pickles_dir_path / args.input_dir_name / f'{nenergies}_E' / f'{phases[0][0]:.4f}_{triplet_phase:.4f}.pickle' for triplet_phase in phases[1] )
