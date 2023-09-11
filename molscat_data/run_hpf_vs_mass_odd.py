@@ -368,7 +368,7 @@ def main():
     L_max = 2*79
     T_min = 8-4
     T_max = 10+4+L_max
-    dT_max = 10
+    dT_max = 20
     output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
