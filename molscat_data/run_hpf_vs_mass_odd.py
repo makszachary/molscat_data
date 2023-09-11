@@ -51,7 +51,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
@@ -64,8 +64,8 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
 
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}_{T_min}_{T_max}_{L_max}').with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}_{T_min}_{T_max}_{L_max}').with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
@@ -76,11 +76,14 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
 
     scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
-
+    # NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
     with open(molscat_input_template_path, 'r') as molscat_template:
         input_content = molscat_template.read()
         input_content = re.sub("NENERGIES", str(int(nenergies)), input_content, flags = re.M)
         input_content = re.sub("ENERGYARRAY", molscat_energy_array_str, input_content, flags = re.M)
+        input_content = re.sub("NJTOTMIN", str(int(T_min)), input_content, flags = re.M)
+        input_content = re.sub("NJTOTMAX", str(int(T_max)), input_content, flags = re.M)
+        input_content = re.sub("NLMAX", str(int(L_max/2)), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
@@ -102,11 +105,12 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, energy_tuple: tuple[float, ...]) -> set:
+def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, energy_tuple) for x, reduced_mass in itertools.product( molscat_input_templates, reduced_masses))
+    #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
+       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, Jtotmin, Jtotmin+dT_max-2, L_max, energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max-dT_max/2, dT_max)))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -361,7 +365,11 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     # ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, energy_tuple, )
+    L_max = 2*79
+    T_min = 8-4
+    T_max = 10+4+L_max
+    dT_max = 10
+    output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # output_dir = Path(__file__).parents[1].joinpath('molscat', 'outputs', 'RbSr+_tcpld_so_scaling', f'{nenergies}_E', f'{args.singlet_phase:.4f}_{args.triplet_phase:.4f}')
