@@ -1,7 +1,8 @@
 from pathlib import Path
 import os
 import time
-from multiprocessing import Pool
+# from multiprocessing import Pool
+from ray.util.multiprocessing import Pool
 import subprocess
 import shutil
 import re
