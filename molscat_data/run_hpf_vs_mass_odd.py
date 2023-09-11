@@ -51,7 +51,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, T_min: int, T_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
