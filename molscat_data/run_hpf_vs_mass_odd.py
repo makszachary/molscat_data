@@ -1,8 +1,9 @@
 from pathlib import Path
 import os
 import time
-# from multiprocessing import Pool
-from ray.util.multiprocessing import Pool
+from multiprocessing import Pool
+# from ray.util.multiprocessing import Pool
+import psutil
 import subprocess
 import shutil
 import re
@@ -109,7 +110,8 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
 def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> set:
     t0 = time.perf_counter()
     output_dirs = []
-    with Pool() as pool:
+    num_cpus = psutil.cpu_count(logical=False)
+    with Pool(num_cpus) as pool:
     #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
        arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmax), int(L_max), energy_tuple) for x, reduced_mass, (Jtotmin, Jtotmax) in itertools.product( molscat_input_templates, reduced_masses, zip(np.arange(T_min, T_max-dT_max/2, dT_max), np.arange(T_min + dT_max - 2, T_max + dT_max/2, dT_max)) ))
        results = pool.starmap(create_and_run, arguments)
