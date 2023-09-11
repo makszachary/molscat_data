@@ -113,7 +113,7 @@ def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_pha
     num_cpus = psutil.cpu_count(logical=False)
     with Pool(num_cpus) as pool:
     #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
-       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmin + dT_max - 2 if Jtotmin+dT_max-2 <= T_max else T_max), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max-dT_max/2, dT_max) ))
+       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmin + dT_max - 2 if Jtotmin+dT_max-2 <= T_max else T_max), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max, dT_max) ))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
