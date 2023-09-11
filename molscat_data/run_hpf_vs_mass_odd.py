@@ -104,7 +104,6 @@ def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_pha
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-    #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
        arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmin + dT_max - 2 if Jtotmin+dT_max-2 <= T_max else T_max), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max, dT_max) ))
        results = pool.starmap(create_and_run, arguments)
     
