@@ -7,7 +7,7 @@
     IPROPL =   9,    TOLHIL =   1.E-7,
     JTOTL  =   4,    JTOTU  = 172,     IBFIX  =  0,           JSTEP  = 2,
     EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
-                     DTOL   =   1.E-6, MONQN  =  2, 0, 1, 1,
+                     DTOL   =   1.E-6, MONQN  =  2, 0, 10, 0,
     FLDMIN = 0., FLDMAX =  0., DFIELD = 1.0,
     ICHAN  =   1,
  /
