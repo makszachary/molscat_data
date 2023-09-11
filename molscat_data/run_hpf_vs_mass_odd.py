@@ -110,7 +110,7 @@ def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_pha
     output_dirs = []
     with Pool() as pool:
     #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
-       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, Jtotmin, Jtotmax, L_max, energy_tuple) for x, reduced_mass, Jtotmin, Jtotmax in itertools.product( molscat_input_templates, reduced_masses, range(T_min, T_max-dT_max/2, dT_max), range(T_min + dT_max - 2, T_max + dT_max/2, dT_max)))
+       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmax), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin, Jtotmax in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max-dT_max/2, dT_max), np.arange(T_min + dT_max - 2, T_max + dT_max/2, dT_max)))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
