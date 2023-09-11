@@ -27,17 +27,6 @@ from _molscat_data.physical_constants import amu_to_au
 
 from _molscat_data.visualize import PartialRateVsEnergy, RateVsMagneticField
 
-
-# E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
-# energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-# molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
-scratch_path = Path(os.path.expandvars('$SCRATCH'))
-pickle_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
-pickle_dir_path.mkdir(parents=True, exist_ok=True)
-arrays_dir_path = pickle_dir_path.parent / 'arrays'
-arrays_dir_path.mkdir(parents=True, exist_ok=True)
-plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
-
 # we want to calculate rates at T from 0.1 mK to 10 mK, so we need E_min = 0.8e-6 K and E_max = 80 mK
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
 # we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
@@ -127,7 +116,7 @@ def collect_and_pickle_SE(molscat_output_directory_path: Path | str, energy_tupl
         s_matrix_collection.update_from_output(file_path = output_path)
 
 
-    pickle_path = pickle_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
+    pickle_path = pickles_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
     pickle_path = pickle_path.parent / (pickle_path.name + '.pickle')
     pickle_path.parent.mkdir(parents = True, exist_ok = True)
 
@@ -159,7 +148,7 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     array_paths = []
     averaged_rates = []
     for k_L_E_array, phase, pickle_path, s_matrix_collection, magnetic_field in zip(k_L_E_arrays, phases, pickle_paths, s_matrix_collections, magnetic_fields):
-        array_path = arrays_dir_path / f'SE_vs_B_vs_E' / pickle_path.relative_to(pickle_dir_path).with_suffix('.txt')
+        array_path = arrays_dir_path / f'SE_vs_B_vs_E' / pickle_path.relative_to(pickles_dir_path).with_suffix('.txt')
         array_path.parent.mkdir(parents=True, exist_ok=True)
         name = f"|f = 1, m_f = {int(MF_in / 2)}, m_s = {int(MS_in)}/2> to |f = 1, m_f = 0, m_s = -1/2> collisions."
         np.savetxt(array_path, k_L_E_array.reshape(k_L_E_array.shape[0], -1), fmt = '%#.10g', header = f'[Original shape: {k_L_E_array.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({phase[0]}, {phase[1]}). The magnetic field: {magnetic_field:.2f} G.')
@@ -177,12 +166,12 @@ def save_and_plot_average_vs_B(pickle_paths: tuple[Path, ...], MF_in: int = -2, 
     ax.minorticks_on()
     ax.tick_params(which = 'both', direction = 'in')
 
-    image_path = plots_dir_path / 'SE_vs_B_exaggerated' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
+    image_path = plots_dir_path / 'SE_vs_B_exaggerated' / pickle_path.relative_to(pickles_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
 
     ax.set_ylim(0, 1.25*max(averaged_rates))
-    image_path = plots_dir_path / 'SE_vs_B' / pickle_path.relative_to(pickle_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
+    image_path = plots_dir_path / 'SE_vs_B' / pickle_path.relative_to(pickles_dir_path).parent / f'{magnetic_fields[0]:.2f}_{magnetic_fields[-1]:.2f}_{(magnetic_fields[1]-magnetic_fields[0]):.2f}.png'
     image_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(image_path)
 
