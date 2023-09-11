@@ -72,7 +72,7 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
     triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
     original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
-    scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling_{reduced_mass:.4f}_amu.dat'
+    scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{molscat_input_template_path.stem}_{T_min}_{T_max}_{L_max}' / f'so_{so_scaling:.4f}_scaling_{reduced_mass:.4f}_amu.dat'
     scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
 
     scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
@@ -110,7 +110,7 @@ def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_pha
     output_dirs = []
     with Pool() as pool:
     #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
-       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, Jtotmin, Jtotmin+dT_max-2, L_max, energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max-dT_max/2, dT_max)))
+       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, Jtotmin, Jtotmax, L_max, energy_tuple) for x, reduced_mass, Jtotmin, Jtotmax in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max-dT_max/2, dT_max), np.arange(T_min + dT_max - 2, T_max + dT_max/2, dT_max)))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
