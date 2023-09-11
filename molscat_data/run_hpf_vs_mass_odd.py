@@ -35,6 +35,8 @@ from _molscat_data.visualize import PartialRateVsEnergy, RateVsMagneticField
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
 # we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
 
+# but for T = 0.5 mK and E_max = 4 mK we need only about 25 partial waves for spin-exchange and maybe 35 for momentum-transfer
+
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
@@ -101,9 +103,6 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
 def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> set:
     t0 = time.perf_counter()
     output_dirs = []
-    num_cpus = psutil.cpu_count(logical=False)
-    # print(num_cpus)
-    print(2*int(math.ceil((T_max-T_min)/dT_max)))
     with Pool() as pool:
     #    NJOTMAX = 112 NJTOTMIN = 4; NLMAX = 49; NJTOTMAX = 172; NJTOTMIN = 4; NLMAX = 79
        arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmin + dT_max - 2 if Jtotmin+dT_max-2 <= T_max else T_max), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max, dT_max) ))
@@ -361,7 +360,7 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     # ### RUN MOLSCAT ###
-    L_max = 2*79
+    L_max = 2*29
     T_min = 8-4
     T_max = 10+4+L_max
     dT_max = 200
