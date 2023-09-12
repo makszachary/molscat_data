@@ -363,22 +363,22 @@ def main():
     T_min = 8-4
     T_max = 10+4+L_max
     dT_max = 200
-    output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
+    # output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
 
-    ### COLLECT S-MATRIX AND PICKLE IT ####
-    # pickle_paths = []
-    # for reduced_mass in reduced_masses:
-    #     output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
-    #     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
-    #     pickle_paths.append(pickle_path)
-    #     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-    # pickle_paths = np.unique(pickle_paths)
+    ## COLLECT S-MATRIX AND PICKLE IT ####
+    pickle_paths = []
+    for reduced_mass in reduced_masses:
+        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
+        pickle_paths.append(pickle_path)
+        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    pickle_paths = np.unique(pickle_paths)
 
 
-    # t0 = time.perf_counter()
-    # pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle' for reduced_mass in reduced_masses)
-    # [calculate_and_save_peff_parallel(pickle_path, phases[0], 4, temperatures) for pickle_path in pickle_paths]
-    # print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
+    t0 = time.perf_counter()
+    pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle' for reduced_mass in reduced_masses)
+    [calculate_and_save_peff_parallel(pickle_path, phases[0], 4, temperatures) for pickle_path in pickle_paths]
+    print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 if __name__ == "__main__":
     main()
