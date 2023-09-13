@@ -366,13 +366,13 @@ def main():
     # output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
 
     ## COLLECT S-MATRIX AND PICKLE IT ####
-    # pickle_paths = []
-    # for reduced_mass in reduced_masses:
-    #     output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
-    #     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
-    #     pickle_paths.append(pickle_path)
-    #     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-    # pickle_paths = np.unique(pickle_paths)
+    pickle_paths = []
+    for reduced_mass in reduced_masses:
+        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
+        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
+        pickle_paths.append(pickle_path)
+        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    pickle_paths = np.unique(pickle_paths)
 
 
     t0 = time.perf_counter()
