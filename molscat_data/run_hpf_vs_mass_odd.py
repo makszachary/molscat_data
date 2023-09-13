@@ -270,7 +270,7 @@ def calculate_and_save_peff_parallel(pickle_path: Path | str, phases = None, dLM
         txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
-        rate_array, momentum_transfer_rate_array = k_L_E_not_parallel(*arg)
+        rate_array, momentum_transfer_rate_array = k_L_E_parallel_odd(*arg)
 
         ### WE ARE NOT WRITING THE k_L_E ARRAYS (~11*(11+9)*5*3 = 3300 FILES ONLY FOR HPF RELAXATION PER ONE PARAMETER / REDMASS - 55x MORE THAN IN THE CASE OF EVEN SR+ ISOTOPES)
 
