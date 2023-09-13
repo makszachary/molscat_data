@@ -220,7 +220,9 @@ def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.n
 
 
     if array_like:
-        ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
+
+        ncores = int(os.environ['SLURM_CPUS_PER_TASK'])
+        ncores *= int(os.environ['SLURM_NTASKS_PER_NODE'])
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
         with Pool(ncores) as pool:
