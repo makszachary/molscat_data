@@ -215,7 +215,9 @@ def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.n
 
 
     if array_like:
-        with Pool(10) as pool:
+        nslots = int(os.environ['SLURM_NTASKS_PER_NODE'])*int(os.environ['SLURM_CPUS_PER_NODE'])
+        print(nslots)
+        with Pool(nslots) as pool:
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
