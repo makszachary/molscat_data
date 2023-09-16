@@ -424,7 +424,10 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     std = peff_std_experiment# if enhanced else p0_std
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd], 0, -1)
+    print(f'{peff_arrays_even.shape=}')
+    print(f'{peff_arrays_odd.shape=}')
+    theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd[:,T_index]], 0, -1)
+    print(f'{theory.shape=}')
     theory_distinguished = None
 
     color_map = cmcrameri.cm.devon
