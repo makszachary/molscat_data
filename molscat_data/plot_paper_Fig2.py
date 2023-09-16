@@ -432,11 +432,12 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     theory_colors = list(reversed([color_map(0), color_map(1)]))
     theory_formattings = [ {'color': color, 'linewidth': 2} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
     fig_ax = fig.add_subplot()
     print(f'{reduced_masses_experimental=}, {experiment=}')
-    fig_ax.scatter(reduced_masses_experimental, experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue', linewidths = None)
-    fig_ax.errorbar(reduced_masses_experimental, experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6, linestyle = 'None')
+    fig_ax.scatter(reduced_masses_experimental, experiment, s = 16, c = ['firebrick', 'firebrick', 'darkmagenta', 'firebrick'], marker = 'd', edgecolors =  ['firebrick', 'firebrick', 'darkmagenta', 'firebrick'], linewidths = None)
+    fig_ax.errorbar(reduced_masses_experimental, experiment, std, ecolor =  ['firebrick', 'firebrick', 'darkmagenta', 'firebrick'], capsize = 6, linestyle = 'None')
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
     fig_ax.set_ylim(0, 1.05*fig_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
