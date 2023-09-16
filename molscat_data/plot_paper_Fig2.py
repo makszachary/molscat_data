@@ -347,12 +347,12 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     plt.close()
 
-def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, barplot_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_mass_even_input_dir_name = 'RbSr+_tcpld_80mK_vs_mass', vs_mass_odd_input_dir_name = 'RbSr+_tcpld_vs_mass_odd', journal_name = 'NatCommun'):
+def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_barplot: tuple[float, ...], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, barplot_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_mass_even_input_dir_name = 'RbSr+_tcpld_80mK_vs_mass', vs_mass_odd_input_dir_name = 'RbSr+_tcpld_vs_mass_odd', journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
-    nenergies = len(energy_tuple)
-    E_min = min(energy_tuple)
-    E_max = max(energy_tuple)
-    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig2' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig2_{plot_temperature:.2e}K.png'
+    # nenergies = len(energy_tuple_barplot)
+    # E_min = min(energy_tuple_barplot)
+    # E_max = max(energy_tuple_barplot)
+    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig2' / f'Fig2_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
@@ -374,7 +374,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[2,1])
 
-    fig2, fig2_ax = plotPeffAvVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
+    fig2, fig2_ax = plotPeffAvVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
@@ -382,25 +382,29 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     plt.close()
 
-
-def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd'):
+def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd'):
     ## (c) Effective probability of the hyperfine energy release vs reduced mass
-    nenergies = len(energy_tuple)
-    E_min = min(energy_tuple)
-    E_max = max(energy_tuple)
     probabilities_dir_name = 'probabilities'
 
     abbreviations_efficiency_even = {'p0_hpf': 1.00,}
     F_in_even = 2*2
     abbreviations_efficiency_odd  = {'p0_hpf': 1.00, 'p0_hpf_exchange': 0.50}
     F_in_odd = 2*5
-    
+
+    nenergies = len(energy_tuple_vs_mass_even)
+    E_min = min(energy_tuple_vs_mass_even)
+    E_max = max(energy_tuple_vs_mass_even)
+
     array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_even.items() ]
     p0_arrays_even = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_even.items() }
     peff_arrays_even = effective_probability(np.sum([array for array in p0_arrays_even.values()], axis = 0), pmf_array = pmf_array)
     peff_arrays_even = peff_arrays_even * np.sum( [ p0_arrays_even[abbreviation]*abbreviations_efficiency_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 ) / np.sum( [ p0_arrays_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 )    
     peff_arrays_even = np.mean( peff_arrays_even, axis = -1 )
+
+    nenergies = len(energy_tuple_vs_mass_odd)
+    E_min = min(energy_tuple_vs_mass_odd)
+    E_max = max(energy_tuple_vs_mass_odd)
 
     array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_odd.items() ]
@@ -461,9 +465,18 @@ def main():
     parser.add_argument("--mass_max", type = float, default = 44.0, help = "Maximum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--dmass", type = float, default = 0.05, help = "Mass step (in a.m.u.).")
 
-    parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
-    parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
-    parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+    parser.add_argument("--nenergies_barplot", type = int, default = 50, help = "Number of energy values in a grid.")
+    parser.add_argument("--E_min_barplot", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max_barplot", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+
+    parser.add_argument("--nenergies_even", type = int, default = 50, help = "Number of energy values in a grid.")
+    parser.add_argument("--E_min_even", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max_even", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+
+    parser.add_argument("--nenergies_odd", type = int, default = 50, help = "Number of energy values in a grid.")
+    parser.add_argument("--E_min_odd", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max_odd", type = float, default = 4e-3, help = "Highest energy value in the grid.")
+
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
 
@@ -474,8 +487,10 @@ def main():
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
     args = parser.parse_args()
 
-    nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
-    energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
+    n = args.n_grid
+    energy_tuple_barplot = tuple( round(n_root_scale(i, args.E_min_barplot, args.E_max_barplot, args.nenergies_barplot-1, n = n), sigfigs = 11) for i in range(args.nenergies_barplot) )
+    energy_tuple_vs_mass_even = tuple( round(n_root_scale(i, args.E_min_even, args.E_max_even, args.nenergies_even-1, n = n), sigfigs = 11) for i in range(args.nenergies_even) )
+    energy_tuple_vs_mass_odd = tuple( round(n_root_scale(i, args.E_min_odd, args.E_max_odd, args.nenergies_odd-1, n = n), sigfigs = 11) for i in range(args.nenergies_odd) )
 
     args.singlet_phase = args.singlet_phase if args.singlet_phase is not None else default_singlet_phase_function(1.0)
     args.triplet_phase = args.triplet_phase if args.triplet_phase is not None else args.singlet_phase + args.phase_difference if args.phase_difference is not None else default_triplet_phase_function(1.0)
@@ -496,7 +511,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotFig2(singlet_phase, triplet_phase, so_scaling_value, reduced_masses, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, barplot_input_dir_name = args.barplot_input_dir_name, vs_mass_even_input_dir_name = args.vs_mass_even_input_dir_name, vs_mass_odd_input_dir_name = args.vs_mass_odd_input_dir_name, journal_name = args.journal) for temperature in temperatures]
+    [plotFig2(singlet_phase, triplet_phase, so_scaling_value, reduced_masses, energy_tuple_barplot= energy_tuple_barplot, energy_tuple_vs_mass_even = energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd = energy_tuple_vs_mass_odd, temperatures = temperatures, plot_temperature = temperature, barplot_input_dir_name = args.barplot_input_dir_name, vs_mass_even_input_dir_name = args.vs_mass_even_input_dir_name, vs_mass_odd_input_dir_name = args.vs_mass_odd_input_dir_name, journal_name = args.journal) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
