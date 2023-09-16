@@ -1,0 +1,6 @@
+# Effective probability of the hyperfine energy release for 84Sr+, 86Sr+, 87Sr+, 88Sr+
+# obtained from the source data for Fig 3d in Nat. Phys. 18, 533–537 (2022)
+# (hyperfine release rates) divided by the Langevin rate for 88Sr+
+# standard deviations are from mail from Or Katz on 31/03/2022, scaled by 1/1.2
+0.3026  0.3213  0.1664  0.3165
+0.0377  0.0320  0.0180  0.0155
