@@ -361,7 +361,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 3
-    row_height = 7.5
+    row_height = 4.5
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
@@ -395,7 +395,7 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     E_min = min(energy_tuple_vs_mass_even)
     E_max = max(energy_tuple_vs_mass_even)
 
-    array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
+    array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_even.items() ]
     p0_arrays_even = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_even.items() }
     peff_arrays_even = effective_probability(np.sum([array for array in p0_arrays_even.values()], axis = 0), pmf_array = pmf_array)
@@ -406,7 +406,7 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     E_min = min(energy_tuple_vs_mass_odd)
     E_max = max(energy_tuple_vs_mass_odd)
 
-    array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
+    array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_odd.items() ]
     p0_arrays_odd = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1, F_in_odd+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1, F_in_odd+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_odd.items() }
     peff_arrays_odd = effective_probability(np.sum([array for array in p0_arrays_odd.values()], axis = 0), pmf_array = pmf_array)
