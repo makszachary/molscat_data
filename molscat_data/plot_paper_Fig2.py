@@ -374,7 +374,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[2,1])
 
-    fig2, fig2_ax = plotPeffAvVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
+    fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
@@ -382,9 +382,11 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     plt.close()
 
-def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd'):
+def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd'):
     ## (c) Effective probability of the hyperfine energy release vs reduced mass
     probabilities_dir_name = 'probabilities'
+    
+    curves_names = [ f'$i_\\mathrm{{ion}} = 0$', f'$i_\\mathrm{{ion}} = \\frac{{9}}{{2}}$' ]
 
     abbreviations_efficiency_even = {'p0_hpf': 1.00,}
     F_in_even = 2*2
@@ -426,7 +428,7 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd[:,T_index]], 0, -1)
     print(f'{theory=}')
-    theory_distinguished = None
+    # theory_distinguished = None
 
     # color_map = cmcrameri.cm.devon
     # theory_colors = list(reversed([color_map(0), color_map(1)]))
@@ -447,21 +449,25 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
     fig_ax.set_ylim(0, 1.05*fig_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
-    PhaseTicks.linearStr(fig_ax.xaxis, 2, 1, '${x:n}$')
+    PhaseTicks.linearStr(fig_ax.xaxis, 1, 0.2, '${x:n}$')
 
-    # for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
-    #     fig_ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
-    # labelLines(fig_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    # labelLines(fig_ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(fig_ax.get_ylim()[1]-fig_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    for i, curve_name in enumerate(curves_names):
+        fig_ax.get_lines()[i].set_label(curve_name)
+    labelLines(fig_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig_ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(fig_ax.get_ylim()[1]-fig_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
     # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     # fig_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig_ax.transAxes, bbox = props)
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig_ax.set_ylabel(ylabel)
 
-    fig_ax.set_xlabel(f'reduced mass $(\\mathrm{{a.m.u.}})$')
+    fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
 
     return fig, fig_ax
+
+
+def plotBarplotToFig():
+    pass
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
