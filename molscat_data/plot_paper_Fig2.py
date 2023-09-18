@@ -428,9 +428,13 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     print(f'{theory=}')
     theory_distinguished = None
 
-    color_map = cmcrameri.cm.devon
-    theory_colors = list(reversed([color_map(0), color_map(1)]))
-    theory_formattings = [ {'color': 'firebrick', 'linewidth': 4} for color in theory_colors ]
+    # color_map = cmcrameri.cm.devon
+    # theory_colors = list(reversed([color_map(0), color_map(1)]))
+    even_color = 'firebrick'
+    odd_color = 'dark_magenta'
+    theory_formattings = [ {'color': even_color, 'linewidth': 4},
+                          {'color': odd_color, 'linewidth': 4}
+                          ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
