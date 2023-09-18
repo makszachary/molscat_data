@@ -431,7 +431,7 @@ def plotPeffAvVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_sc
     # color_map = cmcrameri.cm.devon
     # theory_colors = list(reversed([color_map(0), color_map(1)]))
     even_color = 'firebrick'
-    odd_color = 'dark_magenta'
+    odd_color = 'darkmagenta'
     theory_formattings = [ {'color': even_color, 'linewidth': 4},
                           {'color': odd_color, 'linewidth': 4}
                           ]
