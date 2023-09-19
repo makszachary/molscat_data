@@ -353,10 +353,9 @@ class Barplot:
         ax.bar(positions_experiment, experiment, yerr = std, width = 1, hatch = exp_hatch, **bars_formatting)
 
         ax.set_xticks(ticks_positions)
-        ax.set_xticklabels(labels, fontsize = 'x-large')
-        ax.grid(color = 'gray', axis='y')
+        ax.set_xticklabels(labels)
+        ax.grid(color = 'gray')
         ax.set_axisbelow(True)
-        ax.tick_params(axis = 'y', labelsize = 'large')
         ax.set_ylim(0,y_max)
 
         if SE_theory is not None:
