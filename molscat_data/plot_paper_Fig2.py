@@ -423,7 +423,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     arrays_hpf = np.loadtxt(arrays_path_hpf)
     arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
-    print(f'{arrays_hpf.shape=}')
+    print(f'{arrays_hpf}')
 
     fig2_ax = fig2.add_subplot()
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
