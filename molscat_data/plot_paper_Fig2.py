@@ -459,7 +459,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     
     fig0.subplots_adjust(left = 0.1, bottom = 0.15)
     fig1.subplots_adjust(left = 0.1, bottom = 0.15)
-    fig2.subplots_adjust(left = 0.1, bottom = 0.20)
+    fig2.subplots_adjust(left = 0.1, bottom = 0.25)
     fig3.subplots_adjust(left = 0.1, bottom = 0.15)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
