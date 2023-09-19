@@ -367,7 +367,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figsize = (8.8*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize = figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = [1,1,1])
+    gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = [1 for row in range(nrows)])
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[0])
     fig1 = fig.add_subfigure(gs_Figure[1])
