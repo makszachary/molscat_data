@@ -443,7 +443,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2_ax.set_xticks([1e-4, plot_temperature, 1e-3, 1e-2], labels = ['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
 
     fig2_ax.set_ylim(0,0.51)
-    
+    PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+
     fig2_ax.set_xlabel(f'$T\\,(\\mathrm{{mK}})$')
     fig2_ax.set_ylabel(f'$p_\mathrm{{eff}}^\mathrm{{hpf}}$')
 
@@ -453,9 +454,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     for i, lbl in enumerate(lines_labels):
         fig2_ax.get_lines()[i].set_label(lbl) 
     # xvals = (fig_ax.get_xlim()[0] + 0.1*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]), fig_ax.get_xlim()[0] + 0.6*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]))
-    xvals = 0.5
-    # labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_color = None, va = 'bottom', yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    xvals = 5e-3
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=6, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_color = None, yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
