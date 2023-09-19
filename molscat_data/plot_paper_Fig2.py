@@ -425,13 +425,13 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
 
 
-    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'], }
-    colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],
-            *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
-    labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]
-    handles = [ *handles_colors, *handles_hatch, ]
+    labels_and_colors = { 'calclulated hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'], }
+    colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],]
+            #*[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
+    labels = [ *list(labels_and_colors.keys()),]# *list(labels_and_hatch.keys()),]
+    handles = [ *handles_colors,]# *handles_hatch, ]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'x-small', labelspacing = 1)
+    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'xx-small', labelspacing = 1)
 
 
     fig1_ax = fig1.add_subplot()
