@@ -425,8 +425,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
 
 
-    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': 'firebrick',
-                            'cold spin change\n(w/o & with SO coupling)': 'midnightblue'}
+    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
+                            'cold spin change\n(w/o & with SO coupling)': bars_formatting_hpf['facecolor'] }
     colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],
             *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
     labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]
