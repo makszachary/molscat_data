@@ -793,9 +793,9 @@ class ValuesVsModelParameters:
         # print(np.moveaxis(theory, -1, 0).shape)
         if theory_formattings is None:
             theory_formattings = [{'linewidth': 2} for i in range(theory.shape[-1])]
-        if theory_distinguished_formattings is None:
+        if theory_distinguished_formattings is None and theory_distinguished is not None:
             theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-'} for i in range(theory_distinguished.shape[-1]) ]
-        if experiment_formattings is None:
+        if experiment_formattings is None and theory_distinguished_formattings is not None:
             experiment_formattings = copy.deepcopy(theory_distinguished_formattings)
             for format in experiment_formattings:
                 format['linestyle'] = '--'
