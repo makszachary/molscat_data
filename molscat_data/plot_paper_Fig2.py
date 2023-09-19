@@ -453,7 +453,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     lines_labels = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
     for i, lbl in enumerate(lines_labels):
         fig2_ax.get_lines()[i].set_label(lbl) 
-    # xvals = (fig_ax.get_xlim()[0] + 0.1*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]), fig_ax.get_xlim()[0] + 0.6*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]))
+    xvals = (fig2_ax.get_xlim()[0] + 0.2*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]), fig2_ax.get_xlim()[0] + 0.8*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]))
     xvals = 2e-3
     labelLines(fig2_ax.get_lines(), align = False, outline_width=8, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLines(fig2_ax.get_lines(), align = False, outline_color = None, yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
