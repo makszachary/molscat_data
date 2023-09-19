@@ -23,7 +23,7 @@ import time
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
-from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot
+from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot, BicolorHandler
 from _molscat_data.physical_constants import red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -418,6 +418,22 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
+
+    labels_and_colors = { 'hyperfine relaxation': 'firebrick', 'cold spin change': 'midnightblue' } 
+    labels_and_hatch = { 'coupled-channel\nscattering calculations': '', 'experiment': '////' }
+    handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
+    handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
+
+
+    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': 'firebrick',
+                            'cold spin change\n(w/o & with SO coupling)': 'midnightblue'}
+    colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],
+            *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
+    labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]
+    handles = [ *handles_colors, *handles_hatch, ]
+    hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
+    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'x-large', labelspacing = 1)
+
 
     fig1_ax = fig1.add_subplot()
     bars_formatting_cold_higher = { 'facecolor': 'royalblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
