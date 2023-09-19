@@ -360,8 +360,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    nrows = 3
-    row_height = 4
+    nrows = 4
+    row_height = 3
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
@@ -371,7 +371,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[0])
     fig1 = fig.add_subfigure(gs_Figure[1])
-    fig2 = fig.add_subfigure(gs_Figure[2])
+    fig2 = fig.add_subfigure(gs_Figure[3])
+    fig3 = fig.add_subfigure(gs_Figure[3])
     # fig3 = fig.add_subfigure(gs_Figure[2,1])
 
     
@@ -417,11 +418,21 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig1_ax.set_ylabel(ylabel)
 
-    fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
+    arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
+    arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
+
+    arrays_hpf = np.loadtxt(arrays_path_hpf).moveaxis
+    arrays_cold_higher = np.loadtxt(arrays_path_cold_higher).moveaxis
+
+    fig2_ax = fig2.add_subplot()
+    fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
+
+    fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig0.subplots_adjust(left = 0.1, bottom = 0.15)
     fig1.subplots_adjust(left = 0.1, bottom = 0.15)
     fig2.subplots_adjust(left = 0.1, bottom = 0.15)
+    fig3.subplots_adjust(left = 0.1, bottom = 0.15)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
