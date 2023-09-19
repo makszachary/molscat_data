@@ -348,7 +348,6 @@ class Barplot:
 
         ax.set_xticks(ticks_positions)
         ax.set_xticklabels(labels)
-        ax.grid(color = 'gray')
         ax.set_axisbelow(True)
 
         if SE_theory is not None:
@@ -389,6 +388,9 @@ class Barplot:
 
 
         # plt.tight_layout()
+
+        ax.tick_params(which='both', direction='in', top = True, right = True, length = 8)
+        ax.tick_params(which='minor', length = 4)
         
         return ax
     
