@@ -414,7 +414,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     SE_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels, theory_SE_hpf, bars_formatting = bars_formatting_hpf, exp_bars_formatting = exp_bars_formatting_hpf, SE_bars_formatting = SE_bars_formatting_hpf)
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
-    fig0_ax.set_ylim(0, 0.51)
+    fig0_ax.set_ylim(0, 0.61)
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
@@ -473,8 +473,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
         fig2_ax.get_lines()[i].set_label(lbl) 
     xvals = (fig2_ax.get_xlim()[0] + 0.2*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]), fig2_ax.get_xlim()[0] + 0.8*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]))
     # xvals = 2e-3
-    labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', va = 'bottom', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLines(fig2_ax.get_lines(), align = False, outline_color = None, va = 'bottom', yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=4, color = 'white', va = 'bottom', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_color = None, va = 'bottom', yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
