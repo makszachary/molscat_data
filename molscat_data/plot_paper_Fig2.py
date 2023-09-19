@@ -423,10 +423,13 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     arrays_hpf = np.loadtxt(arrays_path_hpf)
     arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
-    print(f'{arrays_hpf=}')
 
     fig2_ax = fig2.add_subplot()
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
+    PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+
+    ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
+    fig2_ax.set_ylabel(ylabel)
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
