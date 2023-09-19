@@ -398,11 +398,13 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     std_cold_higher = np.loadtxt(experiment_std_path_cold_higher)[1]
     
 
-    fig0_ax = fig0.add_subplot()
     f_max = 2
     barplot_labels = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
+
+    fig0_ax = fig0.add_subplot()
     fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels)
 
+    fig1_ax = fig1.add_subplot()
     fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels)
 
     fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
