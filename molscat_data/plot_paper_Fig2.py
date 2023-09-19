@@ -441,15 +441,15 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
     fig2_ax.set_xscale('log')
     fig2_ax.set_xticks([1e-4, plot_temperature, 1e-3, 1e-2], labels = ['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    fig2_ax.set_xlabel('$T\\,(\\mathrm{mK})$')
-
+    
+    fig2_ax.set_xlabel(f'$T\\,(\\mathrm{{mK}})$')
     fig2_ax.set_ylabel(f'$p_\mathrm{{eff}}^\mathrm{{hpf}}$')
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig0.subplots_adjust(left = 0.1, bottom = 0.15)
     fig1.subplots_adjust(left = 0.1, bottom = 0.15)
-    fig2.subplots_adjust(left = 0.1, bottom = 0.15)
+    fig2.subplots_adjust(left = 0.1, bottom = 0.20)
     fig3.subplots_adjust(left = 0.1, bottom = 0.15)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
