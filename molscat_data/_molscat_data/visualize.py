@@ -55,7 +55,7 @@ class Barplot:
     
     @staticmethod
     def _initiate_plot_ten_bars(figsize = (10,5), dpi = 100):
-        fig= plt.figure(figsize=figsize, dpi=dpi)
+        fig = plt.figure(figsize=figsize, dpi=dpi)
         ax1 = fig.add_subplot(1, 10, (1,5))
         ax2 = fig.add_subplot(1, 10, (6,10))
         
@@ -63,7 +63,7 @@ class Barplot:
     
     @staticmethod
     def _initiate_plot_five_bars(figsize = (88,4), dpi = 1200):
-        fig= plt.figure(figsize=figsize, dpi=dpi)
+        fig = plt.figure(figsize=figsize, dpi=dpi)
         ax1 = fig.add_subplot() 
         return fig, ax1
     
@@ -306,13 +306,14 @@ class Barplot:
         return fig, ax1, ax2
     
     @classmethod
-    def plotBarplotToAxes(cls, ax, theory, experiment, std, labels, SE_theory = None, bars_formatting = None):
+    def plotBarplotToAxes(cls, ax, theory, experiment, std, labels = None, SE_theory = None, bars_formatting = None, SE_bars_formatting = None):
         """barplot
         
-        :param theory_data: dictionary of the form {'hpf': (p(-2), p(-1), ..., p(2)),
-        'cold_higher': (p(-2), p(-1), ..., p(2)), 'cold_lower': (p(-1), p(0), p(1)) }
-        :param exp_data: dictionary of the form {'hpf': (p(-2), p(-1), ..., p(2)),
-        'cold_higher': (p(-2), p(-1), ..., p(2)), 'cold_lower': (p(-1), p(0), p(1)) }
+        :param theory: array_like,
+        :param experiment: array_like,
+        :param std: array_like,
+        :param labels: list or tuple of strings,
+        :SE_theory: array_like,
         """
 
         # fig, ax1, ax2 = cls._initiate_plot_ten_bars(figsize, dpi)
@@ -321,9 +322,17 @@ class Barplot:
         exp_cold_color, exp_hot_color = 'midnightblue', 'firebrick'
         exp_hatch, theory_hatch = '////', ''
 
-        if SE_theory is not None:
-            SE_cold_color, SE_hot_color = 'midnightblue', 'firebrick'
-            cold_color, hot_color = 'royalblue', 'indianred'
+        if bars_formatting is None:
+            if SE_bars_formatting is None:
+                #'midnightblue'
+                bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+            else:
+                #'royalblue'
+                bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+
+        if SE_bars_formatting is None:
+            #'midnightblue'
+            SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
 
         y_max = 1
         
@@ -340,8 +349,8 @@ class Barplot:
         # labels = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
         # labels_f_min = [ '$\\left|\\right.$'+str(int(f_min))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_min, f_min+1)]
 
-        ax.bar(positions_theory, theory, width = 1, color = hot_color, hatch = theory_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)
-        ax.bar(positions_experiment, experiment, yerr = std, width = 1, color = exp_hot_color, hatch = exp_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)
+        ax.bar(positions_theory, theory, width = 1, hatch = theory_hatch, **bars_formatting)
+        ax.bar(positions_experiment, experiment, yerr = std, width = 1, hatch = exp_hatch, **bars_formatting)
 
         ax.set_xticks(ticks_positions)
         ax.set_xticklabels(labels, fontsize = 'x-large')
@@ -351,43 +360,43 @@ class Barplot:
         ax.set_ylim(0,y_max)
 
         if SE_theory is not None:
-            ax.bar(positions_theory, SE_theory['hpf'], width = 1, facecolor = SE_hot_color, hatch = theory_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)
+            ax.bar(positions_theory, SE_theory, width = 1, hatch = theory_hatch, **SE_bars_formatting)
 
-        ### Create legend
-        # mpl.rcParams['hatch.linewidth'] = 2.0
-        labels_and_colors = { 'hyperfine relaxation': exp_hot_color, 'cold spin change': exp_cold_color } 
-        labels_and_hatch = { 'coupled-channel\nscattering calculations': '', 'experiment': '////' }
-        interlude = 'estimation from the\nmatrix elements:'
-        labels_and_lines = { 'normalized\nto $p_\\mathrm{hot}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('k', 'D', 8), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('magenta', 'x', 10), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(1))+', '+str(int(-1))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('orange', '2', 16) }
-        handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
-        handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
-        handles_interlude = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'white', hatch = '' ) ]
-        handles_lines = [ lines.Line2D([0], [0], color = labels_and_lines[line_label][0], linewidth = 3, marker = labels_and_lines[line_label][1], markersize = labels_and_lines[line_label][2]) for line_label in labels_and_lines.keys() ]
+        # ### Create legend
+        # # mpl.rcParams['hatch.linewidth'] = 2.0
+        # labels_and_colors = { 'hyperfine relaxation': exp_hot_color, 'cold spin change': exp_cold_color } 
+        # labels_and_hatch = { 'coupled-channel\nscattering calculations': '', 'experiment': '////' }
+        # interlude = 'estimation from the\nmatrix elements:'
+        # labels_and_lines = { 'normalized\nto $p_\\mathrm{hot}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('k', 'D', 8), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(2))+', '+str(int(-2))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('magenta', 'x', 10), 'normalized\nto $p_\\mathrm{cold}(\\left|\\right.$'+str(int(1))+', '+str(int(-1))+', '+'$\\left.\\hspace{-.2}\\uparrow\\hspace{-.2}\\right>)$': ('orange', '2', 16) }
+        # handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
+        # handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
+        # handles_interlude = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'white', hatch = '' ) ]
+        # handles_lines = [ lines.Line2D([0], [0], color = labels_and_lines[line_label][0], linewidth = 3, marker = labels_and_lines[line_label][1], markersize = labels_and_lines[line_label][2]) for line_label in labels_and_lines.keys() ]
 
 
-        colors_and_hatches = [ *[ (exp_hot_color, exp_hot_color, ''), (exp_cold_color, exp_cold_color, '') ],
-                    *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
-                     *[('white', 'white', '') for hh in handles_interlude]
-                    ]
-        if SE_theory is not None:
-            labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': exp_hot_color,
-                                  'cold spin change\n(w/o & with SO coupling)': exp_cold_color}
-            colors_and_hatches = [ *[ (SE_hot_color, hot_color, ''), (SE_cold_color, cold_color, '') ],
-                    *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
-                     *[('white', 'white', '') for hh in handles_interlude]
-                    ]
+        # colors_and_hatches = [ *[ (exp_hot_color, exp_hot_color, ''), (exp_cold_color, exp_cold_color, '') ],
+        #             *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
+        #              *[('white', 'white', '') for hh in handles_interlude]
+        #             ]
+        # if SE_theory is not None:
+        #     labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': exp_hot_color,
+        #                           'cold spin change\n(w/o & with SO coupling)': exp_cold_color}
+        #     colors_and_hatches = [ *[ (SE_hot_color, hot_color, ''), (SE_cold_color, cold_color, '') ],
+        #             *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],
+        #              *[('white', 'white', '') for hh in handles_interlude]
+        #             ]
             
 
 
-        labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]# interlude, *list(labels_and_lines.keys()) ]
-        handles = [ *handles_colors, *handles_hatch, *handles_interlude,]# *handles_lines ]
+        # labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]# interlude, *list(labels_and_lines.keys()) ]
+        # handles = [ *handles_colors, *handles_hatch, *handles_interlude,]# *handles_lines ]
 
         
-        hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-        ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'x-large', labelspacing = 1)
+        # hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
+        # ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'x-large', labelspacing = 1)
 
 
-        plt.tight_layout()
+        # plt.tight_layout()
         
         return ax
     

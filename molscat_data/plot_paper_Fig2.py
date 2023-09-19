@@ -23,7 +23,7 @@ import time
 from _molscat_data.thermal_averaging import n_root_scale
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
-from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks
+from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot
 from _molscat_data.physical_constants import red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -374,6 +374,38 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[2,1])
 
+    
+    nenergies = len(energy_tuple_barplot)
+    E_min = min(energy_tuple_barplot)
+    E_max = max(energy_tuple_barplot)
+    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
+    probabilities_dir_name = 'probabilities'
+
+    arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
+    arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'
+
+    arrays_hpf = np.loadtxt(arrays_path_hpf)
+    arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
+
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory_hpf= arrays_hpf[T_index,:]
+    theory_cold_higher = arrays_cold_higher[T_index,:]
+
+    experiment_std_path_hpf = Path(__file__).parents[1] / 'data' / 'exp_data' / 'single_ion_hpf.dat'
+    experiment_std_path_cold_higher = Path(__file__).parents[1] / 'data' / 'exp_data' / 'single_ion_cold_higher.dat'
+    experiment_hpf = np.loadtxt(experiment_std_path_hpf)[0]
+    std_hpf = np.loadtxt(experiment_std_path_hpf)[1]
+    experiment_cold_higher = np.loadtxt(experiment_std_path_cold_higher)[0]
+    std_cold_higher = np.loadtxt(experiment_std_path_cold_higher)[1]
+    
+
+    fig0_ax = fig0.add_subplot()
+    f_max = 2
+    barplot_labels = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
+    fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels)
+
+    fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels)
+
     fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
@@ -411,7 +443,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_odd.items() ]
     p0_arrays_odd = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1, F_in_odd+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1, F_in_odd+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_odd.items() }
-    print(f'{p0_arrays_odd["p0_hpf"]=}')
+    print(f'{p0_arrays_odd["p0_hpf"][0]=}')
     peff_arrays_odd = effective_probability(np.sum([array for array in p0_arrays_odd.values()], axis = 0), pmf_array = pmf_array)
     peff_arrays_odd = peff_arrays_odd * np.sum( [ p0_arrays_odd[abbreviation]*abbreviations_efficiency_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 ) / np.sum( [ p0_arrays_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 )
     peff_arrays_odd = np.mean( peff_arrays_odd, axis = (-2, -1) )
@@ -466,8 +498,25 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     return fig, fig_ax
 
 
-def plotBarplotToFig():
-    pass
+# def plotBarplotToFig(fig, arrays_path: Path | str, temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4):
+#     nenergies = len(energy_tuple)
+#     E_min = min(energy_tuple)
+#     E_max = max(energy_tuple)
+#     singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
+#     probabilities_dir_name = 'probabilities'
+
+#     arrays_path_hpf = arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
+#     arrays_path_cold_higher = arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'
+
+#     arrays_hpf = np.loadtxt(arrays_path_hpf)
+#     arrays_path_cold_higher = np.loadtxt(arrays_path_cold_higher)
+
+#     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+#     theory = arrays_hpf[T_index,:]
+
+#     fig_ax = fig.add_subplot()
+
+#     return fig, fig_ax
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
