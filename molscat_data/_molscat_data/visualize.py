@@ -316,8 +316,6 @@ class Barplot:
         :SE_theory: array_like,
         """
 
-        # fig, ax1, ax2 = cls._initiate_plot_ten_bars(figsize, dpi)
-
         cold_color, hot_color = 'midnightblue', 'firebrick'
         exp_cold_color, exp_hot_color = 'midnightblue', 'firebrick'
         exp_hatch, theory_hatch = '////', ''
@@ -325,14 +323,14 @@ class Barplot:
         if bars_formatting is None:
             if SE_bars_formatting is None:
                 #'midnightblue'
-                bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+                bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
             else:
                 #'royalblue'
-                bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+                bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
         if SE_bars_formatting is None:
             #'midnightblue'
-            SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+            SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
         positions = np.array([ [3*k+1, 3*k+2] for k in range(len(theory)) ]).flatten()
         positions_theory = np.array([3*k+1 for k in range(len(theory)) ])
