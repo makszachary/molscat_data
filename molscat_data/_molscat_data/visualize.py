@@ -306,7 +306,7 @@ class Barplot:
         return fig, ax1, ax2
     
     @classmethod
-    def plotBarplotToAxes(cls, ax, theory, experiment, std, labels = None, SE_theory = None, bars_formatting = None, SE_bars_formatting = None):
+    def plotBarplotToAxes(cls, ax, theory, experiment, std, labels = None, SE_theory = None, bars_formatting = None, exp_bars_formatting = None, SE_bars_formatting = None):
         """barplot
         
         :param theory: array_like,
@@ -328,6 +328,9 @@ class Barplot:
                 #'royalblue'
                 bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
+        if exp_bars_formatting is None:
+            exp_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+
         if SE_bars_formatting is None:
             #'midnightblue'
             SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
@@ -342,7 +345,7 @@ class Barplot:
         # labels_f_min = [ '$\\left|\\right.$'+str(int(f_min))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_min, f_min+1)]
 
         ax.bar(positions_theory, theory, width = 1, hatch = theory_hatch, **bars_formatting)
-        ax.bar(positions_experiment, experiment, yerr = std, width = 1, hatch = exp_hatch, **bars_formatting)
+        ax.bar(positions_experiment, experiment, yerr = std, width = 1, hatch = exp_hatch, **exp_bars_formatting)
 
         ax.set_xticks(ticks_positions)
         ax.set_xticklabels(labels)
@@ -387,7 +390,7 @@ class Barplot:
 
         # plt.tight_layout()
 
-        ax.tick_params(which='both', direction='in', top = True, right = True, length = 8)
+        ax.tick_params(which='both', direction='in', top = False, right = True, length = 8)
         ax.tick_params(which='minor', length = 4)
         
         return ax
