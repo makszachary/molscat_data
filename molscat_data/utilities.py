@@ -8,7 +8,7 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 from _molscat_data.effective_probability import effective_probability, p0
-from _molscat_data.visualize import BarplotWide, ProbabilityVersusSpinOrbit
+from _molscat_data.visualize import Barplot, ProbabilityVersusSpinOrbit
 
 
 def plot_and_save_p0_Cso(singlet_phase, triplet_phase, relative_to_max = False):
@@ -139,10 +139,10 @@ def main():
     theory_cold_lower = theory_data_dir / f'{so_scaling:.4f}_cold_lower.txt'
     SE_theory_hpf, SE_theory_cold_higher, SE_theory_cold_lower = ( theory_data_dir / f'{SE_so_scaling:.4f}_{name}.txt' for name in ( 'hpf', 'cold_higher', 'cold_lower' ) )
     
-    theory_data, exp_data, std_data = BarplotWide.prepareDataFromFiles(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
-    SE_theory_data, _, __ = BarplotWide.prepareDataFromFiles(theory_hpf=SE_theory_hpf, theory_cold_higher=SE_theory_cold_higher, theory_cold_lower=SE_theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
+    theory_data, exp_data, std_data = Barplot.prepareDataFromFiles(theory_hpf=theory_hpf, theory_cold_higher=theory_cold_higher, theory_cold_lower=theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
+    SE_theory_data, _, __ = Barplot.prepareDataFromFiles(theory_hpf=SE_theory_hpf, theory_cold_higher=SE_theory_cold_higher, theory_cold_lower=SE_theory_cold_lower,exp_hpf=exp_hpf,exp_cold_higher=exp_cold_higher, exp_cold_lower= exp_cold_lower)
     # fig, ax1, ax2, ax3, legend_ax = BarplotWide.barplot(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
-    fig, ax1, ax2 = BarplotWide.barplot_ten_bars(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
+    fig, ax1, ax2 = Barplot.barplot_ten_bars(theory_data, exp_data, std_data, SE_theory_data = SE_theory_data)
     # # BarplotWide.compareWithMatrixElements(fig, ax1, ax2, ax3, legend_ax, theory_data, pmf_array)
     
     # BarplotWide.addParams(fig, legend_ax, singlet_phase, triplet_phase, so_scaling)

@@ -361,7 +361,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 3
-    row_height = 4.5
+    row_height = 4
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
@@ -428,10 +428,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd[:,T_index]], 0, -1)
     print(f'{theory=}')
-    # theory_distinguished = None
 
-    # color_map = cmcrameri.cm.devon
-    # theory_colors = list(reversed([color_map(0), color_map(1)]))
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
     theory_formattings = [ {'color': even_color, 'linewidth': 4},
@@ -454,8 +451,9 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     for i, curve_name in enumerate(curves_names):
         # [print(f'{i}, {line.get_xydata()=}') for i, line in enumerate(fig_ax.get_lines())]
         if len(fig_ax.get_lines()[i+2*3].get_xydata()) > 0: fig_ax.get_lines()[i+2*3].set_label(curve_name) 
-    labelLines(fig_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLines(fig_ax.get_lines(), align = False, outline_color = None, yoffsets= -0*6.7e-3*(fig_ax.get_ylim()[1]-fig_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    xvals = (fig_ax.get_xlim()[0] + 0.1*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]), fig_ax.get_xlim()[0] + 0.5*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]))
+    labelLines(fig_ax.get_lines(), xvals = xvals, align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig_ax.get_lines(), xvals = xvals, align = False, outline_color = None, yoffsets= -0*6.7e-3*(fig_ax.get_ylim()[1]-fig_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
     # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     # fig_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig_ax.transAxes, bbox = props)
 

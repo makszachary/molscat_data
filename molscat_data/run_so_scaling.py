@@ -24,7 +24,7 @@ from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semicl
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.physical_constants import amu_to_au
 from _molscat_data.utils import probability
-from _molscat_data.visualize import BarplotWide, ProbabilityVersusSpinOrbit
+from _molscat_data.visualize import Barplot, ProbabilityVersusSpinOrbit
 from prepare_so_coupling import scale_so_and_write
 from copy_run_plot_k_L_E import save_and_plot_k_L_E_spinspin
 
