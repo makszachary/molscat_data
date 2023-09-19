@@ -371,7 +371,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[0])
     fig1 = fig.add_subfigure(gs_Figure[1])
-    fig2 = fig.add_subfigure(gs_Figure[3])
+    fig2 = fig.add_subfigure(gs_Figure[2])
     fig3 = fig.add_subfigure(gs_Figure[3])
     # fig3 = fig.add_subfigure(gs_Figure[2,1])
 
