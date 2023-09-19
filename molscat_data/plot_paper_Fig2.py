@@ -473,7 +473,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
         fig2_ax.get_lines()[i].set_label(lbl) 
     xvals = (fig2_ax.get_xlim()[0] + 1e-3*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]), fig2_ax.get_xlim()[0] + 0.8*(fig2_ax.get_xlim()[1]-fig2_ax.get_xlim()[0]))
     # xvals = 2e-3
-    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=6, color = 'white', va = 'bottom', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=4, color = 'white', va = 'bottom', fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_color = None, va = 'bottom', yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
