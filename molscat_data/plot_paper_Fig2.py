@@ -421,8 +421,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
     arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
 
-    arrays_hpf = np.loadtxt(arrays_path_hpf).moveaxis
-    arrays_cold_higher = np.loadtxt(arrays_path_cold_higher).moveaxis
+    arrays_hpf = np.loadtxt(arrays_path_hpf)
+    arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
+    print(f'{arrays_hpf.shape=}')
 
     fig2_ax = fig2.add_subplot()
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
