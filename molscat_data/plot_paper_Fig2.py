@@ -419,14 +419,13 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
 
-    labels_and_colors = { 'hyperfine relaxation': 'firebrick', 'cold spin change': 'midnightblue' } 
+    labels_and_colors = { 'hyperfine relaxation': 'firebrick' } 
     labels_and_hatch = { 'coupled-channel\nscattering calculations': '', 'experiment': '////' }
     handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
     handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
 
 
-    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
-                            'cold spin change\n(w/o & with SO coupling)': bars_formatting_hpf['facecolor'] }
+    labels_and_colors = { 'hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'], }
     colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],
             *[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
     labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]
