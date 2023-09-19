@@ -445,6 +445,16 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2_ax.set_xlabel(f'$T\\,(\\mathrm{{mK}})$')
     fig2_ax.set_ylabel(f'$p_\mathrm{{eff}}^\mathrm{{hpf}}$')
 
+
+    f_max = 2
+    lines_labels = [ '$\\left|\\right.$'+str(int(f_max))+', '+str(int(mf))+'$\\left.\\right>$' for mf in np.arange (-f_max, f_max+1)]
+    for i, lbl in enumerate(lines_labels):
+        fig2_ax.get_lines()[i].set_label(lbl) 
+    # xvals = (fig_ax.get_xlim()[0] + 0.1*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]), fig_ax.get_xlim()[0] + 0.6*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]))
+    xvals = 2
+    # labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    labelLines(fig2_ax.get_lines(), xvals = xvals, align = False, outline_color = None, va = 'bottom', yoffsets= -0*6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
     fig0.subplots_adjust(left = 0.1, bottom = 0.15)
