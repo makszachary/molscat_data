@@ -440,9 +440,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2_ax = fig2.add_subplot()
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, temperatures, arrays_hpf)
     PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+    fig2_ax.set_xticks([1e-4, plot_temperature, 1e-3, 1e-2], labels = ['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
+    fig2_ax.set_xlabel('$T\\,(\\mathrm{mK})$')
 
-    ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
-    fig2_ax.set_ylabel(ylabel)
+    fig2_ax.set_ylabel(f'$p_\mathrm{{eff}}^\mathrm{{hpf}}$')
 
     fig3, fig3_ax = plotPeffAverageVsMassToFig(fig3, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
