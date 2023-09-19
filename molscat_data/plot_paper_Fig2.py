@@ -419,17 +419,11 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
 
-    labels_and_colors = { 'hyperfine relaxation': 'firebrick' } 
-    labels_and_hatch = { 'experiment': '////' }
+    labels_and_colors = { 'hyperfine relaxation\n(calculated w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'], }
     handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
-    handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
-
-
-    labels_and_colors = { 'calclulated hyperfine relaxation\n(w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'], }
     colors_and_hatches = [ *[ (SE_bars_formatting_hpf['facecolor'], bars_formatting_hpf['facecolor'], ''), ],]
-            #*[('white', 'white', hatch) for hatch in labels_and_hatch.values()],]
-    labels = [ *list(labels_and_colors.keys()),]# *list(labels_and_hatch.keys()),]
-    handles = [ *handles_colors,]# *handles_hatch, ]
+    labels = [ *list(labels_and_colors.keys()),]
+    handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
     fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'xx-small', labelspacing = 1)
 
@@ -445,6 +439,15 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig1_ax.set_ylabel(ylabel)
+
+    labels_and_colors = { 'cold spin change\n(calculated w/o & with SO coupling)': SE_bars_formatting_cold_higher['facecolor'], }    
+    handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
+    colors_and_hatches = [ *[ (SE_bars_formatting_cold_higher['facecolor'], bars_formatting_cold_higher['facecolor'], ''), ],]
+    labels = [ *list(labels_and_colors.keys()),]
+    handles = [ *handles_colors,]
+    hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
+    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'xx-small', labelspacing = 1)
+
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
     arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
