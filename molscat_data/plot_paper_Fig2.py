@@ -390,7 +390,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     abbreviations_efficiency_even = {'p0_hpf': 1.00,}
     F_in_even = 2*2
-    abbreviations_efficiency_odd  = {'p0_hpf': 1.00, 'p0_hpf_exchange': 0.50}
+    abbreviations_efficiency_odd  = {'p0_hpf': 1.00, 'p0_hpf_exchange': 0.00}
     F_in_odd = 2*5
 
     nenergies = len(energy_tuple_vs_mass_even)
