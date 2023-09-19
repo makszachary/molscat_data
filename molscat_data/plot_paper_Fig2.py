@@ -413,6 +413,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     SE_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels, theory_SE_hpf, bars_formatting = bars_formatting_hpf, SE_bars_formatting = SE_bars_formatting_hpf)
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+    fig0_ax.set_ylim(0, 0.51)
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
