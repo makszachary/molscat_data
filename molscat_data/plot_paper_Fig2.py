@@ -420,7 +420,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig0_ax.set_ylabel(ylabel)
 
     labels_and_colors = { 'hyperfine relaxation': 'firebrick' } 
-    labels_and_hatch = { 'coupled-channel\nscattering calculations': '', 'experiment': '////' }
+    labels_and_hatch = { 'experiment': '////' }
     handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
     handles_hatch = [ plt.Rectangle((0,0), 1, 1, facecolor = 'white', edgecolor = 'k', hatch = nhatch ) for nhatch in labels_and_hatch.values() ]
 
@@ -431,7 +431,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     labels = [ *list(labels_and_colors.keys()), *list(labels_and_hatch.keys()),]
     handles = [ *handles_colors, *handles_hatch, ]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'small', labelspacing = 1)
+    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'x-small', labelspacing = 1)
 
 
     fig1_ax = fig1.add_subplot()
