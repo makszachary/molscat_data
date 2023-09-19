@@ -442,8 +442,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig2_ax.set_xscale('log')
     fig2_ax.set_xticks([1e-4, plot_temperature, 1e-3, 1e-2], labels = ['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
 
-    fig2_ax.set_ylim(0,0.51)
-    PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+    fig2_ax.set_ylim(0,0.61)
+    PhaseTicks.linearStr(fig2_ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
     fig2_ax.set_xlabel(f'$T\\,(\\mathrm{{mK}})$')
     fig2_ax.set_ylabel(f'$p_\mathrm{{eff}}^\mathrm{{hpf}}$')
