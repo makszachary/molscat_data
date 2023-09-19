@@ -418,8 +418,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
-    fig0.subplots_adjust(left = 0.1, bottom = 0.1)
-    fig1.subplots_adjust(left = 0.1, bottom = 0.1)
+    fig0.subplots_adjust(left = 0.1, bottom = 0.15)
+    fig1.subplots_adjust(left = 0.1, bottom = 0.15)
+    fig2.subplots_adjust(left = 0.1, bottom = 0.15)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
