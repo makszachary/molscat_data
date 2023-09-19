@@ -410,8 +410,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     fig0_ax = fig0.add_subplot()
     bars_formatting_hpf = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+    exp_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     SE_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
-    fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels, theory_SE_hpf, bars_formatting = bars_formatting_hpf, SE_bars_formatting = SE_bars_formatting_hpf)
+    fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels, theory_SE_hpf, bars_formatting = bars_formatting_hpf, exp_bars_formatting = exp_bars_formatting_hpf, SE_bars_formatting = SE_bars_formatting_hpf)
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     fig0_ax.set_ylim(0, 0.51)
 
@@ -420,8 +421,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     fig1_ax = fig1.add_subplot()
     bars_formatting_cold_higher = { 'facecolor': 'royalblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+    exp_bars_formatting_cold_higher = { 'facecolor': 'midnightblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     SE_bars_formatting_cold_higher = { 'facecolor': 'midnightblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
-    fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels, SE_theory = theory_SE_cold_higher, bars_formatting = bars_formatting_cold_higher, SE_bars_formatting = SE_bars_formatting_cold_higher)
+
+    fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels, SE_theory = theory_SE_cold_higher, bars_formatting = bars_formatting_cold_higher, exp_bars_formatting = exp_bars_formatting_cold_higher, SE_bars_formatting = SE_bars_formatting_cold_higher)
     PhaseTicks.linearStr(fig1_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     fig1_ax.set_ylim(fig0_ax.get_ylim())
 
