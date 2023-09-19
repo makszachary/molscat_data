@@ -378,7 +378,6 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     nenergies = len(energy_tuple_barplot)
     E_min = min(energy_tuple_barplot)
     E_max = max(energy_tuple_barplot)
-    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
     probabilities_dir_name = 'probabilities'
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
