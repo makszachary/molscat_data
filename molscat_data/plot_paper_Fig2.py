@@ -406,7 +406,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
 
     fig1_ax = fig1.add_subplot()
-    fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels)
+    bars_formatting_cold_higher = { 'facecolor': 'midnight_blue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
+    fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels, bars_formatting = bars_formatting_cold_higher)
     PhaseTicks.linearStr(fig1_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
 
     fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)

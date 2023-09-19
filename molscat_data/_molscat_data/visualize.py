@@ -334,12 +334,6 @@ class Barplot:
             #'midnightblue'
             SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
 
-        y_max = 1
-        
-        # f_max = 2.
-        # f_min = f_max-1
-        # f_ion = 0.5
-
         positions = np.array([ [3*k+1, 3*k+2] for k in range(len(theory)) ]).flatten()
         positions_theory = np.array([3*k+1 for k in range(len(theory)) ])
         positions_experiment = np.array([3*k+2 for k in range(len(theory)) ])
@@ -356,7 +350,6 @@ class Barplot:
         ax.set_xticklabels(labels)
         ax.grid(color = 'gray')
         ax.set_axisbelow(True)
-        ax.set_ylim(0,y_max)
 
         if SE_theory is not None:
             ax.bar(positions_theory, SE_theory, width = 1, hatch = theory_hatch, **SE_bars_formatting)
