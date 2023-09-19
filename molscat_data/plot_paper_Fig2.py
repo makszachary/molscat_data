@@ -405,13 +405,22 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory_hpf, experiment_hpf, std_hpf, barplot_labels)
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
 
+    ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
+    fig0_ax.set_ylabel(ylabel)
+
     fig1_ax = fig1.add_subplot()
     bars_formatting_cold_higher = { 'facecolor': 'midnightblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 5 }
     fig1_ax = Barplot.plotBarplotToAxes(fig1_ax, theory_cold_higher, experiment_cold_higher, std_cold_higher, barplot_labels, bars_formatting = bars_formatting_cold_higher)
     PhaseTicks.linearStr(fig1_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
 
+    ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
+    fig1_ax.set_ylabel(ylabel)
+
     fig2, fig2_ax = plotPeffAverageVsMassToFig(fig2, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
     
+    fig0.subplots_adjust(left = 0.1, bottom = 0.1)
+    fig1.subplots_adjust(left = 0.1, bottom = 0.1)
+
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
