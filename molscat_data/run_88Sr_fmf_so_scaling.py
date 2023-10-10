@@ -262,7 +262,7 @@ def main():
     triplet_phase = args.triplet_phase
     print(f'{type(args.so_scaling)=}')
     # args.so_scaling = (args.so_scaling,)
-    so_scaling_values = np.array(set(args.so_scaling))
+    so_scaling_values = list(set(args.so_scaling))
     print(so_scaling_values)
     F_in, MF_in, S_in, MS_in = args.F_in, args.MF_in, args.S_in, args.MS_in
 
