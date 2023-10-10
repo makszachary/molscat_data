@@ -331,11 +331,11 @@ def main():
     parser.add_argument("--S_in", type = int, default = 1)
     parser.add_argument("--MS_in", type = int, default = 1)
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
-    parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
-    parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+    parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
-    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_vs_mass', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
 
@@ -354,7 +354,7 @@ def main():
     # so_scaling_value = 0.375
 
     if args.temperatures is None:
-        temperatures = list(np.logspace(-4, -2, 20))
+        temperatures = list(np.logspace(-4, -3, 11))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:
