@@ -44,6 +44,10 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
+    L_max = 29
+    MTOT_min = MS_in+MF_in-2*L_max
+    MTOT_max = MS_in+MF_in+2*L_max
+
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -75,6 +79,9 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("MFRb", str(MF_in), input_content, flags = re.M)
         input_content = re.sub("FFSr", str(S_in), input_content, flags = re.M)
         input_content = re.sub("MFSr", str(MS_in), input_content, flags = re.M)
+        input_content = re.sub("NMTOTMIN", str(MTOT_min), input_content, flags = re.M)
+        input_content = re.sub("NMOTMAX", str(MTOT_max), input_content, flags = re.M)
+        input_content = re.sub("NLMAX", str(L_max), input_content, flags = re.M)
         input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
