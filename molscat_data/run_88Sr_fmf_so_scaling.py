@@ -275,7 +275,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
-    lalala = ((x, singlet_phase, triplet_phase, so, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so in itertools.product(molscat_input_templates, so_scaling_values))
+    lalala = tuple((x, singlet_phase, triplet_phase, so, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so in itertools.product(molscat_input_templates, so_scaling_values))
     print(lalala)
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
