@@ -277,6 +277,7 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     # ### RUN MOLSCAT ###
+    print(molscat_input_templates, type(molscat_input_templates))
     output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, F_in, MF_in, S_in, MS_in, so_scaling_values, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
