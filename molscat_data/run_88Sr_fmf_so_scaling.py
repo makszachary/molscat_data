@@ -260,6 +260,10 @@ def main():
     phases = ((args.singlet_phase, args.triplet_phase),)
     singlet_phase = args.singlet_phase
     triplet_phase = args.triplet_phase
+    try:
+        iter(args.so_scaling)
+    except TypeError:
+        args.so_scaling = (args.so_scaling,)
     so_scaling_values = np.array(set(args.so_scaling))
     F_in, MF_in, S_in, MS_in = args.F_in, args.MF_in, args.S_in, args.MS_in
 
