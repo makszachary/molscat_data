@@ -80,7 +80,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("FFSr", str(S_in), input_content, flags = re.M)
         input_content = re.sub("MFSr", str(MS_in), input_content, flags = re.M)
         input_content = re.sub("NMTOTMIN", str(MTOT_min), input_content, flags = re.M)
-        input_content = re.sub("NMOTMAX", str(MTOT_max), input_content, flags = re.M)
+        input_content = re.sub("NMTOTMAX", str(MTOT_max), input_content, flags = re.M)
         input_content = re.sub("NLMAX", str(L_max), input_content, flags = re.M)
         input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
