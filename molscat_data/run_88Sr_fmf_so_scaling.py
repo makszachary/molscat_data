@@ -100,7 +100,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, singlet_phase, triplet_phase, so_scaling_value, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
+       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
