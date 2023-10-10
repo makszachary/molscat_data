@@ -264,6 +264,7 @@ def main():
     singlet_phase = args.singlet_phase
     triplet_phase = args.triplet_phase
     so_scaling_values = list(set(args.so_scaling))
+    magnetic_field = args.B
     F_in, MF_in, S_in, MS_in = args.F_in, args.MF_in, args.S_in, args.MS_in
 
     # so_scaling_value = 0.375
@@ -279,7 +280,7 @@ def main():
 
 
     # ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, F_in, MF_in, S_in, MS_in, energy_tuple, )
+    output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
