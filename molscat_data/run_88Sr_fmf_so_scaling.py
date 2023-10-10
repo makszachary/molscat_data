@@ -275,6 +275,8 @@ def main():
         temperatures = np.array(args.temperatures)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
+    print([x for x in molscat_input_templates])
+    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     # ### RUN MOLSCAT ###
     print(molscat_input_templates, type(molscat_input_templates))
