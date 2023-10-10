@@ -68,7 +68,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
     scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling_in_{F_in}_{MF_in}_{S_in}_{MS_in}.dat'
     scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
-    scaled_so_path = "/net/people/plgrid/plgwalewski/molscat-RKHS/molscat-exe/potentials/so.dat"
+    # scaled_so_path = "/net/people/plgrid/plgwalewski/molscat-RKHS/molscat-exe/potentials/so.dat"
 
     scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
 

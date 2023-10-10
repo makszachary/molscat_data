@@ -17,7 +17,7 @@ C       (AT INPUT, X IN ANGSTROMS.  AT OUTPUT, ENERGIES IN CM-1)       |
 C-----------------------------------------------------------------------
 
 C PARAMETERS
-      PARAMETER (MAXPOT=10,mxfnln=200)
+      PARAMETER (MAXPOT=10,mxfnln=300)
 C INPUT VARIABLES
       CHARACTER(LEN=MXFNLN), DIMENSION(MAXPOT) :: FILENAMES
       INTEGER, DIMENSION(MAXPOT) :: ILAM, INUM
