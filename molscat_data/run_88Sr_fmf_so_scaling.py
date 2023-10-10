@@ -275,14 +275,10 @@ def main():
         temperatures = np.array(args.temperatures)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
-    lalala = tuple((x, singlet_phase, triplet_phase, so, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so in itertools.product(molscat_input_templates, so_scaling_values))
-    print(lalala)
-    molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
 
     # ### RUN MOLSCAT ###
-    print(molscat_input_templates, type(molscat_input_templates))
-    output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, F_in, MF_in, S_in, MS_in, so_scaling_values, energy_tuple, )
+    output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
