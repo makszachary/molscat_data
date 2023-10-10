@@ -41,7 +41,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
@@ -75,6 +75,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("MFRb", str(MF_in), input_content, flags = re.M)
         input_content = re.sub("FFSr", str(S_in), input_content, flags = re.M)
         input_content = re.sub("MFSr", str(MS_in), input_content, flags = re.M)
+        input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
@@ -96,11 +97,11 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> set:
+def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
+       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -141,6 +142,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
     
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
+    magnetic_field = s_matrix_collection.magneticField[0]
     # if len(so_scaling) == 1: so_scaling = float(so_scaling)
 
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
@@ -189,11 +191,11 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_L_E_txt_path = k_L_E_txt_path / f'k_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
+            np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G. \nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}.')
             k_m_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_m_E_txt_path = k_m_E_txt_path / f'k_m_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_m_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
+            np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
@@ -207,20 +209,20 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
         momentum_transfer_str = np.array2string(average_momentum_transfer_arrays.reshape(average_momentum_transfer_arrays.shape[0], -1)[:,0], formatter={'float_kind':lambda x: '%.4e' % x} )
 
         print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., {magnetic_field=} G, temperatures: {temperatures_str} K are:')
         print(output_state_resolved_probability_arrays, '\n')
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., {magnetic_field=} G, temperatures: {temperatures_str} K are:')
         print(probability_arrays, '\n')
 
-        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., {magnetic_field=} G, temperatures: {temperatures_str} K are:')
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
 
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.')
-        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
-        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -242,6 +244,7 @@ def main():
     parser.add_argument("--MF_in", type = int, default = 4)
     parser.add_argument("--S_in", type = int, default = 1)
     parser.add_argument("--MS_in", type = int, default = 1)
+    parser.add_argument("--B", type = float, default = 2.97, help = "Magnetic field.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
