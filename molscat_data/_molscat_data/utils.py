@@ -214,8 +214,6 @@ def k_L_E_parallel_fmf(s_matrix_collection: SMatrixCollection, F_out: int | np.n
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
     t0=time.perf_counter()
-    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = 'cm**3/s', param_indices = param_indices)
-    print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
 
     # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
     array_like = False
@@ -245,13 +243,12 @@ def k_L_E_parallel_fmf(s_matrix_collection: SMatrixCollection, F_out: int | np.n
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
             rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
-            momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
 
-            return rate, momentum_transfer_rate
+            return rate
     
     rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
 
-    return rate, momentum_transfer_rate
+    return rate
 
 
 
