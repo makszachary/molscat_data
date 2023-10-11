@@ -67,7 +67,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
     triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
 
-    if so_scaling is not None:
+    if spin_orbit_included:
         original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
         scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling_in_{F_in}_{MF_in}_{S_in}_{MS_in}.dat'
         scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
@@ -87,7 +87,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
-        if so_scaling is not None:
+        if spin_orbit_included:
             input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
