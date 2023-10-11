@@ -301,7 +301,7 @@ def main():
 
     # ### RUN MOLSCAT ###
     # output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
-    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, None, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
+    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (None,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
