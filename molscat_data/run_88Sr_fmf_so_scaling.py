@@ -162,18 +162,21 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
     momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = 'cm**3/s', param_indices = param_indices)
 
     if F_in == 4:
-        F_out, S_out = 2, S_in
-        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S_out, S_out+1, 2), MF_in, MS_in, indexing = 'ij')
-        arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
-
-        F_out, S_out = 4, S_in
-        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, MF_in, MS_in, indexing = 'ij')
-        arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
-
         args = [arg_hpf_deexcitation, arg_cold_spin_change_higher,]
         names = [f'hyperfine deexcitation for the |f = 2, m_f = {MF_in/2}> |m_s = {MS_in/2}> initial states', 
              f'cold spin change for the |f = 2, m_f = {MF_in/2}> |m_s = {MS_in/2}> initial states',]
         abbreviations = ['hpf', 'cold_higher',]
+
+        F_out, S_out = 2, S_in
+        MF_out, MS_out = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S_out, S_out+1, 2), indexing = 'ij')
+        arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
+
+        F_out, S_out = 4, S_in
+        MS_out = -MS_in
+        MF_out = np.arange(-F_out, F_out+1, 2)
+        arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
+
+
 
     elif F_in == 2:
         F_out, S_out = 2, S_in
