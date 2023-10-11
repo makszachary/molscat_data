@@ -667,7 +667,7 @@ class SMatrixCollection:
                     T = int(line.split()[5])  
                     energy_counter = 0
 
-                elif "TOTAL ANGULAR MOMENTUM JTOT =" in line and fmfbasis:
+                elif "*****************************  ANGULAR MOMENTUM JTOT  =" in line and fmfbasis:
                     MT = int(line.split()[5])
                     energy_counter = 0
 
