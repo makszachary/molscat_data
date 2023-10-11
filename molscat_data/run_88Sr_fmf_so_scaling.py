@@ -273,7 +273,7 @@ def main():
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_SE', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
 
@@ -308,13 +308,13 @@ def main():
     _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    pickle_paths = []
-    for so_scaling_value in so_scaling_values:
-        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
-        pickle_paths.append(pickle_path)
-        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-    pickle_paths = np.unique(pickle_paths)
+    # pickle_paths = []
+    # for so_scaling_value in so_scaling_values:
+    #     output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+    #     s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
+    #     pickle_paths.append(pickle_path)
+    #     print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+    # pickle_paths = np.unique(pickle_paths)
 
     transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
     _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
