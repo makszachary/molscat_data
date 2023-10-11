@@ -21,7 +21,7 @@ from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n
 from _molscat_data.utils import rate_fmfsms_vs_L_SE, rate_fmfsms_vs_L_multiprocessing, rate_fmfsms_vs_L, k_L_E_SE_not_parallel
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 from _molscat_data.analytical import MonoAlkaliEnergy
-from _molscat_data.utils import k_L_E_not_parallel, k_L_E_parallel
+from _molscat_data.utils import k_L_E_parallel_fmf
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au, red_mass_87Rb_84Sr_amu, red_mass_87Rb_88Sr_amu
 from prepare_so_coupling import scale_so_and_write
@@ -193,7 +193,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
         txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
-        rate_array, momentum_transfer_rate_array = k_L_E_parallel(*arg)
+        rate_array, momentum_transfer_rate_array = k_L_E_parallel_fmf(*arg)
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
