@@ -66,12 +66,12 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     
     singlet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'singlet.dat'
     triplet_potential_path = Path(__file__).parents[1] / 'molscat' / 'potentials' / 'triplet.dat'
-    original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
-    scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling_in_{F_in}_{MF_in}_{S_in}_{MS_in}.dat'
-    scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
-    # scaled_so_path = "/net/people/plgrid/plgwalewski/molscat-RKHS/molscat-exe/potentials/so.dat"
 
-    scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
+    if so_scaling is not None:
+        original_so_path = Path(__file__).parents[1] / 'data' / 'so_coupling' / 'lambda_SO_a_SrRb+_MT_original.dat'
+        scaled_so_path = scratch_path / 'molscat' / 'so_coupling' / molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path) / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / molscat_input_template_path.stem / f'so_{so_scaling:.4f}_scaling_in_{F_in}_{MF_in}_{S_in}_{MS_in}.dat'
+        scaled_so_path.parent.mkdir(parents = True, exist_ok = True)
+        scale_so_and_write(input_path = original_so_path, output_path = scaled_so_path, scaling = so_scaling)
 
     with open(molscat_input_template_path, 'r') as molscat_template:
         input_content = molscat_template.read()
@@ -87,7 +87,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("MAGNETICFIELD", str(magnetic_field), input_content, flags = re.M)
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
-        input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
+        if so_scaling is not None:
+            input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
         input_content = re.sub("SOSCALING", str(1.00), input_content, flags = re.M)
@@ -144,10 +145,11 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
-def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: int, MF_in: int, S_in: int, MS_in: int, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
+def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer_pickle_path: Path | str, F_in: int, MF_in: int, S_in: int, MS_in: int, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
     
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
@@ -159,7 +161,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
 
     param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
 
-    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = 'cm**3/s', param_indices = param_indices)
+    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
 
     if F_in == 4:
         F_out, S_out = 2, S_in
@@ -267,6 +269,7 @@ def main():
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
 
 
@@ -293,10 +296,12 @@ def main():
         temperatures = np.array(args.temperatures)
 
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
+    molscat_transfer_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.transfer_input_dir_name).iterdir()
 
 
     # ### RUN MOLSCAT ###
     # output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
+    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, None, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
@@ -307,9 +312,13 @@ def main():
         print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
     pickle_paths = np.unique(pickle_paths)
 
+    transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+    _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
+
+
     t0 = time.perf_counter()
     pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for so_scaling_value in so_scaling_values)
-    [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
+    [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
     print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 if __name__ == "__main__":

@@ -578,7 +578,7 @@ class SMatrixCollection:
                     spin_spin = False
                     so_param_index = 0
                     if non_molscat_so_parameter is not None:
-                        raise ValueError(f"You defined the {non_molscat_so_parameter=}, but the spin-spin term is not included in this molscat calculation!")
+                        raise ValueError(f"You defined the {non_molscat_so_parameter=}, but the spin-spin term is not included in this molscat calculation! For such calculations, only non_molscat_so_parameter = None is permitted.")
                     if self.spinOrbitParameter != (None,):
                         raise ValueError(f"The spin-orbit coupling parameter is defined in self.spinOrbitParameter, but the spin-spin term is not included in this molscat calculation!")
                     ## we don't want to fake data (on purpose or accidentaly) ;)
