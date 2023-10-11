@@ -167,7 +167,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, F_in: in
         arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
 
         F_out, S_out = 4, S_in
-        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, np.arange(-F_in, F_in+1, 2), MS_in, indexing = 'ij')
+        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, MF_in, MS_in, indexing = 'ij')
         arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
 
         args = [arg_hpf_deexcitation, arg_cold_spin_change_higher]
