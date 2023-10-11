@@ -42,7 +42,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
     L_max = 29
@@ -110,8 +110,12 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> set:
     t0 = time.perf_counter()
     output_dirs = []
+    spin_orbit_included = True
+    if so_scaling_values == None:
+        so_scaling_values = (0.0,)
+        spin_orbit_included = False
     with Pool() as pool:
-       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
+       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -301,7 +305,7 @@ def main():
 
     # ### RUN MOLSCAT ###
     # output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
-    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (None,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
+    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
