@@ -430,7 +430,7 @@ class Barplot:
         positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
                                                                 for j in range(number_of_datasets)] )
 
-        ticks_positions = [ (number_of_datasets+1)*(k+1/2) for k in range(len(theory))]
+        ticks_positions = [ (number_of_datasets+1)*(k+1/2) for k in range(number_of_xticks)]
 
         for xx, bars, exp_values, exp_std, formats in zip(positions, theory, experiment, std, bars_formatting, strict = True):
             ax.bar(xx, bars, width = 1, **formats)
