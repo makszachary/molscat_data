@@ -116,7 +116,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     std = [ std_hpf, std_cold_higher ]
     bars_formatting = [ bars_formatting_hpf, bars_formatting_cold_higher ]
     SE_bars_formatting = [ SE_bars_formatting_hpf, SE_bars_formatting_cold_higher ]
-    fig0_ax = Barplot.plotBarplotToAxes(fig0_ax, theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, SE_bars_formatting = SE_bars_formatting)
+    fig0_ax = Barplot.plotBarplotConciseToAxes(fig0_ax, theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, SE_bars_formatting = SE_bars_formatting)
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     fig0_ax.set_ylim(0, 0.61)
 
