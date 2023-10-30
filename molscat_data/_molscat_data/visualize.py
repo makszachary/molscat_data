@@ -395,6 +395,60 @@ class Barplot:
         
         return ax
     
+    @classmethod
+    def plotBarplotConciseToAxes(cls, ax, theory: np.ndarray, experiment: np.ndarray, std: np.ndarray, labels = None, SE_theory = None, bars_formatting = None, exp_bars_formatting = None, SE_bars_formatting = None):
+        """barplot
+        
+        :param theory: array_like,
+        :param experiment: array_like,
+        :param std: array_like,
+        :param labels: list or tuple of strings,
+        :SE_theory: array_like,
+        """
+
+        cold_color, hot_color = 'midnightblue', 'firebrick'
+        exp_cold_color, exp_hot_color = 'midnightblue', 'firebrick'
+        exp_hatch, theory_hatch = '////', ''
+
+        if bars_formatting is None:
+            if SE_bars_formatting is None:
+                #'midnightblue'
+                bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+            else:
+                #'royalblue'
+                bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+
+        if exp_bars_formatting is None:
+            exp_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+
+        if SE_bars_formatting is None:
+            #'midnightblue'
+            SE_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+
+        number_of_datasets = theory.shape[0] if len(theory.shape) == 2 else 1
+        number_of_xticks = theory.shape[1] if len(theory.shape) == 2 else theory.shape[0]
+        positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
+                                                                for j in range(number_of_datasets)] )
+
+        ticks_positions = [ (number_of_datasets+1)*(k+1/2) for k in range(len(theory))]
+
+        for xx, bars, exp_values, exp_std, formats in zip(positions, theory, experiment, std, bars_formatting, strict = True):
+            ax.bar(xx, bars, width = 1, **formats)
+            ax.errorbar(xx, exp_values, yerr = exp_std, fmt = 'd', capsize = 3)
+
+        ax.set_xticks(ticks_positions)
+        ax.set_xticklabels(labels)
+        ax.set_axisbelow(True)
+
+        if SE_theory is not None:
+            for xx, bars, formats in zip(positions, SE_theory, SE_bars_formatting, strict = True):
+                ax.bar(xx, bars, width = 1, **formats)
+
+        ax.tick_params(which='both', direction='in', top = False, right = True, length = 8)
+        ax.tick_params(which='minor', length = 4)
+        
+        return ax
+
 
     @staticmethod
     def prepareDataFromFiles(theory_hpf, theory_cold_higher, theory_cold_lower, exp_hpf, exp_cold_higher, exp_cold_lower):
