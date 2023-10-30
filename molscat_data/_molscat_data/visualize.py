@@ -434,7 +434,7 @@ class Barplot:
 
         for xx, bars, exp_values, exp_std, formats in zip(positions, theory, experiment, std, bars_formatting, strict = True):
             ax.bar(xx, bars, width = 1, **formats)
-            ax.errorbar(xx, exp_values, yerr = exp_std, fmt = 'd', capsize = 3)
+            ax.errorbar(xx, exp_values, yerr = exp_std, fmt = 'd', capsize = 3, ecolor = 'k', s = 8)
 
         ax.set_xticks(ticks_positions)
         ax.set_xticklabels(labels)
