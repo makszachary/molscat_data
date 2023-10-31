@@ -220,8 +220,8 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.set_xticks([ 43.0, 43.5, *reduced_masses_experimental], labels = [ '$43.0$', '$43.5$', f'${{}}^{{84}}\\mathrm{{Sr^+}}$', f'${{}}^{{86}}\\mathrm{{Sr^+}}$', f'${{}}^{{87}}\\mathrm{{Sr^+}}$', f'${{}}^{{88}}\\mathrm{{Sr^+}}$' ])
     for x, y, label in zip(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], reduced_masses_labels[0:2]+[reduced_masses_labels[3],]):
-        fig_ax.text(x, y, label, color = 'firebrick', fontsize = 'x-small')
-    fig_ax.text(reduced_masses_experimental[2], experiment[2], reduced_masses_labels[2], color = 'darkmagenta')
+        fig_ax.text(x, y, label, color = 'firebrick', fontsize = 'small')
+    fig_ax.text(reduced_masses_experimental[2], experiment[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 'small')
 
     for i, curve_name in enumerate(curves_names):
         # [print(f'{i}, {line.get_xydata()=}') for i, line in enumerate(fig_ax.get_lines())]
