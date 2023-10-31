@@ -188,7 +188,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     exp_hpf_isotopes = np.loadtxt(data_dir_path / 'exp_data' / 'isotopes_hpf.dat')
     reduced_masses_experimental = np.array([red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu])
-    reduced_masses_labels = [ f'$\\mathbf{{{{}}^{{84}}Sr^+}}$', f'$\\mathbf{{{{}}^{{86}}Sr^+}}$', f'$\\mathbf{{{{}}^{{87}}Sr^+}}$', f'$\\mathbf{{{{}}^{{88}}Sr^+}}$' ]
+    reduced_masses_labels = [ f'$\\mathrm{{{{}}^{{84}}Sr^+}}$', f'$\\mathrm{{{{}}^{{86}}Sr^+}}$', f'$\\mathrm{{{{}}^{{87}}Sr^+}}$', f'$\\mathrm{{{{}}^{{88}}Sr^+}}$' ]
     peff_experiment = exp_hpf_isotopes[0,:]
     peff_std_experiment = exp_hpf_isotopes[1,:]
     #dpeff = 1e-3
