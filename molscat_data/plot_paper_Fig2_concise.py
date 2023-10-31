@@ -106,7 +106,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     bars_formatting_cold_higher = { 'facecolor': 'royalblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     SE_bars_formatting_cold_higher = { 'facecolor': 'midnightblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
-    exp_formatting = { 'color': 'orange', 'marker': 'x', 'markersize': 4, 'capsize': 3 }
+    exp_formatting = { 'color': 'orange', 'marker': 'x', 'markersize': 4, 'capsize': 3, 'linestyle': 'none' }
     bars_formatting = [ bars_formatting_hpf, bars_formatting_cold_higher ]
     SE_bars_formatting = [ SE_bars_formatting_hpf, SE_bars_formatting_cold_higher ]
 

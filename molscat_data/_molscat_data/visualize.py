@@ -419,7 +419,7 @@ class Barplot:
                 bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
         if exp_formatting is None:
-            exp_formatting = { 'color': 'orange', 'marker': 'x', 'markersize': 4, 'capsize': 3 }
+            exp_formatting = { 'color': 'orange', 'marker': 'x', 'markersize': 4, 'capsize': 3, 'linestyle': 'none' }
 
         if SE_bars_formatting is None:
             #'midnightblue'
