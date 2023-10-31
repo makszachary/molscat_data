@@ -200,17 +200,17 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
-    theory_formattings = [ {'color': even_color, 'linewidth': 4},
-                          {'color': odd_color, 'linewidth': 4}
+    theory_formattings = [ {'color': even_color, 'linewidth': 3},
+                          {'color': odd_color, 'linewidth': 3}
                           ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
     fig_ax = fig.add_subplot()
     print(f'{reduced_masses_experimental=}, {experiment=}')
-    fig_ax.scatter(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], s = 16, c = 'firebrick', marker = 'd', edgecolors =  'firebrick', linewidths = None)
+    fig_ax.scatter(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], s = 16, c = 'firebrick', marker = 'x', edgecolors =  'firebrick', linewidths = None)
     fig_ax.errorbar(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], std[[0,1,3]], ecolor = 'firebrick', capsize = 4, linestyle = 'None')
-    fig_ax.scatter(reduced_masses_experimental[2], experiment[2], s = 16, c = 'darkmagenta', marker = 'd', edgecolors =  'darkmagenta', linewidths = None)
+    fig_ax.scatter(reduced_masses_experimental[2], experiment[2], s = 16, c = 'darkmagenta', marker = 'x', edgecolors =  'darkmagenta', linewidths = None)
     fig_ax.errorbar(reduced_masses_experimental[2], experiment[2], std[2], ecolor = 'darkmagenta', capsize = 4, linestyle = 'None')
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
     fig_ax.set_ylim(0, 1.05*fig_ax.get_ylim()[1])
