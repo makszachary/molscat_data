@@ -123,8 +123,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
 
-    labels_and_colors = { 'hyperfine relaxation\n(calculated w/o & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
-                         'cold spin change\n(calculated w/o & with SO coupling)': SE_bars_formatting_cold_higher['facecolor'], }
+    labels_and_colors = { 'hyperfine relaxation\n(without & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
+                         'cold spin change\n(without & with SO coupling)': SE_bars_formatting_cold_higher['facecolor'], }
     handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
     colors_and_hatches = [ (SE_format['facecolor'], SO_format['facecolor'], '') for SE_format, SO_format in zip(SE_bars_formatting, bars_formatting, strict = True) ]
     labels = [ *list(labels_and_colors.keys()),]
