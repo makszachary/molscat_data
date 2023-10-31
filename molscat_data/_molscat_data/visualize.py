@@ -396,7 +396,7 @@ class Barplot:
         return ax
     
     @classmethod
-    def plotBarplotConciseToAxes(cls, ax, theory: np.ndarray, experiment: np.ndarray, std: np.ndarray, labels = None, SE_theory = None, bars_formatting = None, exp_bars_formatting = None, SE_bars_formatting = None):
+    def plotBarplotConciseToAxes(cls, ax, theory: np.ndarray, experiment: np.ndarray, std: np.ndarray, labels = None, SE_theory = None, bars_formatting = None, exp_formatting = None, SE_bars_formatting = None):
         """barplot
         
         :param theory: array_like,
@@ -418,8 +418,8 @@ class Barplot:
                 #'royalblue'
                 bars_formatting = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
 
-        if exp_bars_formatting is None:
-            exp_bars_formatting = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
+        if exp_formatting is None:
+            exp_formatting = { 'color': 'orange', 'marker': 'x', 'markersize': 4, 'capsize': 3 }
 
         if SE_bars_formatting is None:
             #'midnightblue'
@@ -434,7 +434,7 @@ class Barplot:
 
         for xx, bars, exp_values, exp_std, formats in zip(positions, theory, experiment, std, bars_formatting, strict = True):
             ax.bar(xx, bars, width = 1, **formats)
-            ax.errorbar(xx, exp_values, yerr = exp_std, color = 'orange', markersize = 2, fmt = 'd', capsize = 3, )
+            ax.errorbar(xx, exp_values, yerr = exp_std, **exp_formatting )
 
         ax.set_xticks(ticks_positions)
         ax.set_xticklabels(labels)
