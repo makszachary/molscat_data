@@ -146,8 +146,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig0.subplots_adjust(left = 0.1, bottom = 0.15)
     fig1.subplots_adjust(left = 0.1, bottom = 0.15)
 
-    fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax.text(0., 1*row_height/total_height, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig0_ax.text(-0.1, 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax.text(-0.1, 1*row_height/total_height, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
