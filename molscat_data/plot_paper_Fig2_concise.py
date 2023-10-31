@@ -54,7 +54,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 2
-    row_height = 4
+    row_height = 5
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
@@ -117,7 +117,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     fig0_ax = Barplot.plotBarplotConciseToAxes(fig0_ax, theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, )
     PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
-    fig0_ax.set_ylim(0, 0.61)
+    fig0_ax.set_ylim(0, 0.7)
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     fig0_ax.set_ylabel(ylabel)
