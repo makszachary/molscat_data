@@ -130,7 +130,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     labels = [ *list(labels_and_colors.keys()),]
     handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (1, 1), fontsize = 'xx-small', labelspacing = 1, frameon=False)
+    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (.99, .99), fontsize = 'xx-small', labelspacing = 1, frameon=False)
 
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
