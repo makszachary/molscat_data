@@ -99,7 +99,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     f_max = 2
     # barplot_labels = [ f'$\\left|{str(int(f_max))},{str(int(mf))}\\right\\rangle$' for mf in np.arange (-f_max, f_max+1)]
-    barplot_labels = [ f'$\\left|2,\\vspace{{-0.2em}}-\\vspace{{-0.2em}}2\\right\\rangle$', f'$\\left|2,{{-}}1\\right\\rangle$', f'$\\left|2,0\\right\\rangle$', f'$\\left|2,1\\right\\rangle$', f'$\\left|2,2\\right\\rangle$',]
+    barplot_labels = [ f'$\\left|2,-2\\right\\rangle$', f'$\\left|2,{{-}}1\\right\\rangle$', f'$\\left|2,0\\right\\rangle$', f'$\\left|2,1\\right\\rangle$', f'$\\left|2,2\\right\\rangle$',]
 
     fig0_ax = fig0.add_subplot()
     bars_formatting_hpf = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
