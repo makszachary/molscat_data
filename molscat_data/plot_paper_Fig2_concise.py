@@ -62,8 +62,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig = plt.figure(figsize = figsize, dpi = dpi)
     gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = [1 for row in range(nrows)])
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    fig0 = fig.add_subfigure(gs_Figure[0])
-    fig1 = fig.add_subfigure(gs_Figure[1])
+    figs = [fig.add_subfigure(gs_Figure[i]) for i in range(nrows)]
+    figs[0] = fig.add_subfigure(gs_Figure[0])
+    figs[1] = fig.add_subfigure(gs_Figure[1])
+    figs_axes = [[] for fig in figs]
     # fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[3])
     
@@ -101,7 +103,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     barplot_labels = [ f'$\\left|{str(int(f_max))},{str(int(mf))}\\right\\rangle$'.replace(f'-', f'{{-}}') for mf in np.arange (-f_max, f_max+1)]
     # barplot_labels = [ f'$\\left|2,-2\\right\\rangle$', f'$\\left|2,{{-}}1\\right\\rangle$', f'$\\left|2,0\\right\\rangle$', f'$\\left|2,1\\right\\rangle$', f'$\\left|2,2\\right\\rangle$',]
 
-    fig0_ax = fig0.add_subplot()
+    figs_axes[0][0] = figs[0].add_subplot()
     bars_formatting_hpf = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     SE_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     bars_formatting_cold_higher = { 'facecolor': 'royalblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
@@ -116,13 +118,14 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     experiment = np.array([ experiment_hpf, experiment_cold_higher ])
     std = np.array([ std_hpf, std_cold_higher ])
 
-    fig0_ax = Barplot.plotBarplotConciseToAxes(fig0_ax, theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, )
-    PhaseTicks.linearStr(fig0_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+    
+    figs_axes[0].append(Barplot.plotBarplotConciseToAxes(figs_axes[0][0], theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, ))
+    PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
-    fig0_ax.set_ylim(0, 1.2*np.amax(theory))
+    figs_axes[0][0].set_ylim(0, 1.2*np.amax(theory))
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
-    fig0_ax.set_ylabel(ylabel)
+    figs_axes[0][0].set_ylabel(ylabel)
 
     labels_and_colors = { 'hyperfine relaxation\n(without & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
                          'cold spin change\n(without & with SO coupling)': SE_bars_formatting_cold_higher['facecolor'], }
@@ -131,7 +134,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     labels = [ *list(labels_and_colors.keys()),]
     handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    fig0_ax.legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (.99, .99), fontsize = 'xx-small', labelspacing = 1, frameon=False)
+    figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (.99, .99), fontsize = 'xx-small', labelspacing = 1, frameon=False)
 
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
@@ -140,14 +143,15 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     arrays_hpf = np.loadtxt(arrays_path_hpf)
     arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
 
-    fig1, fig1_ax = plotPeffAverageVsMassToFig(fig1, singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
-    fig1_ax.set_ylim(fig0_ax.get_ylim())
+    figs[1], _ax = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name)
+    figs_axes[1].append(_ax)
+    figs_axes[1][0].set_ylim(figs_axes[0][0].get_ylim())
 
-    fig0.subplots_adjust(left = 0.1, bottom = 0.15)
-    fig1.subplots_adjust(left = 0.1, bottom = 0.15)
+    figs[0].subplots_adjust(left = 0.1, bottom = 0.15)
+    figs[1].subplots_adjust(left = 0.1, bottom = 0.15)
 
-    fig0_ax.text(-0.06, 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax.text(-0.06, 1*row_height/total_height, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, 1*row_height/total_height, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
