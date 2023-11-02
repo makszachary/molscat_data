@@ -227,9 +227,12 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     PhaseTicks.linearStr(fig_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.set_xticks([ 43.0, 43.5, *reduced_masses_experimental], labels = [ '$43.0$', '$43.5$', f'${{}}^{{84}}\\mathrm{{Sr^+}}$', f'${{}}^{{86}}\\mathrm{{Sr^+}}$', f'${{}}^{{87}}\\mathrm{{Sr^+}}$', f'${{}}^{{88}}\\mathrm{{Sr^+}}$' ])
-    for x, y, label in zip(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], reduced_masses_labels[0:2]+[reduced_masses_labels[3],]):
-        fig_ax.text(x, y, label, color = 'firebrick', fontsize = 'x-small')
-    fig_ax.text(reduced_masses_experimental[2], experiment[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 'x-small')
+    xx_text, yy_text = reduced_masses_experimental, experiment
+    xx_text[[2,3]] -= 0.1
+    yy_text[[2,3]] += 0.05
+    for x, y, label in zip(xx_text[[0,1,3]], yy_text[[0,1,3]], reduced_masses_labels[0:2]+[reduced_masses_labels[3],]):
+        fig_ax.text(x, y, label, color = 'firebrick', fontsize = 'x-small', ha = 'center')
+    fig_ax.text(xx_text[2], yy_text[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 'x-small')
 
     for i, curve_name in enumerate(curves_names):
         # [print(f'{i}, {line.get_xydata()=}') for i, line in enumerate(fig_ax.get_lines())]
