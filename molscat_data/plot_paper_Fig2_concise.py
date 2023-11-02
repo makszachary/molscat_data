@@ -103,7 +103,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     barplot_labels = [ f'$\\left|{str(int(f_max))},{str(int(mf))}\\right\\rangle$'.replace(f'-', f'{{-}}') for mf in np.arange (-f_max, f_max+1)]
     # barplot_labels = [ f'$\\left|2,-2\\right\\rangle$', f'$\\left|2,{{-}}1\\right\\rangle$', f'$\\left|2,0\\right\\rangle$', f'$\\left|2,1\\right\\rangle$', f'$\\left|2,2\\right\\rangle$',]
 
-    figs_axes[0][0] = figs[0].add_subplot()
+    figs_axes[0].append(figs[0].add_subplot())
     bars_formatting_hpf = { 'facecolor': 'indianred', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     SE_bars_formatting_hpf = { 'facecolor': 'firebrick', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
     bars_formatting_cold_higher = { 'facecolor': 'royalblue', 'edgecolor': 'black', 'alpha': 0.9, 'ecolor': 'black', 'capsize': 3 }
@@ -119,7 +119,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     std = np.array([ std_hpf, std_cold_higher ])
 
     
-    figs_axes[0].append(Barplot.plotBarplotConciseToAxes(figs_axes[0][0], theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, ))
+    figs_axes[0][0] = Barplot.plotBarplotConciseToAxes(figs_axes[0][0], theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, )
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
     figs_axes[0][0].set_ylim(0, 1.2*np.amax(theory))
