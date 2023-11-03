@@ -139,9 +139,9 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
 
     PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
-    ax.set_xlabel(f'Singlet-triplet phase difference', fontsize = 36)
-    ax.set_ylabel(f'Effective probability', fontsize = 36)
-    ax_chisq.set_ylabel(f'$\\chi^2$', fontsize = 36, rotation = 0, labelpad = 20)
+    ax.set_xlabel(f'Singlet-triplet phase difference')
+    ax.set_ylabel(f'Effective probability')
+    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 12)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(fontsize = 30, loc = 'upper left')
