@@ -777,7 +777,72 @@ class ValuesVsModelParameters:
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
         ax_chisq = ax.twinx()
         return fig, ax, ax_chisq
-    
+
+    @classmethod
+    def plotValuesAndChiSquaredToAxis(cls, ax, xx, theory, experiment, std, theory_distinguished = None,):
+        chi_sq = chi_squared(theory, experiment, std)
+
+        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin']
+        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
+
+        # theory_distinguished_mask = np.isfinite(theory_distinguished)
+        # theory_mask = np.isfinite(theory)
+
+        ax_chisq = ax.twinx()
+
+
+        for i, yy in enumerate(np.moveaxis(theory, -1, 0)):
+            yy = yy.transpose()
+            yy_mask = np.isfinite(yy)
+            try:
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = .4)
+            except ValueError:
+                ax.plot(xx, yy, color = theory_colors[i], linewidth = .4)
+            ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
+            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+
+        chi_sq = chi_sq.transpose()
+        chi_sq_mask = np.isfinite(chi_sq)
+        try:
+            ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = 0.4)
+        except ValueError:
+            ax_chisq.plot(xx, chi_sq, color = '0.7', linewidth = 0.4)
+
+        if theory_distinguished is not None:
+            
+            chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+            
+            for i, yy in enumerate(np.moveaxis(theory_distinguished, -1, 0)):
+                yy = yy.transpose()
+                yy_mask = np.isfinite(yy)
+                try:
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
+                except ValueError:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+
+            chi_sq_distinguished = chi_sq_distinguished.transpose()
+            chi_sq_distinguished_mask = np.isfinite(chi_sq_distinguished)
+            try:
+                ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))][chi_sq_distinguished_mask], chi_sq_distinguished[chi_sq_distinguished_mask], 'k--', linewidth = 4, label = '$\chi^2$')
+            except ValueError:
+                ax_chisq.plot(xx[tuple(map(slice, chi_sq_distinguished.shape))], chi_sq_distinguished, 'k--', linewidth = 4, label = '$\chi^2$')
+        
+        ax.set_xlim(np.min(xx), np.max(xx))
+
+        ax.tick_params(which='both', direction='in', top = True, labelsize = 30, length = 10)
+        ax.tick_params(which='minor', length = 5)
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+
+        ax_chisq.set_yscale('log')
+        ax_chisq.tick_params(which='both', direction='in', labelsize = 30, length = 10)
+        ax_chisq.tick_params(which='minor', length = 5)
+        
+        return ax, ax_chisq
+
+
     @classmethod
     def plotValuesAndChiSquared(cls, xx, theory, experiment, std, theory_distinguished = None, figsize = (9.5, 7.2), dpi = 300):
         chi_sq = chi_squared(theory, experiment, std)
