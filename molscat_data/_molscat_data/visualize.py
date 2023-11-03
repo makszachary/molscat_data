@@ -829,7 +829,7 @@ class ValuesVsModelParameters:
         
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, length = 10)
+        ax.tick_params(which='both', direction='in', top = True, length = 8)
         ax.tick_params(which='minor', length = 5)
         ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
         ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
@@ -837,8 +837,8 @@ class ValuesVsModelParameters:
         ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
 
         ax_chisq.set_yscale('log')
-        ax_chisq.tick_params(which='both', direction='in', length = 10)
-        ax_chisq.tick_params(which='minor', length = 5)
+        ax_chisq.tick_params(which='both', direction='in', length = 8)
+        ax_chisq.tick_params(which='minor', length = 4)
         
         return ax, ax_chisq
 
