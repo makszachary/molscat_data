@@ -154,6 +154,7 @@ def main():
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The distinguished value of the singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.325,], help = "Values of the SO scaling.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
@@ -168,6 +169,9 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
+    singlet_phase_distinguished = args.singlet_phase if args.singlet_phase is not None else default_singlet_phase_function(1.0)
+    triplet_phase_distinguished = args.triplet_phase if args.triplet_phase is not None else default_triplet_phase_function(1.0)
+
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     phase_differences = np.arange(0, 1.+args.phase_step, args.phase_step).round(decimals=4)
@@ -181,7 +185,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
 
-    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = args.singlet_phase, so_singlet_phase = args.singlet_phase, so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal) for temperature in temperatures]
+    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
