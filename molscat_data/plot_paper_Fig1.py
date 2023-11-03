@@ -144,7 +144,7 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
     ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 12)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
-    ax_chisq.legend(fontsize = 30, loc = 'upper left')
+    ax_chisq.legend(loc = 'upper left')
 
     return ax, ax_chisq
 
