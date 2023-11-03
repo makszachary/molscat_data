@@ -40,7 +40,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.ndarray[float], singlet_phase_distinguished: float, so_phases: tuple[float, float], so_scalings: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, DPhi_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', SO_input_dir_name = 'RbSr+_tcpld_so_scaling', journal_name = 'NatCommun'):
+def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.ndarray[float], singlet_phase_distinguished: float, so_phases: tuple[float, float], so_scaling_values: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, DPhi_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', SO_input_dir_name = 'RbSr+_tcpld_so_scaling', journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -185,7 +185,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
 
-    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling = so_scaling_values[0], energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal) for temperature in temperatures]
+    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
