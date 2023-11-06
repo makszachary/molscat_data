@@ -184,7 +184,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
 
     # xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], ] ), 0, -1)
+    theory = np.moveaxis(np.array( [ arrays_hot[:,T_index,0], ] ), 0, -1)
     theory_distinguished = theory
     
     print('YS')
