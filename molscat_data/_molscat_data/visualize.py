@@ -950,8 +950,8 @@ class ValuesVsModelParameters:
 
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, right = True, length = 8)
-        ax.tick_params(which='minor', length = 4)
+        ax.tick_params(which='both', direction='in', top = True, right = True, length = 4)
+        ax.tick_params(which='minor', length = 2)
 
         return ax
 
