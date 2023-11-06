@@ -130,8 +130,8 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
     xx_min_distinguished = xx[:,1][minindex_distinguished]
     chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
 
-    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.05},
-                          {'color': 'lightsteelblue', 'linewidth': 0.05} ]
+    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02},
+                          {'color': 'lightsteelblue', 'linewidth': 0.02} ]
     theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5},
                         {'color': 'midnightblue', 'linewidth': 1.5} ]
     experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
