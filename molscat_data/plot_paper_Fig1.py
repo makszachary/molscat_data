@@ -190,9 +190,9 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     
     print('YS')
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02}, ]
-    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1}, ]
-    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1, 'linestyle': '--'},
-                        {'color': 'midnightblue', 'linewidth': 1, 'linestyle': '--'} ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5}, ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
 
     # array_paths = ( arrays_dir_path / 'data_produced' / 'arrays' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'hpf.txt' for so_scaling in so_scaling_values )
     # output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
@@ -207,8 +207,14 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     
     ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
     ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, c = 'k', marker = 'o', linestyle = 'None',)
+    ax.set_xlim(0.1, 0.48)
+    ax.set_ylim(0.02, 0.13)
+    
     ax.tick_params(which='both', direction='in', top = True, right = True, length = 4)
     ax.tick_params(which='minor', length = 2)
+    PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.1f}$')
+    PhaseTicks.linearStr(ax.yaxis, 0.1, 0.02, '${x:.1f}$')
+    
     ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
     ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
