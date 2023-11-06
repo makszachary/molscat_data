@@ -130,7 +130,14 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
     xx_min_distinguished = xx[:,1][minindex_distinguished]
     chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
 
-    ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished)
+    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.4},
+                          {'color': 'lightsteelblue', 'linewidth': 0.4} ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 2},
+                        {'color': 'midnightblue', 'linewidth': 2} ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 2, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 2, 'linestyle': '--'} ]
+
+    ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
     data = np.array([line.get_xydata() for line in ax_chisq.lines])
     # minindices = np.nanargmin(data[:,:,1])
     # xx_min = xx[minindices]
