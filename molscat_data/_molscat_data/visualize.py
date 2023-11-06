@@ -811,9 +811,9 @@ class ValuesVsModelParameters:
         chi_sq = chi_sq.transpose()
         chi_sq_mask = np.isfinite(chi_sq)
         try:
-            ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = 0.4)
+            ax_chisq.plot(xx[chi_sq_mask].reshape(-1, xx.shape[-1]), chi_sq[chi_sq_mask].reshape(-1, chi_sq.shape[-1]), color = '0.7', linewidth = theory_distinguished_formattings[0]['linewidth'])
         except ValueError:
-            ax_chisq.plot(xx, chi_sq, color = '0.7', linewidth = 0.4)
+            ax_chisq.plot(xx, chi_sq, color = '0.7', linewidth = theory_distinguished_formattings[0]['linewidth'])
 
         if theory_distinguished is not None:
             
