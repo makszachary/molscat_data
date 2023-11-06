@@ -5,5 +5,5 @@ axes.titlesize : 11
 axes.labelsize : 11
 xtick.labelsize : small
 ytick.labelsize : small
-legend.fontsize : small
+legend.fontsize : x-small
 font.size: 11

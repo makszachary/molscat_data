@@ -836,12 +836,12 @@ class ValuesVsModelParameters:
         
         ax.set_xlim(np.min(xx), np.max(xx))
 
-        ax.tick_params(which='both', direction='in', top = True, length = 8)
-        ax.tick_params(which='minor', length = 4)
+        ax.tick_params(which='both', direction='in', top = True, length = 4)
+        ax.tick_params(which='minor', length = 2)
 
         ax_chisq.set_yscale('log')
-        ax_chisq.tick_params(which='both', direction='in', length = 8)
-        ax_chisq.tick_params(which='minor', length = 4)
+        ax_chisq.tick_params(which='both', direction='in', length = 4)
+        ax_chisq.tick_params(which='minor', length = 2)
         
         return ax, ax_chisq
 
