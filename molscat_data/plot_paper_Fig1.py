@@ -132,10 +132,10 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
 
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.05},
                           {'color': 'lightsteelblue', 'linewidth': 0.05} ]
-    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1},
-                        {'color': 'midnightblue', 'linewidth': 1} ]
-    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1, 'linestyle': '--'},
-                        {'color': 'midnightblue', 'linewidth': 1, 'linestyle': '--'} ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5},
+                        {'color': 'midnightblue', 'linewidth': 1.5} ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
 
     ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
     data = np.array([line.get_xydata() for line in ax_chisq.lines])
