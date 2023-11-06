@@ -76,9 +76,9 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
 
     figs_axes[2].append(figs[2].add_subplot())
 
-    figs[0].subplots_adjust(left = 0.1, bottom = 0.15, top = 0.95)
-    figs[1].subplots_adjust(left = 0.1, bottom = 0.17, top = 0.95)
-    figs[2].subplots_adjust(left = 0.1, bottom = 0.17, top = 0.95)
+    figs[0].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.95)
+    figs[1].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.9)
+    figs[2].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.9)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
