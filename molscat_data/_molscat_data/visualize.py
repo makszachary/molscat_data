@@ -779,14 +779,18 @@ class ValuesVsModelParameters:
         return fig, ax, ax_chisq
 
     @classmethod
-    def plotValuesAndChiSquaredToAxis(cls, ax, xx, theory, experiment, std, theory_distinguished = None,):
+    def plotValuesAndChiSquaredToAxis(cls, ax, xx, theory, experiment = None, std = None, theory_distinguished = None, theory_formattings = None, theory_distinguished_formattings = None, experiment_formattings = None):
         chi_sq = chi_squared(theory, experiment, std)
 
-        theory_colors = ['darksalmon', 'lightsteelblue', 'moccasin']
-        theory_distinguished_colors = ['firebrick', 'midnightblue', 'darkorange']
-
-        # theory_distinguished_mask = np.isfinite(theory_distinguished)
-        # theory_mask = np.isfinite(theory)
+        if theory_formattings is None:
+            theory_formattings = [{'linewidth': 2} for i in range(theory.shape[-1])]
+        if theory_distinguished_formattings is None and theory_distinguished is not None:
+            theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-'} for i in range(theory_distinguished.shape[-1]) ]
+        if experiment_formattings is None and theory_distinguished_formattings is not None:
+            experiment_formattings = copy.deepcopy(theory_distinguished_formattings)
+            for format in experiment_formattings:
+                format['linestyle'] = '--'
+                format['linewidth'] = '2'
 
         ax_chisq = ax.twinx()
 
@@ -795,11 +799,14 @@ class ValuesVsModelParameters:
             yy = yy.transpose()
             yy_mask = np.isfinite(yy)
             try:
-                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), color = theory_colors[i], linewidth = .4)
-            except ValueError:
-                ax.plot(xx, yy, color = theory_colors[i], linewidth = .4)
-            ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = theory_colors[i], alpha=0.5)
-            ax.axhline(experiment[i], color = theory_distinguished_colors[i], linestyle = '--', linewidth = 4)
+                ax.plot(xx[yy_mask].reshape(-1, xx.shape[-1]), yy[yy_mask].reshape(-1, yy.shape[-1]), **(theory_formattings[i]))
+            except (ValueError, IndexError) as error:
+                print(f'{error}; turning off yy_mask')
+                ax.plot(xx, yy, **(theory_formattings[i]))
+            if experiment is not None:
+                ax.axhline(experiment[i], **experiment_formattings[i])
+                if std is not None:
+                    ax.axhspan(experiment[i]-std[i], experiment[i]+std[i], color = experiment_formattings[i]['color'], alpha=0.2)
 
         chi_sq = chi_sq.transpose()
         chi_sq_mask = np.isfinite(chi_sq)
@@ -816,9 +823,9 @@ class ValuesVsModelParameters:
                 yy = yy.transpose()
                 yy_mask = np.isfinite(yy)
                 try:
-                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], color = theory_distinguished_colors[i], linewidth = 4)
-                except ValueError:
-                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, color = theory_distinguished_colors[i], linewidth = 4)
+                    ax.plot(xx[tuple(map(slice, yy.shape))][yy_mask], yy[yy_mask], **theory_distinguished_formattings[i])
+                except (ValueError, IndexError) as error:
+                    ax.plot(xx[tuple(map(slice, yy.shape))], yy, **theory_distinguished_formattings[i])
 
             chi_sq_distinguished = chi_sq_distinguished.transpose()
             chi_sq_distinguished_mask = np.isfinite(chi_sq_distinguished)
@@ -830,11 +837,7 @@ class ValuesVsModelParameters:
         ax.set_xlim(np.min(xx), np.max(xx))
 
         ax.tick_params(which='both', direction='in', top = True, length = 8)
-        ax.tick_params(which='minor', length = 5)
-        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
-        ax.xaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
-        ax.yaxis.set_minor_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
+        ax.tick_params(which='minor', length = 4)
 
         ax_chisq.set_yscale('log')
         ax_chisq.tick_params(which='both', direction='in', length = 8)
