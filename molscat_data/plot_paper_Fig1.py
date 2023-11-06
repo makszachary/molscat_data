@@ -205,7 +205,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
 
     # fig, ax = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_scaling_values, ss_dominated_rates, p_eff_exp=p_eff_exp, p_eff_exp_std=p_eff_exp_std, pmf_array = pmf_array)
     
-    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_formattings = theory_distinguished_formattings)
+    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
     ax.scatter(so_scaling_values, theory.flatten(), s = 6**2, color = 'k', marker = 'o')
 
     return ax
