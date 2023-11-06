@@ -76,9 +76,9 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
 
     figs_axes[2].append(figs[2].add_subplot())
 
-    figs_axes[0][0].text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(0.7, 1.05, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[2][0].text(0.7, 0.5, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[0][0].text(0., 1.04, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(0.7, 1.04, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[2][0].text(0.7, row_height/total_height+0.04, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     figs[0].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.98)
     figs[1].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.96)
