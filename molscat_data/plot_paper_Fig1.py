@@ -179,13 +179,13 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
 
     exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
     exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
-    experiment = np.array( [ exp_hot[0,0], ] )
-    std = np.array( [ exp_hot[1,0], ] )
+    experiment = np.array( [ exp_hot[0,4], ] )
+    std = np.array( [ exp_hot[1,4], ] )
 
     # xx = np.full((len(so_scaling_values), 1), so_scaling_values).transpose()
     xx = np.array(so_scaling_values)
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis(np.array( [ arrays_hot[:,T_index,0], ] ), 0, -1)
+    theory = np.moveaxis(np.array( [ arrays_hot[:,T_index,4], ] ), 0, -1)
     theory_distinguished = theory
     
     print('YS')
