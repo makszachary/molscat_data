@@ -182,7 +182,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     experiment = np.array( [ exp_hot[0,0], ] )
     std = np.array( [ exp_hot[1,0], ] )
 
-    # xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
+    xx = np.full((len(so_scaling_values), 1), so_scaling_values).transpose()
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis(np.array( [ arrays_hot[:,T_index,0], ] ), 0, -1)
     theory_distinguished = theory
@@ -204,7 +204,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
 
     # fig, ax = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_scaling_values, ss_dominated_rates, p_eff_exp=p_eff_exp, p_eff_exp_std=p_eff_exp_std, pmf_array = pmf_array)
     
-    ax = ValuesVsModelParameters.plotValuestoAxis(ax, so_scaling_values, theory, experiment, std, theory_formattings = theory_distinguished_formattings)
+    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_formattings = theory_distinguished_formattings)
     ax.scatter(so_scaling_values, theory.flatten(), s = 6**2, color = 'k', marker = 'o')
 
     return ax
