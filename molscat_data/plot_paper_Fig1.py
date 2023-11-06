@@ -54,7 +54,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 2
-    row_height = 4.5
+    row_height = 3.5
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (18*cm, total_height*cm)
