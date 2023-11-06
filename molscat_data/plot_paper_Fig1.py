@@ -187,7 +187,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], ] ), 0, -1)
     theory_distinguished = theory
     
-
+    print('YS')
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02}, ]
     theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5}, ]
     experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
