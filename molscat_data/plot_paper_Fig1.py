@@ -132,10 +132,10 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
 
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.05},
                           {'color': 'lightsteelblue', 'linewidth': 0.05} ]
-    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 2},
-                        {'color': 'midnightblue', 'linewidth': 2} ]
-    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 2, 'linestyle': '--'},
-                        {'color': 'midnightblue', 'linewidth': 2, 'linestyle': '--'} ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1},
+                        {'color': 'midnightblue', 'linewidth': 1} ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1, 'linestyle': '--'} ]
 
     ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
     data = np.array([line.get_xydata() for line in ax_chisq.lines])
@@ -153,7 +153,7 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
     ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 12)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
-    ax_chisq.legend(loc = 'upper left')
+    ax_chisq.legend(loc = 'upper left', frameon=False)
 
     return ax, ax_chisq
 
