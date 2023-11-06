@@ -80,10 +80,10 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs[1].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.84)
     figs[2].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.84)
 
-    fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
-    fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
-
+    fig.savefig(png_path)
+    fig.savefig(svg_path, transparent = True)
+    fig.savefig(pdf_path, transparent = True)
+    # , bbox_inches='tight', pad_inches = 0
     plt.close()
     
 
