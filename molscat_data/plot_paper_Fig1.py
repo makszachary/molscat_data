@@ -76,9 +76,9 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
 
     figs_axes[2].append(figs[2].add_subplot())
 
-    figs[0].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.98)
-    figs[1].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.96)
-    figs[2].subplots_adjust(left = 0.1, bottom = 0.2, top = 0.96)
+    figs[0].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.98)
+    figs[1].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.96)
+    figs[2].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.96)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
@@ -150,7 +150,7 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
 
     ax.set_xlabel(f'$\\Delta\\Phi$')
     ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
-    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 12)
+    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 8)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(loc = 'upper left', frameon=False)
