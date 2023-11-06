@@ -66,6 +66,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs_axes = [[] for fig in figs]
 
     figs_axes[0].append(figs[0].add_subplot())
+    figs_axes[0][0].axis('off')
 
     
     figs_axes[1].append(figs[1].add_subplot())
