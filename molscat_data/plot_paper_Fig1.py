@@ -55,7 +55,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     ws, hs = 0.05, 0.05
     nrows = 2
     row_height = 4.5
-    vpad = 1
+    vpad = 1.5
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (18*cm, total_height*cm)
     dpi = 1000
@@ -208,12 +208,12 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
     ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, c = 'k', marker = 'o', linestyle = 'None',)
     ax.set_xlim(0.1, 0.48)
-    ax.set_ylim(0.02, 0.13)
+    ax.set_ylim(0.0, 0.13)
     
     ax.tick_params(which='both', direction='in', top = True, right = True, length = 4)
     ax.tick_params(which='minor', length = 2)
     PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.1f}$')
-    PhaseTicks.linearStr(ax.yaxis, 0.1, 0.02, '${x:.1f}$')
+    PhaseTicks.linearStr(ax.yaxis, 0.05, 0.01, '${x:.1f}$')
     
     ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
     ax.set_xlabel(f'$c_\\mathrm{{so}}$')
