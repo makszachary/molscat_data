@@ -209,6 +209,8 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, color = 'k', marker = 'o', linestyle = 'None',)
     ax.tick_params(which='both', direction='in', top = True, right = True, length = 4)
     ax.tick_params(which='minor', length = 2)
+    ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
+    ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
     return ax
 
