@@ -70,11 +70,16 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     
     figs_axes[1].append(figs[1].add_subplot())
     _temp_so_scal = 0.375
-    figs_axes[1][0], _ax_chisq = plotProbabilityVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False)
+    figs_axes[1][0], _ax_chisq = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False)
     figs_axes[1].append(_ax_chisq)
 
 
     figs_axes[2].append(figs[2].add_subplot())
+    # TEMPORARY TEMPORARY TEMPORARY
+    _energy_tuple = tuple( round(n_root_scale(i, 4e-7, 4e-3, 50-1, n = 3), sigfigs = 11) for i in range(nenergies) )
+    _temperatures = list(np.logspace(-4, -3, 10))
+    _temperatures.append(plot_temperature)
+    figs_axes[2][0] = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name)
 
     figs_axes[0][0].text(0., 1.04, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[1][0].text(0.7, 1.04, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
@@ -91,7 +96,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     plt.close()
     
 
-def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False):
+def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -160,6 +165,49 @@ def plotProbabilityVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], p
     ax_chisq.legend(loc = 'upper left', handletextpad=0.2, frameon=False)
 
     return ax, ax_chisq
+
+def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling',):
+    nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
+    singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
+
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'hpf.txt' for so_scaling in so_scaling_values ]
+    arrays_hot = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_hot ])
+    arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:1], len(temperatures), -1)
+  
+
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
+    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
+    experiment = np.array( [ exp_hot[0,0], ] )
+    std = np.array( [ exp_hot[1,0], ] )
+
+    xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index,0], ] ), 0, -1)
+    theory_distinguished = theory
+    
+
+    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02}, ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'marker': 'o', ''}, ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
+
+    # array_paths = ( arrays_dir_path / 'data_produced' / 'arrays' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'hpf.txt' for so_scaling in so_scaling_values )
+    # output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
+    # pmf_path = Path(__file__).parents[1] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
+    # pmf_array = np.loadtxt(pmf_path)
+
+    # p_eff_exp = 0.0600
+    # p_eff_exp_std = 0.0227
+    # ss_dominated_rates = np.fromiter( (array[4] for array in output_state_resolved_arrays), dtype = float )
+
+    # fig, ax = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_scaling_values, ss_dominated_rates, p_eff_exp=p_eff_exp, p_eff_exp_std=p_eff_exp_std, pmf_array = pmf_array)
+    
+    ax = ValuesVsModelParameters.plotValuestoAxis(ax, so_scaling_values, theory, experiment, std, theory_distinguished = theory)
+    ax.scatter(so_scaling_values, theory.flatten(), s = 6**2, color = 'k', marker = 'o')
+
+    return ax
 
 
 def main():
