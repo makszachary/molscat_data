@@ -62,7 +62,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     fig = plt.figure(figsize = figsize, dpi = dpi)
     gs_Figure = gridspec.GridSpec(nrows, 2, fig, hspace = hs, wspace = ws, height_ratios = np.array([[row_height, vpad] for row in range(nrows)]).flatten()[:-1], width_ratios = [135,45])    
 
-    figs = [fig.add_subfigure(gs_Figure[:,0]), fig.add_subfigure(gs_Figure[0,1]), fig.add_subfigure(gs_Figure[1,1])]
+    figs = [fig.add_subfigure(gs_Figure[:,0]), fig.add_subfigure(gs_Figure[0,1]), fig.add_subfigure(gs_Figure[2,1])]
     figs_axes = [[] for fig in figs]
 
     figs_axes[0].append(figs[0].add_subplot())
