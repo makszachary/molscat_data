@@ -167,10 +167,10 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     return ax, ax_chisq
 
 def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling',):
+    print('YS0')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
 
     array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'hpf.txt' for so_scaling in so_scaling_values ]
     arrays_hot = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_hot ])
