@@ -107,7 +107,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    print(f"{molscat_input_path.name} run\nwith the spin-orbit scaling: {so_scaling:.4f}")
+    print(f"{molscat_input_path.name} run\nwith the spin-orbit scaling: {so_scaling:.4f} and singlet, triplet phases: ({singlet_phase:.4f}, {triplet_phase:.4f}).")
     subprocess.run(molscat_command, shell = True)
 
     duration = time.perf_counter()-time_0
@@ -119,11 +119,11 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
-    print(so_scaling_values)
+    
     if so_scaling_values is None or so_scaling_values == (0.0,):
         so_scaling_values = (0.0,)
         spin_orbit_included = False
-    print(so_scaling_values)
+    
     try:
         ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
     except KeyError:
@@ -136,9 +136,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
     print(f'Number of singlet-triplet combinations to calculate = {len(phases)}.')
 
     with Pool(ncores) as pool:
-       print(so_scaling_values)
        arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, (singlet_phase, triplet_phase), so_scaling_value in itertools.product( molscat_input_templates, phases, so_scaling_values))
-    #    print(arguments)
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
