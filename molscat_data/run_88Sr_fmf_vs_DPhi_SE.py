@@ -121,7 +121,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
     spin_orbit_included = True
     print(so_scaling_values)
     if so_scaling_values is None or so_scaling_values == (0.0,):
-        so_scaling_values = tuple(0.0,),
+        so_scaling_values = tuple((0.0,)),
         spin_orbit_included = False
     print(so_scaling_values)
     try:
