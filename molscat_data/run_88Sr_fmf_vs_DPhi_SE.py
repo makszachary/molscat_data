@@ -119,10 +119,11 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
-    if so_scaling_values is None:
+    print(so_scaling_values)
+    if so_scaling_values is None or so_scaling_values == (0.0,):
         so_scaling_values = (0.0,),
         spin_orbit_included = False
-    
+    print(so_scaling_values)
     try:
         ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
     except KeyError:
@@ -137,7 +138,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
     with Pool(ncores) as pool:
        print(so_scaling_values)
        arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, (singlet_phase, triplet_phase), so_scaling_value in itertools.product( molscat_input_templates, phases, so_scaling_values))
-       print(arguments)
+    #    print(arguments)
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
