@@ -136,7 +136,6 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
 
     with Pool(ncores) as pool:
        arguments = tuple( (x, *phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, *phase, so_scaling_value in itertools.product( molscat_input_templates, phases, so_scaling_values))
-       print(arguments)
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -307,6 +306,7 @@ def main():
     else:
         triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
+    print(phases)
 
     # so_scaling_values = list(set(args.so_scaling))
     magnetic_field = args.B
