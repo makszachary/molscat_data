@@ -54,18 +54,19 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 2
-    row_height = 4.5
+    row_height = 3.5
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (18*cm, total_height*cm)
     dpi = 1000
     fig = plt.figure(figsize = figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(nrows, 2, fig, hspace = hs, wspace = ws, height_ratios = [1 for row in range(nrows)], width_ratios = [135,45])    
+    gs_Figure = gridspec.GridSpec(2*nrows-1, 2, fig, hspace = hs, wspace = ws, height_ratios = np.array([[row_height, vpad] for row in range(nrows)]).flatten()[:-1], width_ratios = [135,45])    
 
-    figs = [fig.add_subfigure(gs_Figure[:,0]), fig.add_subfigure(gs_Figure[0,1]), fig.add_subfigure(gs_Figure[1,1])]
+    figs = [fig.add_subfigure(gs_Figure[:,0]), fig.add_subfigure(gs_Figure[0,1]), fig.add_subfigure(gs_Figure[2,1])]
     figs_axes = [[] for fig in figs]
 
     figs_axes[0].append(figs[0].add_subplot())
+    figs_axes[0][0].axis('off')
 
     
     figs_axes[1].append(figs[1].add_subplot())
@@ -83,11 +84,11 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
 
     figs_axes[0][0].text(0., 1.04, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[1][0].text(0.7, 1.04, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[2][0].text(0.7, 0.54, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[2][0].text(0.7, row_height/total_height + 0.04, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
-    figs[0].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.98)
-    figs[1].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.96)
-    figs[2].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.96)
+    figs[0].subplots_adjust(left = 0.05, bottom = 0.05, top = 0.98)
+    figs[1].subplots_adjust(left = 0.05, bottom = 0.1, top = 0.96)
+    figs[2].subplots_adjust(left = 0.05, bottom = 0.1, top = 0.96)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
@@ -193,20 +194,19 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5}, ]
     experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
                         {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
-
-    # array_paths = ( arrays_dir_path / 'data_produced' / 'arrays' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'hpf.txt' for so_scaling in so_scaling_values )
-    # output_state_resolved_arrays = list( np.loadtxt(array_path) for array_path in array_paths )
-    # pmf_path = Path(__file__).parents[1] / 'data' / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
-    # pmf_array = np.loadtxt(pmf_path)
-
-    # p_eff_exp = 0.0600
-    # p_eff_exp_std = 0.0227
-    # ss_dominated_rates = np.fromiter( (array[4] for array in output_state_resolved_arrays), dtype = float )
-
-    # fig, ax = ProbabilityVersusSpinOrbit.plotEffectiveProbability(so_scaling_values, ss_dominated_rates, p_eff_exp=p_eff_exp, p_eff_exp_std=p_eff_exp_std, pmf_array = pmf_array)
     
-    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
-    ax.scatter(so_scaling_values, theory.flatten(), s = 6**2, color = 'k', marker = 'o')
+    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
+    ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, c = 'k', marker = 'o', linestyle = 'None', zorder = 1)
+    ax.set_xlim(0.15, 0.48)
+    ax.set_ylim(0.01, 0.13)
+    
+    ax.tick_params(which='both', direction='in', top = True, right = True, length = 4)
+    ax.tick_params(which='minor', length = 2)
+    PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.2f}$')
+    PhaseTicks.linearStr(ax.yaxis, 0.02, 0.01, '${x:.2f}$')
+    
+    ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
+    ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
     return ax
 
