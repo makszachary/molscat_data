@@ -302,8 +302,8 @@ def main():
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     singlet_phase = default_singlet_phase_function(1.0) if (args.singlet_phase is None or args.singlet_phase == -1) else args.singlet_phase
-    if (args.phase_step is None or args.singlet_phase == -1):
-        triplet_phases = (default_triplet_phase_function(1.0),) if (args.triplet_phase is None or args.singlet_phase == -1) else (args.triplet_phase,)
+    if (args.phase_step is None or args.phase_step == -1):
+        triplet_phases = (default_triplet_phase_function(1.0),) if (args.triplet_phase is None or args.phase_step == -1) else (args.triplet_phase,)
     else:
         triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
