@@ -136,6 +136,7 @@ def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, 
 
     with Pool(ncores) as pool:
        arguments = tuple( (x, *phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, *phase, so_scaling_value in itertools.product( molscat_input_templates, phases, so_scaling_values))
+       print(arguments)
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -283,7 +284,7 @@ def main():
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The step of the phase difference in multiples of pi.")
     parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.0,], help = "Values of the SO scaling.")
     parser.add_argument("--F_in", type = int, default = 4)
-    parser.add_argument("--MF_in", type = int, default = 4)
+    parser.add_argument("--MF_in", type = int, default = -4)
     parser.add_argument("--S_in", type = int, default = 1)
     parser.add_argument("--MS_in", type = int, default = 1)
     parser.add_argument("--B", type = float, default = 2.97, help = "Magnetic field.")
@@ -307,7 +308,7 @@ def main():
         triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
 
-    so_scaling_values = list(set(args.so_scaling))
+    # so_scaling_values = list(set(args.so_scaling))
     magnetic_field = args.B
     F_in, MF_in, S_in, MS_in = args.F_in, args.MF_in, args.S_in, args.MS_in
 
