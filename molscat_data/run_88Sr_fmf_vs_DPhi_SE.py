@@ -306,7 +306,7 @@ def main():
     else:
         triplet_phases = np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     phases = np.around(tuple((singlet_phase, triplet_phase) for triplet_phase in triplet_phases), decimals = 4)
-    print(phases)
+    [print(*phase) for phase in phases]
 
     # so_scaling_values = list(set(args.so_scaling))
     magnetic_field = args.B
