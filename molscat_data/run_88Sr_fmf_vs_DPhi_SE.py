@@ -95,7 +95,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         else:
             input_content = re.sub("NNREQ", f'{int(L_max+1)}', input_content, flags = re.M)
             input_content = re.sub("NLREQ", LREQ_str, input_content, flags = re.M)
-            input_content = re.sub("NMFREQ", LREQ_str, input_content, flags = re.M)
+            input_content = re.sub("NMFREQ", MFREQ_str, input_content, flags = re.M)
             input_content = re.sub("NISPSP", f'-1', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
