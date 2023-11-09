@@ -251,6 +251,51 @@ def k_L_E_parallel_fmf(s_matrix_collection: SMatrixCollection, F_out: int | np.n
     return rate
 
 
+def k_L_E_parallel_fmf_SE(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None,) -> np.ndarray[Any, float]:
+    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    t0=time.perf_counter()
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
+        
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+
+    if array_like:
+        try:
+            ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
+        except KeyError:
+            ncores = 1
+            try:
+                ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+            except KeyError:
+                ncores *= 1
+        print(f'{ncores=}')
+        print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
+        with Pool(ncores) as pool:
+            arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
+            results = pool.starmap(rate_fmfsms_vs_L_SE, arguments)
+            rate_shape = results[0].shape
+            rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+
+            return rate
+    
+    rate = rate_fmfsms_vs_L_SE(s_matrix_collection, **args)
+
+    return rate
+
+
 
 def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:
     
