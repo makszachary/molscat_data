@@ -237,7 +237,7 @@ def main():
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     phase_differences = np.arange(0, 1.+args.phase_step, args.phase_step).round(decimals=4)
-    so_scaling_values = list(set(args.so_scaling))
+    so_scaling_values = sorted(list(set(args.so_scaling)))
 
     if args.temperatures is None:
         temperatures = list(np.logspace(-4, -2, 20))
