@@ -124,7 +124,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     number_of_xticks = theory.shape[1] if len(theory.shape) == 2 else theory.shape[0]
     positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
                                                             for j in range(number_of_datasets)] )
-    indices_used_for_fitting = [[0,0],[1,0],[0,-1]]
+    indices_used_for_fitting = [(0,0),(1,0),(0,-1)]
     [print(i) for i in indices_used_for_fitting]
     positions_used_for_fitting = [ positions[i] for i in indices_used_for_fitting ]
     theory_used_for_fitting = [ theory[i] for i in indices_used_for_fitting ]
