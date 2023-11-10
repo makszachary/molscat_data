@@ -120,6 +120,12 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     
     figs_axes[0][0] = Barplot.plotBarplotConciseToAxes(figs_axes[0][0], theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, )
+    number_of_datasets = theory.shape[0] if len(theory.shape) == 2 else 1
+    number_of_xticks = theory.shape[1] if len(theory.shape) == 2 else theory.shape[0]
+    positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
+                                                            for j in range(number_of_datasets)] )
+    indices_used_for_fitting = [[0,0],[1,0],[0,-1]]
+    figs_axes[0][0].bar(positions[indices_used_for_fitting], theory[indices_used_for_fitting], width = 1, hatch = '////')
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
     figs_axes[0][0].set_ylim(0, 1.2*np.amax(theory))
@@ -135,7 +141,6 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
     figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (.99, .99), fontsize = 'xx-small', labelspacing = 1, frameon=False)
-
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
     arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
