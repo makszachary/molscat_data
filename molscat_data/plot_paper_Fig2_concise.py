@@ -130,7 +130,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, facecolor = 'none', hatch = '////', edgecolor = 'k', linewidth = .1)
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
-    figs_axes[0][0].set_ylim(0, 1.25*np.amax(theory))
+    figs_axes[0][0].set_ylim(0, 1.30*np.amax(theory))
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     figs_axes[0][0].set_ylabel(ylabel)
