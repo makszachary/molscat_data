@@ -125,11 +125,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
                                                             for j in range(number_of_datasets)] )
     indices_used_for_fitting = [(0,0),(1,0),(0,-1)]
-    [print(i) for i in indices_used_for_fitting]
     positions_used_for_fitting = [ positions[i] for i in indices_used_for_fitting ]
     theory_used_for_fitting = [ theory[i] for i in indices_used_for_fitting ]
-    print(positions_used_for_fitting)
-    figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, hatch = '////')
+    figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, facecolor = None, hatch = '////')
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
     figs_axes[0][0].set_ylim(0, 1.2*np.amax(theory))
