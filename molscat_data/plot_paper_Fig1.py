@@ -110,11 +110,11 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     if not np.loadtxt(array_paths_hot[0][0]).shape[-1] == len(temperatures):
         raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_hot[0][0]).shape[-1]=}")
     # print(array_paths_hot)
-    print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
+    # print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
     arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
     # print(f'{arrays_hot.shape=}')
     arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1).squeeze()
-    print(f'{arrays_hot.shape=}')
+    # print(f'{arrays_hot.shape=}')
 
     if not np.loadtxt(array_paths_cold_higher[0][0]).shape[-1] == len(temperatures):
         raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_cold_higher[0][0]).shape[-1]=}")
@@ -141,12 +141,13 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index],], [arrays_cold_higher_distinguished[:,T_index], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index], arrays_cold_higher[:,:,T_index] ] ), 0, -1) if (singlet_phase_distinguished is not None) else theory_distinguished
-    print(f'{theory.shape=}')
-    print(f'{theory_distinguished.shape=}')
+    # print(f'{theory.shape=}')
+    # print(f'{theory_distinguished.shape=}')
     chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
     minindex_distinguished = np.nanargmin(chi_sq_distinguished)
     xx_min_distinguished = xx[:,1][minindex_distinguished]
     chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
+    print(f'minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} (for DeltaPhi = {xx_min_distinguished}).')
 
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02},
                           {'color': 'lightsteelblue', 'linewidth': 0.02} ]
@@ -157,9 +158,10 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     
     ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
     data = np.array([line.get_xydata() for line in ax_chisq.lines])
-    # minindices = np.nanargmin(data[:,:,1])
-    # xx_min = xx[minindices]
+    minindices = np.nanargmin(data[:,:,1])
+    xx_min = xx[minindices]
     chi_sq_min = np.nanmin(data[:,:,1], axis=1)
+    print(f'minimum chi-squared {chi_sq_min} (for (Phi_s, Phi_t)  = {xx_min}).')
     ax.set_ylim(0,1)
 
     PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
