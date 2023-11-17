@@ -120,9 +120,17 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     
     figs_axes[0][0] = Barplot.plotBarplotConciseToAxes(figs_axes[0][0], theory, experiment, std, barplot_labels, theory_SE, bars_formatting = bars_formatting, exp_formatting = exp_formatting, SE_bars_formatting = SE_bars_formatting, )
+    number_of_datasets = theory.shape[0] if len(theory.shape) == 2 else 1
+    number_of_xticks = theory.shape[1] if len(theory.shape) == 2 else theory.shape[0]
+    positions = np.array([ [(number_of_datasets+1)*k+(j+1) for k in range(number_of_xticks)]
+                                                            for j in range(number_of_datasets)] )
+    indices_used_for_fitting = [(0,0),(1,0),(0,-1)]
+    positions_used_for_fitting = [ positions[i] for i in indices_used_for_fitting ]
+    theory_used_for_fitting = [ theory[i] for i in indices_used_for_fitting ]
+    figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, facecolor = 'none', hatch = '////', edgecolor = 'k', linewidth = .1)
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
-    figs_axes[0][0].set_ylim(0, 1.2*np.amax(theory))
+    figs_axes[0][0].set_ylim(0, 1.30*np.amax(theory))
 
     ylabel = f'$p_\mathrm{{eff}}$'# if enhanced else f'$p_0$'
     figs_axes[0][0].set_ylabel(ylabel)
@@ -132,10 +140,14 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     handles_colors = [ plt.Rectangle((0,0), 1, 1, facecolor = labels_and_colors[color_label], edgecolor = 'k', hatch = '' ) for color_label in labels_and_colors.keys() ]
     colors_and_hatches = [ (SE_format['facecolor'], SO_format['facecolor'], '') for SE_format, SO_format in zip(SE_bars_formatting, bars_formatting, strict = True) ]
     labels = [ *list(labels_and_colors.keys()),]
+    
+    handles_colors.append(plt.Rectangle((0,0), 1, 1, facecolor = 'none', edgecolor = 'k', hatch = '' ))    
+    colors_and_hatches.append(('none', 'none', '////'))
+    labels.append('bars used for fitting')
+
     handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (.99, .99), fontsize = 'xx-small', labelspacing = 1, frameon=False)
-
+    figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (0.98, 1.02), fontsize = 'xx-small', labelspacing = 0.75, frameon=False)
 
     arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
     arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
@@ -259,9 +271,9 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
-    parser.add_argument("--mass_min", type = float, default = 42.5, help = "Minimum reduced mass for the grid (in a.m.u.).")
+    parser.add_argument("--mass_min", type = float, default = 42.48, help = "Minimum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--mass_max", type = float, default = 43.8, help = "Maximum reduced mass for the grid (in a.m.u.).")
-    parser.add_argument("--dmass", type = float, default = 0.05, help = "Mass step (in a.m.u.).")
+    parser.add_argument("--dmass", type = float, default = 0.04, help = "Mass step (in a.m.u.).")
 
     parser.add_argument("--nenergies_barplot", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min_barplot", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
