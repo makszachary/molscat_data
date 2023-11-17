@@ -243,7 +243,7 @@ def main():
     so_scaling_values = sorted(list(set(args.so_scaling)))
 
     if args.temperatures is None:
-        temperatures = list(np.logspace(-4, -2, 20))
+        temperatures = list(np.logspace(-4, -2, 10))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:
