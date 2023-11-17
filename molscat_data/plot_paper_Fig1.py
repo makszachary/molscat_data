@@ -70,7 +70,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
 
     
     figs_axes[1].append(figs[1].add_subplot())
-    _temp_so_scal = 0.375
+    _temp_so_scal = 0.0
     figs_axes[1][0], _ax_chisq = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False)
     figs_axes[1].append(_ax_chisq)
 
