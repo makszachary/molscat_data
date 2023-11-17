@@ -107,13 +107,17 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
     array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     # [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
-    print(array_paths_hot)
-    print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
+    if not np.loadtxt(array_paths_hot[0][0]).shape[-1] == len(temperatures):
+        raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_hot[0][0]).shape[-1]=}")
+    # print(array_paths_hot)
+    # print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
     arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
-    print(f'{arrays_hot.shape=}')
+    # print(f'{arrays_hot.shape=}')
     arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
 
-    arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures),1), np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
+    if not np.loadtxt(array_paths_cold_higher[0][0]).shape[-1] == len(temperatures):
+        raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_cold_higher[0][0]).shape[-1]=}")
+    arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
     arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1)
 
     singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
@@ -121,9 +125,9 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     if singlet_phase_distinguished is not None:
         array_paths_hot_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
         array_paths_cold_higher_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
-        arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures),1), np.nan) for array_path in array_paths_hot_distinguished ] )
+        arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in array_paths_hot_distinguished ] )
         arrays_hot_distinguished = arrays_hot_distinguished.reshape(arrays_hot_distinguished.shape[0], len(temperatures), -1)
-        arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures),1), np.nan) for array_path in array_paths_cold_higher_distinguished ] )
+        arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
         arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(arrays_cold_higher_distinguished.shape[0], len(temperatures), -1)
     
 
