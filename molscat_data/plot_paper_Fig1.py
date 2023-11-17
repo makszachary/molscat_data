@@ -110,7 +110,7 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     if not np.loadtxt(array_paths_hot[0][0]).shape[-1] == len(temperatures):
         raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_hot[0][0]).shape[-1]=}")
     # print(array_paths_hot)
-    # print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
+    print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
     arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
     # print(f'{arrays_hot.shape=}')
     arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1)
