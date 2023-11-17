@@ -161,7 +161,8 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     # minindices = np.nanargmin(data[:,:,1])
     # xx_min = xx[minindices]
     chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
-    # xx_min = xx[data[:,:,1] == chi_sq_min]
+    print(np.nonzero(data[:,:,1] == chi_sq_min))
+    # xx_min = xx[]
     print(f'For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min}.')
     ax.set_ylim(0,1)
 
