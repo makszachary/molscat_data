@@ -147,7 +147,6 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     minindex_distinguished = np.nanargmin(chi_sq_distinguished)
     xx_min_distinguished = xx[:,1][minindex_distinguished]
     chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
-    print(f'For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} (for DeltaPhi = {xx_min_distinguished}).')
 
     theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02},
                           {'color': 'lightsteelblue', 'linewidth': 0.02} ]
@@ -161,9 +160,13 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     # minindices = np.nanargmin(data[:,:,1])
     # xx_min = xx[minindices]
     chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
-    print(np.nonzero(data[:,:,1] == chi_sq_min)[0][0])
     xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
-    print(f'For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.')
+
+    log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} (for DeltaPhi = {xx_min_distinguished}).
+    For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.
+    '''
+    print(log_str)
+
     ax.set_ylim(0,1)
 
     PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
