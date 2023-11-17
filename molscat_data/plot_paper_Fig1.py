@@ -167,8 +167,7 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
 
     log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} for DeltaPhi = {xx_min_distinguished}.
-For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.
-    '''
+For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.'''
     print(log_str)
 
     ax.set_ylim(0,1)
