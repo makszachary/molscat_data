@@ -140,8 +140,8 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index],], [arrays_cold_higher_distinguished[:,T_index], ]] ), 0, -1)
     theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index], arrays_cold_higher[:,:,T_index] ] ), 0, -1) if (singlet_phase_distinguished is not None) else theory_distinguished
-    # print(f'{theory=}')
-    # print(f'{theory_distinguished=}')
+    print(f'{theory=}')
+    print(f'{theory_distinguished=}')
     chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
     minindex_distinguished = np.nanargmin(chi_sq_distinguished)
     xx_min_distinguished = xx[:,1][minindex_distinguished]
