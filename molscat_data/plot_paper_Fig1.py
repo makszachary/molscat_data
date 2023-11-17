@@ -158,9 +158,10 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     
     ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
     data = np.array([line.get_xydata() for line in ax_chisq.lines])
-    minindices = np.nanargmin(data[:,:,1])
-    xx_min = xx[minindices]
+    # minindices = np.nanargmin(data[:,:,1])
+    # xx_min = xx[minindices]
     chi_sq_min = np.nanmin(data[:,:,1], axis=1)
+    xx_min = xx[data == chi_sq_min]
     print(f'minimum chi-squared {chi_sq_min} (for (Phi_s, Phi_t)  = {xx_min}).')
     ax.set_ylim(0,1)
 
