@@ -50,6 +50,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
+    log_path = png_path.with_suffix('.log')
 
     cm = 1/2.54
     ws, hs = 0.05, 0.05
@@ -71,7 +72,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     
     figs_axes[1].append(figs[1].add_subplot())
     _temp_so_scal = 0.0
-    figs_axes[1][0], _ax_chisq = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False)
+    figs_axes[1][0], _ax_chisq, log_str = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False)
     figs_axes[1].append(_ax_chisq)
 
 
@@ -93,6 +94,9 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+    
+    with open(log_path, 'w') as log_file:
+        log_file.write(log_str)
 
     plt.close()
     
@@ -162,7 +166,7 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
     chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
     xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
 
-    log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} (for DeltaPhi = {xx_min_distinguished}).
+    log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} for DeltaPhi = {xx_min_distinguished}.
 For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.
     '''
     print(log_str)
@@ -180,7 +184,7 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(loc = 'upper left', handletextpad=0.2, frameon=False)
 
-    return ax, ax_chisq
+    return ax, ax_chisq, log_str
 
 def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling',):
     print('YS0')
