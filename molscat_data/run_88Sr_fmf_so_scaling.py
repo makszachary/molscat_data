@@ -42,10 +42,10 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], spin_orbit_included = True) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 29, spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
-    L_max = 29
+    # L_max = 29
     MTOT_min = MS_in+MF_in-2*L_max
     MTOT_max = MS_in+MF_in+2*L_max
 
@@ -107,7 +107,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...]) -> set:
+def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 29) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
@@ -115,7 +115,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         so_scaling_values = (0.0,)
         spin_orbit_included = False
     with Pool() as pool:
-       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, spin_orbit_included) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
+       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, spin_orbit_included) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -271,9 +271,13 @@ def main():
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("--L_max", type = int, default = 29, help = "Maximum partial wave included.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_SE', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--molscat", action = 'store_true', help = "Include calculations in molscat.")
+    parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
+    parser.add_argument("--calc", action = 'store_true', help = "Include calculating probabilities from pickle.")
     args = parser.parse_args()
 
 
@@ -302,29 +306,33 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
     molscat_transfer_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.transfer_input_dir_name).iterdir()
 
+    if not (args.molscat or args.pickle or args.calc ):
+        args.molscat, args.pickle, args.calc = True, True, True
 
     # ### RUN MOLSCAT ###
-    output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
-    _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, )
+    if args.molscat:
+        output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max)
+        _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    pickle_paths = []
-    for so_scaling_value in so_scaling_values:
-        output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
-        s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
-        pickle_paths.append(pickle_path)
-        print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-    pickle_paths = np.unique(pickle_paths)
+    # pickle_paths = []
+    if args.pickle:
+        for so_scaling_value in so_scaling_values:
+            output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+            s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
+            # pickle_paths.append(pickle_path)
+            print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
+        # pickle_paths = np.unique(pickle_paths)
 
-    transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
-    _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
+        transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+        _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
 
-
-    t0 = time.perf_counter()
-    pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for so_scaling_value in so_scaling_values)
-    transfer_pickle_path = pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle'
-    [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
-    print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
+    if args.calc:
+        t0 = time.perf_counter()
+        pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for so_scaling_value in so_scaling_values)
+        transfer_pickle_path = pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle'
+        [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
+        print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 if __name__ == "__main__":
     main()
