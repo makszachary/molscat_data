@@ -7,7 +7,7 @@
     IPROPL =   9,    TOLHIL =   1.E-7,
     JTOTL  =   NJTOTMIN,    JTOTU  = NJTOTMAX,     IBFIX  =  0,           JSTEP  = 2,
     EUNITS =   2,    NNRG   =  NENERGIES,   ENERGY = ENERGYARRAY,
-                     DTOL   =   1.E-6, MONQN  =  4, 0, 1, 1,
+                     DTOL   =   1.E-6, MONQN  =  4, 0, 10, 0,
     FLDMIN = 0., FLDMAX =  0., DFIELD = 1.0,
     ICHAN  =   1,
  /
@@ -17,16 +17,16 @@
  /
 
  &BASIS9
-    ISA    =  1,    		! 87-Rb
-    GSA    =  2.00231930,	! simply electron g-factor
-    INUCA  =  3,   		! 87-Rb
-    HFSPLA = +6.83468261090429, ! 87-Rb
-    GA     = -9.951413E-4,	! 87-Rb steck.us
-    ISB    =  1,		! 88Sr+
-    GSB    =  2.00231930,	! simply electron g-factor
-    INUCB  =  0,		! 88Sr+
-    HFSPLB =  0,		! 88Sr+
-    GB     =  0,		! 88Sr+
+    ISA    =  1,    		         ! 87-Rb
+    GSA    =  2.00231930,	      ! simply electron g-factor
+    INUCA  =  3,   	         	! 87-Rb
+    HFSPLA = +6.83468261090429,  ! 87-Rb
+    GA     = -9.951413E-4,	      ! 87-Rb steck.us
+    ISB    =  1,	            	! 87Sr+
+    GSB    =  2.00231930,	      ! simply electron g-factor
+    INUCB  =  9,	            	! 87Sr+
+    HFSPLB =  -5.002368365,		! 87Sr+
+    GB     =  1.323008E-4,	   	! 87Sr+
     LMAX   =  NLMAX,
     ISPSP  =  -1,
     NEXTRA =  2,

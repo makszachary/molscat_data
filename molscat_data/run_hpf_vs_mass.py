@@ -52,7 +52,7 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, energy_tuple: tuple[float, ...], L_max: int = 2*29, spin_orbit_included = True) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, energy_tuple: tuple[float, ...], L_max: int = 2*29, spin_orbit_included = True,) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
     # L_max = 2*29
@@ -252,7 +252,6 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
-    # if len(so_scaling) == 1: so_scaling = float(so_scaling)
 
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
@@ -346,7 +345,7 @@ def main():
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.325,], help = "Values of the SO scaling.")
     parser.add_argument("--mass_min", type = float, default = 42.48, help = "Minimum reduced mass for the grid (in a.m.u.).")
-    parser.add_argument("--mass_max", type = float, default = 43.8, help = "Maximum reduced mass for the grid (in a.m.u.).")
+    parser.add_argument("--mass_max", type = float, default = 43.80, help = "Maximum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--dmass", type = float, default = 0.01, help = "Mass step (in a.m.u.).")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")

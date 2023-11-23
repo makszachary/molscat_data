@@ -1,6 +1,6 @@
  &INPUT
     LABEL  =  '87Rb-88Sr+ elastic cross section for bb (1 0 1/2 1/2) channel vs collision energy',
-    URED   =  NREDUCEDMASS,	! NIST DATA
+    URED   =  NREDUCEDMASS,
     IPRINT =   11,
     RMIN   =   5.5,  RMID   =  21.0,   RMAX   = 15.0E3, IRMSET = 0,
     IPROPS =   6,    DR     =   0.002,
