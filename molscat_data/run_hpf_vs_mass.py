@@ -58,7 +58,7 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     # L_max = 2*29
     F_values = (2,4,)
     S_values = (1,)
-    T_min = np.amin([ [abs(F-S-L), abs(S-F-L), abs(L-F-S)] for F in F_values for S in S_values for L in range(L_max+1)] )
+    T_min = np.amin([ [abs(F-S-L), abs(S-F-L), abs(L-F-S)] for F in F_values for S in S_values for L in range(0, L_max+1, 2)] )
     T_max = max(F_values)+max(S_values)+L_max
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
