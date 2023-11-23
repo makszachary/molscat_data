@@ -42,12 +42,12 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 29, spin_orbit_included = True) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
-    # L_max = 29
-    MTOT_min = MS_in+MF_in-2*L_max
-    MTOT_max = MS_in+MF_in+2*L_max
+    # L_max = 2*29
+    MTOT_min = MS_in+MF_in-L_max
+    MTOT_max = MS_in+MF_in+L_max
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
     nenergies = len(energy_tuple)
@@ -107,7 +107,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 29) -> set:
+def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
@@ -261,7 +261,7 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
-    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.375,], help = "Values of the SO scaling.")
+    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.325,], help = "Values of the SO scaling.")
     parser.add_argument("--F_in", type = int, default = 4)
     parser.add_argument("--MF_in", type = int, default = 4)
     parser.add_argument("--S_in", type = int, default = 1)
@@ -271,7 +271,7 @@ def main():
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
-    parser.add_argument("--L_max", type = int, default = 29, help = "Maximum partial wave included.")
+    parser.add_argument("--L_max", type = int, default = 2*29, help = "Maximum doubled partial wave included.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_SE', help = "Name of the directory with the molscat inputs")

@@ -45,8 +45,14 @@ arrays_dir_path = pickles_dir_path.parent / 'arrays'
 arrays_dir_path.mkdir(parents=True, exist_ok=True)
 plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 
-def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, T_min: int, T_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> tuple[float, float, float]:
+def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float, singlet_phase: float, triplet_phase: float, so_scaling: float, energy_tuple: tuple[float, ...], L_max: int = 2*29,) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
+
+    # L_max = 2*29
+    F_values = (2,4,)
+    S_values = (1,)
+    T_min = np.amin([ [abs(F-S-L), abs(S-F-L), abs(L-F-S)] for F in F_values for S in S_values for L in range(L_max+1)] )
+    T_max = max(F_values)+max(S_values)+L_max
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
     nenergies = len(energy_tuple)
@@ -99,11 +105,11 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min: int, T_max: int, dT_max: int, L_max: int, energy_tuple: tuple[float, ...]) -> set:
+def create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, energy_tuple: tuple[float, ...], L_max: int = 2*29) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     with Pool() as pool:
-       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, int(Jtotmin), int(Jtotmin + dT_max - 2 if Jtotmin+dT_max-2 <= T_max else T_max), int(L_max), energy_tuple) for x, reduced_mass, Jtotmin in itertools.product( molscat_input_templates, reduced_masses, np.arange(T_min, T_max, dT_max) ))
+       arguments = ( (x, reduced_mass, singlet_phase, triplet_phase, so_scaling_value, energy_tuple, L_max,) for x, reduced_mass in itertools.product( molscat_input_templates, reduced_masses,))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -328,6 +334,7 @@ def main():
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("--L_max", type = int, default = 2*29, help = "Maximum doubled partial wave included.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_vs_mass_odd', help = "Name of the directory with the molscat inputs")
     args = parser.parse_args()
@@ -358,11 +365,7 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
 
     # ### RUN MOLSCAT ###
-    L_max = 2*29
-    T_min = 8-4
-    T_max = 10+4+L_max
-    dT_max = 200
-    output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, T_min = T_min, T_max = T_max, dT_max = dT_max, L_max = L_max, energy_tuple = energy_tuple, )
+    output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_value, energy_tuple = energy_tuple, L_max = args.L_max)
 
     ## COLLECT S-MATRIX AND PICKLE IT ####
     pickle_paths = []
