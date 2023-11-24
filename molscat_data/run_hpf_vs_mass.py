@@ -272,11 +272,11 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
     arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
 
-    args = [arg_hpf_deexcitation, arg_cold_spin_change_higher, arg_cold_spin_change_lower]
-    names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', 
-             f'cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states',
-             f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
-    abbreviations = ['hpf', 'cold_higher', 'cold_lower']
+    args = [arg_hpf_deexcitation,]# arg_cold_spin_change_higher, arg_cold_spin_change_lower]
+    names = [f'hyperfine deexcitation for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states', ]
+             #f'cold spin change for the |f = 2, m_f = {{-2, -1, 0, 1, 2}}> |m_s = 1/2> initial states',
+             #f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
+    abbreviations = ['hpf',]# 'cold_higher', 'cold_lower']
 
     for abbreviation, name, arg in zip(abbreviations, names, args): # zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
