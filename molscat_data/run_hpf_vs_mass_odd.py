@@ -48,8 +48,8 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
     time_0 = time.perf_counter()
 
     # L_max = 2*29
-    F_values = (8,10)
-    S_values = (1,)
+    F_values = (2,4,)
+    S_values = (8,10,)
     T_min = np.amin([ [abs(F-S-L), abs(S-F-L), abs(L-F-S)] for F in F_values for S in S_values for L in range(0, L_max+1, 2)] )
     T_max = max(F_values)+max(S_values)+L_max
 
@@ -63,8 +63,8 @@ def create_and_run(molscat_input_template_path: Path | str, reduced_mass: float,
 
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-RKHS-tcpld')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}_{T_min}_{T_max}_{L_max}').with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}_{T_min}_{T_max}_{L_max}').with_suffix('.output')
+    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}').with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'{reduced_mass:.4f}_amu', f'{molscat_input_template_path.stem}').with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
