@@ -278,7 +278,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
              f'cold spin change for the |f = 1, m_f = {{-1, 0, 1}}> |m_s = 1/2> initial states']
     abbreviations = ['hpf', 'cold_higher', 'cold_lower']
 
-    for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
+    for abbreviation, name, arg in zip(abbreviations, names, args): # zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
 
         txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
