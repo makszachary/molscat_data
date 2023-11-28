@@ -153,9 +153,10 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
-    L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
+    
     transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
-    transfer_L_max = max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
@@ -188,7 +189,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
 
     elif F_in == 2:
         F_out, S_out = 2, S_in
-        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, np.arange(-F_in, F_in+1, 2), MS_in, indexing = 'ij')
+        MF_out, MS_out = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, indexing = 'ij')
         arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
 
         args = [arg_cold_spin_change_lower,]
@@ -246,9 +247,9 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
 
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {L_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_L_max}.')
-        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {L_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_L_max}.')
-        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {L_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_L_max}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
+        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
+        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
@@ -275,7 +276,7 @@ def main():
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
-    parser.add_argument("--L_max", type = int, default = 2*29, help = "Maximum doubled partial wave included.")
+    parser.add_argument("--L_max", type = int, default = 2*29, help = "Doubled maximum partial wave included.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_SE', help = "Name of the directory with the molscat inputs")
