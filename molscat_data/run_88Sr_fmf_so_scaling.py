@@ -57,7 +57,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     singlet_scaling = default_singlet_parameter_from_phase(singlet_phase)
     triplet_scaling = default_triplet_parameter_from_phase(triplet_phase)
 
-    molscat_executable_path = Path.home().joinpath('molscat-RKHS', 'molscat-exe', 'molscat-alk_alk-RKHS')
+    molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-alk_alk-RKHS')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
     molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', molscat_input_template_path.stem).with_suffix('.input')
     molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', molscat_input_template_path.stem).with_suffix('.output')
