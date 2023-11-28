@@ -281,6 +281,7 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_SE', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--molscat", action = 'store_true', help = "Include calculations in molscat.")
+    parser.add_argument("--molscat_transfer", action = 'store_true', help = "Include momentum-transfer calculations in molscat.")
     parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
     parser.add_argument("--calc", action = 'store_true', help = "Include calculating probabilities from pickle.")
     args = parser.parse_args()
@@ -309,13 +310,14 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
     molscat_transfer_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.transfer_input_dir_name).iterdir()
 
-    if not (args.molscat or args.pickle or args.calc ):
+    if not (args.molscat or args.molscat_transfer or args.pickle or args.calc ):
         args.molscat, args.pickle, args.calc = True, True, True
 
     # ### RUN MOLSCAT ###
     if args.molscat:
         output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max)
-        _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*79)
+    if args.molscat_transfer:
+        _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # pickle_paths = []
