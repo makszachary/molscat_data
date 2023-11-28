@@ -1,0 +1,4 @@
+1. Change of maximum NNRG in MOLSCAT from 1000 to 100 000.
+2. Changes in GNUMakefile (for Prometheus cluster).
+3. Changes in base9-alk_alk_ucpld.f: size of LREQ and MFREQ changed from 10 to 100.
+4. 
