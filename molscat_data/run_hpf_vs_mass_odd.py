@@ -260,14 +260,6 @@ def calculate_and_save_peff_parallel(pickle_path: Path | str, transfer_pickle_pa
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S_out, S_out+1, 2), np.arange(-F_in, F_in+1, 2), np.arange(-S_in, S_in+1, 2), indexing = 'ij')
     arg_hpf_excitation_exchange = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
 
-    F_out, F_in, S = 4, 4, 1
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
-
-    F_out, F_in, S = 2, 2, 1
-    MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
-
     args = [arg_hpf_deexcitation, arg_hpf_excitation_exchange]# arg_cold_spin_change_higher, arg_cold_spin_change_lower]
     names = [f'hyperfine deexcitation for the |f_a = 2, m_f_a = {{-2, -1, 0, 1, 2}}> |f_i = 5, m_f_i = {{-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5}}> initial states', 
              f'hyperfine excitation exchange for the |f_a = 2, m_f_a = {{-2, -1, 0, 1, 2}}> |f_i = 5, m_f_i = {{-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5}}> initial states', ]# 
