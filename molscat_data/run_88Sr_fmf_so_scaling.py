@@ -199,7 +199,9 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     else:
         raise ValueError("88Sr+ ion may have the total spin of F = 2f = 2 or 4.")
 
-    shutil.unpack_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent+'.zip', arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip')
+    zipped_dir_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent
+    zip_path = zipped_dir_path.parent / zipped_dir_path.name + '.zip'
+    shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
