@@ -278,7 +278,7 @@ def main():
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
     parser.add_argument("--L_max", type = int, default = 2*29, help = "Doubled maximum partial wave included.")
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
-    parser.add_argument("-nT", default = 10, type = int, default = None, help = "Number of temperatures included in the calculations.")
+    parser.add_argument("-nT", type = int, default = 10, help = "Number of temperatures included in the calculations.")
     parser.add_argumemt("--logT_min", type = float, default = -3)
     parser.add_argumemt("--logT_max", type = float, default = -4)
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
