@@ -295,8 +295,8 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
-    args.singlet_phase = args.singlet_phase if args.singlet_phase is not None else default_singlet_phase_function(1.0)
-    args.triplet_phase = args.triplet_phase if args.triplet_phase is not None else args.singlet_phase + args.phase_difference if args.phase_difference is not None else default_triplet_phase_function(1.0)
+    args.singlet_phase = args.singlet_phase % 1. if args.singlet_phase is not None else default_singlet_phase_function(1.0)
+    args.triplet_phase = args.triplet_phase % 1. if args.triplet_phase is not None else (args.singlet_phase + args.phase_difference) % 1 if args.phase_difference is not None else default_triplet_phase_function(1.0)
 
     phases = ((args.singlet_phase, args.triplet_phase),)
     singlet_phase = args.singlet_phase
