@@ -4,3 +4,6 @@ py3nj
 scipy
 msgpack
 matplotlib
+cmcrameri
+cmocean
+matplotlib-label-lines
