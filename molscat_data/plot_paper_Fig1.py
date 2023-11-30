@@ -86,7 +86,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs_axes[0][0].text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[0][0].text(0.35, 1.0, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[0][0].text(0.35, 5.8/8.6, f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[0][0].text(0.35, 2.8/8.6, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[0][0].text(0.35, 2.6/8.6, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[1][0].text(0.7, 1.0, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[2][0].text(0.7, row_height/total_height + 0.04, f'f', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
