@@ -181,7 +181,7 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
 
     ax.set_xlabel(f'$\\Delta\\Phi$')
     ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
-    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 8)
+    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 4)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
     ax_chisq.legend(loc = 'upper left', handletextpad=0.3, frameon=False)
