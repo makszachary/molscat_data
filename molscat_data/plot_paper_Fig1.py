@@ -179,6 +179,9 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
 
     PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
+    ax.tick_params(which='both', direction='in', top = True, right = True, length = 3)
+    ax.tick_params(which='minor', length = 1.5)
+
     ax.set_xlabel(f'$\\Delta\\Phi$')
     ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
     ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 4)
