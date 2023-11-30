@@ -95,7 +95,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs[2].subplots_adjust(left = 0.05, bottom = 0.1, top = 0.96)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
-    fig.savefig(svg_path, transparent = True,)# bbox_inches='tight', pad_inches = 0, transparent = True)
+    fig.savefig(svg_path, transparent = True, bbox_inches='tight',)# pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     
     with open(log_path, 'w') as log_file:
