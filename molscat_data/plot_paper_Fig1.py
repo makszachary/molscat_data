@@ -222,7 +222,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     ax.set_ylim(0.01, 0.13)
     
     ax.tick_params(which='both', direction='in', top = True, right = True, length = 3)
-    ax.tick_params(which='minor', length = 2)
+    ax.tick_params(which='minor', length = 1.5)
     PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.2f}$')
     PhaseTicks.linearStr(ax.yaxis, 0.02, 0.01, '${x:.2f}$')
     
