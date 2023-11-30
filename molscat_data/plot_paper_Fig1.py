@@ -91,8 +91,8 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs_axes[2][0].text(0.7, row_height/total_height + 0.04, f'f', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     figs[0].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.8)
-    figs[1].subplots_adjust(left = 0.05, bottom = 0.1, top = 0.85, right = 0.8)
-    figs[2].subplots_adjust(left = 0.05, bottom = 0.2, top = 0.95, right = 0.8)
+    figs[1].subplots_adjust(left = 0.05, bottom = 0.1, top = 0.9, right = 0.79)
+    figs[2].subplots_adjust(left = 0.05, bottom = 0.2, top = 1.0, right = 0.79)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, transparent = True)#, bbox_inches='tight', pad_inches = 0,)
