@@ -1,9 +1,9 @@
 svg.fonttype: none
 pdf.fonttype: 42
 pdf.use14corefonts: True
-axes.titlesize : 10
-axes.labelsize : 10
+axes.titlesize : 8
+axes.labelsize : 8
 xtick.labelsize : small
 ytick.labelsize : small
 legend.fontsize : x-small
-font.size: 10
+font.size: 8
