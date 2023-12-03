@@ -333,7 +333,7 @@ def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.n
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
 
-        with Pool(ncores) as pool:
+        with Pool(1) as pool:
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
