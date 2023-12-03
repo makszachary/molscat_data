@@ -6,6 +6,7 @@ import re
 import argparse
 
 from multiprocessing import Pool
+import multiprocessing
 # from multiprocessing.dummy import Pool as ThreadPool 
 
 import itertools
@@ -326,14 +327,14 @@ def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.n
             ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
         except KeyError:
             ncores = 1
-            try:
-                ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
-            except KeyError:
-                ncores *= 1
+        try:
+            ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+        except KeyError:
+            ncores *= 1
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
 
-        with Pool(ncores) as pool:
+        with multiprocessing.get_context("spawn").Pool(ncores) as pool:
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
