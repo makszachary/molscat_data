@@ -7,7 +7,7 @@ import os
 def mul(a, b):
     t0 = time.perf_counter()
     print(f'{a=}, {b=}')
-    for i in range(1000000000):
+    for i in range(100000000):
         j = i**2
     print(f"The time of a single computation for {a=}, {b=} was {time.perf_counter()-t0:.2f} s.")
     return a * b
