@@ -5,6 +5,7 @@ import sys
 from pathlib import Path, PurePath
 import re
 import argparse
+import copy
 
 from multiprocessing import Pool
 import multiprocessing
@@ -195,7 +196,7 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
         with multiprocessing.get_context("forkserver").Pool(ncores) as pool:
-            arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
+            arguments = tuple( (copy.deepcopy(s_matrix_collection), *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
             rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
