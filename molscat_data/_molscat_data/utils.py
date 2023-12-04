@@ -189,10 +189,10 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
             ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
         except KeyError:
             ncores = 1
-            try:
-                ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
-            except KeyError:
-                ncores *= 1
+        try:
+            ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+        except KeyError:
+            ncores *= 1
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
         with multiprocessing.get_context("forkserver").Pool(ncores) as pool:
