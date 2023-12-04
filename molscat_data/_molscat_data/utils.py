@@ -248,7 +248,7 @@ def k_L_E_parallel_from_path(s_matrix_path: Path | str, F_out: int | np.ndarray[
             ncores *= 1
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
-        with multiprocessing.get_context('fork').Pool(ncores) as pool:
+        with multiprocessing.get_context('spawn').Pool(ncores) as pool:
             arguments = tuple( (SMatrixCollection.fromPickle(s_matrix_path), *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             # results = pool.starmap_async(rate_fmfsms_vs_L, arguments)

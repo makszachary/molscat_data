@@ -265,8 +265,8 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
 
     F_out, F_in, S = 2, 4, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
-    # arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
-    arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
+    # arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLMax)
 
     F_out, F_in, S = 4, 4, 1
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -S, np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
@@ -291,7 +291,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
         txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
-        rate_array, _ = k_L_E_parallel_from_path(*arg)
+        rate_array, _ = k_L_E_parallel(*arg)
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
