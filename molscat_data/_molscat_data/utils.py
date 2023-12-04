@@ -195,9 +195,8 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
                 ncores *= 1
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
-        with multiprocessing.get_context("spawn").Pool() as pool:
+        with multiprocessing.get_context("spawn").Pool(ncores) as pool:
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
-            print(f'{len(arguments)=}')
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
             rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
