@@ -29,7 +29,7 @@ def main():
     
     print(f'{ncores=}')
     
-    with multiprocessing.get_context('spawn').Pool(ncores) as pool:
+    with multiprocessing.get_context('fork').Pool(ncores) as pool:
         t0 = time.perf_counter()
         args = tuple((a, b) for a in range(4) for b in range(4))
         results_mp = pool.starmap(mul, args)
