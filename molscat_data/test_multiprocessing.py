@@ -33,8 +33,8 @@ def mul(a, b):
     print(f"The time of a single computation for {a=}, {b=} was {time.perf_counter()-t0:.2f} s.", flush = True)
     return a * b
 
-def measure_mp_and_lst_mul(args: tuple[tuple[float, float], ...]):
-    if sys.platform == 'win32':
+def measure_mp_and_lst_mul(args: tuple[tuple[float, float], ...], pc = False):
+    if sys.platform == 'win32' or pc:
         ncores = multiprocessing.cpu_count()
     else:
         try:
@@ -83,7 +83,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
-def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float]):
+def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float], pc = False):
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
 
     param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
@@ -95,7 +95,7 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
 
     t0 = time.perf_counter()
-    _, __ = k_L_E_parallel(*arg_hpf_deexcitation)
+    _, __ = k_L_E_parallel(*arg_hpf_deexcitation, pc = pc)
     time_mp = time.perf_counter() - t0
     print(f"Time of multiprocessing calculations was {time_mp:.2f} s.")
 
@@ -129,7 +129,7 @@ def main():
 
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 
-    time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases)
+    time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = True)
 
 
 if __name__ == "__main__":

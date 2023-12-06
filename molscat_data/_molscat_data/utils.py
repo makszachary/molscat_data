@@ -162,12 +162,13 @@ def probability_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int 
 
     return probability
 
-def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:
+def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4, pc = False) -> np.ndarray[Any, float]:
     
     args = locals().copy()
     args.pop('s_matrix_collection')
     args.pop('param_indices')
     args.pop('dLMax')
+    args.pop('pc')
     arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
 
     t0=time.perf_counter()
@@ -187,7 +188,7 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
 
 
     if array_like:
-        if sys.platform == 'win32':
+        if sys.platform == 'win32' or pc:
             ncores = multiprocessing.cpu_count()
         else:
             try:
