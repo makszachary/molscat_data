@@ -12,8 +12,8 @@ from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel
 
-# scratch_path = Path(__file__).parents[3]
-scratch_path = Path(os.path.expandvars('$SCRATCH'))
+scratch_path = Path(__file__).parents[3]
+# scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
 outputs_dir_path = scratch_path / 'molscat' / 'outputs'
@@ -107,7 +107,7 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     return time_mp, time_lst
 
 def main():
-
+    print(sys.platform)
     args = tuple((a, b) for a in range(4) for b in range(4))
     # time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args)
     
@@ -124,8 +124,8 @@ def main():
     input_dir_name = 'RbSr+_tcpld_vs_mass'
     transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass'
 
-    output_dir = scratch_path / 'molscat' / 'outputs' / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
-    s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
+    # output_dir = scratch_path / 'molscat' / 'outputs' / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu'
+    # s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
 
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 

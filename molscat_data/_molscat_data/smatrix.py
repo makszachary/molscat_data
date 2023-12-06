@@ -540,7 +540,6 @@ class SMatrixCollection:
                     fmfbasis = False
                     basis = ('L', 'F1', 'F2', 'F12', 'T', 'MT')
                     self.Qn = qn.Tcpld
-                    print(self.Qn, flush = True)
                     self.diagonal = ('T', 'MT')
 
                     if self.basis == None: self.basis = basis
