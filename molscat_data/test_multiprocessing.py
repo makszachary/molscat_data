@@ -78,7 +78,7 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
 def main():
 
     args = tuple((a, b) for a in range(4) for b in range(4))
-    time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args)
+    # time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args)
     
 
     E_min, E_max = 4e-7, 4e-3
