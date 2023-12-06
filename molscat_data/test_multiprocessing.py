@@ -16,7 +16,7 @@ from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
-outputs_dir_path = scratch_path / 'python' / 'molscat' / 'outputs'
+outputs_dir_path = scratch_path / 'molscat' / 'outputs'
 outputs_dir_path.mkdir(parents=True, exist_ok=True)
 pickles_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
 pickles_dir_path.mkdir(parents=True, exist_ok=True)
