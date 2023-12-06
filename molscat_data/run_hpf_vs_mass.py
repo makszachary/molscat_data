@@ -32,16 +32,13 @@ from _molscat_data.visualize import PartialRateVsEnergy, RateVsMagneticField
 # E_min, E_max, nenergies, n = 4e-7, 4e-3, 100, 3
 # energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 # molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
-scratch_path = Path(os.path.expandvars('$SCRATCH'))
-pickle_dir_path = scratch_path / 'python' / 'molscat_data' / 'data_produced' / 'pickles'
-pickle_dir_path.mkdir(parents=True, exist_ok=True)
-arrays_dir_path = pickle_dir_path.parent / 'arrays'
-arrays_dir_path.mkdir(parents=True, exist_ok=True)
-plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
+
+
 
 # we want to calculate rates at T from 0.1 mK to 10 mK, so we need E_min = 0.8e-6 K and E_max = 80 mK
 # 70 partial waves should be safe for momentum-transfer rates at E = 8e-2 K (45 should be enough for spin exchange)
 # we probably cannot afford for more than 100 energy values and 100 phase differences in the grid (its ~2h of molscat and ~12h of python per one singlet, triplet phase combinations, making up to ~44 hours for 100 triplet phases and with 34 cores)
+
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 
