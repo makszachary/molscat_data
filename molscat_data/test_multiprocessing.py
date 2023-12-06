@@ -83,7 +83,8 @@ def main():
 
     E_min, E_max = 4e-7, 4e-3
     nenergies = 5
-    singlet_phase, triplet_phase, = 0.0450, 0.2450,
+    singlet_phase = default_singlet_phase_function(1.0)
+    triplet_phase = singlet_phase + 0.2
     phases = (singlet_phase, triplet_phase,)
     so_scaling_value = 0.325
     reduced_mass = 42.47
