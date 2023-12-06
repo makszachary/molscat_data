@@ -9,12 +9,10 @@ def mul(a, b):
     print(f'{a=}, {b=}')
     for i in range(100000000):
         j = i**2
-    print(f"The time of a single computation for {a=}, {b=} was {time.perf_counter()-t0:.2f} s.")
+    print(f"The time of a single computation for {a=}, {b=} was {time.perf_counter()-t0:.2f} s.", flush = True)
     return a * b
 
-
-def main():
-
+def measure_mp_and_lst_mul(args: tuple[tuple[float, float], ...]):
     if sys.platform == 'win32':
         ncores = multiprocessing.cpu_count()
     else:
@@ -29,15 +27,23 @@ def main():
     
     print(f'{ncores=}')
     
-    with multiprocessing.get_context('fork').Pool(ncores) as pool:
+    with multiprocessing.get_context('spawn').Pool(ncores) as pool:
         t0 = time.perf_counter()
-        args = tuple((a, b) for a in range(4) for b in range(4))
         results_mp = pool.starmap(mul, args)
-        print(f"The time of multiprocessing computations was {time.perf_counter()-t0:.2f} s.")
+        time_mp = time.perf_counter()-t0
+        print(f"The time of multiprocessing computations was {time_mp:.2f} s.")
 
     t0 = time.perf_counter()
     results_lst = [ mul(*arg) for arg in args ]
-    print(f"The time of list computations was {time.perf_counter()-t0:.2f} s.")
+    time_lst = time.perf_counter()-t0
+    print(f"The time of list computations was {time_lst:.2f} s.")
+    
+    return time_mp, time_lst
+
+def main():
+
+    args = tuple((a, b) for a in range(4) for b in range(4))
+    time_mp, time_lst = measure_mp_and_lst_mul(args)
     
 
 
