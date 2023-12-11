@@ -1,4 +1,5 @@
 import multiprocessing
+from typing import Any
 import time
 import sys
 import os
@@ -9,9 +10,10 @@ import itertools
 from sigfig import round
 
 from _molscat_data.smatrix import SMatrixCollection
+from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
-from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel, k_L_E_parallel_from_path
+# from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel, k_L_E_parallel_from_path
 
 PC = False
 scratch_path = Path(__file__).parents[3] if PC else Path(os.path.expandvars('$SCRATCH'))
@@ -83,6 +85,109 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
 
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
+def rate_fmfsms_vs_L(s_matrix_collection: SMatrixCollection, F_out: int, MF_out: int, S_out: int, MS_out: int, F_in: int, MF_in: int, S_in: int, MS_in: int, param_indices: dict = None, dLMax: int = 4, unit = None) -> float:
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    args.pop('dLMax')
+    args.pop('unit')
+    t0 = time.perf_counter()
+    L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    print(f"Starting  the calculations for a single combination of quantum numbers ({args}).", flush = True)
+    shape = s_matrix_collection.getRateCoefficient(qn.LF1F2(L = 0, ML = 0 + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = 0, ML = 0, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices).shape
+    rate = np.array( [np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = L_in, ML = ML_in, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
+    # rate = np.array( [np.sum([ np.full(shape, 1) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
+    print(f"The time of the calculations for a single combination of quantum numbers ({args}) was {time.perf_counter()-t0:.2f} s.", flush = True)
+    return rate
+
+def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4, pc = False) -> np.ndarray[Any, float]:
+    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    args.pop('dLMax')
+    args.pop('pc')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    t0=time.perf_counter()
+    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 1, MF2 = -1), unit = 'cm**3/s', param_indices = param_indices)
+    print(f'{momentum_transfer_rate.shape=}, the time of calculation was {time.perf_counter()-t0:.2f} s.')
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
+        
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+
+    if array_like:
+        if sys.platform == 'win32' or pc:
+            ncores = multiprocessing.cpu_count()
+        else:
+            try:
+                ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
+            except KeyError:
+                ncores = 1
+            try:
+                ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+            except KeyError:
+                ncores *= 1
+        print(f'{ncores=}')
+        print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
+        with multiprocessing.get_context('spawn').Pool(ncores) as pool:
+            arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
+            results = pool.starmap(rate_fmfsms_vs_L, arguments)
+            # results = pool.starmap_async(rate_fmfsms_vs_L, arguments)
+            # results = np.array(results.get())
+            rate_shape = results[0].shape
+            rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+            momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
+
+            return rate, momentum_transfer_rate
+    
+    rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
+
+    return rate, momentum_transfer_rate
+
+def k_L_E_not_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarray[Any, int], MF_out: int | np.ndarray[Any, int], S_out: int | np.ndarray[Any, int], MS_out: int | np.ndarray[Any, int], F_in: int | np.ndarray[Any, int], MF_in: int | np.ndarray[Any, int], S_in: int | np.ndarray[Any, int], MS_in: int | np.ndarray[Any, int], param_indices = None, dLMax: int = 4) -> np.ndarray[Any, float]:    
+    args = locals().copy()
+    args.pop('s_matrix_collection')
+    args.pop('param_indices')
+    args.pop('dLMax')
+    arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+
+    t0=time.perf_counter()
+    momentum_transfer_rate = s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 2, MF1 = -2, F2 = 1, MF2 = -1), unit = 'cm**3/s', param_indices = param_indices)
+
+    # convert all arguments to np.ndarrays if any of them is an instance np.ndarray
+    array_like = False
+    if any( isinstance(arg, np.ndarray) for arg in args.values() ):
+        array_like = True
+        arg_shapes = tuple( value.shape for value in args.values() if isinstance(value, np.ndarray) )
+        if any(arg_shape != arg_shapes[0] for arg_shape in arg_shapes): raise ValueError(f"The shape of the numpy arrays passed as arguments should be the same.")
+        
+        for name, arg in args.items():
+            if not isinstance(arg, np.ndarray):
+                args[name] = np.full(arg_shapes[0], arg)
+
+    if array_like:
+        arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
+        results = [ rate_fmfsms_vs_L(*arg) for arg in arguments ]
+        rate_shape = results[0].shape
+        rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
+        momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
+
+        return rate, momentum_transfer_rate
+    
+    rate = rate_fmfsms_vs_L(s_matrix_collection, **args)
+
+    return rate, momentum_transfer_rate
+
 
 def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float], pc = False):
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
@@ -93,15 +198,14 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     F_out, F_in, S = 2, 4, 1
     # MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), -F_in, S, indexing = 'ij')
-    # arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
-    arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
+    # arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
 
     t0 = time.perf_counter()
-    _, __ = k_L_E_parallel_from_path(*arg_hpf_deexcitation, pc = pc)
+    _, __ = k_L_E_parallel(*arg_hpf_deexcitation, pc = pc)
     time_mp = time.perf_counter() - t0
     print(f"Time of multiprocessing calculations was {time_mp:.2f} s.")
 
-    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
     t0 = time.perf_counter()
     _, __ = k_L_E_not_parallel(*arg_hpf_deexcitation)
     time_lst = time.perf_counter() - t0
@@ -110,31 +214,10 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     return time_mp, time_lst
 
 
-def simulate_k_L_E_parallel(ntask: int):
-    ln = 15
-    shp = tuple(ln for i in range(6))
-    random_numbers = np.sqrt(np.random.uniform(0, 1, shp)) * np.exp(1.j * np.random.uniform(0, 2 * np.pi, shp))
-    t0 = time.perf_counter()
-    dct = { (i, j, k, l, m, n):  random_numbers[(i, j, k, l, m, n)] for i, k, l, n in itertools.product(range(ln), repeat=4) for j in range(-i, i+1) for m in range(-l, l+1)}
-    time_creating = time.perf_counter() - t0
-    print(f'{time_creating = :.2f}')
-
-    L_max = max(key[0] for key in dct.keys())
-    dLMax = 4
-    MF_out, MF_in = 4, 5
-    t0 = time.perf_counter()
-    rate = np.sum( [ abs(dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in])**2/np.sqrt(abs(dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in])) for L_in in range(0, L_max+1) for ML_in in range(-L_in, L_in+1) for L_out in range(L_in - dLMax, L_in + dLMax+1, 2) if (L_out >= 0 and L_out <=L_max and abs(ML_in+MF_in-MF_out) <= L_out) ], axis = 0 )
-    print(f'{rate=}')
-    time_single = time.perf_counter() - t0
-    print(f'Time = {time_single:.4f} s.')
-
-    return(time_single)
-
-
 def main():
     print(sys.platform)
     args = tuple((a, b) for a in range(4) for b in range(4))
-    # time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args)
+    time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args)
     
 
     E_min, E_max = 4e-7, 4e-3
@@ -154,10 +237,7 @@ def main():
 
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 
-    # time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
-
-    time_single = simulate_k_L_E_parallel(6)
-    # print(time_single)
+    time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
 
 
 if __name__ == "__main__":
