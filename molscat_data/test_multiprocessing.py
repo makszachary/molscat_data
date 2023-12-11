@@ -111,7 +111,7 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
 
 
 def simulate_k_L_E_parallel(ntask: int):
-    ln = 20
+    ln = 15
     shp = tuple(ln for i in range(6))
     random_numbers = np.sqrt(np.random.uniform(0, 1, shp)) * np.exp(1.j * np.random.uniform(0, 2 * np.pi, shp))
     t0 = time.perf_counter()
@@ -123,10 +123,10 @@ def simulate_k_L_E_parallel(ntask: int):
     dLMax = 4
     MF_out, MF_in = 4, 5
     t0 = time.perf_counter()
-    rate = np.sum( [ dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in] for L_in in range(0, L_max+1) for ML_in in range(-L_in, L_in+1) for L_out in range(L_in - dLMax, L_in + dLMax+1, 2) if (L_out >= 0 and L_out <=L_max and abs(ML_in+MF_in-MF_out) <= L_out) ], axis = 0 )
+    rate = np.sum( [ abs(dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in])**2/np.sqrt(abs(dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in])) for L_in in range(0, L_max+1) for ML_in in range(-L_in, L_in+1) for L_out in range(L_in - dLMax, L_in + dLMax+1, 2) if (L_out >= 0 and L_out <=L_max and abs(ML_in+MF_in-MF_out) <= L_out) ], axis = 0 )
     print(f'{rate=}')
     time_single = time.perf_counter() - t0
-    print(f'Time = {time_single:.2f} s.')
+    print(f'Time = {time_single:.4f} s.')
 
     return(time_single)
 
@@ -154,9 +154,9 @@ def main():
 
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 
-    time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
+    # time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
 
-    # time_single = simulate_k_L_E_parallel(6)
+    time_single = simulate_k_L_E_parallel(6)
     # print(time_single)
 
 
