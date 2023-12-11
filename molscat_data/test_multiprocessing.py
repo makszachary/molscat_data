@@ -4,14 +4,14 @@ import sys
 import os
 from pathlib import Path
 import numpy as np
-import argparse
+import itertools
 
 from sigfig import round
 
 from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
-from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel
+from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel, k_L_E_parallel_from_path
 
 PC = False
 scratch_path = Path(__file__).parents[3] if PC else Path(os.path.expandvars('$SCRATCH'))
@@ -93,19 +93,43 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     F_out, F_in, S = 2, 4, 1
     # MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), np.arange(-F_in, F_in+1, 2), S, indexing = 'ij')
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S, S+1, 2), -F_in, S, indexing = 'ij')
-    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
+    # arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
+    arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
 
     t0 = time.perf_counter()
-    _, __ = k_L_E_parallel(*arg_hpf_deexcitation, pc = pc)
+    _, __ = k_L_E_parallel_from_path(*arg_hpf_deexcitation, pc = pc)
     time_mp = time.perf_counter() - t0
     print(f"Time of multiprocessing calculations was {time_mp:.2f} s.")
 
+    arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
     t0 = time.perf_counter()
     _, __ = k_L_E_not_parallel(*arg_hpf_deexcitation)
     time_lst = time.perf_counter() - t0
     print(f"Time of sequential calculations was {time_lst:.2f} s.")
 
     return time_mp, time_lst
+
+
+def simulate_k_L_E_parallel(ntask: int):
+    ln = 20
+    shp = tuple(ln for i in range(6))
+    random_numbers = np.sqrt(np.random.uniform(0, 1, shp)) * np.exp(1.j * np.random.uniform(0, 2 * np.pi, shp))
+    t0 = time.perf_counter()
+    dct = { (i, j, k, l, m, n):  random_numbers[(i, j, k, l, m, n)] for i, k, l, n in itertools.product(range(ln), repeat=4) for j in range(-i, i+1) for m in range(-l, l+1)}
+    time_creating = time.perf_counter() - t0
+    print(f'{time_creating = :.2f}')
+
+    L_max = max(key[0] for key in dct.keys())
+    dLMax = 4
+    MF_out, MF_in = 4, 5
+    t0 = time.perf_counter()
+    rate = np.sum( [ dct[L_out, ML_in+MF_in-MF_out, MF_out, L_in, ML_in, MF_in] for L_in in range(0, L_max+1) for ML_in in range(-L_in, L_in+1) for L_out in range(L_in - dLMax, L_in + dLMax+1, 2) if (L_out >= 0 and L_out <=L_max and abs(ML_in+MF_in-MF_out) <= L_out) ], axis = 0 )
+    print(f'{rate=}')
+    time_single = time.perf_counter() - t0
+    print(f'Time = {time_single:.2f} s.')
+
+    return(time_single)
+
 
 def main():
     print(sys.platform)
@@ -131,6 +155,9 @@ def main():
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 
     time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
+
+    # time_single = simulate_k_L_E_parallel(6)
+    # print(time_single)
 
 
 if __name__ == "__main__":
