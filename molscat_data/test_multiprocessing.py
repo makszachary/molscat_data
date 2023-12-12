@@ -51,16 +51,16 @@ def measure_mp_and_lst_mul(args: tuple[tuple[float, float], ...], pc = False):
     
     print(f'{ncores=}')
     
+    t0 = time.perf_counter()
+    results_lst = [ mul(*arg) for arg in args ]
+    time_lst = time.perf_counter()-t0
+    print(f"The time of list computations was {time_lst:.2f} s.")
+
     with multiprocessing.get_context('spawn').Pool(ncores) as pool:
         t0 = time.perf_counter()
         results_mp = pool.starmap(mul, args)
         time_mp = time.perf_counter()-t0
         print(f"The time of multiprocessing computations was {time_mp:.2f} s.")
-
-    t0 = time.perf_counter()
-    results_lst = [ mul(*arg) for arg in args ]
-    time_lst = time.perf_counter()-t0
-    print(f"The time of list computations was {time_lst:.2f} s.")
     
     return time_mp, time_lst
 
