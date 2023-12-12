@@ -202,14 +202,14 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
     # arg_hpf_deexcitation = (pickle_path, F_out, MF_out, S, MS_out, F_in, MF_in, S, MS_in, param_indices, dLmax)
 
     t0 = time.perf_counter()
-    _, __ = k_L_E_parallel(*arg_hpf_deexcitation, pc = pc)
-    time_mp = time.perf_counter() - t0
-    print(f"Time of multiprocessing calculations was {time_mp:.2f} s.")
-
-    t0 = time.perf_counter()
     _, __ = k_L_E_not_parallel(*arg_hpf_deexcitation)
     time_lst = time.perf_counter() - t0
     print(f"Time of sequential calculations was {time_lst:.2f} s.")
+
+    t0 = time.perf_counter()
+    _, __ = k_L_E_parallel(*arg_hpf_deexcitation, pc = pc)
+    time_mp = time.perf_counter() - t0
+    print(f"Time of multiprocessing calculations was {time_mp:.2f} s.")
 
     return time_mp, time_lst
 
