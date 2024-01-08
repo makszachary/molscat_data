@@ -1,6 +1,6 @@
 numpy
 sigfig
-py3nj
+py3nj==0.1.2
 scipy
 msgpack
 matplotlib
