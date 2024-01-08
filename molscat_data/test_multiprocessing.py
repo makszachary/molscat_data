@@ -17,7 +17,7 @@ from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 # from _molscat_data.utils import k_L_E_parallel, k_L_E_not_parallel, k_L_E_parallel_from_path
 
-PC = True
+PC = False
 scratch_path = Path(__file__).parents[3] if PC else Path(os.path.expandvars('$SCRATCH'))
 
 data_dir_path = Path(__file__).parents[1] / 'data'
