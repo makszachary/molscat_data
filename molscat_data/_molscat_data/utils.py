@@ -46,8 +46,7 @@ def rate_fmfsms_vs_L(s_matrix_collection: SMatrixCollection, F_out: int, MF_out:
     try:
         rate = np.array( [np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = L_in, ML = ML_in, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
     except ValueError as err:
-        print(f'An error occurred in rate_fmfsms_vs_L function for {args}.')
-        raise ValueError(err)
+        raise ValueError(f'An error occurred in rate_fmfsms_vs_L function for {args}.\n{err}')
     # rate = np.array( [np.sum([ np.full(shape, 1) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
     print(f'{rate.shape =}', flush=True)
     print(f"The time of the calculations for a single combination of quantum numbers ({args}) was {time.perf_counter()-t0:.2f} s.", flush = True)
