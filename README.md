@@ -22,6 +22,7 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 `pip install numpy==1.26.3`   
 `cd venv/Lib/site-packages`
 `git clone https://github.com/makszachary/py3nj`
+`cd py3nj`
 `pip install .`
 `cd ../../../../`
 `pip install -r requirements_windows.txt`
@@ -31,4 +32,4 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 `pip install -U wheel --no-cache-dir`
 `pip install -U setuptools --no-cache-dir`
 `pip install numpy==1.26.3`   
-`pip install -r requirements.txt`
+`pip install -r requirements_linux.txt`

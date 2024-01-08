@@ -1,8 +1,0 @@
-sigfig
-py3nj==0.1.2
-scipy
-msgpack
-matplotlib
-cmcrameri
-cmocean
-matplotlib-label-lines
