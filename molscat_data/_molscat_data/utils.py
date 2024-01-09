@@ -45,9 +45,11 @@ def rate_fmfsms_vs_L(s_matrix_collection: SMatrixCollection, F_out: int, MF_out:
     # shape = s_matrix_collection.getRateCoefficient(qn.LF1F2(L = 0, ML = 0 + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = 0, ML = 0, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices).shape
     # err_shapes = [ np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + 0 + 10 - (-2) - (-8), F1 = 2, MF1 = -2, F2 = 8, MF2 = -8), qn.LF1F2(L = L_in, ML = ML_in, F1 = 4, MF1 = 0, F2 = 10, MF2 = 10), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0).shape for L_in in range(0, L_max+1, 2)]
     # print(f'{err_shapes =}')
-    err_array = np.array([ np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + 0 + 10 - (-2) - (-8), F1 = 2, MF1 = -2, F2 = 8, MF2 = -8), qn.LF1F2(L = L_in, ML = ML_in, F1 = 4, MF1 = 0, F2 = 10, MF2 = 10), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
-    print(f'{err_array =}')
-    print(f'{err_array.shape =}')
+
+    # err_array = np.array([ np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + 0 + 10 - (-2) - (-8), F1 = 2, MF1 = -2, F2 = 8, MF2 = -8), qn.LF1F2(L = L_in, ML = ML_in, F1 = 4, MF1 = 0, F2 = 10, MF2 = 10), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
+    # print(f'{err_array =}')
+    # print(f'{err_array.shape =}')
+
     try:
         rate = np.array( [np.sum([ s_matrix_collection.getRateCoefficient(qn.LF1F2(L = L_out, ML = ML_in + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = L_in, ML = ML_in, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
     except ValueError as err:
@@ -363,6 +365,7 @@ def k_L_E_parallel_odd(s_matrix_collection: SMatrixCollection, F_out: int | np.n
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             rate_shape = results[0].shape
+            print(f'{rate_shape =}')
             rate = np.array(results).reshape((*arg_shapes[0], *rate_shape))
             momentum_transfer_rate = np.full((*arg_shapes[0], *momentum_transfer_rate.shape), momentum_transfer_rate)
 
