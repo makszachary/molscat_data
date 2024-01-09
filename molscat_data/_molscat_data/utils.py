@@ -52,7 +52,7 @@ def rate_fmfsms_vs_L(s_matrix_collection: SMatrixCollection, F_out: int, MF_out:
     except ValueError as err:
         raise ValueError(f'An error occurred in rate_fmfsms_vs_L function for {args}.\n{err}')
     # rate = np.array( [np.sum([ np.full(shape, 1) for ML_in in range(-L_in, L_in+1, 2) for L_out in range(L_in - dLMax*2, L_in + dLMax*2+1, 2*2) if (L_out >= 0 and L_out <=L_max) and abs(ML_in + MF_in + MS_in - MF_out - MS_out) <= L_out ], axis = 0) for L_in in range(0, L_max+1, 2)])
-    print(f'{rate.shape =}', flush=True)
+    # print(f'{rate.shape =}', flush=True)
     print(f"The time of the calculations for a single combination of quantum numbers ({args}) was {time.perf_counter()-t0:.2f} s.", flush = True)
     return rate
 
