@@ -276,12 +276,12 @@ def main():
     parser.add_argument("--dmass", type = float, default = 0.04, help = "Mass step (in a.m.u.).")
 
     parser.add_argument("--nenergies_barplot", type = int, default = 50, help = "Number of energy values in a grid.")
-    parser.add_argument("--E_min_barplot", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
-    parser.add_argument("--E_max_barplot", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+    parser.add_argument("--E_min_barplot", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max_barplot", type = float, default = 4e-3, help = "Highest energy value in the grid.")
 
     parser.add_argument("--nenergies_even", type = int, default = 50, help = "Number of energy values in a grid.")
-    parser.add_argument("--E_min_even", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
-    parser.add_argument("--E_max_even", type = float, default = 8e-2, help = "Highest energy value in the grid.")
+    parser.add_argument("--E_min_even", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max_even", type = float, default = 4e-3, help = "Highest energy value in the grid.")
 
     parser.add_argument("--nenergies_odd", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min_odd", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
