@@ -309,7 +309,7 @@ def main():
 
     singlet_phase = args.singlet_phase % 1. if (args.singlet_phase is not None and args.singlet_phase != -1) else default_singlet_phase_function(1.0)
     # singlet_phase = default_singlet_phase_function(1.0) if (args.singlet_phase is None or args.singlet_phase == -1) else args.singlet_phase
-    triplet_phase = args.triplet_phase % 1. if (args.triplet_phase is not None and args.phase_step != -1) else (args.singlet_phase + args.phase_difference) % 1 if args.phase_difference is not None else np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
+    triplet_phases = (args.triplet_phase % 1.,) if (args.triplet_phase is not None and args.phase_step != -1) else ( (args.singlet_phase + args.phase_difference) % 1,) if args.phase_difference is not None else np.array([( singlet_phase + phase_difference ) % 1 for phase_difference in np.arange(0, 1., args.phase_step) if (singlet_phase + phase_difference ) % 1 != 0 ] ).round(decimals=4)
     # if (args.phase_step is None or args.phase_step == -1):
     #     triplet_phases = (default_triplet_phase_function(1.0),) if (args.triplet_phase is None or args.phase_step == -1) else (args.triplet_phase,)
     # else:
