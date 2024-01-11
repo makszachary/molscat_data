@@ -327,6 +327,8 @@ def main():
     molscat_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.input_dir_name).iterdir()
     molscat_transfer_input_templates = Path(__file__).parents[1].joinpath('molscat', 'input_templates', args.transfer_input_dir_name).iterdir()
 
+    if not (args.molscat or args.molscat_transfer or args.pickle or args.calc ):
+        args.molscat, args.molscat_transfer, args.pickle, args.calc = True, True, True, True
 
     # ### RUN MOLSCAT ###
     if args.molscat:

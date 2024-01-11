@@ -19,10 +19,9 @@ from _molscat_data.smatrix import SMatrixCollection
 # from _molscat_data.smatrix_compatibility_copy import SMatrixCollection as SMatrixCollectionV0
 from _molscat_data import quantum_numbers as qn
 from _molscat_data.thermal_averaging import n_root_scale, n_root_distribution, n_root_iterator
-from _molscat_data.utils import rate_fmfsms_vs_L_SE, rate_fmfsms_vs_L_multiprocessing, rate_fmfsms_vs_L, k_L_E_SE_not_parallel
+from _molscat_data.utils import k_L_E_parallel_fmf_SE
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 from _molscat_data.analytical import MonoAlkaliEnergy
-from _molscat_data.utils import k_L_E_parallel_fmf
 from _molscat_data.effective_probability import effective_probability
 from _molscat_data.physical_constants import amu_to_au, red_mass_87Rb_84Sr_amu, red_mass_87Rb_88Sr_amu
 from prepare_so_coupling import scale_so_and_write
@@ -45,9 +44,10 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
-    # L_max = 2*29
-    MTOT_min = MS_in+MF_in-L_max
-    MTOT_max = MS_in+MF_in+L_max
+    MTOT_min = MS_in+MF_in-L_max*spin_orbit_included
+    MTOT_max = MS_in+MF_in+L_max*spin_orbit_included
+    LREQ_str = str(tuple(range(int(L_max/2)+1))).strip(')').strip('(') if not spin_orbit_included else None
+    MFREQ_str = str(tuple( int(MS_in+MF_in) for i in range(int(L_max/2)+1)) ).strip(')').strip('(') if not spin_orbit_included else None
 
     molscat_energy_array_str = str(energy_tuple).strip(')').strip('(')
     nenergies = len(energy_tuple)
@@ -57,7 +57,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     singlet_scaling = default_singlet_parameter_from_phase(singlet_phase)
     triplet_scaling = default_triplet_parameter_from_phase(triplet_phase)
 
-    molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-alk_alk-RKHS')
+    molscat_executable_path = Path.home().joinpath('molscat-RKHS', 'molscat-exe', 'molscat-alk_alk-RKHS')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
     molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', molscat_input_template_path.stem).with_suffix('.input')
     molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', molscat_input_template_path.stem).with_suffix('.output')
@@ -88,7 +88,13 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
         input_content = re.sub("SINGLETPATH", f'\"{singlet_potential_path}\"', input_content, flags = re.M)
         input_content = re.sub("TRIPLETPATH", f'\"{triplet_potential_path}\"', input_content, flags = re.M)
         if spin_orbit_included:
+            input_content = re.sub("NISPSP", f'1', input_content, flags = re.M)
             input_content = re.sub("SOPATH", f'\"{scaled_so_path}\"', input_content, flags = re.M)
+        else:
+            input_content = re.sub("NNREQ", f'{int(L_max/2)+1}', input_content, flags = re.M)
+            input_content = re.sub("NLREQ", LREQ_str, input_content, flags = re.M)
+            input_content = re.sub("NMFREQ", MFREQ_str, input_content, flags = re.M)
+            input_content = re.sub("NISPSP", f'-1', input_content, flags = re.M)
         input_content = re.sub("SINGLETSCALING", str(singlet_scaling), input_content, flags = re.M)
         input_content = re.sub("TRIPLETSCALING", str(triplet_scaling), input_content, flags = re.M)
         input_content = re.sub("SOSCALING", str(1.00), input_content, flags = re.M)
@@ -99,7 +105,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    print(f"{molscat_input_path.name} run\nwith the spin-orbit scaling: {so_scaling:.4f}")
+    print(f"{molscat_input_path.name} run\nwith the spin-orbit scaling: {so_scaling:.4f} and singlet, triplet phases: ({singlet_phase:.4f}, {triplet_phase:.4f}).")
     subprocess.run(molscat_command, shell = True)
 
     duration = time.perf_counter()-time_0
@@ -107,15 +113,28 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29) -> set:
+def create_and_run_parallel(molscat_input_templates, phases, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
-    if so_scaling_values == None:
+    
+    if so_scaling_values is None or so_scaling_values == (0.0,):
         so_scaling_values = (0.0,)
         spin_orbit_included = False
-    with Pool() as pool:
-       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, spin_orbit_included) for x, so_scaling_value in itertools.product( molscat_input_templates, so_scaling_values))
+    
+    try:
+        ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
+    except KeyError:
+        ncores = 1
+        try:
+            ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+        except KeyError:
+            ncores *= 1
+    print(f'{ncores=}')
+    print(f'Number of singlet-triplet combinations to calculate = {len(phases)}.')
+
+    with Pool(ncores) as pool:
+       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, spin_orbit_included) for x, (singlet_phase, triplet_phase), so_scaling_value in itertools.product( molscat_input_templates, phases, so_scaling_values))
        results = pool.starmap(create_and_run, arguments)
     
        for duration, input_path, output_path in results:
@@ -149,14 +168,11 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
-def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer_pickle_path: Path | str, F_in: int, MF_in: int, S_in: int, MS_in: int, phases = None, dLMax: int = 4, temperatures = (5e-4,)):
+def calculate_and_save_k_L_E_and_peff_parallel_SE(pickle_path: Path | str, transfer_pickle_path: Path | str, F_in: int, MF_in: int, S_in: int, MS_in: int, phases = None, temperatures = (5e-4,)):
     ### LOAD S-MATRIX, CALCULATE THE EFFECTIVE PROBABILITIES AND WRITE THEM TO .TXT FILE ###
     t4 = time.perf_counter()
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
-    l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
-    
     transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
-    transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
@@ -173,12 +189,12 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     if F_in == 4:
         F_out, S_out = 2, S_in
         MF_out, MS_out = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S_out, S_out+1, 2), indexing = 'ij')
-        arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
+        arg_hpf_deexcitation = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices)
 
         F_out, S_out = 4, S_in
         MS_out = -MS_in
         MF_out = np.arange(-F_out, F_out+1, 2)
-        arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
+        arg_cold_spin_change_higher = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices)
         
         args = [arg_hpf_deexcitation, arg_cold_spin_change_higher,]
         names = [f'hyperfine deexcitation for the |f = 2, m_f = {MF_in/2}> |m_s = {MS_in/2}> initial states', 
@@ -189,8 +205,8 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
 
     elif F_in == 2:
         F_out, S_out = 2, S_in
-        MF_out, MS_out = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, indexing = 'ij')
-        arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices, dLMax)
+        MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), -MS_in, np.arange(-F_in, F_in+1, 2), MS_in, indexing = 'ij')
+        arg_cold_spin_change_lower = (s_matrix_collection, F_out, MF_out, S_out, MS_out, F_in, MF_in, S_in, MS_in, param_indices)
 
         args = [arg_cold_spin_change_lower,]
         names = [f'cold spin change for the |f = 1, m_f = {MF_in/2}> |m_s = {MS_in/2}> initial states',]
@@ -198,11 +214,6 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
 
     else:
         raise ValueError("88Sr+ ion may have the total spin of F = 2f = 2 or 4.")
-
-    zipped_dir_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent
-    zip_path = zipped_dir_path.parent / (zipped_dir_path.name + '.zip')
-    if zip_path.is_file():
-        shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
@@ -213,23 +224,23 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
         txt_path = txt_path / 'probabilities' / f'{abbreviation}.txt'
         txt_path.parent.mkdir(parents = True, exist_ok = True)
 
-        rate_array = k_L_E_parallel_fmf(*arg)
+        rate_array = k_L_E_parallel_fmf_SE(*arg)
         quantum_numbers = [ np.full_like(arg[2], arg[i]) for i in range(1, 9) ]
         for index in np.ndindex(arg[2].shape):
             k_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_L_E_txt_path = k_L_E_txt_path / f'k_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G. \nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}.')
+            np.savetxt(k_L_E_txt_path, rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent rates of |F={quantum_numbers[4][index]}, MF={quantum_numbers[5][index]}>|S={quantum_numbers[6][index]}, MS={quantum_numbers[7][index]}> -> |F={quantum_numbers[0][index]}, MF={quantum_numbers[1][index]}>|S={quantum_numbers[2][index]}, MS={quantum_numbers[3][index]}> collisions ({name}) for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}.')
             k_m_L_E_txt_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('')
             k_m_L_E_txt_path = k_m_L_E_txt_path / f'k_m_L_E' / f'{abbreviation}' / f'OUT_{quantum_numbers[0][index]}_{quantum_numbers[1][index]}_{quantum_numbers[2][index]}_{quantum_numbers[3][index]}_IN_{quantum_numbers[4][index]}_{quantum_numbers[5][index]}_{quantum_numbers[6][index]}_{quantum_numbers[7][index]}.txt'
             k_m_L_E_txt_path.parent.mkdir(parents = True, exist_ok = True)
-            np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate.squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
+            np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate.squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nEnergy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         # in this script, momentum_transfer_rate is calculated within the script, not k_L_E_parallel function, and has shape (L_max, nenergies)
         momentum_transfer_rate_array = np.full((*arg[2].shape, *momentum_transfer_rate.shape), momentum_transfer_rate)
-        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
         output_state_resolved_probability_arrays = probability_arrays.squeeze()
         probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
@@ -250,14 +261,14 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
 
-        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
-        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
-        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum L: {l_max}. The maximum change of L: +/-{dLMax}.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
+        np.savetxt(output_state_res_txt_path, output_state_resolved_probability_arrays.reshape(-1, output_state_resolved_probability_arrays.shape[-1]), fmt = '%.10f', header = f'[Original shape: {output_state_resolved_probability_arrays.shape}]\nThe bare (output-state-resolved) probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nTemperatures: {temperatures_str} K.\nThe momentum-transfer rate: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(p0_txt_path, probability_arrays, fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
+        np.savetxt(txt_path, effective_probability_arrays, fmt = '%.10f', header = f'[Original shape: {effective_probability_arrays.shape}]\nThe effective probabilities of the {name}.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nTemperatures: {temperatures_str} K.\nThe corresponding momentum-transfer rates: {momentum_transfer_str} cm**3/s.')
         
         duration = time.perf_counter() - t
         print(f"It took {duration:.2f} s.")
 
-    shutil.make_archive(zipped_dir_path, 'zip', zipped_dir_path)
+    shutil.make_archive(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent, 'zip' , arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent)
     [shutil.rmtree(arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).with_suffix('') / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
     return
 
@@ -269,9 +280,8 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
-    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.325,], help = "Values of the SO scaling.")
     parser.add_argument("--F_in", type = int, default = 4)
-    parser.add_argument("--MF_in", type = int, default = 4)
+    parser.add_argument("--MF_in", type = int, default = -4)
     parser.add_argument("--S_in", type = int, default = 1)
     parser.add_argument("--MS_in", type = int, default = 1)
     parser.add_argument("--B", type = float, default = 2.97, help = "Magnetic field.")
@@ -284,8 +294,9 @@ def main():
     parser.add_argument("--nT", type = int, default = 10, help = "Number of temperatures included in the calculations.")
     parser.add_argument("--logT_min", type = float, default = -4)
     parser.add_argument("--logT_max", type = float, default = -3)
-    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_momentum_transfer', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_vs_DPhi_SE', help = "Name of the directory with the molscat inputs.")
+    parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_fmf_momentum_transfer', help = "Name of the directory with the molscat inputs for calculating the momentum-tranfer rates.")
+
     parser.add_argument("--molscat", action = 'store_true', help = "Include calculations in molscat.")
     parser.add_argument("--molscat_transfer", action = 'store_true', help = "Include momentum-transfer calculations in molscat.")
     parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
@@ -302,7 +313,6 @@ def main():
     phases = ((args.singlet_phase, args.triplet_phase),)
     singlet_phase = args.singlet_phase
     triplet_phase = args.triplet_phase
-    so_scaling_values = list(set(args.so_scaling))
     magnetic_field = args.B
     F_in, MF_in, S_in, MS_in = args.F_in, args.MF_in, args.S_in, args.MS_in
 
@@ -321,28 +331,25 @@ def main():
 
     # ### RUN MOLSCAT ###
     if args.molscat:
-        output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max)
+        output_dirs = create_and_run_parallel(molscat_input_templates, phases, None, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max)
     if args.molscat_transfer:
         _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
-    # pickle_paths = []
     if args.pickle:
-        for so_scaling_value in so_scaling_values:
-            output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
-            s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, so_scaling_value, energy_tuple)
-            # pickle_paths.append(pickle_path)
+        for singlet_phase, triplet_phase in phases:
+            output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+            s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, None, energy_tuple)
+            pickle_paths.append(pickle_path)
             print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
-        # pickle_paths = np.unique(pickle_paths)
-
-        transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1'
-        _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
+            transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
+            _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
 
     if args.calc:
         t0 = time.perf_counter()
-        pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for so_scaling_value in so_scaling_values)
-        transfer_pickle_path = pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1.pickle'
-        [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
+        pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for singlet_phase, triplet_phase in phases)
+        transfer_pickle_paths = tuple( pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle'  for singlet_phase, triplet_phase in phases)
+        [calculate_and_save_k_L_E_and_peff_parallel_SE(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phase, temperatures) for pickle_path, transfer_pickle_path, phase in zip(pickle_paths, transfer_pickle_paths, phases, strict = True)]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
 if __name__ == "__main__":
