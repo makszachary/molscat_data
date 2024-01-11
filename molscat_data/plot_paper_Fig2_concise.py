@@ -78,8 +78,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     if fmf_barplot:
         arrays_path_hpf = [arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'hpf.txt' for MF_in in range(-4, 4+1, 2)]
         arrays_path_cold_higher = [arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'cold_higher.txt' for MF_in in range(-4, 4+1, 2)]
-        SE_arrays_path_hpf = [arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'hpf.txt' for MF_in in range(-4, 4+1, 2)]
-        SE_arrays_path_cold_higher = [arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'cold_higher.txt' for MF_in in range(-4, 4+1, 2)]
+        SE_arrays_path_hpf = [arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'hpf.txt' for MF_in in range(-4, 4+1, 2)]
+        SE_arrays_path_cold_higher = [arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'cold_higher.txt' for MF_in in range(-4, 4+1, 2)]
         arrays_hpf = np.array([np.loadtxt(path) for path in arrays_path_hpf]).transpose()
         arrays_cold_higher = np.array([np.loadtxt(path) for path in arrays_path_cold_higher]).transpose()
         SE_arrays_hpf = np.array([np.loadtxt(path) for path in SE_arrays_path_hpf]).transpose()
