@@ -7,7 +7,7 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 
 1. `git clone https://github.com/makszachary/molscat_data.git`
 
-2. in the BARW directory:  
+2. in the molscat_data directory:  
 **Windows**  
 `py -m venv venv`  
 `venv/Scripts/activate`   
@@ -15,6 +15,21 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 `python -m venv venv`  
 `source venv/bin/activate`  
 
-3. `py -m pip install --upgrade pip`
-`pip install numpy`   
-`pip install -r requirements.txt`
+3. **Windows**
+`py -m pip install --upgrade pip`
+`pip install -U wheel --no-cache-dir`
+`pip install -U setuptools --no-cache-dir`
+`pip install numpy==1.26.3`   
+`cd venv/Lib/site-packages`
+`git clone https://github.com/makszachary/py3nj`
+`cd py3nj`
+`pip install .`
+`cd ../../../../`
+`pip install -r requirements_windows.txt`
+
+**Linux**
+`python -m pip install --upgrade pip`
+`pip install -U wheel --no-cache-dir`
+`pip install -U setuptools --no-cache-dir`
+`pip install numpy==1.26.3`   
+`pip install -r requirements_linux.txt`

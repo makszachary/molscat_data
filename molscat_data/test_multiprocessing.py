@@ -1,3 +1,5 @@
+import cProfile
+import pstats
 import multiprocessing
 from typing import Any
 import time
@@ -139,7 +141,11 @@ def k_L_E_parallel(s_matrix_collection: SMatrixCollection, F_out: int | np.ndarr
                 ncores *= 1
         print(f'{ncores=}')
         print(f'Number of input/output state combinations to calculate = {args["F_out"].size}.')
+<<<<<<< HEAD
         with multiprocessing.get_context('fork').Pool(ncores) as pool:
+=======
+        with multiprocessing.get_context('spawn').Pool(ncores) as pool:
+>>>>>>> e753092d4186af391fb1a82934c894974d250af6
             arguments = tuple( (s_matrix_collection, *(args[name][index] for name in args), param_indices, dLMax, 'cm**3/s') for index in np.ndindex(arg_shapes[0]))
             results = pool.starmap(rate_fmfsms_vs_L, arguments)
             # results = pool.starmap_async(rate_fmfsms_vs_L, arguments)
@@ -216,9 +222,18 @@ def measure_mp_and_lst_k_L_E(pickle_path: Path | str, phases: tuple[float, float
 
 def main():
     print(sys.platform)
+<<<<<<< HEAD
     # args = tuple((a, b) for a in range(4) for b in range(4))
     # time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args, pc = PC)
+=======
+    args = tuple((a, b) for a in range(4) for b in range(4))
+    # with cProfile.Profile() as pr_simple:
+    #     time_mp_mul, time_lst_mul = measure_mp_and_lst_mul(args, pc = PC)
+>>>>>>> e753092d4186af391fb1a82934c894974d250af6
     
+    # stats1 = pstats.Stats(pr_simple)
+    # stats1.sort_stats(pstats.SortKey.TIME)
+    # stats1.dump_stats(filename='pr_simple.prof')
 
     E_min, E_max = 4e-7, 4e-3
     nenergies = 5
@@ -237,7 +252,12 @@ def main():
 
     pickle_path = pickles_dir_path / input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'{reduced_mass:.4f}_amu.pickle'
 
-    time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
+    with cProfile.Profile() as pr_calc:
+        time_mp_mul, time_lst_mul = measure_mp_and_lst_k_L_E(pickle_path, phases, pc = PC)
+
+    stats2 = pstats.Stats(pr_calc)
+    stats2.sort_stats(pstats.SortKey.TIME)
+    stats2.dump_stats(filename='pr_calc.prof')
 
 
 if __name__ == "__main__":
