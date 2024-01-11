@@ -79,17 +79,17 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
         arrays_path_hpf = [arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'hpf.txt' for MF_in in range(-4, 4+1, 2)]
         arrays_path_cold_higher = [arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_4_{MF_in}_1_1' / probabilities_dir_name / 'cold_higher.txt' for MF_in in range(-4, 4+1, 2)]
         arrays_hpf = np.array([np.loadtxt(path) for path in arrays_path_hpf]).transpose()
-        arrays_hpf = np.array([np.loadtxt(path) for path in arrays_path_cold_higher]).transpose()
+        arrays_cold_higher = np.array([np.loadtxt(path) for path in arrays_path_cold_higher]).transpose()
     else:
         arrays_path_hpf = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
         arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'
+        arrays_hpf = np.loadtxt(arrays_path_hpf)
+        arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
 
     SE_arrays_path_hpf = arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probabilities_dir_name / 'hpf.txt'
     SE_arrays_path_cold_higher = arrays_dir_path / barplot_SE_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / probabilities_dir_name / 'cold_higher.txt'
 
-    arrays_hpf = np.loadtxt(arrays_path_hpf)
     SE_arrays_hpf = np.loadtxt(SE_arrays_path_hpf)
-    arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
     SE_arrays_cold_higher = np.loadtxt(SE_arrays_path_cold_higher)
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
