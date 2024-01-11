@@ -201,7 +201,8 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
 
     zipped_dir_path = arrays_dir_path.joinpath(pickle_path.relative_to(pickles_dir_path)).parent
     zip_path = zipped_dir_path.parent / (zipped_dir_path.name + '.zip')
-    shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
+    if zip_path.is_file():
+        shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
 
     for abbreviation, name, arg in zip(*map(reversed, (abbreviations, names, args) ) ) :
         t = time.perf_counter()
