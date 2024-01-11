@@ -101,6 +101,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     theory_cold_higher = arrays_cold_higher[T_index,:]
     theory_SE_cold_higher = SE_arrays_cold_higher[T_index,:]
 
+    print(f'{plot_temperature=}')
+    print(f'{theory_hpf=}')
+    print(f'{theory_SE_hpf=}')
+
     experiment_std_path_hpf = Path(__file__).parents[1] / 'data' / 'exp_data' / 'single_ion_hpf.dat'
     experiment_std_path_cold_higher = Path(__file__).parents[1] / 'data' / 'exp_data' / 'single_ion_cold_higher.dat'
     experiment_hpf = np.loadtxt(experiment_std_path_hpf)[0]
@@ -228,7 +232,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd[:,T_index]], 0, -1)
-    print(f'{theory=}')
+    # print(f'{theory=}')
 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
