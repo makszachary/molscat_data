@@ -102,6 +102,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     theory_SE_cold_higher = SE_arrays_cold_higher[T_index,:]
 
     print(f'{plot_temperature=}')
+    print(f'{arrays_path_hpf=}')
     print(f'{theory_hpf=}')
     print(f'{theory_SE_hpf=}')
 
