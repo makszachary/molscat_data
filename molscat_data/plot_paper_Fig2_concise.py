@@ -294,9 +294,9 @@ def main():
     parser.add_argument("--logT_min", type = float, default = -4)
     parser.add_argument("--logT_max", type = float, default = -3)
 
-    parser.add_argument("--barplot_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_0.01_step', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--barplot_SE_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_0.01_step_SE', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--vs_mass_even_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_vs_mass', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--barplot_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--barplot_SE_input_dir_name", type = str, default = 'RbSr+_fmf_vs_DPhi_SE', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--vs_mass_even_input_dir_name", type = str, default = 'RbSr+_tcpld_vs_mass', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--vs_mass_odd_input_dir_name", type = str, default = 'RbSr+_tcpld_vs_mass_odd', help = "Name of the directory with the molscat inputs")
 
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
