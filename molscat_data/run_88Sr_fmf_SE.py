@@ -347,7 +347,7 @@ def main():
     if args.calc:
         t0 = time.perf_counter()
         pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for singlet_phase, triplet_phase in phases)
-        transfer_pickle_paths = tuple( pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle'  for singlet_phase, triplet_phase in phases)
+        transfer_pickle_paths = tuple( pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1.pickle'  for singlet_phase, triplet_phase in phases)
         [calculate_and_save_k_L_E_and_peff_parallel_SE(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phase, temperatures) for pickle_path, transfer_pickle_path, phase in zip(pickle_paths, transfer_pickle_paths, phases, strict = True)]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
