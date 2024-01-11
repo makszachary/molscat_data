@@ -340,7 +340,6 @@ def main():
         for singlet_phase, triplet_phase in phases:
             output_dir = scratch_path / 'molscat' / 'outputs' / args.input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
             s_matrix_collection, duration, output_dir, pickle_path = collect_and_pickle( output_dir, singlet_phase, triplet_phase, None, energy_tuple)
-            pickle_paths.append(pickle_path)
             print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
             transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}'
             _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
