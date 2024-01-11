@@ -271,6 +271,7 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_difference", type = float, default = None, help = "The singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+    parser.add_argument("--so_scaling", type = float, default = 0.325, help = "Value of the SO scaling.")
     parser.add_argument("--mass_min", type = float, default = 42.48, help = "Minimum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--mass_max", type = float, default = 43.8, help = "Maximum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--dmass", type = float, default = 0.04, help = "Mass step (in a.m.u.).")
@@ -313,7 +314,7 @@ def main():
     singlet_phase = args.singlet_phase
     triplet_phase = args.triplet_phase
 
-    so_scaling_value = 0.375
+    so_scaling_value = args.so_scaling
 
     # reduced_masses = np.linspace(args.mass_min, args.mass_max, args.nmasses)
     reduced_masses = np.arange(args.mass_min, args.mass_max+0.5*args.dmass, args.dmass)
