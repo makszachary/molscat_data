@@ -280,6 +280,7 @@ def main():
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The triplet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The step of the phase difference in multiples of pi.")
+    parser.add_argument("--phase_difference", type = float, default = None, help = "The step of the phase difference in multiples of pi.")
     parser.add_argument("--F_in", type = int, default = 4)
     parser.add_argument("--MF_in", type = int, default = -4)
     parser.add_argument("--S_in", type = int, default = 1)
