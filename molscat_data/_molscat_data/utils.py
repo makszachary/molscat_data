@@ -41,6 +41,7 @@ def rate_fmfsms_vs_L(s_matrix_collection: SMatrixCollection, F_out: int, MF_out:
     args.pop('unit')
     t0 = time.perf_counter()
     L_max = max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())
+    print(f'{L_max = }')
     print(f"Starting  the calculations for a single combination of quantum numbers ({args}).", flush = True)
     shp = s_matrix_collection.getRateCoefficient(qn.LF1F2(L = 0, ML = 0 + MF_in + MS_in - MF_out - MS_out, F1 = F_out, MF1 = MF_out, F2 = S_out, MF2 = MS_out), qn.LF1F2(L = 0, ML = 0, F1 = F_in, MF1 = MF_in, F2 = S_in, MF2 = MS_in), unit = unit, param_indices = param_indices).shape
     try:
