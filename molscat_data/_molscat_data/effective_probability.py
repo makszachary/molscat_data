@@ -42,12 +42,10 @@ def p0(p_eff: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), fl
 
 def main():
 
-    pmf_path = Path(__file__).parents[2].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
+    pmf_path = Path(__file__).parent / 'N_pdf_logic_params_EMM_500uK.txt'
     pmf_array = np.loadtxt(pmf_path)
     prob0 = np.arange(0, 1.01, 0.1)
     print(f"p0 = {prob0} --> p_eff = {effective_probability(prob0, pmf_array)}")
-    # print(len(np.array(0.2)))
-    print(p0((1e-14,1e-13, 1e-12,), pmf_array = pmf_array))
     
 
 if __name__ == '__main__':
