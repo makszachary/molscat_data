@@ -105,7 +105,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
             molscat_input.truncate()
 
     molscat_command = f"{molscat_executable_path} < {molscat_input_path} > {molscat_output_path}"
-    print(f"{molscat_input_path.name} run\nwith the spin-orbit scaling: {so_scaling:.4f}")
+    print(f"{molscat_input_path.name}, {MTOT = } run\nwith the spin-orbit scaling: {so_scaling:.4f}")
     subprocess.run(molscat_command, shell = True)
 
     duration = time.perf_counter()-time_0
