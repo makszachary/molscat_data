@@ -185,6 +185,9 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
 
     duration = time.perf_counter()-time_0
 
+    shutil.make_archive(molscat_output_directory_path, 'zip', molscat_output_directory_path)
+    shutil.rmtree(molscat_output_directory_path, ignore_errors=True)
+
     return s_matrix_collection, duration, molscat_output_directory_path, pickle_path
 
 
