@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
+import sys
 import time
+import multiprocessing
 from multiprocessing import Pool
 import subprocess
 import shutil
@@ -111,7 +113,7 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
     return duration, molscat_input_path, molscat_output_path
 
 
-def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, MTOT_splitting = False) -> set:
+def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, MTOT_splitting = False, pc = False) -> set:
     t0 = time.perf_counter()
     output_dirs = []
     spin_orbit_included = True
@@ -124,14 +126,27 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         MTOT_values = range(MTOT_min, MTOT_max+1, 2)
     else:
         MTOT_values = (None,)
+
+    if sys.platform == 'win32' or pc:
+        ncores = multiprocessing.cpu_count()
+    else:
+        try:
+            ncores = int(os.environ['SLURM_NTASKS_PER_NODE'])
+        except KeyError:
+            ncores = 1
+        try:
+            ncores *= int(os.environ['SLURM_CPUS_PER_TASK'])
+        except KeyError:
+            ncores *= 1
+
     with Pool() as pool:
-       
-       arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, MTOT, spin_orbit_included) for x, so_scaling_value, MTOT in itertools.product( molscat_input_templates, so_scaling_values, MTOT_values) )
-       results = pool.starmap(create_and_run, arguments)
-    
-       for duration, input_path, output_path in results:
-           output_dirs.append( output_path.parent )
-           print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
+        arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, MTOT, spin_orbit_included) for x, so_scaling_value, MTOT in itertools.product( molscat_input_templates, so_scaling_values, MTOT_values) )
+        print(f'{ncores=}')
+        print(f'Number of molscat calculations to run = {len(arguments)}.')
+        results = pool.starmap(create_and_run, arguments)
+        for duration, input_path, output_path in results:
+            output_dirs.append( output_path.parent )
+            print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
     t1 = time.perf_counter()
     print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
 
