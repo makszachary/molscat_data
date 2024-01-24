@@ -139,7 +139,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         except KeyError:
             ncores *= 1
 
-    with Pool() as pool:
+    with Pool(ncores) as pool:
         arguments = tuple( (x, singlet_phase, triplet_phase, so_scaling_value, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, L_max, MTOT, spin_orbit_included) for x, so_scaling_value, MTOT in itertools.product( molscat_input_templates, so_scaling_values, MTOT_values) )
         print(f'{ncores=}')
         print(f'Number of molscat calculations to run = {len(arguments)}.')
