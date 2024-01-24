@@ -109,12 +109,12 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     duration = time.perf_counter()-time_0
     
-    return duration, molscat_input_path, molscat_output_path
+    return duration, molscat_input_path, scaled_so_path, molscat_output_path
 
 
 def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, MTOT_splitting = False, pc = False) -> set:
     t0 = time.perf_counter()
-    output_dirs = []
+    input_dirs, scaled_so_dirs, output_dirs = [], [], []
     spin_orbit_included = True
     if so_scaling_values == None:
         so_scaling_values = (0.0,)
@@ -143,9 +143,17 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         print(f'{ncores=}')
         print(f'Number of molscat calculations to run = {len(arguments)}.')
         results = pool.starmap(create_and_run, arguments)
-        for duration, input_path, output_path in results:
+        for duration, input_path, scaled_so_path, output_path in results:
+            input_dirs.append( input_path.parent )
+            scaled_so_dirs.append( scaled_so_path )
             output_dirs.append( output_path.parent )
             print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
+    
+    for dir_path in [*input_dirs, *scaled_so_dirs, *output_dirs]:
+        # zip_path = dir_path.parent / (dir_path.name + '.zip')
+        shutil.make_archive(dir_path, 'zip', dir_path)
+        shutil.rmtree(dir_path, ignore_errors=True)
+
     t1 = time.perf_counter()
     print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
 
@@ -155,6 +163,12 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
 def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase, triplet_phase, spinOrbitParameter: float | tuple[float, ...], energy_tuple: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
     time_0 = time.perf_counter()
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
+
+    if not molscat_output_directory_path.is_dir():
+        molscat_output_directory_path.mkdir(parents=True,)
+    zip_path = molscat_output_directory_path.parent / (molscat_output_directory_path.name + '.zip')
+    if zip_path.is_file():        
+        shutil.unpack_archive(zip_path, molscat_output_directory_path, 'zip')
 
     singlet_parameter = default_singlet_parameter_from_phase(singlet_phase)
     triplet_parameter = default_triplet_parameter_from_phase(triplet_phase)
