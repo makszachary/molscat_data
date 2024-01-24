@@ -47,7 +47,6 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, MTOT = None, spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
 
-    # L_max = 2*29
     if MTOT is None:
         MTOT_min = MS_in+MF_in-L_max
         MTOT_max = MS_in+MF_in+L_max
@@ -65,8 +64,8 @@ def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float
 
     molscat_executable_path = Path.home().joinpath('molscat-RKHS-tcpld', 'molscat-exe', 'molscat-alk_alk-RKHS')
     molscat_input_templates_dir_path = Path(__file__).parents[1].joinpath('molscat', 'input_templates')
-    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}_MTOT_{MTOT}', molscat_input_template_path.stem).with_suffix('.input')
-    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}_MTOT_{MTOT}', molscat_input_template_path.stem).with_suffix('.output')
+    molscat_input_path = scratch_path.joinpath('molscat', 'inputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', f'{molscat_input_template_path.stem}_MTOT_{MTOT}').with_suffix('.input')
+    molscat_output_path  = scratch_path.joinpath('molscat', 'outputs', molscat_input_template_path.parent.relative_to(molscat_input_templates_dir_path), f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E', f'{singlet_phase:.4f}_{triplet_phase:.4f}', f'{so_scaling:.4f}', f'in_{F_in}_{MF_in}_{S_in}_{MS_in}', f'{molscat_input_template_path.stem}_MTOT_{MTOT}').with_suffix('.output')
     molscat_input_path.parent.mkdir(parents = True, exist_ok = True)
     molscat_output_path.parent.mkdir(parents = True, exist_ok = True)
     
