@@ -153,7 +153,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         zip_path = dir_path.parent / (dir_path.name + '.zip')
         shutil.make_archive(dir_path, 'zip', dir_path)
         ## problematic line below!!!!!!!!!!!!!!!!!!!!!!!!
-        shutil.rmtree(dir_path)
+        # shutil.rmtree(dir_path)
 
     t1 = time.perf_counter()
     print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
