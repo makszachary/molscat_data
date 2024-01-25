@@ -48,14 +48,15 @@ def _zip(fulldname, delete_after=False):
     shutil.make_archive(fulldname, 'zip', fulldname)
     if not delete_after:
         return
-    if fulldname.is_dir():
-        for root, dirs, files in os.walk(fulldname, topdown=False):
-            for file in files:
-                file_path = os.path.join(root, file)
-                os.remove(file_path)
-            for dir in dirs:
-                dir_path = os.path.join(root, dir)
-                os.rmdir(dir_path)
+    if fulldname.suffix.endswith('zip'):
+        return
+    for root, dirs, files in os.walk(fulldname, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.rmdir(dir_path)
 
 def create_and_run(molscat_input_template_path: Path | str, singlet_phase: float, triplet_phase: float, so_scaling: float, magnetic_field: float, F_in: int, MF_in: int, S_in: int, MS_in: int, energy_tuple: tuple[float, ...], L_max: int = 2*29, MTOT = None, spin_orbit_included = True) -> tuple[float, float, float]:
     time_0 = time.perf_counter()
