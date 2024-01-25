@@ -163,7 +163,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
             output_dirs.append( output_path.parent )
             print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
     
-    for dir_path in [*input_dirs, *scaled_so_dirs, *output_dirs]:
+    for dir_path in np.unique([*input_dirs, *scaled_so_dirs, *output_dirs]):
         print(dir_path)
         # _zip(dir_path, delete_after = True)
         zip_name = dir_path.name + '_ARCHIVE'
