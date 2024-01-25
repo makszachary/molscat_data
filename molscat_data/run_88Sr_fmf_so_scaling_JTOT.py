@@ -165,7 +165,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
     
     for dir_path in [*input_dirs, *scaled_so_dirs, *output_dirs]:
         # _zip(dir_path, delete_after = True)
-        zip_name = dir_path.name + 'ARCHIVE'
+        zip_name = dir_path.name + '_ARCHIVE'
         zip_path = dir_path.parent / zip_name
         # zip_path = dir_path.parent / (zip_name + '.zip')
         shutil.make_archive(zip_path, 'zip', dir_path)
