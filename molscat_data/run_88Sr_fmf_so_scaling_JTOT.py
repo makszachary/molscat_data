@@ -150,10 +150,10 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
             print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
     
     for dir_path in [*input_dirs, *scaled_so_dirs, *output_dirs]:
-        # zip_path = dir_path.parent / (dir_path.name + '.zip')
+        zip_path = dir_path.parent / (dir_path.name + '.zip')
         shutil.make_archive(dir_path, 'zip', dir_path)
         ## problematic line below!!!!!!!!!!!!!!!!!!!!!!!!
-        #dsaadsasdasd shutil.rmtree(dir_path, ignore_errors=True)
+        shutil.rmtree(dir_path, ignore_errors=True)
 
     t1 = time.perf_counter()
     print(f"The time of the calculations in molscat was {t1 - t0:.2f} s.")
