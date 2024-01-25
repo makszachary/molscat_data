@@ -159,7 +159,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         results = pool.starmap(create_and_run, arguments)
         for duration, input_path, scaled_so_path, output_path in results:
             input_dirs.append( input_path.parent )
-            scaled_so_dirs.append( scaled_so_path )
+            scaled_so_dirs.append( scaled_so_path.parent )
             output_dirs.append( output_path.parent )
             print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
     
@@ -169,7 +169,7 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
         zip_name = dir_path.name + '_ARCHIVE'
         zip_path = dir_path.parent / zip_name
         # zip_path = dir_path.parent / (zip_name + '.zip')
-        shutil.make_archive(zip_path, 'zip', dir_path)
+        shutil.make_archive(dir_path, 'zip', dir_path)
         ## problematic line below!!!!!!!!!!!!!!!!!!!!!!!!
         shutil.rmtree(dir_path,)
 
