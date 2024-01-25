@@ -150,8 +150,9 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
             print(f"It took {duration:.2f} s to create the molscat input: {input_path}, run molscat and generate the output: {output_path}.")
     
     for dir_path in [*input_dirs, *scaled_so_dirs, *output_dirs]:
-        zip_path = dir_path.parent / (dir_path.name + '.zip')
-        shutil.make_archive(dir_path, 'zip', dir_path)
+        _zip(dir_path, delete_after = True)
+        # zip_path = dir_path.parent / (dir_path.name + '.zip')
+        # shutil.make_archive(dir_path, 'zip', dir_path)
         ## problematic line below!!!!!!!!!!!!!!!!!!!!!!!!
         # shutil.rmtree(dir_path)
 
@@ -160,6 +161,17 @@ def create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phas
 
     return np.unique(output_dirs)
 
+def _zip(fulldname, delete_after=False):
+    shutil.make_archive(fulldname, 'zip', fulldname)
+    if not delete_after:
+        return
+    for root, dirs, files in os.walk(fulldname, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.rmdir(dir_path)
 
 def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase, triplet_phase, spinOrbitParameter: float | tuple[float, ...], energy_tuple: tuple[float, ...] ) -> tuple[SMatrixCollection, float, Path, Path]:
     time_0 = time.perf_counter()
