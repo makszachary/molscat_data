@@ -389,7 +389,7 @@ def main():
 
 
     if args.molscat_transfer:
-        _ = [ create_and_run(input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, 2*149, (4+1)) for input_template in molscat_transfer_input_templates ]
+        _ = [ create_and_run(input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149, (4+1)) for input_template in molscat_transfer_input_templates ]
         # _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
