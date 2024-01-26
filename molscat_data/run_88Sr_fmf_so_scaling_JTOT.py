@@ -330,7 +330,7 @@ def main():
     parser.add_argument("--MF_in", type = int, default = 4)
     parser.add_argument("--S_in", type = int, default = 1)
     parser.add_argument("--MS_in", type = int, default = 1)
-    parser.add_argument("--B", type = float, default = 2.97, help = "Magnetic field.")
+    parser.add_argument("--B",  type = float, default = 2.97, help = "Magnetic field.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
@@ -389,7 +389,8 @@ def main():
 
 
     if args.molscat_transfer:
-        _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
+        _ = [ create_and_run(input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, 2*149, (4+1)) for input_template in molscat_transfer_input_templates ]
+        # _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
     # pickle_paths = []
