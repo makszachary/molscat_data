@@ -347,6 +347,7 @@ def main():
     parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
     parser.add_argument("--calc", action = 'store_true', help = "Include calculating probabilities from pickle.")
     parser.add_argument("--MTOT_splitting", action = 'store_true', help = "If enabled, the calculations in molscat are splitted into separate runs for all MTOT values.")
+    parser.add_argument("--MTOT", type = int, default = None, help = "If defined, the calculations in molscat (but not molscat_transfer) are done for only one value of (doubled) MTOT.")    
     args = parser.parse_args()
 
 
@@ -378,7 +379,15 @@ def main():
 
     # ### RUN MOLSCAT ###
     if args.molscat:
-        output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT_splitting)
+        if args.MTOT is None:
+            output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT_splitting)
+        else:
+            _results = [ create_and_run(input_template, singlet_phase, triplet_phase, so_scaling, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT) for input_template, so_scaling in itertools.product( molscat_input_templates, so_scaling_values) ]
+            for duration, molscat_input_path, scaled_so_path, molscat_output_path in _results:
+                os.remove(molscat_input_path)
+                os.remove(scaled_so_path)
+
+
     if args.molscat_transfer:
         _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
