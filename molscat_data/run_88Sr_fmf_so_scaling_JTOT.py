@@ -408,7 +408,7 @@ def main():
             print(f"The time of gathering the outputs from {output_dir} into SMatrix object and pickling SMatrix into the file: {pickle_path} was {duration:.2f} s.")
         # pickle_paths = np.unique(pickle_paths)
 
-        transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1'
+        transfer_output_dir = scratch_path / 'molscat' / 'outputs' / args.transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{transfer_nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1'
         _, duration, output_dir, transfer_pickle_path = collect_and_pickle( transfer_output_dir, singlet_phase, triplet_phase, None, energy_tuple, )
         print(f"The time of gathering the outputs from {transfer_output_dir} into SMatrix object and pickling SMatrix into the file: {transfer_pickle_path} was {duration:.2f} s.")
 
