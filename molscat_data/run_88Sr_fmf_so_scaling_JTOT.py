@@ -353,6 +353,7 @@ def main():
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
+    transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, 200-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
     args.singlet_phase = args.singlet_phase % 1. if args.singlet_phase is not None else default_singlet_phase_function(1.0)
     args.triplet_phase = args.triplet_phase % 1. if args.triplet_phase is not None else (args.singlet_phase + args.phase_difference) % 1 if args.phase_difference is not None else default_triplet_phase_function(1.0)
@@ -389,7 +390,7 @@ def main():
 
 
     if args.molscat_transfer:
-        _ = [ create_and_run(input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149, 5) for input_template in molscat_transfer_input_templates ]
+        _ = [ create_and_run(transfer_input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, transfer_energy_tuple, 2*149, 5) for transfer_input_template in molscat_transfer_input_templates ]
         # _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
