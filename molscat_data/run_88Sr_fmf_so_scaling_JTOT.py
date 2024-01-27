@@ -354,7 +354,8 @@ def main():
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-    transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, 200-1, n = n), sigfigs = 11) for i in range(nenergies) )
+    transfer_nenergies = 200
+    transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, transfer_nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
     print(f'{len(transfer_energy_tuple)=}')
     print(f'{transfer_energy_tuple=}')
 
@@ -413,7 +414,7 @@ def main():
     if args.calc:
         t0 = time.perf_counter()
         pickle_paths = tuple( pickles_dir_path / args.input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling_value:.4f}' / f'in_{F_in}_{MF_in}_{S_in}_{MS_in}.pickle' for so_scaling_value in so_scaling_values)
-        transfer_pickle_path = pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1.pickle'
+        transfer_pickle_path = pickles_dir_path / args.transfer_input_dir_name /f'{E_min:.2e}_{E_max:.2e}_{transfer_nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1.pickle'
         [calculate_and_save_k_L_E_and_peff_parallel(pickle_path, transfer_pickle_path, F_in, MF_in, S_in, MS_in, phases[0], 4, temperatures) for pickle_path in pickle_paths]
         print(f'The time of calculating all the probabilities for all singlet, triplet phases was {time.perf_counter()-t0:.2f} s.')
 
