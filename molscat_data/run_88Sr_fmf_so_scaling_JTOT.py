@@ -283,10 +283,11 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
             np.savetxt(k_m_L_E_txt_path, momentum_transfer_rate.squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}. The magnetic field: {magnetic_field:.2f} G.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+        transfer_distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(transfer_s_matrix_collection.collisionEnergy), E_max = max(transfer_s_matrix_collection.collisionEnergy), N = len(transfer_s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         # in this script, momentum_transfer_rate is calculated within the script, not k_L_E_parallel function, and has shape (L_max, nenergies)
         momentum_transfer_rate_array = np.full((*arg[2].shape, *momentum_transfer_rate.shape), momentum_transfer_rate)
-        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
         output_state_resolved_probability_arrays = probability_arrays.squeeze()
         probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
