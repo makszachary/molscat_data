@@ -355,7 +355,7 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
     transfer_nenergies = 200
-    transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, transfer_nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
+    transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, transfer_nenergies-1, n = n), sigfigs = 11) for i in range(transfer_nenergies) )
     print(f'{len(transfer_energy_tuple)=}', flush = True)
     print(f'{transfer_energy_tuple=}', flush = True)
 
