@@ -223,9 +223,10 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     pmf_path = Path(__file__).parents[1].joinpath('data', 'pmf', 'N_pdf_logic_params_EMM_500uK.txt')
     pmf_array = np.loadtxt(pmf_path)
 
-    param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
-
-    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = param_indices)
+    param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None    
+    
+    transfer_param_indices = { "singletParameter": (transfer_s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (transfer_s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
+    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = transfer_param_indices)
 
     if F_in == 4:
         F_out, S_out = 2, S_in
@@ -389,15 +390,14 @@ def main():
             output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT_splitting)
         else:
             _results = [ create_and_run(input_template, singlet_phase, triplet_phase, so_scaling, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT) for input_template, so_scaling in itertools.product( molscat_input_templates, so_scaling_values) ]
-            for duration, molscat_input_path, scaled_so_path, molscat_output_path in _results: 
+            for duration, molscat_input_path, scaled_so_path, molscat_output_path in _results:
                 os.remove(molscat_input_path)
                 os.remove(scaled_so_path)
 
 
     if args.molscat_transfer:
         for transfer_input_template in molscat_transfer_input_templates:
-            duration, _, __, ___ = create_and_run(transfer_input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, transfer_energy_tuple, 2*199, 5)
-            print(f"It took {duration:.2f} s to create the molscat input: {_}, run molscat and generate the output: {___}.")
+            create_and_run(transfer_input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, transfer_energy_tuple, 2*149, 5)
         # _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
