@@ -325,7 +325,9 @@ class SMatrix:
         cross_section = np.fromiter((2*L+2 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1])**2 - np.fromiter((2*L+4 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1]) * np.sin(phase_shift[1:]) * np.cos(phase_shift[:-1] - phase_shift[1:])
         cross_section *= 2*np.pi/(2*self.reducedMass*(self.collisionEnergy/Hartree_to_K))
         cross_section *= (1+self.identical)
-        
+        print(f'{L_max = }', flush = True)
+        print(f'{phase_shift = }', flush = True)
+        print(f'{cross_section = }', flush = True)
         return cross_section
 
     def getMomentumTransferCrossSection(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
