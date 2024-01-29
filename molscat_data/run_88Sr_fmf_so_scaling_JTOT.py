@@ -226,7 +226,8 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None    
     
     transfer_param_indices = { "singletParameter": (transfer_s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (transfer_s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
-    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = transfer_param_indices).swapaxes(0,-1)
+    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 1, MF2 = 1), unit = 'cm**3/s', param_indices = transfer_param_indices)
+    momentum_transfer_rate = np.moveaxis(momentum_transfer_rate, -1, 0)
 
     if F_in == 4:
         F_out, S_out = 2, S_in
