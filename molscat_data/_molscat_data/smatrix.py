@@ -422,6 +422,7 @@ class SMatrix:
                 raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
 
         print(f'{rate_coefficient = }', flush = True)
+        print(f'{rate_coefficient.shape = }', flush = True)
         return rate_coefficient
 
     def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
@@ -1032,7 +1033,8 @@ class SMatrixCollection:
 
         param_indices = self.getParamIndicesAsArray(**kwargs)
         rate_coefficient_array = np.array( [ self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficientVsL(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices ) ] ).reshape( -1, *(len(index_tuple) for index_tuple in param_indices)  )
-        print(f'{rate_coefficient_array = }')
+        print(f'{rate_coefficient_array = }', flush = True)
+        print(f'{rate_coefficient_array.shape = }', flush = True)
         return rate_coefficient_array
 
 
