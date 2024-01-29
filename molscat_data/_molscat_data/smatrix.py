@@ -421,7 +421,7 @@ class SMatrix:
             case _:
                 raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
 
-        print(f'{rate_coefficient_array = }', flush = True)
+        print(f'{rate_coefficient = }', flush = True)
         return rate_coefficient
 
     def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
