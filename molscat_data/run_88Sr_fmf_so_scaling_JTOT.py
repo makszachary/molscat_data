@@ -389,14 +389,14 @@ def main():
             output_dirs = create_and_run_parallel(molscat_input_templates, singlet_phase, triplet_phase, so_scaling_values, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT_splitting)
         else:
             _results = [ create_and_run(input_template, singlet_phase, triplet_phase, so_scaling, magnetic_field, F_in, MF_in, S_in, MS_in, energy_tuple, args.L_max, args.MTOT) for input_template, so_scaling in itertools.product( molscat_input_templates, so_scaling_values) ]
-            for duration, molscat_input_path, scaled_so_path, molscat_output_path in _results:
+            for duration, molscat_input_path, scaled_so_path, molscat_output_path in _results: 
                 os.remove(molscat_input_path)
                 os.remove(scaled_so_path)
 
 
     if args.molscat_transfer:
         for transfer_input_template in molscat_transfer_input_templates:
-            create_and_run(transfer_input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, transfer_energy_tuple, 2*149, 5)
+            create_and_run(transfer_input_template, singlet_phase, triplet_phase, 0.0, magnetic_field, 4, 4, 1, 1, transfer_energy_tuple, 2*249, 5)
         # _ = create_and_run_parallel(molscat_transfer_input_templates, singlet_phase, triplet_phase, (0.0,), magnetic_field, 4, 4, 1, 1, energy_tuple, 2*149)
 
     ### COLLECT S-MATRIX AND PICKLE IT ####
