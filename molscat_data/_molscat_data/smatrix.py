@@ -325,9 +325,6 @@ class SMatrix:
         cross_section = np.fromiter((2*L+2 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1])**2 - np.fromiter((2*L+4 for L in range(0, L_max, 2)), float) * np.sin(phase_shift[:-1]) * np.sin(phase_shift[1:]) * np.cos(phase_shift[:-1] - phase_shift[1:])
         cross_section *= 2*np.pi/(2*self.reducedMass*(self.collisionEnergy/Hartree_to_K))
         cross_section *= (1+self.identical)
-        print(f'{L_max = }', flush = True)
-        print(f'{phase_shift = }', flush = True)
-        print(f'{cross_section = }', flush = True)
         return cross_section
 
     def getMomentumTransferCrossSection(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None) -> float:
@@ -421,8 +418,6 @@ class SMatrix:
             case _:
                 raise ValueError(f"The possible values of unit are: 'cm**3/s', 'a.u.', None (default), {unit=} matching none of these.")
 
-        print(f'{rate_coefficient = }', flush = True)
-        print(f'{rate_coefficient.shape = }', flush = True)
         return rate_coefficient
 
     def getMomentumTransferRateCoefficient(self, qn_in: tuple | qn.LF1F2 | qn.LF12 | qn.Tcpld, basis: str = None, unit : str = None) -> float:
@@ -750,7 +745,6 @@ class SMatrixCollection:
                                               if MF_pair[0] in range(-(I1+S1), I1+S1+1, 2)
                                                if MF_pair[1] in range(-(I2+S2), I2+S2+1, 2) )
                         # get the possible channels (matching the pair energy and extra operator values)
-                        #if MT == 5: print(thresholds)
                         possible_channels = tuple( qn.LF1F2(L, _ML, F1, MF_pair[0], F2, MF_pair[1])
                                                     for MF_pair in possible_MF_pairs
                                                         for F1 in range(abs(I1-S1), I1+S1+1, 2)
@@ -1010,7 +1004,6 @@ class SMatrixCollection:
 
         param_indices = self.getParamIndicesAsArray(**kwargs)
         rate_coefficient_array = np.fromiter( ( self.matrixCollection[CollectionParametersIndices(*indices_combination)].getRateCoefficient(qn_out, qn_in, unit = unit) for indices_combination in itertools.product( *param_indices )), dtype = float).reshape( *(len(index_tuple) for index_tuple in param_indices) )
-        # print(f'{qn_in=}, {qn_out=}', flush=True)
         return rate_coefficient_array
 
     def getMomentumTransferRateCoefficientVsL(self, qn_in: qn.LF1F2 | qn.LF12 | qn.Tcpld, unit = None, **kwargs) -> np.ndarray[Any, float]:
@@ -1034,8 +1027,6 @@ class SMatrixCollection:
         param_indices = self.getParamIndicesAsArray(**kwargs)
         rate_coefficient_array = np.array( [ self.matrixCollection[CollectionParametersIndices(*indices_combination)].getMomentumTransferRateCoefficientVsL(qn_in, unit = unit) for indices_combination in itertools.product( *param_indices ) ] )
         rate_coefficient_array = rate_coefficient_array.reshape( *(len(index_tuple) for index_tuple in param_indices), rate_coefficient_array.shape[-1] )
-        print(f'{rate_coefficient_array = }', flush = True)
-        print(f'{rate_coefficient_array.shape = }', flush = True)
         return rate_coefficient_array
 
 
