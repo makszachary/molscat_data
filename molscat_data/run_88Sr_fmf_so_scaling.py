@@ -336,6 +336,7 @@ def main():
     parser.add_argument("--MS_in", type = int, default = 1)
     parser.add_argument("--B",  type = float, default = 2.97, help = "Magnetic field.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
+    parser.add_argument("--transfer_nenergies", type = int, default = 200, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
@@ -357,7 +358,7 @@ def main():
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
-    transfer_nenergies = 200
+    transfer_nenergies = args.transfer_nenergies
     transfer_energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, transfer_nenergies-1, n = n), sigfigs = 11) for i in range(transfer_nenergies) )
     # print(f'{len(transfer_energy_tuple)=}', flush = True)
     # print(f'{transfer_energy_tuple=}', flush = True)
