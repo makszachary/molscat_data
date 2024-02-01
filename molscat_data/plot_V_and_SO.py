@@ -144,7 +144,7 @@ def main():
     if args.scaling:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
         plot_scaling(path = args.input, xrange = [6,30], yrange = [-0.03, 0.005], impath = args.output, show = args.show)
-    elif Path(args.input).is_file() and not Path(args.output).is_dir:
+    elif Path(args.input).is_file() and not Path(args.output).is_dir():
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
         plot_potentials(file_path = args.input, impath = args.output, show = args.show)
     elif Path(args.input).is_dir():
