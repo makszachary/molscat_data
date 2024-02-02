@@ -184,7 +184,7 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
     PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
     ax.set_xlabel(f'$\\Delta\\Phi$')
-    ax.set_ylabel(f'$p_\\mathrm{{0}}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
+    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
     ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 4)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
@@ -230,7 +230,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.2f}$')
     PhaseTicks.linearStr(ax.yaxis, 0.02, 0.01, '${x:.2f}$')
     
-    ax.set_ylabel(f'$p_\\mathrm{{0}}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
+    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
     ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
     return ax
