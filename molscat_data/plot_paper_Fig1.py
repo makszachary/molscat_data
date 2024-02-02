@@ -223,7 +223,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
     ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, c = 'k', marker = 'o', linestyle = 'None', zorder = 2)
     ax.set_xlim(0.15, 0.48)
-    ax.set_ylim(0.01, 0.13)
+    ax.set_ylim(0.01, (0.04 if plot_p0 else 0.13))
     
     ax.tick_params(which='both', direction='in', top = True, right = True, length = 3)
     ax.tick_params(which='minor', length = 1.5)
