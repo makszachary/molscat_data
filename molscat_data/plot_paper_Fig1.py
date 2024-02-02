@@ -40,7 +40,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.ndarray[float], singlet_phase_distinguished: float, so_phases: tuple[float, float], so_scaling_values: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, DPhi_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', SO_input_dir_name = 'RbSr+_tcpld_so_scaling', journal_name = 'NatCommun', if_p0 = False):
+def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.ndarray[float], singlet_phase_distinguished: float, so_phases: tuple[float, float], so_scaling_values: np.ndarray[float], energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, DPhi_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', SO_input_dir_name = 'RbSr+_tcpld_so_scaling', journal_name = 'NatCommun', plot_p0 = False):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -72,7 +72,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     
     figs_axes[1].append(figs[1].add_subplot())
     _temp_so_scal = 0.0
-    figs_axes[1][0], _ax_chisq, log_str = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False, if_p0 = if_p0)
+    figs_axes[1][0], _ax_chisq, log_str = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False, plot_p0 = plot_p0)
     figs_axes[1].append(_ax_chisq)
 
 
@@ -81,7 +81,7 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     _energy_tuple = tuple( round(n_root_scale(i, 4e-7, 4e-3, 50-1, n = 3), sigfigs = 11) for i in range(nenergies) )
     _temperatures = list(np.logspace(-4, -3, 10))
     _temperatures.append(plot_temperature)
-    figs_axes[2][0] = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name, if_p0 = if_p0)
+    figs_axes[2][0] = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name, plot_p0 = plot_p0)
 
     figs_axes[0][0].text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[0][0].text(0.35, 1.0, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
@@ -104,15 +104,15 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     plt.close()
     
 
-def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False, if_p0 = False):
+def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False, plot_p0 = False):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
     probabilities_dir_name = 'probabilities_hybrid' if hybrid else 'probabilities'
 
-    array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / ('p0_hpf.txt' if if_p0 else 'hpf.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
-    array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / ('p0_cold_higher.txt' if if_p0 else 'cold_higher.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
+    array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / ('p0_hpf.txt' if plot_p0 else 'hpf.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
+    array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / ('p0_cold_higher.txt' if plot_p0 else 'cold_higher.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
     # [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
     if not np.loadtxt(array_paths_hot[0][0]).shape[-1] == len(temperatures):
         raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_hot[0][0]).shape[-1]=}")
@@ -139,8 +139,8 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
         arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(arrays_cold_higher_distinguished.shape[0], len(temperatures), -1).squeeze()
     
 
-    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_hpf.dat' if if_p0 else 'single_ion_hpf.dat') )
-    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_cold_higher.dat' if if_p0 else 'single_ion_cold_higher.dat') )
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_hpf.dat' if plot_p0 else 'single_ion_hpf.dat') )
+    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_cold_higher.dat' if plot_p0 else 'single_ion_cold_higher.dat') )
     experiment = np.array( [ exp_hot[0,0], exp_cold_higher[0,0] ] )
     std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
 
@@ -184,7 +184,7 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
     PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
 
     ax.set_xlabel(f'$\\Delta\\Phi$')
-    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
+    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
     ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 4)
     
     ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
@@ -192,18 +192,18 @@ For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for Delta
 
     return ax, ax_chisq, log_str
 
-def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling', if_p0 = False,):
+def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling', plot_p0 = False,):
     print('YS0')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
 
-    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / ('p0_hpf.txt' if if_p0 else 'hpf.txt') for so_scaling in so_scaling_values ]
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / ('p0_hpf.txt' if plot_p0 else 'hpf.txt') for so_scaling in so_scaling_values ]
     arrays_hot = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_hot ])
     arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:1], len(temperatures), -1)
   
 
-    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_hpf.dat' if if_p0 else 'single_ion_hpf.dat') )
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_hpf.dat' if plot_p0 else 'single_ion_hpf.dat') )
     # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_cold_higher.dat' if if_p0 else 'single_ion_cold_higher.dat') )
     experiment = np.array( [ exp_hot[0,4], ] )
     std = np.array( [ exp_hot[1,4], ] )
@@ -230,7 +230,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.2f}$')
     PhaseTicks.linearStr(ax.yaxis, 0.02, 0.01, '${x:.2f}$')
     
-    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if if_p0 else f'$p_\\mathrm{{eff}}$')
+    ax.set_ylabel(f'$p_\\mathrm{{0}}$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
     ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
     return ax
@@ -385,6 +385,7 @@ def main():
     parser.add_argument("--DPhi_input_dir_name", type = str, default = 'RbSr+_fmf_vs_DPhi_SE', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--SO_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
+    parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
     args = parser.parse_args()
 
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
@@ -406,7 +407,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
 
-    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal) for temperature in temperatures]
+    [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
