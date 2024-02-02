@@ -167,7 +167,7 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
 #     __ = [line.get_xydata().shape for line in ax_chisq.lines]
 #     print(_)
 #     print(__)
-    data = np.array([line.get_xydata() for line in ax_chisq.lines])
+    data = np.array([line.get_xydata() for line in ax_chisq.lines][:-1])
     # minindices = np.nanargmin(data[:,:,1])
     # xx_min = xx[minindices]
     chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
