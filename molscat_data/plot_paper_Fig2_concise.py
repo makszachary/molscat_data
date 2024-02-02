@@ -170,9 +170,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     # arrays_hpf = np.loadtxt(arrays_path_hpf)
     # arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
 
-    figs[1], _ax = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name, plot_p0 = plot_p0)
+    figs[1], _ax = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name,)
     figs_axes[1].append(_ax)
-    figs_axes[1][0].set_ylim(figs_axes[0][0].get_ylim())
+    # figs_axes[1][0].set_ylim(figs_axes[0][0].get_ylim())
 
     figs[0].subplots_adjust(left = 0.1, bottom = 0.15)
     figs[1].subplots_adjust(left = 0.1, bottom = 0.15)
@@ -186,7 +186,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     plt.close()
 
-def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd', plot_p0 = False):
+def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass', odd_input_dir_name: str = 'RbSr+_tcpld_vs_mass_odd'):
     ## (c) Effective probability of the hyperfine energy release vs reduced mass
     probabilities_dir_name = 'probabilities'
     
@@ -272,7 +272,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     # fig_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig_ax.transAxes, bbox = props)
 
-    ylabel = f'$p_\\mathrm{{eff}}^\\mathrm{{hpf}}$ (spin state averaged)'# if enhanced else f'$p_0$'
+    ylabel = f'$p_\\mathrm{{eff}}^\\mathrm{{hpf}}$ (state-averaged)'# if enhanced else f'$p_0$'
     fig_ax.set_ylabel(ylabel)
 
     fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
