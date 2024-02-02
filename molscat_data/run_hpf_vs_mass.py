@@ -360,6 +360,7 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_vs_mass', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_tcpld_momentum_transfer_vs_mass', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--molscat", action = 'store_true', help = "Include calculations in molscat.")
+    parser.add_argument("--molscat_transfer", action = 'store_true', help = "Include momentum-transfer calculations in molscat.")
     parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
     parser.add_argument("--calc", action = 'store_true', help = "Include calculating probabilities from pickle.")
     args = parser.parse_args()

@@ -253,7 +253,9 @@ def calculate_and_save_peff_parallel(pickle_path: Path | str, transfer_pickle_pa
 
     param_indices = { "singletParameter": (s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
 
-    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 10, MF2 = 10), unit = 'cm**3/s', param_indices = param_indices)
+    transfer_param_indices = { "singletParameter": (transfer_s_matrix_collection.singletParameter.index(default_singlet_parameter_from_phase(phases[0])),), "tripletParameter": (transfer_s_matrix_collection.tripletParameter.index( default_triplet_parameter_from_phase(phases[1]) ), ) } if phases is not None else None
+    momentum_transfer_rate = transfer_s_matrix_collection.getMomentumTransferRateCoefficientVsL(qn.LF1F2(None, None, F1 = 4, MF1 = 4, F2 = 10, MF2 = 10), unit = 'cm**3/s', param_indices = transfer_param_indices)
+    momentum_transfer_rate = np.moveaxis(momentum_transfer_rate, -1, 0)
 
     F_out, F_in, S_out, S_in = 2, 4, 10, 10
     MF_out, MS_out, MF_in, MS_in = np.meshgrid(np.arange(-F_out, F_out+1, 2), np.arange(-S_out, S_out+1, 2), np.arange(-F_in, F_in+1, 2), np.arange(-S_in, S_in+1, 2), indexing = 'ij')
@@ -295,10 +297,11 @@ def calculate_and_save_peff_parallel(pickle_path: Path | str, transfer_pickle_pa
         #     np.savetxt(k_m_E_txt_path, momentum_transfer_rate_array[index].squeeze(), fmt = '%.10e', header = f'The energy-dependent momentum-transfer rates calculated for the |F=2, MF=-2>|S=1, MS=-1> state for each partial wave.\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: {phases}. The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum change of L: +/-{dLMax}. Energy values:\n{list(s_matrix_collection.collisionEnergy)}')
 
         distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+        transfer_distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(transfer_s_matrix_collection.collisionEnergy), E_max = max(transfer_s_matrix_collection.collisionEnergy), N = len(transfer_s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
         average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
         # in this script, momentum_transfer_rate is calculated within the script, not k_L_E_parallel function, and has shape (L_max, nenergies)
         momentum_transfer_rate_array = np.full((*arg[2].shape, *momentum_transfer_rate.shape), momentum_transfer_rate)
-        average_momentum_transfer_arrays = np.array( [ s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), distribution_array) for distribution_array in distribution_arrays ] )
+        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(momentum_transfer_rate_array.sum(axis=len(arg[2].shape)), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
         probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
         output_state_resolved_probability_arrays = probability_arrays.squeeze()
         probability_arrays = probability_arrays.sum(axis = (1, 2)).squeeze()
@@ -308,14 +311,14 @@ def calculate_and_save_peff_parallel(pickle_path: Path | str, transfer_pickle_pa
         momentum_transfer_str = np.array2string(average_momentum_transfer_arrays.reshape(average_momentum_transfer_arrays.shape[0], -1)[:,0], formatter={'float_kind':lambda x: '%.4e' % x} )
 
         print("------------------------------------------------------------------------")
-        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The bare (output-state-resolved) probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., temperatures: {temperatures_str} K, the momentum-transfer rate: {momentum_transfer_str} cm**3/s, the maximum L for the momentum-transfer rates calculations: {transfer_l_max} are:')
         print(output_state_resolved_probability_arrays, '\n')
 
         print("------------------------------------------------------------------------")
-        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The bare probabilities p_0 of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., temperatures: {temperatures_str} K, the momentum-transfer rate: {momentum_transfer_str} cm**3/s, the maximum L for the momentum-transfer rates calculations: {transfer_l_max} are:')
         print(probability_arrays, '\n')
 
-        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=}, temperatures: {temperatures_str} K are:')
+        print(f'The effective probabilities p_eff of the {name} for {phases=}, {so_scaling=}, {reduced_mass_amu=} a.m.u., temperatures: {temperatures_str} K, the momentum-transfer rate: {momentum_transfer_str} cm**3/s, the maximum L for the momentum-transfer rates calculations: {transfer_l_max} are:')
         print(effective_probability_arrays)
         print("------------------------------------------------------------------------")
         
@@ -346,6 +349,7 @@ def main():
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_tcpld_vs_mass_odd', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--transfer_input_dir_name", type = str, default = 'RbSr+_tcpld_momentum_transfer_vs_mass_odd', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--molscat", action = 'store_true', help = "Include calculations in molscat.")
+    parser.add_argument("--molscat_transfer", action = 'store_true', help = "Include momentum-transfer calculations in molscat.")
     parser.add_argument("--pickle", action = 'store_true', help = "Include pickling of molscat output.")
     parser.add_argument("--calc", action = 'store_true', help = "Include calculating probabilities from pickle.")
     args = parser.parse_args()
@@ -382,6 +386,8 @@ def main():
     # ### RUN MOLSCAT ###
     if args.molscat:
         output_dirs = create_and_run_parallel(molscat_input_templates, reduced_masses, singlet_phase, triplet_phase, so_scaling_values, energy_tuple = energy_tuple, L_max = args.L_max)
+    
+    if args.molscat_transfer:
         _ = create_and_run_parallel(molscat_transfer_input_templates, reduced_masses, singlet_phase, triplet_phase, (0.0,), energy_tuple, 2*79,)
 
     ## COLLECT S-MATRIX AND PICKLE IT ####
