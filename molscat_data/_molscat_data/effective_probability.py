@@ -25,10 +25,13 @@ def _effective_probability_no_error(p0: float | np.ndarray[Any, float], pmf_arra
 
     return p_eff
 
-def p0(p_eff: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), float] = np.array([[1.0, 1.0]])) -> float | np.ndarray[Any, float]:
+def p0(p_eff: float | np.ndarray[Any, float], pmf_array: np.ndarray[(int, 2), float] = np.array([[1.0, 1.0]]), ignore_negative = False) -> float | np.ndarray[Any, float]:
 
     p_eff = np.array(p_eff)
     
+    if ignore_negative:
+        p_eff[p_eff < 0] = 0
+
     if np.any( (p_eff < 0) | (p_eff > 1)):
         raise ValueError("All values in the p_eff array should be between 0 and 1.")   
     

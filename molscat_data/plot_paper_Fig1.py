@@ -235,6 +235,137 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
 
     return ax
 
+def plotP0VsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False):
+    nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
+    singlet_phases, phase_differences = np.array(singlet_phases), np.array(phase_differences)
+    probabilities_dir_name = 'probabilities_hybrid' if hybrid else 'probabilities'
+
+    array_paths_hot = [ [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'p0_hpf.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences ] for singlet_phase in singlet_phases]
+    array_paths_cold_higher = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'p0_cold_higher.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
+    # [ print( np.loadtxt(array_path).shape ) if array_path is not None else np.full((len(temperatures), 5), np.nan) for sublist in array_paths_hot for array_path in sublist ]
+    if not np.loadtxt(array_paths_hot[0][0]).shape[-1] == len(temperatures):
+        raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_hot[0][0]).shape[-1]=}")
+    # print(array_paths_hot)
+    # print(f'{np.loadtxt(array_paths_hot[0][0]).shape=}')
+    arrays_hot = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_hot ])
+    # print(f'{arrays_hot.shape=}')
+    arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:2], len(temperatures), -1).squeeze()
+    # print(f'{arrays_hot.shape=}')
+
+    if not np.loadtxt(array_paths_cold_higher[0][0]).shape[-1] == len(temperatures):
+        raise ValueError(f"{len(temperatures)=} should be equal to {np.loadtxt(array_paths_cold_higher[0][0]).shape[-1]=}")
+    arrays_cold_higher = np.array( [ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in sublist] for sublist in array_paths_cold_higher ] )
+    arrays_cold_higher = arrays_cold_higher.reshape(*arrays_cold_higher.shape[0:2], len(temperatures), -1).squeeze()
+
+    singlet_phases = np.full((len(phase_differences), len(singlet_phases)), singlet_phases).transpose()
+
+    if singlet_phase_distinguished is not None:
+        array_paths_hot_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'hpf.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
+        array_paths_cold_higher_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase_distinguished:.4f}_{(singlet_phase_distinguished+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / 'in_4_-4_1_1' / probabilities_dir_name / 'cold_higher.txt' if ( singlet_phase_distinguished+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences]
+        arrays_hot_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in array_paths_hot_distinguished ] )
+        arrays_hot_distinguished = arrays_hot_distinguished.reshape(arrays_hot_distinguished.shape[0], len(temperatures), -1).squeeze()
+        arrays_cold_higher_distinguished = np.array( [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(np.loadtxt(array_paths_hot[0][0]).shape, np.nan) for array_path in array_paths_cold_higher_distinguished ] )
+        arrays_cold_higher_distinguished = arrays_cold_higher_distinguished.reshape(arrays_cold_higher_distinguished.shape[0], len(temperatures), -1).squeeze()
+    
+
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'p0_single_ion_hpf.dat')
+    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'p0_single_ion_cold_higher.dat')
+    experiment = np.array( [ exp_hot[0,0], exp_cold_higher[0,0] ] )
+    std = np.array( [ exp_hot[1,0], exp_cold_higher[1,0] ] )
+
+    xx = np.full((len(singlet_phases), len(phase_differences)), phase_differences).transpose()
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory_distinguished = np.moveaxis(np.array( [[ arrays_hot_distinguished[:,T_index],], [arrays_cold_higher_distinguished[:,T_index], ]] ), 0, -1)
+    theory = np.moveaxis(np.array( [ arrays_hot[:,:,T_index], arrays_cold_higher[:,:,T_index] ] ), 0, -1) if (singlet_phase_distinguished is not None) else theory_distinguished
+    # print(f'{theory.shape=}')
+    # print(f'{theory_distinguished.shape=}')
+    chi_sq_distinguished = chi_squared(theory_distinguished, experiment, std)
+    minindex_distinguished = np.nanargmin(chi_sq_distinguished)
+    xx_min_distinguished = xx[:,1][minindex_distinguished]
+    chi_sq_min_distinguished = np.nanmin(chi_sq_distinguished)
+
+    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02},
+                          {'color': 'lightsteelblue', 'linewidth': 0.02} ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5},
+                        {'color': 'midnightblue', 'linewidth': 1.5} ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
+    
+    ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
+#     _ = [line.get_xydata() for line in ax_chisq.lines]
+#     __ = [line.get_xydata().shape for line in ax_chisq.lines]
+#     print(_)
+#     print(__)
+    data = np.array([line.get_xydata() for line in ax_chisq.lines][:-1])
+    # minindices = np.nanargmin(data[:,:,1])
+    # xx_min = xx[minindices]
+    chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
+    xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
+
+    log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} for DeltaPhi = {xx_min_distinguished}.
+For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.'''
+    print(log_str)
+
+    ax.set_ylim(0,1)
+
+    PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
+
+    PhaseTicks.linearStr(ax.yaxis, 0.2, 0.1, '${x:.1f}$')
+
+    ax.set_xlabel(f'$\\Delta\\Phi$')
+    ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
+    ax_chisq.set_ylabel(f'$\\chi^2$', rotation = 0, labelpad = 4)
+    
+    ax.xaxis.get_major_ticks()[1].label1.set_visible(False)
+    ax_chisq.legend(loc = 'upper left', handletextpad=0.3, frameon=False)
+
+    return ax, ax_chisq, log_str
+
+def plotP0VsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phase, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_so_scaling',):
+    print('YS0')
+    nenergies = len(energy_tuple)
+    E_min = min(energy_tuple)
+    E_max = max(energy_tuple)
+
+    array_paths_hot = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / 'in_4_4_1_1' / 'probabilities' / 'p0_hpf.txt' for so_scaling in so_scaling_values ]
+    arrays_hot = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 5), np.nan) for array_path in array_paths_hot ])
+    arrays_hot = arrays_hot.reshape(*arrays_hot.shape[0:1], len(temperatures), -1)
+  
+
+    exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'p0_single_ion_hpf.dat')
+    exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'p0_single_ion_cold_higher.dat')
+    experiment = np.array( [ exp_hot[0,4], ] )
+    std = np.array( [ exp_hot[1,4], ] )
+
+    # xx = np.full((len(so_scaling_values), 1), so_scaling_values).transpose()
+    xx = np.array(so_scaling_values)
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    theory = np.moveaxis(np.array( [ arrays_hot[:,T_index,0], ] ), 0, -1)
+    theory_distinguished = theory
+    
+    print('YS')
+    theory_formattings = [ {'color': 'darksalmon', 'linewidth': 0.02}, ]
+    theory_distinguished_formattings = [ {'color': 'firebrick', 'linewidth': 1.5}, ]
+    experiment_formattings = [ {'color': 'firebrick', 'linewidth': 1.5, 'linestyle': '--'},
+                        {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
+    
+    ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx, theory, experiment, std, theory_distinguished = theory_distinguished, theory_formattings = theory_distinguished_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings)
+    ax.scatter(so_scaling_values, theory.flatten(), s = 2**2, c = 'k', marker = 'o', linestyle = 'None', zorder = 2)
+    ax.set_xlim(0.15, 0.48)
+    ax.set_ylim(0.01, 0.04)
+    
+    ax.tick_params(which='both', direction='in', top = True, right = True, length = 3)
+    ax.tick_params(which='minor', length = 1.5)
+    PhaseTicks.linearStr(ax.xaxis, 0.1, 0.02, '${x:.2f}$')
+    PhaseTicks.linearStr(ax.yaxis, 0.02, 0.01, '${x:.2f}$')
+    
+    ax.set_ylabel(f'$p_\\mathrm{{eff}}$')
+    ax.set_xlabel(f'$c_\\mathrm{{so}}$')
+
+    return ax
+
 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
