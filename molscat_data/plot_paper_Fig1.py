@@ -163,19 +163,19 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
                         {'color': 'midnightblue', 'linewidth': 1.5, 'linestyle': '--'} ]
     
     ax, ax_chisq = ValuesVsModelParameters.plotValuesAndChiSquaredToAxis(ax, xx, theory, experiment, std, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings, experiment_formattings = experiment_formattings, )
-    _ = [line.get_xydata() for line in ax_chisq.lines]
-    __ = [line.get_xydata().shape for line in ax_chisq.lines]
-    print(_)
-    print(__)
-    data = np.array([line.get_xydata() for line in ax_chisq.lines])
-    # minindices = np.nanargmin(data[:,:,1])
-    # xx_min = xx[minindices]
-    chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
-    xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
+#     _ = [line.get_xydata() for line in ax_chisq.lines]
+#     __ = [line.get_xydata().shape for line in ax_chisq.lines]
+#     print(_)
+#     print(__)
+#     data = np.array([line.get_xydata() for line in ax_chisq.lines])
+#     # minindices = np.nanargmin(data[:,:,1])
+#     # xx_min = xx[minindices]
+#     chi_sq_min = np.nanmin(data[:,:,1])#, axis=1)
+#     xx_min = xx[np.nonzero(data[:,:,1] == chi_sq_min)[1][0],1]
 
-    log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} for DeltaPhi = {xx_min_distinguished}.
-For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.'''
-    print(log_str)
+#     log_str = f'''For T = {plot_temperature:.2e} K, the minimum chi-squared for ab-initio singlet potential is {chi_sq_min_distinguished} for DeltaPhi = {xx_min_distinguished}.
+# For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.'''
+#     print(log_str)
 
     ax.set_ylim(0,1)
 
