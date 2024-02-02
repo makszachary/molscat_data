@@ -177,7 +177,7 @@ def plotPeffVsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_di
 For T = {plot_temperature:.2e} K, the minimum chi-squared {chi_sq_min} for DeltaPhi = {xx_min}.'''
     print(log_str)
 
-    ax.set_ylim(0,(0.7 if plot_p0 else 1))
+    ax.set_ylim(0,(0.75 if plot_p0 else 1))
 
     PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
