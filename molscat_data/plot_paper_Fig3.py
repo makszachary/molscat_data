@@ -343,18 +343,27 @@ def main():
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The singlet phase step multiples of pi.")
     parser.add_argument("--phase_differences", nargs='*', type = float, default = None, help = "The values of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--phase_difference", type = float, default = 0.19, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+
     parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
     parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
+
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
+
     parser.add_argument("--B_min", type = float, default = 1.0)
     parser.add_argument("--B_max", type = float, default = 100.0)
     parser.add_argument("--dB", type = float, default = 1.0)
+
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
+    parser.add_argument("--nT", type = int, default = 20, help = "Number of temperatures included in the calculations.")
+    parser.add_argument("--logT_min", type = float, default = -4)
+    parser.add_argument("--logT_max", type = float, default = -2)
+
     parser.add_argument("--cm_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_0.01_step', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_vs_SE_80mK', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--colormap_hybrid", action = 'store_true', help = "If enabled, the probabilities for the colormap will be taken from 'probabilities_hybrid' directories.")
@@ -379,7 +388,7 @@ def main():
     magnetic_fields = np.arange(args.B_min, args.B_max+0.1*args.dB, args.dB)
 
     if args.temperatures is None:
-        temperatures = list(np.logspace(-4, -2, 20))
+        temperatures = list(np.logspace(args.logT_min, args.logT_max, args.nT))
         temperatures.append(5e-4)
         temperatures = np.array(sorted(temperatures))
     else:

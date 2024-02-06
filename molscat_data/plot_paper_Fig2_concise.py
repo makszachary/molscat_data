@@ -302,8 +302,8 @@ def main():
     parser.add_argument("--nenergies_odd", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min_odd", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max_odd", type = float, default = 4e-3, help = "Highest energy value in the grid.")
-
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    
     parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
     parser.add_argument("--nT", type = int, default = 10, help = "Number of temperatures included in the calculations.")
     parser.add_argument("--logT_min", type = float, default = -4)
