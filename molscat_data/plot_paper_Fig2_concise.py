@@ -147,7 +147,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     # fig0_ax.set_ylim(0, 0.7)
     figs_axes[0][0].set_ylim(0, 1.30*np.amax(theory))
 
-    ylabel = (f'$p_\mathrm{{0}}$' if plot_p0 else f'$p_\mathrm{{eff}}$')
+    ylabel = (f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
     figs_axes[0][0].set_ylabel(ylabel)
 
     labels_and_colors = { 'hyperfine relaxation\n(without & with SO coupling)': SE_bars_formatting_hpf['facecolor'],
