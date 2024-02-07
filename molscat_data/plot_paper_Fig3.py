@@ -55,6 +55,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
+        print(arrays_cold_lower)
     else:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
@@ -106,8 +107,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     if fmf_colormap:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
         [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
-        print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full((len(temperatures)), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
-        arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures)), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
+        # print([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
+        arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 1), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
     else:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
