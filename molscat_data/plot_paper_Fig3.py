@@ -142,7 +142,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-' } for exp in experiment]
     fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
-
+    fig1_ax0.set_ylim(0, fig1_ax0.get_ylim()[1])
     fig1_ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
     PhaseTicks.linearStr(fig1_ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
@@ -169,7 +169,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     print(f'{theory = }')
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
-    fig1_ax1.set_ylim(0, 0.3)
+    fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
 
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
