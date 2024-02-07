@@ -185,8 +185,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
 
     ### Set the labels
     fig1_ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
-    fig1_ax0.set_ylabel(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')#, rotation = 0, lapelpad = 12)
-    fig1_ax1.set_ylabel(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')#, rotation = 0, lapelpad = 12)
+    fig1_ax0.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
+    fig1_ax1.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
 
     ### Set the grid so that the scale on both subplots is not deformed
     lim0 = fig1_ax0.get_ylim()
