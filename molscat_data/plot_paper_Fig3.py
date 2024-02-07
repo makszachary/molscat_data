@@ -405,6 +405,7 @@ def main():
     parser.add_argument("--colormap_hybrid", action = 'store_true', help = "If enabled, the probabilities for the colormap will be taken from 'probabilities_hybrid' directories.")
     parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section line for the distinguished phase difference will be drawn.")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
+    parser.add_argument("--plot_nan", action = 'store_true', help = "If included, the plotted values will be interpolated for arrays that weren't found (instead of jus plotting a blank place).")
 
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
     args = parser.parse_args()
@@ -430,7 +431,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotFig3(singlet_phases = singlet_phases, triplet_phases = triplet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, fmf_vs_B = args.fmf_vs_B, plot_nan = True) for temperature in temperatures]
+    [plotFig3(singlet_phases = singlet_phases, triplet_phases = triplet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, fmf_vs_B = args.fmf_vs_B, plot_nan = args.plot_nan) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
