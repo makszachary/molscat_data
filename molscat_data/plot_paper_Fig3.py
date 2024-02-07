@@ -146,7 +146,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     fig1_ax0.set_ylim(0, fig1_ax0.get_ylim()[1])
     fig1_ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
-    PhaseTicks.linearStr(fig1_ax0.yaxis, 0.2, 0.1, '${x:.1f}$')
+    PhaseTicks.linearStr(fig1_ax0.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = matplotlib.rcParams["xtick.labelsize"], color = 'white')
     # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"])
     for i, phase_difference in enumerate(phase_differences):
@@ -169,7 +169,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # print(f'{theory = }')
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
-    PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
+    PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
 
     # draw the label for the experimental value in the upper plot
