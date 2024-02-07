@@ -156,7 +156,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
-    T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
+    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    print(f'{arrays_cold_lower_distinguished =}')
+    print(f'{arrays_cold_lower_distinguished.shape =}')
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     print(f'{theory = }')
