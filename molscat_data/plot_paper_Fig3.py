@@ -50,13 +50,13 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     MF1, MF2 = -2, 1
 
     if fmf_colormap:
-        print('FUCK YOU')
+        # print('FUCK YOU')
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
         # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 1), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(temperatures, np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
-        print(arrays_cold_lower.shape)
+        # print(arrays_cold_lower.shape)
     else:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
@@ -107,8 +107,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     ## SECTIONS THROUGH THE CONTOUR MAP
     if fmf_colormap:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
-        # [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
-        print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
+        [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
+        # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
     else:
@@ -162,11 +162,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    print(f'{arrays_cold_lower_distinguished =}')
-    print(f'{arrays_cold_lower_distinguished.shape =}')
+    # print(f'{arrays_cold_lower_distinguished =}')
+    # print(f'{arrays_cold_lower_distinguished.shape =}')
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-    print(f'{theory = }')
+    # print(f'{theory = }')
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
@@ -190,7 +190,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     ### Set the grid so that the scale on both subplots is not deformed
     lim0 = fig1_ax0.get_ylim()
     lim1 = fig1_ax1.get_ylim()
-    print(f'{lim1 = }')
+    # print(f'{lim1 = }')
 
     gs1 = gridspec.GridSpec(2, 90, fig1, hspace = 1., wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
     # fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
