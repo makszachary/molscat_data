@@ -139,6 +139,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     print(theory)
     print(np.isnan(theory))
     theory[np.isnan(theory)] = (theory[np.isnan(theory)][1::]+theory[np.isnan(theory)][-1::])/2
+    print(theory)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
     color_map = cmcrameri.cm.devon
