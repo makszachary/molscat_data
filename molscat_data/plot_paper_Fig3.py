@@ -159,7 +159,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]    
     theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-
+    print(f'{theory = }')
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, 0.2)
