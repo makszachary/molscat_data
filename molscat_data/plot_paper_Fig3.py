@@ -162,6 +162,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
 
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.2, 0.1, '${x:.1f}$')
+    fig1_ax1.set_ylim(0, 0.2)
 
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
