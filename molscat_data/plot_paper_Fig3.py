@@ -137,8 +137,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
     print(theory)
-    print(theory==np.nan)
-    theory[theory==np.nan] = (theory[theory==np.nan][1::]+theory[theory==np.nan][-1::])/2
+    print(np.isnan(theory))
+    theory[np.isnan(theory)] = (theory[np.isnan(theory)][1::]+theory[np.isnan(theory)][-1::])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
     color_map = cmcrameri.cm.devon
