@@ -386,7 +386,7 @@ def main():
     parser.add_argument("--fmf_vs_B", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with the fmf basis set. Change directory structure for arrays.")
 
     parser.add_argument("--cm_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_0.01_step', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_vs_SE_80mK', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--colormap_hybrid", action = 'store_true', help = "If enabled, the probabilities for the colormap will be taken from 'probabilities_hybrid' directories.")
     parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section line for the distinguished phase difference will be drawn.")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
