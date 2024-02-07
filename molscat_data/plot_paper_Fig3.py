@@ -192,7 +192,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim1 = fig1_ax1.get_ylim()
     # print(f'{lim1 = }')
 
-    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = 1., wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
+    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .1, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
     # fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
     # fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
     # fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
