@@ -181,6 +181,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
 
     ### Set the grid so that the scale on both subplots is not deformed
     lim0 = fig1_ax0.get_ylim()
+    print(lim1)
     lim1 = fig1_ax1.get_ylim()
 
     gs1 = gridspec.GridSpec(2, 90, fig1, hspace = 0., wspace = 0., height_ratios = [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
