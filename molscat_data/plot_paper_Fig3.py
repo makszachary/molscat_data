@@ -295,7 +295,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     suffix = '_hybrid' if colormap_hybrid else ''
-    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig3' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig3' / f'{cm_input_dir_name}_{vs_B_input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     png_path.parent.mkdir(parents = True, exist_ok = True)
