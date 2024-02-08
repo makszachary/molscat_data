@@ -198,11 +198,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     # print(f'{lim1 = }')
 
     gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .1, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
-    # fig1_ax0.set_position(gs1[:int(1000*(lim0[1]-lim0[0])),:-5].get_position(fig1))
-    # fig1_ax0.set_subplotspec(gs1[:int(1000*(lim0[1]-lim0[0])),:-5])
-    # fig1_ax1.set_position(gs1[int(1000*(lim0[1]-lim0[0])):,:-5].get_position(fig1))
-    # fig1_ax1.set_subplotspec(gs1[int(1000*(lim0[1]-lim0[0])):,:-5])
-    # gs1.update(hspace=0.0)
     
     fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs1[0,:-5])
@@ -339,7 +334,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     second_row_height = 6
     total_height = first_row_height+vpad+second_row_height
     figsize = (18*cm, total_height*cm)
-    dpi = 1000
+    dpi = 1200
     fig = plt.figure(figsize=figsize, dpi = dpi)
     gs_Figure = gridspec.GridSpec(int(1000*total_height),180, fig)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
@@ -353,8 +348,9 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig1_ax0.text(0.5, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig2_ax.text(0., second_row_height/total_height, f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig3_axs[0].text(0.67, second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.5, 1.00-0.5*(first_row_height/total_height + 0.02), f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
     gs1.update(left = 0.17, right = 0.97)
