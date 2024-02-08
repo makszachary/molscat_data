@@ -197,7 +197,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     lim1 = fig1_ax1.get_ylim()
     # print(f'{lim1 = }')
 
-    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .2, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
+    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .15, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
     
     fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs1[0,:-5])
@@ -348,7 +348,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig1_ax0.text(0.52, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.02), f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.01), f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
