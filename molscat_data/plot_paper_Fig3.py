@@ -39,26 +39,29 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
+def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
-    singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
+    # singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
     probabilities_dir_name = 'probabilities_hybrid' if hybrid else 'probabilities'
 
     F1, F2 = 2, 1
     MF1, MF2 = -2, 1
 
+    singlet_phases_cm = np.array([default_singlet_phase_function(1.0),]) if phase_step_cm is None else np.arange(phase_step_cm, 1., phase_step_cm).round(decimals=4)
+    triplet_phases_cm = np.array([default_triplet_phase_function(1.0),]) if phase_step_cm is None else np.arange(phase_step_cm, 1., phase_step_cm).round(decimals=4)
+
     if fmf_colormap:
         # print('FUCK YOU')
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
+        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases_cm] for singlet_phase in singlet_phases_cm]
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
         # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 1), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(temperatures, np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
         # print(arrays_cold_lower.shape)
     else:
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases] for singlet_phase in singlet_phases]
+        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases_cm] for singlet_phase in singlet_phases_cm]
         [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
@@ -75,7 +78,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
 
     ## CONTOUR MAP
     fig0_ax, fig0_ax_bar = ContourMap._initiate_axes(fig0)
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar = ContourMap.plotToFigure(fig0, fig0_ax, fig0_ax_bar, singlet_phases, triplet_phases, theory, n_levels = 3)
+    fig0, fig0_ax, fig0_ax_bar, fig0_bar = ContourMap.plotToFigure(fig0, fig0_ax, fig0_ax_bar, singlet_phases_cm, triplet_phases_cm, theory, n_levels = 3)
     fig0_ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
     fig0_ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$')#, rotation = 0, lapelpad = 12)
 
@@ -90,11 +93,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
 
     ### plotting the section lines and their labels
     if plot_section_lines:
-        section_distinguished_x = [[min(singlet_phases), max(triplet_phases)-phase_difference_distinguished],
-                                    [(min(triplet_phases) - phase_difference_distinguished ) % 1, max(singlet_phases)]
+        section_distinguished_x = [[min(singlet_phases_cm), max(triplet_phases_cm)-phase_difference_distinguished],
+                                    [(min(triplet_phases_cm) - phase_difference_distinguished ) % 1, max(singlet_phases_cm)]
                                     ]
-        section_distinguished_y = [[min(singlet_phases)+phase_difference_distinguished, max(triplet_phases)],
-                                   [min(triplet_phases), (max(singlet_phases) + phase_difference_distinguished) % 1 ]
+        section_distinguished_y = [[min(singlet_phases_cm)+phase_difference_distinguished, max(triplet_phases_cm)],
+                                   [min(triplet_phases_cm), (max(singlet_phases_cm) + phase_difference_distinguished) % 1 ]
                                    ]
         # color_map = cmcrameri.cm.devon
         # theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
@@ -106,25 +109,28 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
         labelLines(lines, align = True, outline_color=None, fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
 
     ## SECTIONS THROUGH THE CONTOUR MAP
+
+    singlet_phases_sections = np.array([default_singlet_phase_function(1.0),]) if phase_step_sections is None else np.arange(phase_step_sections, 1., phase_step_sections).round(decimals=4)
+
     if fmf_colormap:
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
+        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases_sections]
         [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
         # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
     else:
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases]
+        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases_sections]
         [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
 
     if phase_difference_distinguished is not None:
         if fmf_colormap:
-            array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases]
+            array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases_sections]
             arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan) for array_path in array_paths_cold_lower_distinguished ])
             arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
         else:
-            array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases]
+            array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases_sections]
             arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in array_paths_cold_lower_distinguished ])
             arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
 
@@ -144,7 +150,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  '-' } for exp in experiment]
-    fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
+    fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     fig1_ax0.set_ylim(0, fig1_ax0.get_ylim()[1])
     fig1_ax0.set_xlim(0,1)
     PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
@@ -172,7 +178,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases: float | np.ndarray
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # print(f'{theory = }')
-    fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
+    fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
 
@@ -316,7 +322,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     return fig2, fig2_ax, fig3, fig3_axs, gs3
 
-def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, fmf_vs_B = True, plot_nan = False, journal_name = 'NatCommun'):
+def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, fmf_vs_B = True, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -343,7 +349,7 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
     fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
 
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1 = plotColorMapAndSectionstoFigs(fig0, fig1, singlet_phases, triplet_phases, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1 = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
     fig2, fig2_ax, fig3, fig3_axs, gs3 = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, fmf_vs_B = fmf_vs_B)
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
@@ -368,7 +374,8 @@ def plotFig3(singlet_phases: float | np.ndarray[float], triplet_phases: float | 
 def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
-    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The singlet phase step multiples of pi.")
+    parser.add_argument("--phase_step_cm", type = float, default = 0.04, help = "The phase step in the multiples of pi for the color map.")
+    parser.add_argument("--phase_step_sections", type = float, default = 0.04, help = "The singlet phase step in themultiples of pi for the sections through the color map.")
     parser.add_argument("--phase_differences", nargs='*', type = float, default = None, help = "The values of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--phase_difference", type = float, default = 0.19, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--so_scaling", type = float, default = 0.375, help = "Value of the SO scaling.")
@@ -411,8 +418,6 @@ def main():
 
     # args.phase_difference_step = args.phase_step if args.triplet_phase_step is None else args.triplet_phase_step
 
-    singlet_phases = np.array([default_singlet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
-    triplet_phases = np.array([default_triplet_phase_function(1.0),]) if args.phase_step is None else np.arange(args.phase_step, 1., args.phase_step).round(decimals=4)
     phase_differences = np.array(args.phase_differences) if args.phase_differences is not None else np.arange(0., 0.41, 0.1).round(decimals=4)
     so_scaling = args.so_scaling
 
@@ -427,7 +432,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotFig3(singlet_phases = singlet_phases, triplet_phases = triplet_phases, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, fmf_vs_B = args.fmf_vs_B, plot_nan = args.plot_nan) for temperature in temperatures]
+    [plotFig3(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, fmf_vs_B = args.fmf_vs_B, plot_nan = args.plot_nan) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
