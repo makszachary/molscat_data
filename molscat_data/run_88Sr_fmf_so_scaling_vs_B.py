@@ -189,9 +189,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     triplet_parameter = default_triplet_parameter_from_phase(triplet_phase)
     s_matrix_collection = SMatrixCollection(singletParameter = (singlet_parameter,), tripletParameter = (triplet_parameter,), collisionEnergy = energy_tuple)
     
-    print(list(Path(molscat_output_directory_path).iterdir()))
     for output_path in Path(molscat_output_directory_path).iterdir():
-        print(f'{output_path=}')
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
     
     pickle_path = pickles_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
@@ -215,6 +213,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
+    print(f'{transfer_s_matrix_collection = }', flush = True)
     transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     so_scaling = s_matrix_collection.spinOrbitParameter
