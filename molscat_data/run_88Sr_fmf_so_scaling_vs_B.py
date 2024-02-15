@@ -189,6 +189,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     triplet_parameter = default_triplet_parameter_from_phase(triplet_phase)
     s_matrix_collection = SMatrixCollection(singletParameter = (singlet_parameter,), tripletParameter = (triplet_parameter,), collisionEnergy = energy_tuple)
     
+    print(list(Path(molscat_output_directory_path).iterdir()))
     for output_path in Path(molscat_output_directory_path).iterdir():
         print(f'{output_path=}')
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
