@@ -190,6 +190,7 @@ def collect_and_pickle(molscat_output_directory_path: Path | str, singlet_phase,
     s_matrix_collection = SMatrixCollection(singletParameter = (singlet_parameter,), tripletParameter = (triplet_parameter,), collisionEnergy = energy_tuple)
     
     for output_path in Path(molscat_output_directory_path).iterdir():
+        print(f'{output_path=}')
         s_matrix_collection.update_from_output(file_path = output_path, non_molscat_so_parameter = spinOrbitParameter)
     
     pickle_path = pickles_dir_path / molscat_output_directory_path.relative_to(molscat_out_dir)
