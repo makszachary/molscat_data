@@ -182,10 +182,14 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
 
-    # draw the label for the experimental value in the upper plot
+    ### draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
     fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
-    fig1_ax0_right.set_yticks(fig1_ax0.get_yticks())
+    # for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
+    #     if np.abs(tick - experiment) < 0.05:
+    #         print(f'{tick=}')
+    #         plt.setp(ticklabel, visible=False)
+    fig1_ax0_right.set_yticks(list(fig1_ax0.get_yticks())+[experiment,], labels = list(fig1_ax0.get_yticklabels())+[(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),])
     fig1_ax0_right.set_yticks( experiment, [(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),] )
     fig1_ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10)
 
