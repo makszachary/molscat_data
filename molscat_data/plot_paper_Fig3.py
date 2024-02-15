@@ -185,8 +185,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
     fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
-    fig1_ax0_right.set_yticks(fig1_ax0.get_yticks(minor=True))
-    # fig1_ax0_right.set_yticks( experiment, [(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),] )
+    # fig1_ax0_right.set_yticks(fig1_ax0.get_yticks(minor=True))
+    fig1_ax0_right.set_yticks( experiment, [(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),] )
     fig1_ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10)
 
     ### Turn off the x-tick labels in the upper plot
