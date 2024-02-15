@@ -192,7 +192,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     #     if np.abs(tick - experiment) < 0.05:
     #         print(f'{tick=}')
     #         plt.setp(ticklabel, visible=False)
-    fig1_ax0_right.set_yticks(list(fig1_ax0.get_yticks())+[experiment,], labels = list(fig1_ax0.get_yticklabels())+[(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),])
+    fig1_ax0_right.set_yticks(yticks+[experiment,], labels = [None for ytick in yticks]+[(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),])
     fig1_ax0_right.set_yticks( experiment, [(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),] )
     fig1_ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 10)
 
