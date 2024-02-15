@@ -185,6 +185,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     ### draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
     fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
+    yticks = list(fig1_ax0.get_yticks())
+    yticklabels = list(fig1_ax0.get_yticklabels())
+    print(f'{yticks=}, {yticklabels=}')
     # for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
     #     if np.abs(tick - experiment) < 0.05:
     #         print(f'{tick=}')
