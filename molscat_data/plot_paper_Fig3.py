@@ -186,7 +186,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     fig1_ax0_right = fig1_ax0.twinx()
     fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
     yticks = list(fig1_ax0.get_yticks())+list(experiment)
-    yticklabels = [None for ytick in yticks]
+    yticklabels = ['' for ytick in yticks]
     yticklabels[-1] = (f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$')
     print(f'{yticks=}, {yticklabels=}')
     # for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
