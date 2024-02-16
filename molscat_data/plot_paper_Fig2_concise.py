@@ -168,7 +168,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     chi_sq = chi_squared(theory, experiment = experiment, std = std)
     chi_sq_without_22_cold = chi_squared(theory.flatten()[:-1], experiment = experiment.flatten()[:-1], std = std.flatten()[:-1])
     chi_sq_without_22_and_20_cold = chi_squared(theory.flatten()[[0,1,2,3,4,5,6,8]], experiment = experiment.flatten()[[0,1,2,3,4,5,6,8]], std = std.flatten()[[0,1,2,3,4,5,6,8]])
-    log_str = f'''For T = {plot_temperature:.2e} K, the chi-squared for ab-initio singlet potential (Phi_s = {singlet_phase:.4f} pi) and DeltaPhi = {triplet_phase-singlet_phase:.2f} calculated from the barplot for 88Sr+ is {chi_sq:.3f}.\nExcluding the measurement of the cold spin change for |2,2>|up> state, chi-squared is {chi_sq_without_22_cold:.3f}.\nExcluding the cold spin change for |2,0>|up> state as well, chi-squared is {chi_sq_without_22_cold:.3f}'''
+    log_str = f'''For T = {plot_temperature:.2e} K, the chi-squared for ab-initio singlet potential (Phi_s = {singlet_phase:.4f} pi) and DeltaPhi = {triplet_phase-singlet_phase:.2f} calculated from the barplot for 88Sr+ is {chi_sq:.3f}.\nExcluding the measurement of the cold spin change for |2,2>|up> state, chi-squared is {chi_sq_without_22_cold:.3f}.\nExcluding the cold spin change for |2,0>|up> state as well, chi-squared is {chi_sq_without_22_and_20_cold:.3f}'''
     with open(log_path, 'w') as log_file:
         log_file.write(log_str)
 
