@@ -126,6 +126,7 @@ class Barplot:
         ax1.grid(color = 'gray', axis='y')
         ax1.set_axisbelow(True)
         ax1.tick_params(axis = 'y', labelsize = 'large')
+        ax1.tick_params(axis = 'x', length = 0)
         ax1.set_ylim(0,y_max)
 
         ax2.bar(positions_theory_f_max, probabilities_theory_f_max_cold, width = 1, color = cold_color, hatch = theory_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)
@@ -136,6 +137,7 @@ class Barplot:
         ax2.grid(color = 'gray', axis='y')
         ax2.set_axisbelow(True)
         ax2.tick_params(axis = 'y', labelsize = 'large')
+        ax2.tick_params(axis = 'x', length = 0)
         ax2.set_ylim(0,y_max)
 
         ax3.bar(positions_theory_f_min, probabilities_theory_f_min_cold, width = 1, color = cold_color, hatch = theory_hatch, edgecolor = 'black', alpha = 0.9, ecolor = 'black', capsize = 5)     
@@ -446,6 +448,7 @@ class Barplot:
 
         ax.tick_params(which='both', direction='in', top = False, right = True, length = 8)
         ax.tick_params(which='minor', length = 4)
+        ax.tick_params(axis = 'x', length = 0)
         
         return ax
 

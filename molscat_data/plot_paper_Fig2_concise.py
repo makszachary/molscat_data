@@ -144,7 +144,6 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     theory_used_for_fitting = [ theory[i] for i in indices_used_for_fitting ]
     figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, facecolor = 'none', hatch = '////', edgecolor = 'k', linewidth = .1)
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
-    # fig0_ax.set_ylim(0, 0.7)
     figs_axes[0][0].set_ylim(0, 0.3)# 1.30*np.amax(theory))
 
     ylabel = (f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
