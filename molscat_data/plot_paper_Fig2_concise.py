@@ -145,7 +145,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figs_axes[0][0].bar(positions_used_for_fitting, theory_used_for_fitting, width = 1, facecolor = 'none', hatch = '////', edgecolor = 'k', linewidth = .1)
     PhaseTicks.linearStr(figs_axes[0][0].yaxis, 0.1, 0.05, '${x:.1f}$')
     # fig0_ax.set_ylim(0, 0.7)
-    figs_axes[0][0].set_ylim(0, 1.30*np.amax(theory))
+    figs_axes[0][0].set_ylim(0, 0.3)# 1.30*np.amax(theory))
 
     ylabel = (f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
     figs_axes[0][0].set_ylabel(ylabel)
@@ -250,7 +250,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     fig_ax.scatter(reduced_masses_experimental[2], experiment[2], s = 16, c = 'darkmagenta', marker = 'x', edgecolors =  'darkmagenta', linewidths = None)
     fig_ax.errorbar(reduced_masses_experimental[2], experiment[2], std[2], ecolor = 'darkmagenta', capsize = 4, linestyle = 'None')
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=None)
-    fig_ax.set_ylim(0, 1.2*fig_ax.get_ylim()[1])
+    fig_ax.set_ylim(0,0.5)# 1.2*fig_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.set_xticks([ 43.0, 43.5, *reduced_masses_experimental], labels = [ '$43.0$', '$43.5$', f'${{}}^{{84}}\\mathrm{{Sr^+}}$', f'${{}}^{{86}}\\mathrm{{Sr^+}}$', f'${{}}^{{87}}\\mathrm{{Sr^+}}$', f'${{}}^{{88}}\\mathrm{{Sr^+}}$' ])
