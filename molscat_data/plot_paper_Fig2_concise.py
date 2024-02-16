@@ -101,10 +101,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     theory_cold_higher = arrays_cold_higher[T_index,:]
     theory_SE_cold_higher = SE_arrays_cold_higher[T_index,:]
 
-    print(f'{plot_temperature=}')
-    print(f'{arrays_path_hpf=}')
-    print(f'{theory_hpf=}')
-    print(f'{theory_SE_hpf=}')
+    # print(f'{plot_temperature=}')
+    # print(f'{arrays_path_hpf=}')
+    # print(f'{theory_hpf=}')
+    # print(f'{theory_SE_hpf=}')
 
     experiment_std_path_hpf = Path(__file__).parents[1] / 'data' / 'exp_data' / ('p0_single_ion_hpf.dat' if plot_p0 else 'single_ion_hpf.dat')
     experiment_std_path_cold_higher = Path(__file__).parents[1] / 'data' / 'exp_data' / ('p0_single_ion_cold_higher.dat' if plot_p0 else 'single_ion_cold_higher.dat')
@@ -215,7 +215,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_odd.items() ]
     p0_arrays_odd = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1, F_in_odd+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1, F_in_odd+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_odd.items() }
-    print(f'{p0_arrays_odd["p0_hpf"][0]=}')
+    # print(f'{p0_arrays_odd["p0_hpf"][0]=}')
     peff_arrays_odd = effective_probability(np.sum([array for array in p0_arrays_odd.values()], axis = 0), pmf_array = pmf_array)
     peff_arrays_odd = peff_arrays_odd * np.sum( [ p0_arrays_odd[abbreviation]*abbreviations_efficiency_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 ) / np.sum( [ p0_arrays_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 )
     peff_arrays_odd = np.mean( peff_arrays_odd, axis = (-2, -1) )
@@ -244,7 +244,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
     fig_ax = fig.add_subplot()
-    print(f'{reduced_masses_experimental=}, {experiment=}')
+    # print(f'{reduced_masses_experimental=}, {experiment=}')
     fig_ax.scatter(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], s = 16, c = 'firebrick', marker = 'x', edgecolors =  'firebrick', linewidths = None)
     fig_ax.errorbar(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], std[[0,1,3]], ecolor = 'firebrick', capsize = 4, linestyle = 'None')
     fig_ax.scatter(reduced_masses_experimental[2], experiment[2], s = 16, c = 'darkmagenta', marker = 'x', edgecolors =  'darkmagenta', linewidths = None)
