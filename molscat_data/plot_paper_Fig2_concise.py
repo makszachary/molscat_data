@@ -25,6 +25,7 @@ from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semicl
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot, BicolorHandler
 from _molscat_data.physical_constants import red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu
+from _molscat_data.chi_squared import chi_squared
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
 if sys.platform == 'win32':
@@ -48,6 +49,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig2' / f'Fig2_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
+    log_path = png_path.with_suffix('.log')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     
     
@@ -163,11 +165,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
     figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (0.98, 1.02), fontsize = 'xx-small', labelspacing = 0.75, frameon=False)
 
-    # arrays_path_hpf = arrays_dir_path / vs_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'hpf.txt'
-    # arrays_path_cold_higher = arrays_dir_path / barplot_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / 'cold_higher.txt'   
-
-    # arrays_hpf = np.loadtxt(arrays_path_hpf)
-    # arrays_cold_higher = np.loadtxt(arrays_path_cold_higher)
+    chi_sq = chi_squared(theory, experiment = experiment, std = std)
+    log_str = f'''For T = {plot_temperature:.2e} K, the chi-squared for ab-initio singlet potential (Phi_s = {singlet_phase:.4f} pi) and DeltaPhi = {triplet_phase-singlet_phase:.2f} is {chi_sq}.'''
+    with open(log_path, 'w') as log_file:
+        log_file.write(log_str)
 
     figs[1], _ax = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name,)
     figs_axes[1].append(_ax)
@@ -254,7 +255,6 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.set_xticks([ 43.0, 43.5, *reduced_masses_experimental], labels = [ '$43.0$', '$43.5$', f'${{}}^{{84}}\\mathrm{{Sr^+}}$', f'${{}}^{{86}}\\mathrm{{Sr^+}}$', f'${{}}^{{87}}\\mathrm{{Sr^+}}$', f'${{}}^{{88}}\\mathrm{{Sr^+}}$' ])
     xx_text, yy_text, alignments = reduced_masses_experimental, experiment, [ {'ha': 'center', 'va': 'top'}, {'ha': 'center', 'va': 'top'}, {'ha': 'right', 'va': 'baseline'}, {'ha': 'right', 'va': 'baseline'} ]
-    print(f'{yy_text = }')
     xx_text[[3,]] += 0.01
     yy_text[[0,1]] += -0.045
     yy_text[[2,3]] += 0.03
