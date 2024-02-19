@@ -213,7 +213,7 @@ def calculate_and_save_k_L_E_and_peff_parallel(pickle_path: Path | str, transfer
     l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
-    print(f'{transfer_s_matrix_collection = }', flush = True)
+
     transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
     
     so_scaling = s_matrix_collection.spinOrbitParameter
