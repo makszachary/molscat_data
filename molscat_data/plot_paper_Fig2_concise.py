@@ -41,7 +41,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_barplot: tuple[float, ...], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, barplot_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', barplot_SE_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step_SE', vs_mass_even_input_dir_name = 'RbSr+_tcpld_80mK_vs_mass', vs_mass_odd_input_dir_name = 'RbSr+_tcpld_vs_mass_odd', fmf_barplot = False, fmf_vs_mass = False, journal_name = 'NatCommun', plot_p0 = False):
+def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_barplot: tuple[float, ...], energy_tuple_vs_mass_even: tuple[float, ...], energy_tuple_vs_mass_odd: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, barplot_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', barplot_SE_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step_SE', vs_mass_even_input_dir_name = 'RbSr+_tcpld_80mK_vs_mass', vs_mass_odd_input_dir_name = 'RbSr+_tcpld_vs_mass_odd', fmf_barplot = False, journal_name = 'NatCommun', plot_p0 = False):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     # nenergies = len(energy_tuple_barplot)
     # E_min = min(energy_tuple_barplot)
@@ -317,7 +317,6 @@ def main():
     parser.add_argument("--vs_mass_odd_input_dir_name", type = str, default = 'RbSr+_tcpld_vs_mass_odd', help = "Name of the directory with the molscat inputs")
 
     parser.add_argument("--fmf_barplot", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with the fmf basis set. Change directory structure for arrays.")
-    parser.add_argument("--fmf_vs_mass", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with the fmf basis set. Change directory structure for arrays.")
 
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
@@ -347,7 +346,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotFig2(singlet_phase, triplet_phase, so_scaling_value, reduced_masses, energy_tuple_barplot= energy_tuple_barplot, energy_tuple_vs_mass_even = energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd = energy_tuple_vs_mass_odd, temperatures = temperatures, plot_temperature = temperature, barplot_input_dir_name = args.barplot_input_dir_name, barplot_SE_input_dir_name = args.barplot_SE_input_dir_name, vs_mass_even_input_dir_name = args.vs_mass_even_input_dir_name, vs_mass_odd_input_dir_name = args.vs_mass_odd_input_dir_name, fmf_barplot = args.fmf_barplot, fmf_vs_mass = args.fmf_vs_mass, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
+    [plotFig2(singlet_phase, triplet_phase, so_scaling_value, reduced_masses, energy_tuple_barplot= energy_tuple_barplot, energy_tuple_vs_mass_even = energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd = energy_tuple_vs_mass_odd, temperatures = temperatures, plot_temperature = temperature, barplot_input_dir_name = args.barplot_input_dir_name, barplot_SE_input_dir_name = args.barplot_SE_input_dir_name, vs_mass_even_input_dir_name = args.vs_mass_even_input_dir_name, vs_mass_odd_input_dir_name = args.vs_mass_odd_input_dir_name, fmf_barplot = args.fmf_barplot, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
 
 if __name__ == '__main__':
     main()
