@@ -321,7 +321,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     fig3_bar = fig3.add_subplot(gs3[:,-4:])
 
     bar_format = theory_distinguished_formattings[0].copy()
-    bar_format['markevery'] = (0.01,0.5)
+    bar_format['markevery'] = (0.5/(0.5**2+6**2)**(1/2)/2,0.5)
     # bar_format['linewidth'] = 1
     # bar_format['linestyle'] =  (1,(0.1,1))
 
