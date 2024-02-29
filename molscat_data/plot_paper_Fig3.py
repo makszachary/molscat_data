@@ -171,7 +171,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     mrkcolor='#b50033' # '#f5390a'
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
-                                          'markevery': 0.08, 'markersize': 3,
+                                          'markevery': 0.06, 'markersize': 3,
                                           'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
