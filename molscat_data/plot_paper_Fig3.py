@@ -325,7 +325,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
     #                                       'markevery': 0.08, 'markersize': 3,
     #                                       'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
-    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings['markersize'], 'marker': theory_distinguished_formattings['marker']}
+    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize'], 'marker': theory_distinguished_formattings[0]['marker']}
     # bar_format['linewidth'] = 1
     # bar_format['linestyle'] =  (1,(0.1,1))
 
