@@ -320,14 +320,19 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     ### create the temperature bar
     fig3_bar = fig3.add_subplot(gs3[:,-4:])
 
-    bar_format = theory_distinguished_formattings[0].copy()
-    bar_format['markevery'] = (0.04,0.01)
+    # bar_format = theory_distinguished_formattings[0].copy()
+    # bar_format['markevery'] = (0.04,0.01)
+    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
+    #                                       'markevery': 0.08, 'markersize': 3,
+    #                                       'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
+    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings['markersize'], 'marker': theory_distinguished_formattings['marker']}
     # bar_format['linewidth'] = 1
     # bar_format['linestyle'] =  (1,(0.1,1))
 
     bar = matplotlib.colorbar.ColorbarBase(fig3_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    bar.ax.axhline(plot_temperature, **bar_format)
+    # bar.ax.axhline(plot_temperature, **bar_format)
+    bar.ax.scatter(0.5, plot_temperature, **bar_format)
     fig3_bar.tick_params(axis = 'both')
     fig3_bar.get_yaxis().labelpad = 4
     fig3_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
