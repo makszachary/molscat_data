@@ -266,7 +266,8 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in magnetic_phases]))
     theory_formattings = [ {'color': color, 'linewidth': 2} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0, 'markevery': 0.1, 'ms': 4 } for exp in experiment]
 
     fig2_ax = fig2.add_subplot()
 
