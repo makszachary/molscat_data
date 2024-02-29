@@ -303,7 +303,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     gs3 = gridspec.GridSpec(3,60, fig3)
     gs3.update(hspace=0.0)
-    fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax, sharey = fig2_ax) for i in range(len(magnetic_phases))]
+    fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(len(magnetic_phases))]
     
     for i, ax in enumerate(fig3_axs):
         theory = arrays_cold_lower[i,:,::2,0]
@@ -318,6 +318,9 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     for ax in fig3_axs[1:]:
         ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+    
+    for ax in fig3_axs:
+        ax.set_ylim(0, max([_.get_ylim()[1] for _ in fig3_axs]))
 
     fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
