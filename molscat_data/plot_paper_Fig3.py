@@ -279,7 +279,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     PhaseTicks.linearStr(fig2_ax.xaxis, 100, 20, '${x:n}$') if max(magnetic_fields)-min(magnetic_fields) > 250 else PhaseTicks.linearStr(fig2_ax.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
         fig2_ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
-    labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+    # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLines(fig2_ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
     props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     fig2_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig2_ax.transAxes, bbox = props)
