@@ -168,7 +168,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    mrkcolor='#b50033' # '#f5390a'
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
+                                          'markevery': 0.08, 'markersize': 3,
+                                          'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     # print(f'{arrays_cold_lower_distinguished =}')
@@ -217,11 +221,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     
     ### create the temperature bar
-    bar_format = theory_distinguished_formattings[0].copy()
+    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize'], 'marker': theory_distinguished_formattings[0]['marker']}
 
     fig1_bar = matplotlib.colorbar.ColorbarBase(fig1_ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     fig1_bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    fig1_bar.ax.axhline(plot_temperature, **bar_format)
+    fig1_bar.ax.scatter(0.5, plot_temperature, **bar_format)
     fig1_ax1_bar.tick_params(axis = 'both')
     fig1_ax1_bar.get_yaxis().labelpad = 4
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
@@ -320,18 +324,10 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     ### create the temperature bar
     fig3_bar = fig3.add_subplot(gs3[:,-4:])
 
-    # bar_format = theory_distinguished_formattings[0].copy()
-    # bar_format['markevery'] = (0.04,0.01)
-    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
-    #                                       'markevery': 0.08, 'markersize': 3,
-    #                                       'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
     bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize'], 'marker': theory_distinguished_formattings[0]['marker']}
-    # bar_format['linewidth'] = 1
-    # bar_format['linestyle'] =  (1,(0.1,1))
 
     bar = matplotlib.colorbar.ColorbarBase(fig3_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
     bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    # bar.ax.axhline(plot_temperature, **bar_format)
     bar.ax.scatter(0.5, plot_temperature, **bar_format)
     fig3_bar.tick_params(axis = 'both')
     fig3_bar.get_yaxis().labelpad = 4
