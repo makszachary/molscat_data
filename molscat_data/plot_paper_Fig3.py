@@ -269,7 +269,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
                                           'markevery': 0.08, 'markersize': 3,
-                                          'marker': 'o', 'markeredgecolor': '#d1360f', 'markerfacecolor': '#d1360f'} for exp in experiment]
+                                          'marker': 'o', 'markeredgecolor': '#e83a0e', 'markerfacecolor': '#e83a0e'} for exp in experiment]
 
     fig2_ax = fig2.add_subplot()
 
