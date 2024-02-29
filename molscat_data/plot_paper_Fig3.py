@@ -276,7 +276,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
     fig2_ax.set_ylim(0, 1.05*fig2_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
-    PhaseTicks.linearStr(fig2_ax.xaxis, 50, 10, '${x:n}$')
+    PhaseTicks.linearStr(fig2_ax.xaxis, 100, 20, '${x:n}$') if max(magnetic_fields)-min(magnetic_fields) > 250 else PhaseTicks.linearStr(fig2_ax.xaxis, 50, 10, '${x:n}$')
     for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
         fig2_ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
     labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
