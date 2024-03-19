@@ -77,6 +77,8 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     k_L_E_array_paths = [  arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E' / 'cold_lower' / f'OUT_{F1}_{MF1out}_{F2}_{MF2out}_IN_{F1}_{MF1}_{F2}_{MF2}.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
     [print(array_path) for array_path in k_L_E_array_paths if (array_path is not None and not array_path.is_file())]
+    print(k_L_E_array_paths)
+    return
     k_L_E_arrays = np.array([np.loadtxt(array_path) for array_path in k_L_E_array_paths]).transpose(1,2,0)
     total_k_E_Phis_array = k_L_E_arrays.sum(axis = 0)
 
