@@ -69,7 +69,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if phase_step is None else np.arange(phase_step, 1., phase_step).round(decimals=4)
 
-    zipped_dir_paths = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
+    zipped_dir_paths = [ arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' for singlet_phase in singlet_phases if ( singlet_phase+phase_difference ) % 1 !=0]
     for zipped_dir_path in zipped_dir_paths:
         zip_path = zipped_dir_path.parent / (zipped_dir_path.name + '.zip')
         if zip_path.is_file():        
