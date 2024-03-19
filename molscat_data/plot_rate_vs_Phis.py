@@ -51,8 +51,6 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     total_height=12
     figsize = (18*cm, total_height*cm)
     dpi = 1200
-    fig = plt.figure(figsize=figsize, dpi = dpi)
-    ax = fig.add_subplot()
 
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
 
@@ -99,6 +97,9 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         total_k_vs_Phi_at_E_array = np.array([total_k_E_Phis_array[E_index],]).transpose()
         print(f'{total_k_vs_Phi_at_E_array = }')
         theory = k_L_E_arrays[:,E_index,:].transpose()
+
+        fig = plt.figure(figsize=figsize, dpi = dpi)
+        ax = fig.add_subplot()
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
 
         ax.set_xlabel(r"$\Phi_\mathrm{s}\hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
