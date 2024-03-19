@@ -97,6 +97,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         png_path.parent.mkdir(parents = True, exist_ok = True)
         
         total_k_vs_Phi_at_E_array = np.array([total_k_E_Phis_array[E_index],]).transpose()
+        print(f'{total_k_vs_Phi_at_E_array = }')
         theory = k_L_E_arrays[:,E_index,:].transpose()
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
 
