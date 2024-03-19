@@ -107,6 +107,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
         # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
         coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+        print(f'{coords_vs_L = }')
 
         # annotate peaks with the orbital quantum numbers L
         for coord in coords_vs_L:
