@@ -49,7 +49,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     time_0 = time.perf_counter()
     cm = 1/2.54
     total_height=12
-    figsize = (18*cm, total_height*cm)
+    figsize = (8.5*cm, total_height*cm)
     dpi = 1200
 
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
@@ -80,12 +80,12 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     total_k_E_Phis_array = k_L_E_arrays.sum(axis = 0)
 
     filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.nanmax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
-    print(f'{k_L_E_arrays.transpose(2,0,1) = }')
-    print(f'{np.amax(k_L_E_arrays, axis = 2) = }')
-    print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)) = }')
-    print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0) = }')
-    print(f'{k_L_E_arrays = }')
-    print(f'{filter_max_arr = }')
+    # print(f'{k_L_E_arrays.transpose(2,0,1) = }')
+    # print(f'{np.amax(k_L_E_arrays, axis = 2) = }')
+    # print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)) = }')
+    # print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0) = }')
+    # print(f'{k_L_E_arrays = }')
+    # print(f'{filter_max_arr = }')
     # return
     color_map = cmocean.cm.thermal
     norm = matplotlib.colors.Normalize(vmin=0, vmax=19, clip = True)
@@ -114,14 +114,14 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
         # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
-        for L in range(k_L_E_arrays.shape[0]):
-            print(f'{L =}')
-            print(np.any(filter_max_arr[L, E_index]))
-            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
-            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
+        # for L in range(k_L_E_arrays.shape[0]):
+        #     print(f'{L =}')
+        #     print(np.any(filter_max_arr[L, E_index]))
+        #     print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
+        #     print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
 
-        coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
-        print(f'old: {coords_vs_L = }')
+        # coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
+        # print(f'old: {coords_vs_L = }')
         coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
         print(f'{coords_vs_L = }')
 
