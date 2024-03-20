@@ -117,9 +117,12 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         for L in range(k_L_E_arrays.shape[0]):
             print(f'{L =}')
             print(np.any(filter_max_arr[L, E_index]))
-            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
+            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
 
-        coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
+        coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(k_L_E_arrays[:,E_index,:])) )
+        print(f'old: {coords_vs_L = }')
+        coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
         print(f'{coords_vs_L = }')
 
         # annotate peaks with the orbital quantum numbers L
