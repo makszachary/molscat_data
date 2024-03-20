@@ -80,9 +80,10 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     total_k_E_Phis_array = k_L_E_arrays.sum(axis = 0)
 
     filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
+    print(f'{filter_max_arr = }')
 
     color_map = cmocean.cm.thermal
-    norm = matplotlib.colors.Normalize(vmin=0, vmax=(k_L_E_arrays.shape[0]-1), clip = False)
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=19, clip = True)
     theory_colors = [color_map(norm(L)) for L in range(k_L_E_arrays.shape[0])]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4}, ]
@@ -102,12 +103,17 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         ax = fig.add_subplot()
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
 
-        ax.set_xlabel(r"$\Phi_\mathrm{s}\hspace{0.5} / \hspace{0.5} \pi$", fontsize = 'large')
+        ax.set_xlabel(r"$\Phi_\mathrm{s}$", fontsize = 'large')
         ax.set_ylabel('rate ($\\mathrm{cm}^3/\\mathrm{s}$)', fontsize = 'large')
         # ax.set_ylim(0, 1.2*np.amax(total_k_vs_Phi_at_E_array) )
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
 
         # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
+        for L in range(k_L_E_arrays.shape[0]):
+            print(f'{L =}')
+            print(np.any(filter_max_arr[L, E_index]))
+            print(np.any(k_L_E_arrays[L, E_index][filter_max_arr[L, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:]))
+
         coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.amax(k_L_E_arrays[:,E_index,:])) )
         print(f'{coords_vs_L = }')
 
@@ -126,7 +132,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     for zipped_dir_path in zipped_dir_paths:
         shutil.make_archive(zipped_dir_path, 'zip', zipped_dir_path)
-        [shutil.rmtree(zipped_dir_path / f'in_{F1}_{MF1}_{F2}_{MF2}' / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
+        # [shutil.rmtree(zipped_dir_path / f'in_{F1}_{MF1}_{F2}_{MF2}' / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
 
 
 def main():
