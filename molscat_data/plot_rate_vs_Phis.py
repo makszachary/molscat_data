@@ -80,8 +80,12 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     total_k_E_Phis_array = k_L_E_arrays.sum(axis = 0)
 
     filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
+    print(f'{k_L_E_arrays.transpose(2,0,1) = }')
+    print(f'{np.amax(k_L_E_arrays, axis = 2) = }')
+    print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)) = }')
+    print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0) = }')
     print(f'{filter_max_arr = }')
-
+    return
     color_map = cmocean.cm.thermal
     norm = matplotlib.colors.Normalize(vmin=0, vmax=19, clip = True)
     theory_colors = [color_map(norm(L)) for L in range(k_L_E_arrays.shape[0])]
@@ -120,7 +124,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         # annotate peaks with the orbital quantum numbers L
         for coord in coords_vs_L:
             ax.text(coord[1], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = color_map(norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
-        ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.$')
+        # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.$')
         # props = dict(boxstyle='round', facecolor='none', edgecolor='none')
         ax.text(0.95, 0.90, f'$\\Delta\\Phi = {phase_difference%1:.2f}\\pi$\n$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
         # ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
