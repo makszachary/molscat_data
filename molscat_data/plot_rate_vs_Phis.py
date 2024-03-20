@@ -84,6 +84,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     print(f'{np.amax(k_L_E_arrays, axis = 2) = }')
     print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)) = }')
     print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0) = }')
+    print(f'{k_L_E_arrays = }')
     print(f'{filter_max_arr = }')
     return
     color_map = cmocean.cm.thermal
