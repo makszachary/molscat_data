@@ -79,14 +79,14 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     k_L_E_arrays = np.array([np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((50, nenergies), np.nan) for array_path in k_L_E_array_paths]).transpose(1,2,0)
     total_k_E_Phis_array = k_L_E_arrays.sum(axis = 0)
 
-    filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
+    filter_max_arr = np.equal(np.full_like(k_L_E_arrays.transpose(2,0,1), np.nanmax(k_L_E_arrays, axis = 2)).transpose(1,2,0), k_L_E_arrays)
     print(f'{k_L_E_arrays.transpose(2,0,1) = }')
     print(f'{np.amax(k_L_E_arrays, axis = 2) = }')
     print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)) = }')
     print(f'{np.full_like(k_L_E_arrays.transpose(2,0,1), np.amax(k_L_E_arrays, axis = 2)).transpose(1,2,0) = }')
     print(f'{k_L_E_arrays = }')
     print(f'{filter_max_arr = }')
-    return
+    # return
     color_map = cmocean.cm.thermal
     norm = matplotlib.colors.Normalize(vmin=0, vmax=19, clip = True)
     theory_colors = [color_map(norm(L)) for L in range(k_L_E_arrays.shape[0])]
