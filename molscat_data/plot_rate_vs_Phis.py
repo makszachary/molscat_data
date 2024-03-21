@@ -126,7 +126,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
             theory = k_L_E_arrays[:,E_index,:].transpose()
 
             ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
-            ax.set_ylim(0, 1.1*np.amax(total_k_vs_Phi_at_E_array))
+            ax.set_ylim(0, 1.15*np.amax(total_k_vs_Phi_at_E_array))
             PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
             preferred_exponent = -9
             ax.yaxis.set_major_formatter(lambda x, pos: f'{x / 10**(preferred_exponent):.1f}')
