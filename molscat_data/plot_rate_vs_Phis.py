@@ -141,7 +141,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
             ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
 
         for i, ax in enumerate(axs):
-            ax.text(0., 1.0, f'{chr(ord("a")+i)}', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transAxes, fontweight = 'bold')
+            ax.text(0., 1.0, f'{chr(ord("a")+i)}', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax.transAxes, fontweight = 'bold')
         fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
         fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
         fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
