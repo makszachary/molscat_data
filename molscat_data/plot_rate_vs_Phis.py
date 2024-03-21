@@ -143,7 +143,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
         fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
         fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
-        
+        print("GDSSGDaGggaga")
         return
 
     for E_index in energy_indices:#range(k_L_E_arrays.shape[1]):
