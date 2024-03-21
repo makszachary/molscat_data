@@ -127,7 +127,6 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
             ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
             PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
-            ax.set_xlabel(r"$\Phi_\mathrm{s}$")
             preferred_exponent = -9
             ax.yaxis.set_major_formatter(lambda x, pos: f'{x / 10**(preferred_exponent):.1f}')
             ax.set_ylabel(f'rate ($\\times\\,10^{{{int(preferred_exponent)}}}\\,\\mathrm{{cm}}^3/\\mathrm{{s}}$)')
@@ -142,6 +141,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
         for i in range(len(axs)-1):
             plt.setp(axs[i].get_xticklabels(), visible=False)
+        ax[-1].set_xlabel(r"$\Phi_\mathrm{s}$")
 
         for i, ax in enumerate(axs):
             ax.text(-0.08, 1.0, f'{chr(ord("a")+i)}', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax.transAxes, fontweight = 'bold')
