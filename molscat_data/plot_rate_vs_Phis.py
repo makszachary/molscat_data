@@ -144,7 +144,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.$')
         # props = dict(boxstyle='round', facecolor='none', edgecolor='none')
         # ax.text(0.95, 0.90, f'$\\Delta\\Phi = {phase_difference%1:.2f}\\pi$\n$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
-        ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {latex_float(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
+        ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
         # ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
         fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
         fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
