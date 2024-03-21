@@ -46,7 +46,7 @@ def latex_scientific_notation(number, sigfigs = 2):
     float_str = f'{number:.{sigfigs}e}'
     if "e" in float_str:
         base, exponent = float_str.split("e")
-        return f'{base} \\times 10^{{{exponent}}}'
+        return f'{base} \\times 10^{{{int(exponent)}}}'
     else:
         return float_str
 
