@@ -197,7 +197,7 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
-    plot_energies = None if args.plot_energies is None else tuple(plot_energies)
+    plot_energies = None if args.plot_energies is None else tuple(args.plot_energies)
 
     plotRateVsPhisForEachEnergy(phase_step = args.phase_step, phase_difference = args.phase_difference, so_scaling = args.so_scaling, energy_tuple = energy_tuple, plot_energies = plot_energies, input_dir_name = args.input_dir_name, plot_nan = args.plot_nan, journal_name = args.journal)
 
