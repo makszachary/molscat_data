@@ -115,7 +115,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         png_path.parent.mkdir(parents = True, exist_ok = True)
         
         fig, axs = plt.subplots(3, 1, sharex = True, figsize = figsize, dpi = dpi)
-        fig.subplots_adjust(hspace=0)
+        fig.subplots_adjust(hspace=0.1)
         # fig = plt.figure(figsize=figsize, dpi = dpi)
         # gs = gridspec.GridSpec(3,1, fig)
         # gs.update(hspace=0.0)
