@@ -50,7 +50,7 @@ def latex_scientific_notation(number, sigfigs = 2):
     else:
         return float_str
 
-def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, journal_name = 'NatCommun'):
+def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: tuple[float, ...] = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
 
     time_0 = time.perf_counter()
@@ -105,8 +105,11 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     theory_colors = [color_map(norm(L)) for L in range(k_L_E_arrays.shape[0])]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4}, ]
+    
+    energy_indices = tuple( (np.abs(energy_tuple - value)).argmin() for value in plot_energies) if plot_energies is not None else tuple(range(k_L_E_arrays.shape[1]))
 
-    for E_index in range(k_L_E_arrays.shape[1]):
+
+    for E_index in energy_indices:#range(k_L_E_arrays.shape[1]):
         energy = energy_tuple[E_index]
         png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{energy:.2e}K.png'
         pdf_path = png_path.with_suffix('.pdf')
@@ -183,6 +186,7 @@ def main():
     parser.add_argument("--E_max", type = float, default = 8e-2, help = "Highest energy value in the grid.")
     parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
 
+    parser.add_argument("--plot_energies", nargs='*', type = float, default = None, help = "Values of the SO scaling.")
 
     parser.add_argument("--input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--plot_nan", action = 'store_true', help = "If included, the plotted values will be interpolated for arrays that weren't found (instead of jus plotting a blank place).")
@@ -193,8 +197,9 @@ def main():
     nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
+    plot_energies = None if args.plot_energies is None else tuple(plot_energies)
 
-    plotRateVsPhisForEachEnergy(phase_step = args.phase_step, phase_difference = args.phase_difference, so_scaling = args.so_scaling, energy_tuple = energy_tuple, input_dir_name = args.input_dir_name, plot_nan = args.plot_nan, journal_name = args.journal)
+    plotRateVsPhisForEachEnergy(phase_step = args.phase_step, phase_difference = args.phase_difference, so_scaling = args.so_scaling, energy_tuple = energy_tuple, plot_energies = plot_energies, input_dir_name = args.input_dir_name, plot_nan = args.plot_nan, journal_name = args.journal)
 
 
 if __name__ == '__main__':
