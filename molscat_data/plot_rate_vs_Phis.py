@@ -2,6 +2,7 @@ import sys
 import os
 from pathlib import Path
 import shutil
+from zipfile import ZipFile
 import argparse
 
 from multiprocessing import Pool
@@ -141,7 +142,14 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         plt.close()
 
     for zipped_dir_path in zipped_dir_paths:
-        shutil.make_archive(zipped_dir_path, 'zip', zipped_dir_path)
+        zip_path = zipped_dir_path.parent / (zipped_dir_path.name + '.zip')
+        base_dir = zipped_dir_path / f'in_2_-2_1_1'
+        with ZipFile(zip_path, 'w') as zip:
+            for filepath in [*base_dir.rglob('k_*'), *base_dir.rglob('probabilities/*'),]:
+                print(filepath)
+                zip.write(filepath)
+
+        # shutil.make_archive(zipped_dir_path, 'zip', root_dir = zipped_dir_path, base_dir = f'in_2_-2_1_1/k_L_E')
         # [shutil.rmtree(zipped_dir_path / f'in_{F1}_{MF1}_{F2}_{MF2}' / name, ignore_errors=True) for name in ('k_L_E', 'k_m_L_E') ]
 
 
