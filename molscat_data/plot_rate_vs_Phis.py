@@ -141,7 +141,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
         for i in range(len(axs)-1):
             plt.setp(axs[i].get_xticklabels(), visible=False)
-        ax[-1].set_xlabel(r"$\Phi_\mathrm{s}$")
+        axs[-1].set_xlabel(r"$\Phi_\mathrm{s}$")
 
         for i, ax in enumerate(axs):
             ax.text(-0.08, 1.0, f'{chr(ord("a")+i)}', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = ax.transAxes, fontweight = 'bold')
