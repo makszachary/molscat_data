@@ -42,8 +42,8 @@ pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
 
-def latex_float(number):
-    float_str = f'{number:.2g}'
+def latex_scientific_notation(number, sigfigs = 2):
+    float_str = f'{number:.{sigfigs}e}'
     if "e" in float_str:
         base, exponent = float_str.split("e")
         return f'{base} \\times 10^{{{exponent}}}'
