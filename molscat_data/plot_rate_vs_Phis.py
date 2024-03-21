@@ -50,7 +50,7 @@ def latex_scientific_notation(number, sigfigs = 2):
     else:
         return float_str
 
-def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, journal_name = 'NatCommun'):
+def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, merge_plots = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
 
     time_0 = time.perf_counter()
@@ -108,10 +108,47 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     
     energy_indices = tuple( (np.abs(energy_tuple - value)).argmin() for value in plot_energies) if plot_energies is not None else tuple(range(k_L_E_arrays.shape[1]))
 
+    if merge_plots and plot_energies is not None:
+        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1_merged' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SupplementaryFig1.png'
+        pdf_path = png_path.with_suffix('.pdf')
+        svg_path = png_path.with_suffix('.svg')
+        png_path.parent.mkdir(parents = True, exist_ok = True)
+        
+        fig, axs = plt.subplots(3, 1, sharex = True, figsize = figsize, dpi = dpi)
+        fig.subplots_adjust(hspace=0)
+        # fig = plt.figure(figsize=figsize, dpi = dpi)
+        # gs = gridspec.GridSpec(3,1, fig)
+        # gs.update(hspace=0.0)
+        # axs = [fig.add_subplot(gs[i]) for i in range(len(plot_energies))]
+        for E_index, ax in zip(energy_indices, axs):
+            energy = energy_tuple[E_index]
+            total_k_vs_Phi_at_E_array = np.array([total_k_E_Phis_array[E_index],]).transpose()
+            theory = k_L_E_arrays[:,E_index,:].transpose()
+
+            ax = ValuesVsModelParameters.plotValuestoAxis(ax, xx = singlet_phases, theory = theory, theory_distinguished = total_k_vs_Phi_at_E_array, theory_formattings = theory_formattings, theory_distinguished_formattings = theory_distinguished_formattings)
+            PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
+            ax.set_xlabel(r"$\Phi_\mathrm{s}$")
+            preferred_exponent = -9
+            ax.yaxis.set_major_formatter(lambda x, pos: f'{x / 10**(preferred_exponent):.1f}')
+            ax.set_ylabel(f'rate ($\\times\\,10^{{{int(preferred_exponent)}}}\\,\\mathrm{{cm}}^3/\\mathrm{{s}}$)')
+
+            # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
+            coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
+
+            # annotate peaks with the orbital quantum numbers L
+            for coord in coords_vs_L:
+                ax.text(coord[1], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = color_map(norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
+            ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
+
+        fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
+        fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+        fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+        
+        return
 
     for E_index in energy_indices:#range(k_L_E_arrays.shape[1]):
         energy = energy_tuple[E_index]
-        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{energy:.2e}K.png'
+        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SupplementaryFig1_{energy:.2e}K.png'
         pdf_path = png_path.with_suffix('.pdf')
         svg_path = png_path.with_suffix('.svg')
         png_path.parent.mkdir(parents = True, exist_ok = True)
