@@ -49,8 +49,8 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     time_0 = time.perf_counter()
     cm = 1/2.54
-    total_height=12
-    figsize = (8.5*cm, total_height*cm)
+    total_height=8
+    figsize = (18*cm, total_height*cm)
     dpi = 1200
 
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
