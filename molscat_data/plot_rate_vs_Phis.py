@@ -146,7 +146,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         base_dir = zipped_dir_path / f'in_2_-2_1_1'
         with ZipFile(zip_path, 'w') as zip:
             for filepath in [*base_dir.rglob('k_*'), *base_dir.rglob('probabilities/*'),]:
-                print(filepath)
+                # print(filepath)
                 zip.write(filepath)
 
         # shutil.make_archive(zipped_dir_path, 'zip', root_dir = zipped_dir_path, base_dir = f'in_2_-2_1_1/k_L_E')
