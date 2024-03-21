@@ -42,7 +42,13 @@ pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
 
-
+def latex_float(number):
+    float_str = f'{number:.2g}'
+    if "e" in float_str:
+        base, exponent = float_str.split("e")
+        return f'{base} \\times 10^{{{exponent}}}'
+    else:
+        return float_str
 
 def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
@@ -138,7 +144,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         # ax.set_title(f'The $\\left|1,-1\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\uparrow\\hspace{{-.2}}\\right> \\rightarrow \left|1,0\\right>\\hspace{{0.2}}\\left|\\hspace{{-.2}}\\downarrow\\hspace{{-.2}}\\right>$ collision rate.$')
         # props = dict(boxstyle='round', facecolor='none', edgecolor='none')
         # ax.text(0.95, 0.90, f'$\\Delta\\Phi = {phase_difference%1:.2f}\\pi$\n$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
-        ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = \\num{{{energy:.2e}}}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
+        ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = \\num{{{latex_float(energy)}}}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
         # ax.text(0.95, 0.90, f'$E_\\mathrm{{col}} = {energy:.2e}\\,\\mathrm{{K}}\\times k_B$', va = 'center', ha = 'right', transform = ax.transAxes)
         fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
         fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
