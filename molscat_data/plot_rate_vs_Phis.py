@@ -124,9 +124,9 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         # ax.set_ylim(0, 1.2*np.amax(total_k_vs_Phi_at_E_array) )
         PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
         ax.set_xlabel(r"$\Phi_\mathrm{s}$")
+        ax.ticklabel_format(axis = 'y', scilimits = (-9,-9))
         base, exponent = f'{ax.get_ylim()[1]:.2e}'.split("e")
         ax.set_ylabel(f'rate ($\\times\\,10^{{{int(exponent)}}}\\,\\mathrm{{cm}}^3/\\mathrm{{s}}$)')
-        ax.ticklabel_format(axis = 'y', scilimits = (-9,-9))
 
         # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
         # for L in range(k_L_E_arrays.shape[0]):
