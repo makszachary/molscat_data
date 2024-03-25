@@ -138,7 +138,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
             # annotate peaks with the orbital quantum numbers L
             for coord in coords_vs_L:
                 ax.text(coord[1], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = color_map(norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
-            ax.text(0.97, 0.94, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'top', ha = 'right', transform = ax.transAxes)#, bbox = dict(facecolor = 'white', edgecolor = 'none'))
+            ax.text(0.97, 0.93, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'top', ha = 'right', transform = ax.transAxes)#, bbox = dict(facecolor = 'white', edgecolor = 'none'))
 
         for i in range(len(axs)-1):
             plt.setp(axs[i].get_xticklabels(), visible=False)
