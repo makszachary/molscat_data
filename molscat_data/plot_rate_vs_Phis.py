@@ -55,8 +55,8 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     time_0 = time.perf_counter()
     cm = 1/2.54
-    total_height = len(plot_energies)*4.9 if plot_energies is not None else 6
-    figsize = (15.6*cm, total_height*cm)
+    total_height = len(plot_energies)*4.8 if plot_energies is not None else 6
+    figsize = (15*cm, total_height*cm)
     dpi = 1200
 
     molscat_out_dir = scratch_path.joinpath('molscat', 'outputs')
@@ -130,7 +130,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
             PhaseTicks.setInMultiplesOfPhi(ax.xaxis)
             preferred_exponent = -9
             ax.yaxis.set_major_formatter(lambda x, pos: f'{x / 10**(preferred_exponent):.1f}')
-            ax.set_ylabel(f'rate ($\\times\\,10^{{{int(preferred_exponent)}}}\\,\\mathrm{{cm}}^3/\\mathrm{{s}}$)')
+            ax.set_ylabel(f'rate coefficient ($\\,10^{{{int(preferred_exponent)}}}\\,\\mathrm{{cm}}^3/\\mathrm{{s}}$)')
 
             # find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
             coords_vs_L = tuple( (l, singlet_phases[filter_max_arr[l, E_index]], k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
