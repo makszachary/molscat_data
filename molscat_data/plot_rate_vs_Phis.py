@@ -55,7 +55,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     time_0 = time.perf_counter()
     cm = 1/2.54
-    total_height = len(plot_energies)*4.8 if plot_energies is not None else 6
+    total_height = len(plot_energies)*4.7 if plot_energies is not None else 6
     figsize = (15*cm, total_height*cm)
     dpi = 1200
 
@@ -138,7 +138,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
             # annotate peaks with the orbital quantum numbers L
             for coord in coords_vs_L:
                 ax.text(coord[1], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'large', color = color_map(norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
-            ax.text(0.97, 0.92, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'top', ha = 'right', transform = ax.transAxes)#, bbox = dict(facecolor = 'white', edgecolor = 'none'))
+            ax.text(0.97, 0.91, f'$E_\\mathrm{{col}} = {latex_scientific_notation(energy)}\\,\\mathrm{{K}}\\times k_B$', va = 'top', ha = 'right', transform = ax.transAxes)#, bbox = dict(facecolor = 'white', edgecolor = 'none'))
 
         for i in range(len(axs)-1):
             plt.setp(axs[i].get_xticklabels(), visible=False)
