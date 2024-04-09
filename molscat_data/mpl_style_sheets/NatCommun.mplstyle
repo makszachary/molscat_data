@@ -1,6 +1,8 @@
 svg.fonttype: none
 pdf.fonttype: 42
 pdf.use14corefonts: True
+font.family : sans-serif
+font.sans-serif : Arial, Helvetica, Avant Garde, sans-serif
 axes.titlesize : 8
 axes.labelsize : 8
 xtick.labelsize : small
