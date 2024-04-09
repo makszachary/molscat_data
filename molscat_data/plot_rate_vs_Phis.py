@@ -104,7 +104,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     norm = matplotlib.colors.Normalize(vmin=0, vmax=19, clip = True)
     theory_colors = [color_map(norm(L)) for L in range(k_L_E_arrays.shape[0])]
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4}, ]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 2.5}, ]
     
     energy_indices = tuple( (np.abs(energy_tuple - value)).argmin() for value in plot_energies) if plot_energies is not None else tuple(range(k_L_E_arrays.shape[1]))
 
