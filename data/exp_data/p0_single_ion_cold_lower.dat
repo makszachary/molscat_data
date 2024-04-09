@@ -1,0 +1,3 @@
+# The short-range probabilities and their standard deviations calculated from single_ion_cold_lower.dat using probability mass function stored in /home/mzalewski/Documents/python/molscat_data/data/pmf/N_pdf_logic_params_EMM_500uK.txt.
+0.1790 -0.0000 0.0227
+0.0099 0.0000 0.0023

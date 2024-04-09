@@ -371,11 +371,11 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1 = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
     fig2, fig2_ax, fig3, fig3_axs, gs3 = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
 
-    fig0_ax.text(0., 1.0, f'a', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00, f'b', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'c', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 7, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
     gs1.update(left = 0.17, right = 0.97)
