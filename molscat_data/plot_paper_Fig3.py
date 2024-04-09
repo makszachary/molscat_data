@@ -170,7 +170,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # mrkcolor='#b50033' # ładny optymalny czerwony # '#f5390a'
-    mrkcolor = '#ff1414ff'# jaskrawy czerwony
+    # mrkcolor = '#ff1414ff'# jaskrawy czerwony
+    mrkcolor = '#cc0000ff' # czerwony jak atom rubidu
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
                                           'markevery': 0.03, 'markersize': 3,
                                           'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
@@ -273,7 +274,8 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     #mrkcolor = '#b50033' # ładny optymalny czerwony # '#f5390a'
-    mrkcolor = '#ff1414ff'# jaskrawy czerwony
+    # mrkcolor = '#ff1414ff'# jaskrawy czerwony
+    mrkcolor = '#cc0000ff' # czerwony jak atom rubidu
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
                                           'markevery': 0.06, 'markersize': 3,
                                           'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
