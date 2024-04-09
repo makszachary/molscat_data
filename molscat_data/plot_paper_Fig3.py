@@ -299,7 +299,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
+    theory_formattings = [ {'color': color, 'linewidth': 1.0} for color in theory_colors ]
 
     gs3 = gridspec.GridSpec(3,60, fig3)
     gs3.update(hspace=0.0)
