@@ -394,13 +394,13 @@ def main():
     parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
     parser = argparse.ArgumentParser(description=parser_description)
     parser.add_argument("--phase_step_cm", type = float, default = 0.04, help = "The phase step in the multiples of pi for the color map.")
-    parser.add_argument("--phase_step_sections", type = float, default = 0.04, help = "The singlet phase step in themultiples of pi for the sections through the color map.")
+    parser.add_argument("--phase_step_sections", type = float, default = 0.01, help = "The singlet phase step in themultiples of pi for the sections through the color map.")
     parser.add_argument("--phase_differences", nargs='*', type = float, default = None, help = "The values of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
-    parser.add_argument("--phase_difference", type = float, default = 0.19, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
-    parser.add_argument("--so_scaling", type = float, default = 0.375, help = "Value of the SO scaling.")
+    parser.add_argument("--phase_difference", type = float, default = 0.2, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
+    parser.add_argument("--so_scaling", type = float, default = 0.32, help = "Value of the SO scaling.")
 
     parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
-    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.23,], help = "The triplet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
+    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.24,], help = "The triplet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
 
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
@@ -422,8 +422,8 @@ def main():
     parser.add_argument("--fmf_colormap", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with the fmf basis set. Changes the directory structure for arrays.")
     parser.add_argument("--so_scaling_vs_B", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with spin-orbit coupling included. Changes the directory structure for arrays.")
 
-    parser.add_argument("--cm_input_dir_name", type = str, default = 'RbSr+_tcpld_80mK_0.01_step', help = "Name of the directory with the molscat inputs")
-    parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_SE_vs_B_80mK', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--cm_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--colormap_hybrid", action = 'store_true', help = "If enabled, the probabilities for the colormap will be taken from 'probabilities_hybrid' directories.")
     parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section line for the distinguished phase difference will be drawn.")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
