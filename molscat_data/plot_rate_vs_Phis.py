@@ -117,7 +117,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     energy_indices = tuple( (np.abs(energy_tuple - value)).argmin() for value in plot_energies) if plot_energies is not None else tuple(range(k_L_E_arrays.shape[1]))
 
     if merge_plots and plot_energies is not None:
-        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1_merged' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SupplementaryFig1.png'
+        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1_merged' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / abbreviation / f'SupplementaryFig1_{abbreviation}.png'
         pdf_path = png_path.with_suffix('.pdf')
         svg_path = png_path.with_suffix('.svg')
         png_path.parent.mkdir(parents = True, exist_ok = True)
