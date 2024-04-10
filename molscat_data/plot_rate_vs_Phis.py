@@ -96,7 +96,6 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     k_L_E_arrays = [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((int(L_max/2+1), nenergies), np.nan) for array_path in k_L_E_array_paths]
     k_L_E_shapes = [arr.shape for arr in k_L_E_shapes]
     print(f'{k_L_E_shapes}')
-    print(f'{k}')
     k_L_E_arrays = np.array(k_L_E_arrays).transpose(1,2,0)
     if plot_nan:
         print(f'{k_L_E_arrays[np.isnan(k_L_E_arrays)] = }')
