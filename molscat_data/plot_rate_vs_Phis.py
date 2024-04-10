@@ -254,7 +254,7 @@ def main():
 
     plot_energies = None if args.plot_energies is None else np.array(args.plot_energies)
 
-    plotRateVsPhisForEachEnergy(phase_step = args.phase_step, phase_difference = args.phase_difference, so_scaling = args.so_scaling, energy_tuple = energy_tuple, plot_energies = plot_energies, input_dir_name = args.input_dir_name, plot_nan = args.plot_nan, merge_plots = args.merge_plots, journal_name = args.journal)
+    plotRateVsPhisForEachEnergy(phase_step = args.phase_step, phase_difference = args.phase_difference, so_scaling = args.so_scaling, energy_tuple = energy_tuple, plot_energies = plot_energies, input_dir_name = args.input_dir_name, abbreviation = args.abbreviation, plot_nan = args.plot_nan, merge_plots = args.merge_plots, journal_name = args.journal)
 
 
 if __name__ == '__main__':
