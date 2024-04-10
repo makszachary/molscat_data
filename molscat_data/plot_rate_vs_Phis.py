@@ -50,7 +50,7 @@ def latex_scientific_notation(number, sigfigs = 2):
     else:
         return float_str
 
-def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', plot_nan = False, merge_plots = False, journal_name = 'NatCommun'):
+def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', abbreviation = 'cold_lower', plot_nan = False, merge_plots = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
 
     time_0 = time.perf_counter()
@@ -66,9 +66,17 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     E_max = max(energy_tuple)
     # singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
 
-    F1, F2 = 2, 1
-    MF1, MF2 = -2, 1
-    MF1out, MF2out = 0, -1
+    if abbreviation == 'cold_lower':
+        F1in, MF1in, F2in, MF2in = 2, -2, 1, 1
+        F1out, MF1out, F2out, MF2out = 2, 0, 1, -1
+    elif abbreviation == 'cold_higher':
+        F1in, MF1in, F2in, MF2in = 4, -4, 1, 1
+        F1out, MF1out, F2out, MF2out = 4, -2, 1, -1
+    elif abbreviation == 'hpf':
+        F1in, MF1in, F2in, MF2in = 4, -4, 1, 1
+        F1out, MF1out, F2out, MF2out = 2, -2, 1, -1
+    else:
+        raise ValueError(f"{abbreviation = } doesn\'t match any of the following: \'cold_lower\', \'cold_higher\', \'hpf\'.")
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 
@@ -80,7 +88,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         if zip_path.is_file():        
             shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
 
-    k_L_E_array_paths = [  arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E' / 'cold_lower' / f'OUT_{F1}_{MF1out}_{F2}_{MF2out}_IN_{F1}_{MF1}_{F2}_{MF2}.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
+    k_L_E_array_paths = [  arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1in}_{MF1in}_{F2in}_{MF2in}' / 'k_L_E' / abbreviation / f'OUT_{F1out}_{MF1out}_{F2out}_{MF2out}_IN_{F1in}_{MF1in}_{F2in}_{MF2in}.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
     [print(array_path) for array_path in k_L_E_array_paths if (array_path is not None and not array_path.is_file())]
     print(k_L_E_array_paths)
     k_L_E_arrays = np.array([np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((50, nenergies), np.nan) for array_path in k_L_E_array_paths]).transpose(1,2,0)
@@ -154,7 +162,7 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
 
     for E_index in energy_indices:#range(k_L_E_arrays.shape[1]):
         energy = energy_tuple[E_index]
-        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SupplementaryFig1_{energy:.2e}K.png'
+        png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'SupplementaryFigure1' / f'{input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / abbreviation / f'SupplementaryFig1_{abbreviation}_{energy:.2e}K.png'
         pdf_path = png_path.with_suffix('.pdf')
         svg_path = png_path.with_suffix('.svg')
         png_path.parent.mkdir(parents = True, exist_ok = True)
@@ -221,8 +229,9 @@ def main():
     parser.add_argument("--phase_difference", type = float, default = 0.20, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--so_scaling", type = float, default = 0.32, help = "Value of the SO scaling.")
 
-    parser.add_argument("--MF_in", type = int, default = -2)
-    parser.add_argument("--MS_in", type = int, default = 1)
+    # parser.add_argument("--MF_in", type = int, default = -2)
+    # parser.add_argument("--MS_in", type = int, default = 1)
+    parser.add_argument("--abbreviation", type = str, default = 'cold_lower', help = "The name of abbreviation in the array path. Possible values: \'cold_lower\' (default), \'cold_higher\', \'hpf\'.")
 
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
