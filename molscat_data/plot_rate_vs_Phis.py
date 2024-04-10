@@ -87,6 +87,8 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
         zip_path = zipped_dir_path.parent / (zipped_dir_path.name + '.zip')
         if zip_path.is_file():        
             shutil.unpack_archive(zip_path, zipped_dir_path, 'zip')
+        else:
+            print(f'{zip_path = } is not a file.')
 
     k_L_E_array_paths = [  arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1in}_{MF1in}_{F2in}_{MF2in}' / 'k_L_E' / abbreviation / f'OUT_{F1out}_{MF1out}_{F2out}_{MF2out}_IN_{F1in}_{MF1in}_{F2in}_{MF2in}.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
     [print(f'{array_path} not found') for array_path in k_L_E_array_paths if (array_path is not None and not array_path.is_file())]
