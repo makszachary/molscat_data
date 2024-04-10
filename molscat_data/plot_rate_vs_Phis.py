@@ -50,7 +50,7 @@ def latex_scientific_notation(number, sigfigs = 2):
     else:
         return float_str
 
-def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', abbreviation = 'cold_lower', plot_nan = False, merge_plots = False, journal_name = 'NatCommun'):
+def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_scaling: float, energy_tuple: tuple[float, ...], plot_energies: np.ndarray = None, input_dir_name: str = 'RbSr+_fmf_so_scaling', abbreviation = 'cold_lower', lmax = 49, plot_nan = False, merge_plots = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
 
     time_0 = time.perf_counter()
@@ -93,7 +93,11 @@ def plotRateVsPhisForEachEnergy(phase_step: float, phase_difference: float, so_s
     k_L_E_array_paths = [  arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1in}_{MF1in}_{F2in}_{MF2in}' / 'k_L_E' / abbreviation / f'OUT_{F1out}_{MF1out}_{F2out}_{MF2out}_IN_{F1in}_{MF1in}_{F2in}_{MF2in}.txt' if ( singlet_phase+phase_difference ) % 1 !=0 else None for singlet_phase in singlet_phases]
     [print(f'{array_path} not found') for array_path in k_L_E_array_paths if (array_path is not None and not array_path.is_file())]
     print(k_L_E_array_paths)
-    k_L_E_arrays = np.array([np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((50, nenergies), np.nan) for array_path in k_L_E_array_paths]).transpose(1,2,0)
+    k_L_E_arrays = [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((lmax+1, nenergies), np.nan) for array_path in k_L_E_array_paths]
+    k_L_E_shapes = [arr.shape for arr in k_L_E_shapes]
+    print(f'{k_L_E_shapes}')
+    print(f'{k}')
+    k_L_E_arrays = np.array(k_L_E_arrays).transpose(1,2,0)
     if plot_nan:
         print(f'{k_L_E_arrays[np.isnan(k_L_E_arrays)] = }')
         print(f'{k_L_E_arrays[np.roll(np.isnan(k_L_E_arrays),1,2)] = }')
@@ -234,6 +238,7 @@ def main():
     # parser.add_argument("--MF_in", type = int, default = -2)
     # parser.add_argument("--MS_in", type = int, default = 1)
     parser.add_argument("--abbreviation", type = str, default = 'cold_lower', help = "The name of abbreviation in the array path. Possible values: \'cold_lower\' (default), \'cold_higher\', \'hpf\'.")
+    parser.add_argument("--l_max", type = int, default = 49, help = "Maximum orbital angular momentum quantum number, NOT doubled. Default: 49.")
 
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 8e-7, help = "Lowest energy value in the grid.")
