@@ -239,8 +239,8 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
-    theory_formattings = [ {'color': even_color, 'linewidth': 1.5},
-                          {'color': odd_color, 'linewidth': 1.5}
+    theory_formattings = [ {'color': even_color, 'linewidth': 1.25},
+                          {'color': odd_color, 'linewidth': 1.25}
                           ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
