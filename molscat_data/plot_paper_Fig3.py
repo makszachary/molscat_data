@@ -148,8 +148,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
-    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 2.0, 'linestyle':  '-' } for exp in experiment]
+    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 1.75, 'linestyle':  '-' } for exp in experiment]
     fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     fig1_ax0.set_ylim(0, fig1_ax0.get_ylim()[1])
     fig1_ax0.set_xlim(0,1)
@@ -167,7 +167,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
+    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # mrkcolor='#b50033' # ładny optymalny czerwony # '#f5390a'
     # mrkcolor = '#ff1414ff'# jaskrawy czerwony
@@ -271,7 +271,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in magnetic_phases]))
-    theory_formattings = [ {'color': color, 'linewidth': 1.5} for color in theory_colors ]
+    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # mrkcolor = '#b50033' # ładny optymalny czerwony # '#f5390a'
     # mrkcolor = '#ff1414ff'# jaskrawy czerwony
