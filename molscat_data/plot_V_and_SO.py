@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 import argparse
 import time
-from _molscat_data.physical_constants import red_mass_87Rb_88Sr
+from _molscat_data.physical_constants import red_mass_87Rb_88Sr_amu
 
 # filepath = r"C:\Users\maksw\Documents\python\data\SO\RKHS\molscat-RbSr+30.json"
 # impath = filepath.strip('.json')+'.png'
@@ -35,7 +35,7 @@ def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool
     else:
         plt.close()
 
-def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None, L: int = 2, reduced_mass: float = red_mass_87Rb_88Sr, show: bool = False) -> None:
+def plot_so_potdiff_centrifugal(file_path: Path | str, impath: Path | str = None, L: int = 2, reduced_mass: float = red_mass_87Rb_88Sr_amu, show: bool = False) -> None:
     singlet_potential, triplet_potential, so_coupling = read_from_json(file_path)
     plt.figure()
     plt.plot(singlet_potential['distance'], np.abs(np.array(triplet_potential['energy'])-np.array(singlet_potential['energy'])), color = 'tab:blue', label = "$|V_t(R)-V_s(R)|$")

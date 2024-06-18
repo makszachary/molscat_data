@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 from scipy import optimize
 
 # from more_itertools import unique_everseen
-from .physical_constants import red_mass_87Rb_88Sr
+from .physical_constants import red_mass_87Rb_88Sr_amu
 
 default_singlet_scaling_path = Path(__file__).parents[2] / 'data' / 'scaling_old' / 'singlet_vs_coeff.json'
 default_triplet_scaling_path = default_singlet_scaling_path.parent / 'triplet_vs_coeff.json'
@@ -80,14 +80,14 @@ def update_json(new_data, json_path):
             json.dump(new_data, output, cls=ComplexEncoder, indent = 2)
 
 
-def scattering_length_from_phase(phase, C4 = -159.9, red_mass = red_mass_87Rb_88Sr):
+def scattering_length_from_phase(phase, C4 = -159.9, red_mass = red_mass_87Rb_88Sr_amu):
     """
     Returns the value of the scattering length as calculated from the semiclassical phase
     Phys. Rev. A 48, 546–553 (1993)
     """
     return -np.sqrt(2*red_mass*np.abs(C4)) * np.tan(phase - np.pi/4)
 
-def phase_from_scattering_length(scattering_length, C4 = -159.9, red_mass = red_mass_87Rb_88Sr):
+def phase_from_scattering_length(scattering_length, C4 = -159.9, red_mass = red_mass_87Rb_88Sr_amu):
     """
     Returns the value of the (semiclassical phase integral + pi/4) modulo pi as calculated from the scattering length
     Eq. (A.9) in the MSc thesis
