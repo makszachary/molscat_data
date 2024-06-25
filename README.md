@@ -8,6 +8,11 @@ It allows for collecting the scattering matrices (S-matrices) from the molscat o
 1. `git clone https://github.com/makszachary/molscat_data.git`
 
 2. in the molscat_data directory:  
+
+**Ares computational cluster**
+firstly
+`module add iomkl && module add python/3.10.8-gcccore-12.2.0`
+
 **Windows**  
 `py -m venv venv`  
 `venv/Scripts/activate`   

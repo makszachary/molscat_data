@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.optimize import curve_fit, brute, differential_evolution
+from scipy.stats import chi2
 
 from matplotlib import pyplot as plt
 import matplotlib
@@ -60,9 +61,15 @@ def main():
     yerr = exp_data[1, [0,1,3]]
 
     # print(residuals(simple_peff_function, xdata, ydata, yerr, DeltaPhi88 = 150.22*np.pi))
-    brt_ft = brute_fit(simple_peff_function, xdata, ydata, yerr, bounds = ((120*np.pi, 140*np.pi),), Ns = 100)
+    brt_ft = brute_fit(simple_peff_function, xdata, ydata, yerr, bounds = ((160*np.pi, 185*np.pi),), Ns = 500)
     print( brt_ft ) 
-    print(f'DeltaPhi88 = {brt_ft[0][0]/np.pi:.4f} pi')
+    print(f'''DeltaPhi88 / pi for p > 0.05: {brt_ft[2][brt_ft[3] < 5.9915] / np.pi}.
+Chi-squared values: {brt_ft[3][brt_ft[3] < 5.9915]}
+''')
+    print(f'''DeltaPhi88 / pi for p > 0.005: {brt_ft[2][brt_ft[3] < 10.5965] / np.pi}
+Chi-squared values: {brt_ft[3][brt_ft[3] < 10.5965]}
+''')
+    print(f'Optimal DeltaPhi88 = {brt_ft[0][0]/np.pi:.4f} pi')
 
     print([( brt_ft[0][0]/np.pi // 1 )*np.pi, ( (brt_ft[0][0]/np.pi // 1) + 1 )*np.pi])
 
@@ -74,9 +81,25 @@ def main():
     print(residuals(simple_peff_function, xdata, ydata, yerr, *fitted_params))
     print(residuals(simple_peff_function, red_mass_87Rb_87Sr_amu, exp_data[0,2], exp_data[1,2], *fitted_params))
 
+    p_value = 0.05
+    df = 2
+    fitted_pi_fractional = ( (fitted_params[0] / np.pi) % 1 ) * np.pi
+    min_DeltaPhi88 = (min(brt_ft[2][brt_ft[3] < chi2.isf(p_value, df)]) / np.pi // 1) * np.pi + fitted_pi_fractional
+    max_DeltaPhi88 = (max(brt_ft[2][brt_ft[3] < chi2.isf(p_value, df)]) / np.pi // 1) * np.pi + fitted_pi_fractional
+    
     fig, ax = plt.subplots(figsize = (6, 4.5), dpi = 300)
     xx = np.arange(42.48, 43.80, step = 0.01)
-    ax.plot(xx, simple_peff_function(xx, *fitted_params), color = 'firebrick')
+    
+    y1 = simple_peff_function(xx, min_DeltaPhi88)
+    y2 = simple_peff_function(xx, max_DeltaPhi88)
+    ax.plot(xx, simple_peff_function(xx, min_DeltaPhi88), color = 'maroon')
+    ax.plot(xx, simple_peff_function(xx, max_DeltaPhi88), color = 'maroon')
+    ax.fill_between(xx, y1, y2, color = 'firebrick', alpha = 0.2)
+
+    ax.plot(xx, simple_peff_function(xx, *fitted_params), color = 'firebrick', linestyle = '--')
+
+    ax.plot(xx, simple_peff_function(xx, 133*np.pi + fitted_pi_fractional), color = 'black')
+
     ax.scatter(xdata, ydata, s = 16, c = 'firebrick', marker = 'x', edgecolors = 'firebrick')
     ax.errorbar(xdata, ydata, yerr, ecolor = 'firebrick', capsize = 6, linestyle = 'none')
 

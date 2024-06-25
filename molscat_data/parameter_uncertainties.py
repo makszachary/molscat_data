@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from sigfig import round
 
 from scipy.optimize import curve_fit, brute, differential_evolution
 
