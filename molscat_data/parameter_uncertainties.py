@@ -133,7 +133,7 @@ def main():
     plot_temperature = 5e-4
     input_dir_name = 'RbSr+_fmf_vs_DPhi_SE'
 
-    x = get_p0_vs_DPhi(singlet_phases=singlet_phases, phase_differences=phase_differences, so_scaling=so_scaling, energy_tuple=energy_tuple, singlet_phase_distinguished=singlet_phase_distinguished, temperatures=temperatures, plot_temperature=plot_temperature, input_dir_name=input_dir_name)
+    x = get_p0_vs_DPhi(singlet_phases=singlet_phases, phase_differences=phase_differences, so_scaling=0.0, energy_tuple=energy_tuple, singlet_phase_distinguished=singlet_phase_distinguished, temperatures=temperatures, plot_temperature=plot_temperature, input_dir_name=input_dir_name)
     print(x)
 
 if __name__ == '__main__':
