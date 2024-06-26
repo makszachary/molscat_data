@@ -183,7 +183,9 @@ def main():
         ax.scatter(phase_differences, theory_hot, s = 8, facecolors='none', edgecolors = 'firebrick')#, marker = 'o')
         ax.scatter(phase_differences, theory_cold, s = 8, facecolors='none', edgecolors = 'midnightblue')#, marker = 'o')
 
-        ax.set_ylim(0, 0.7)
+        ax.set_ylim(0, 0.6)
+        ax.set_xlabel(f"$\\Delta\\Phi / \\pi$")
+        ax.set_ylabel(f"$p_0$")
 
         fig_path = plots_dir_path / 'trash' / 'fit_sin_vs_DPhi.pdf'
         fig_path.parent.mkdir(parents = True, exist_ok = True)
