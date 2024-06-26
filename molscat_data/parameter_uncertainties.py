@@ -181,7 +181,7 @@ def main():
         ax.plot(phase_differences, y1, color = 'midnightblue')
 
         ax.scatter(phase_differences, theory_hot, s = 16, c = 'firebrick', marker = 'x', edgecolors = 'firebrick')
-        ax.scatter(phase_differences, theory_cold, s = 16, c = 'maroon', marker = 'x', edgecolors = 'firebrick')
+        ax.scatter(phase_differences, theory_cold, s = 16, c = 'midnightblue', marker = 'x', edgecolors = 'firebrick')
 
         ax.set_ylim(0, 0.7)
 
