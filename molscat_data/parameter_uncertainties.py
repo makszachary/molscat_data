@@ -205,15 +205,16 @@ def main():
         print(lll)
 
         def numerical_sigmaDPhi(phase_difference_0, phase_differences, phase_step, theory, experiment, std):
-            print(theory.shape, phase_differences.shape)
-            print(np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1))
-            print(np.roll(phase_differences, -1) - np.roll(phase_differences, 1))
-            derivative =  (np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1)) / (2*phase_step)
-            return derivative
+            derivative =  (2*phase_step) / (np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1))
+            sigmaDPhi_sq = np.sum(derivative**2 * std**2, axis = 0)
+            sigma_DPhi = np.sqrt(sigmaDPhi_sq)
 
-        drv = numerical_sigmaDPhi(0.2, phase_differences, 0.01, theory_distinguished, experiment, std)
+            return drv, sigma_DPhi
+
+        drv, sigmaDPhi = numerical_sigmaDPhi(0.2, phase_differences, 0.01, theory_distinguished, experiment, std)
         print(phase_differences)
         print(drv)
+        print(sigmaDPhi)
 
 if __name__ == '__main__':
     main()
