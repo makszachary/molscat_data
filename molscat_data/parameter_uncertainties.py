@@ -199,7 +199,7 @@ def main():
             return np.array([spin_exchange(phase_difference, Phi0_hot, amplitude_hot), spin_exchange(phase_difference, Phi0_cold, amplitude_cold)])[np.int_(i)]
 
 
-        brt = brute_fit(fun, [0,1], ydata = experiment, yerr = std, bounds = ((0.1, 0.3),), Ns = 20)
+        brt = brute_fit(fun, [0,1], ydata = experiment, yerr = std, bounds = ((0.1, 0.3),), Ns = 100)
         print(brt)
         lll = fit_data(fun, [0,1], ydata = experiment, yerr = std, bounds = (0.1, 0.3),)
         print(lll)
