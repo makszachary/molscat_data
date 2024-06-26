@@ -91,7 +91,7 @@ def sum_of_squares(f, xdata, ydata, yerr = None, *args, **kwargs):
     res = residuals(f, xdata, ydata, yerr, *args, **kwargs)
     return np.sum(res**2)
 
-def brute_fit(f, xdata, ydata, yerr = None, bounds = None, Ns = 20,):
+def brute_fit(f, xdata, ydata, yerr, bounds, Ns = 20,):
     def fun(*args, **kwargs):
         return sum_of_squares(f, xdata, ydata, yerr, *args, **kwargs)
     return brute(fun, ranges = bounds, Ns = Ns, full_output = True)
@@ -197,7 +197,7 @@ def main():
 
         fun = lambda phase_difference: np.array([spin_exchange(phase_difference, Phi0_hot, amplitude_hot), spin_exchange(phase_difference, Phi0_cold, amplitude_cold)])
 
-        brt = brute_fit(fun, phase_differences, experiment, std)
+        brt = brute_fit(fun, phase_differences, experiment, std, bounds = (0.1, 0.3), Ns = 20)
         print(brt)
 
 
