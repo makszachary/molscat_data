@@ -159,6 +159,7 @@ def main():
     if args.DPhi:
         phase_differences, theory_distinguished, experiment, std = get_p0_vs_DPhi(singlet_phases=singlet_phases, phase_differences=phase_differences, so_scaling=0.0, energy_tuple=energy_tuple, singlet_phase_distinguished=singlet_phase_distinguished, temperatures=temperatures, plot_temperature=plot_temperature, input_dir_name=input_dir_name)
         theory_distinguished = np.squeeze(theory_distinguished)
+        print(phase_differences.shape)
         phase_differences = np.full_like(theory_distinguished, phase_differences.transpose()).transpose()
         print(phase_differences, theory_distinguished, experiment, std)
         print(phase_differences.shape, theory_distinguished.shape, experiment.shape, std.shape)
