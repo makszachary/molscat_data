@@ -204,14 +204,14 @@ def main():
         lll = fit_data(fun, [0,1], ydata = experiment, yerr = std, bounds = (0.1, 0.3),)
         print(lll)
 
-        def numerical_sigmaDPhi(phase_difference_0, phase_differences, theory, experiment, std):
+        def numerical_sigmaDPhi(phase_difference_0, phase_differences, phase_step, theory, experiment, std):
             print(theory.shape, phase_differences.shape)
             print(np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1))
             print(np.roll(phase_differences, -1) - np.roll(phase_differences, 1))
-            derivative =  (np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1)) / (np.roll(phase_differences, -1) - np.roll(phase_differences, 1))
+            derivative =  (np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1)) / (2*phase_step)
             return derivative
 
-        drv = numerical_sigmaDPhi(0.2, phase_differences, theory_distinguished, experiment, std)
+        drv = numerical_sigmaDPhi(0.2, phase_differences, 0.01, theory_distinguished, experiment, std)
         print(phase_differences)
         print(drv)
 
