@@ -76,7 +76,7 @@ def get_p0_vs_DPhi(singlet_phases: float | np.ndarray[float], phase_differences:
 
 
 def spin_exchange(DeltaPhi, Phi0, amplitude):
-    spin_exchange = amplitude * np.sin(DeltaPhi + Phi0)**2
+    spin_exchange = amplitude * np.sin((DeltaPhi + Phi0)*np.pi)**2
     return spin_exchange
 
 
@@ -167,11 +167,11 @@ def main():
         popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot, bounds = ((0, 0.4), (0.5*np.pi, 0.7)))
         [Phi0_hot, amplitude_hot] = popt
         print(popt, perr, chisq)
-        print(f"{Phi0_hot/np.pi =}")
+        print(f"{Phi0_hot = }pi")
         popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold, bounds = ((0, 0.1), (0.5*np.pi, 0.4)))
         [Phi0_cold, amplitude_cold] = popt
         print(popt, perr, chisq)
-        print(f"{Phi0_cold/np.pi =}")
+        print(f"{Phi0_cold = }pi")
     
         fig, ax = plt.subplots(figsize = (5, 4.5), dpi = 300)
         
