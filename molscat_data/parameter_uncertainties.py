@@ -211,7 +211,7 @@ def main():
 
             return derivative, sigma_DPhi
 
-        drv, sigmaDPhi = numerical_sigmaDPhi(0.2, phase_differences, 0.01, theory_distinguished, experiment, std)
+        drv, sigmaDPhi = numerical_sigmaDPhi(.01, theory_distinguished, experiment, std)
         print(phase_differences)
         print(drv)
         print(sigmaDPhi)
