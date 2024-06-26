@@ -6,6 +6,8 @@ from pathlib import Path
 import numpy as np
 from sigfig import round
 
+from matplotlib import pyplot as plt
+
 from scipy.optimize import curve_fit, brute, differential_evolution
 
 from _molscat_data.thermal_averaging import n_root_scale
@@ -170,6 +172,25 @@ def main():
         [Phi0_cold, amplitude_cold] = popt
         print(popt, perr, chisq)
         print(f"{Phi0_cold/np.pi =}")
+    
+        fig, ax = plt.subplots(figsize = (6, 4.5), dpi = 300)
+        xx = np.arange(42.48, 43.80, step = 0.01)
+        
+        y1 = spin_exchange(phase_differences, Phi0_hot, amplitude_hot)
+        y2 = spin_exchange(phase_differences, Phi0_cold, amplitude_cold)
+        ax.plot(phase_differences, y1, color = 'firebrick')
+        ax.plot(phase_differences, y1, color = 'midnightblue')
+
+        ax.scatter(phase_differences, theory_hot, s = 16, c = 'firebrick', marker = 'x', edgecolors = 'firebrick')
+        ax.scatter(phase_differences, theory_cold, s = 16, c = 'maroon', marker = 'x', edgecolors = 'firebrick')
+
+        ax.set_ylim(0, 0.5)
+
+        fig_path = plots_dir_path / 'trash' / 'fit_sin_vs_DPhi.pdf'
+        fig_path.parent.mkdir(parents = True, exist_ok = True)
+        plt.savefig(fig_path)
+        plt.close()
+
 
 if __name__ == '__main__':
     main()
