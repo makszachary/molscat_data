@@ -103,6 +103,7 @@ def fit_data(f, xdata, ydata, yerr=None, bounds = None):
     perr = np.sqrt(np.diag(pcov))
     
     # Calculate chi square (reduced)
+    if yerr is None: yerr = 1
     residuals = ydata - f(xdata, *popt)
     chisq = np.sum((residuals / yerr) ** 2) / (len(ydata) - len(popt))
     
