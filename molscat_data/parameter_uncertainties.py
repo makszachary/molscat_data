@@ -204,6 +204,11 @@ def main():
         lll = fit_data(fun, [0,1], ydata = experiment, yerr = std, bounds = (0.1, 0.3),)
         print(lll)
 
+        def numerical_sigmaDPhi(phase_difference_0, phase_differences, theory, experiment, std):
+            derivative = (np.roll(phase_differences, 1) - np.roll(phase_differences, -1)) / (np.roll(theory, 1, axis = 0) - np.roll(theory, 1, axis = 0))
+            return derivative
+
+        print(numerical_sigmaDPhi(0.2, phase_differences, theory_distinguished, experiment, std))
 
 if __name__ == '__main__':
     main()
