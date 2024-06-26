@@ -206,7 +206,7 @@ def main():
 
         def numerical_sigmaDPhi(phase_difference_0, phase_differences, phase_step, theory, experiment, std):
             derivative =  (2*phase_step) / (np.roll(theory, -1, axis = 1) - np.roll(theory, 1, axis = 1))
-            sigmaDPhi_sq = np.sum(derivative**2 * std**2, axis = 0)
+            sigmaDPhi_sq = np.sum(derivative.transpose()**2 * std**2, axis = 1)
             sigma_DPhi = np.sqrt(sigmaDPhi_sq)
 
             return drv, sigma_DPhi
