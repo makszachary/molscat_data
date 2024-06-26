@@ -192,6 +192,14 @@ def main():
         plt.savefig(fig_path)
         plt.close()
 
+        hot_theory_interpolated = spin_exchange(phase_differences, Phi0_hot, amplitude_hot)
+        cold_theory_interpolated = spin_exchange(phase_differences, Phi0_cold, amplitude_cold)
+
+        fun = lambda phase_difference: np.array([spin_exchange(phase_difference, Phi0_hot, amplitude_hot), spin_exchange(phase_difference, Phi0_cold, amplitude_cold)])
+
+        brt = brute_fit(fun, phase_differences, experiment, std)
+        print(brt)
+
 
 if __name__ == '__main__':
     main()
