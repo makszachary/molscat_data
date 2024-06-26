@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 from pathlib import Path
@@ -105,24 +106,42 @@ def fit_data(f, xdata, ydata, yerr=None, bounds = None):
     return popt, perr, chisq
 
 def main():
-    
+    parser_description = "This is a python script for running molscat, collecting and pickling S-matrices, and calculating effective probabilities."
+    parser = argparse.ArgumentParser(description=parser_description)
+    parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
+    parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The distinguished value of the singlet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
+    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.32,], help = "Values of the SO scaling.")
+    parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
+    parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
+    parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
+    parser.add_argument("--n_grid", type = int, default = 3, help = "n parameter for the nth-root energy grid.")
+    parser.add_argument("-T", "--temperatures", nargs='*', type = float, default = None, help = "Temperature in the Maxwell-Boltzmann distributions (in kelvins).")
+    parser.add_argument("--nT", type = int, default = 10, help = "Number of temperatures included in the calculations.")
+    parser.add_argument("--logT_min", type = float, default = -4)
+    parser.add_argument("--logT_max", type = float, default = -3)
+    parser.add_argument("--DPhi_input_dir_name", type = str, default = 'RbSr+_fmf_vs_DPhi_SE', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--SO_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--DPhi", action = 'store_true', help = "if included, DPhi is calculated")
+    parser.add_argument("--cso", action = 'store_true', help = "if included, cso is calculated")
+    args = parser.parse_args()
 
-    nenergies, E_min, E_max, n = 50, 4e-7, 4e-3, 3
+    nenergies, E_min, E_max, n = args.nenergies, args.E_min, args.E_max, args.n_grid
     energy_tuple = tuple( round(n_root_scale(i, E_min, E_max, nenergies-1, n = n), sigfigs = 11) for i in range(nenergies) )
 
-    singlet_phase = None
+    singlet_phase = args.singlet_phase
     singlet_phase_distinguished = singlet_phase if singlet_phase is not None else default_singlet_phase_function(1.0)
     
-    so_scaling = 0.32
+    so_scaling = args.so_scaling
 
-    phase_step = 0.01
+    phase_step = args.phase_step
     singlet_phases = np.array([default_singlet_phase_function(1.0),]) if phase_step is None else np.arange(phase_step, 1., phase_step).round(decimals=4)
     phase_differences = np.arange(0, 1.+phase_step, phase_step).round(decimals=4)
 
-    temperatures = None
-    logT_min=-4
-    logT_max=-3
-    nT=10
+    temperatures = args.temperatures
+    logT_min=args.logT_min
+    logT_max=args.logT_max
+    nT=args.nT
 
     if temperatures is None:
         temperatures = list(np.logspace(logT_min, logT_max, nT))
@@ -134,8 +153,11 @@ def main():
     plot_temperature = 5e-4
     input_dir_name = 'RbSr+_fmf_vs_DPhi_SE'
 
-    x = get_p0_vs_DPhi(singlet_phases=singlet_phases, phase_differences=phase_differences, so_scaling=0.0, energy_tuple=energy_tuple, singlet_phase_distinguished=singlet_phase_distinguished, temperatures=temperatures, plot_temperature=plot_temperature, input_dir_name=input_dir_name)
-    print(x)
+    if args.DPhi:
+        phase_differences, theory_distinguished, experiment, std = get_p0_vs_DPhi(singlet_phases=singlet_phases, phase_differences=phase_differences, so_scaling=0.0, energy_tuple=energy_tuple, singlet_phase_distinguished=singlet_phase_distinguished, temperatures=temperatures, plot_temperature=plot_temperature, input_dir_name=input_dir_name)
+        print(phase_differences, theory_distinguished, experiment, std)
+        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_distinguished)
+        print(popt, perr, chisq)
 
 if __name__ == '__main__':
     main()
