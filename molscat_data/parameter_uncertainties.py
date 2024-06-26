@@ -195,7 +195,8 @@ def main():
         hot_theory_interpolated = spin_exchange(phase_differences, Phi0_hot, amplitude_hot)
         cold_theory_interpolated = spin_exchange(phase_differences, Phi0_cold, amplitude_cold)
 
-        def fun(i, phase_difference):
+        def fun(i: int, phase_difference: float):
+            i = int(i)
             return np.array([spin_exchange(phase_difference, Phi0_hot, amplitude_hot), spin_exchange(phase_difference, Phi0_cold, amplitude_cold)])[i]
 
         lll = fit_data(fun, [0,1], ydata = experiment, yerr = std, bounds = (0.1, 0.3),)
