@@ -96,7 +96,10 @@ def brute_fit(f, xdata, ydata, yerr = None, bounds = None, Ns = 20,):
     
 
 def fit_data(f, xdata, ydata, yerr=None, bounds = None):
-    popt, pcov = curve_fit(f, xdata, ydata, sigma=yerr, bounds = bounds)
+    if bounds == None:
+        popt, pcov = curve_fit(f, xdata, ydata, sigma=yerr)
+    else:
+        popt, pcov = curve_fit(f, xdata, ydata, sigma=yerr, bounds = bounds)
     perr = np.sqrt(np.diag(pcov))
     
     # Calculate chi square (reduced)
