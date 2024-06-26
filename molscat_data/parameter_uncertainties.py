@@ -164,11 +164,11 @@ def main():
         theory_distinguished = np.squeeze(theory_distinguished).transpose()
         theory_hot = theory_distinguished[0]
         theory_cold = theory_distinguished[1]
-        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot, bounds = ((0, 0.4), (0.5*np.pi, 0.7)))
+        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot, bounds = ((0, 0.4), (0.5, 0.7)))
         [Phi0_hot, amplitude_hot] = popt
         print(popt, perr, chisq)
         print(f"{Phi0_hot = }pi")
-        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold, bounds = ((0, 0.1), (0.5*np.pi, 0.4)))
+        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold, bounds = ((0, 0.1), (0.5, 0.4)))
         [Phi0_cold, amplitude_cold] = popt
         print(popt, perr, chisq)
         print(f"{Phi0_cold = }pi")
