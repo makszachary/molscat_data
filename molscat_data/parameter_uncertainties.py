@@ -173,8 +173,7 @@ def main():
         print(popt, perr, chisq)
         print(f"{Phi0_cold/np.pi =}")
     
-        fig, ax = plt.subplots(figsize = (6, 4.5), dpi = 300)
-        xx = np.arange(42.48, 43.80, step = 0.01)
+        fig, ax = plt.subplots(figsize = (5, 4.5), dpi = 300)
         
         y1 = spin_exchange(phase_differences, Phi0_hot, amplitude_hot)
         y2 = spin_exchange(phase_differences, Phi0_cold, amplitude_cold)
