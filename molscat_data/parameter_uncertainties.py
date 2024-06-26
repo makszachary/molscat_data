@@ -165,9 +165,11 @@ def main():
         popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot)
         [Phi0_hot, amplitude_hot] = popt
         print(popt, perr, chisq)
+        print(f"{Phi0_hot/np.pi =}")
         popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold)
         [Phi0_cold, amplitude_cold] = popt
         print(popt, perr, chisq)
+        print(f"{Phi0_cold/np.pi =}")
 
 if __name__ == '__main__':
     main()
