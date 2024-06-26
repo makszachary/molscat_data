@@ -209,7 +209,7 @@ def main():
             sigmaDPhi_sq = np.sum(derivative.transpose()**2 * std**2, axis = 1)
             sigma_DPhi = np.sqrt(sigmaDPhi_sq)
 
-            return drv, sigma_DPhi
+            return derivative, sigma_DPhi
 
         drv, sigmaDPhi = numerical_sigmaDPhi(0.2, phase_differences, 0.01, theory_distinguished, experiment, std)
         print(phase_differences)
