@@ -164,11 +164,11 @@ def main():
         theory_distinguished = np.squeeze(theory_distinguished).transpose()
         theory_hot = theory_distinguished[0]
         theory_cold = theory_distinguished[1]
-        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot)
+        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_hot, bounds = ((0, 0.5*np.pi), (0.4, 0.7)))
         [Phi0_hot, amplitude_hot] = popt
         print(popt, perr, chisq)
         print(f"{Phi0_hot/np.pi =}")
-        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold)
+        popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_cold, bounds = ((0, 0.5*np.pi), (0.1, 0.4)))
         [Phi0_cold, amplitude_cold] = popt
         print(popt, perr, chisq)
         print(f"{Phi0_cold/np.pi =}")
@@ -183,7 +183,7 @@ def main():
         ax.scatter(phase_differences, theory_hot, s = 16, c = 'firebrick', marker = 'x', edgecolors = 'firebrick')
         ax.scatter(phase_differences, theory_cold, s = 16, c = 'maroon', marker = 'x', edgecolors = 'firebrick')
 
-        ax.set_ylim(0, 0.5)
+        ax.set_ylim(0, 0.7)
 
         fig_path = plots_dir_path / 'trash' / 'fit_sin_vs_DPhi.pdf'
         fig_path.parent.mkdir(parents = True, exist_ok = True)
