@@ -161,6 +161,7 @@ def main():
         theory_distinguished = np.squeeze(theory_distinguished)
         phase_differences = np.full_like(theory_distinguished, phase_differences)
         print(phase_differences, theory_distinguished, experiment, std)
+        print(phase_differences.shape, theory_distinguished.shape, experiment.shape, std.shape)
         popt, perr, chisq = fit_data(spin_exchange, phase_differences, theory_distinguished)
         print(popt, perr, chisq)
 
