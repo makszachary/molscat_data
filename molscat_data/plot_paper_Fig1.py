@@ -79,16 +79,21 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     np.savetxt(data_path.with_stem(data_path.stem+'_DPhi'), _xx.transpose(), fmt = '%.4f')
     print(*_theory.shape)
     print(*_theory_distinguished.shape)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_hot'), _theory[:,:,0], fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_cold'), _theory[:,:,1], fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished.squeeze().transpose(), fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_vs_DPhi_hot'), _theory[:,:,0], fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_vs_DPhi_cold'), _theory[:,:,1], fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_vs_DPhi_distinguished_hotcold'), _theory_distinguished.squeeze().transpose(), fmt = '%.4f')
 
     figs_axes[2].append(figs[2].add_subplot())
     # TEMPORARY TEMPORARY TEMPORARY
     _energy_tuple = tuple( round(n_root_scale(i, 4e-7, 4e-3, 50-1, n = 3), sigfigs = 11) for i in range(nenergies) )
     _temperatures = list(np.logspace(-4, -3, 10))
     _temperatures.append(plot_temperature)
-    figs_axes[2][0] = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name, plot_p0 = plot_p0)
+    figs_axes[2][0], _xx, _theory = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name, plot_p0 = plot_p0)
+
+    np.savetxt(data_path.with_stem(data_path.stem+'_cso'), _xx, fmt = '%.4f')
+    print(*_theory.shape)
+    print(*_theory_distinguished.shape)
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_cso'), _theory, fmt = '%.4f')
 
     figs_axes[0][0].text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[0][0].text(0.35, 1.0, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
@@ -240,7 +245,7 @@ def plotPeffVsSOScalingToAxis(ax, so_scaling_values, singlet_phase, triplet_phas
     ax.set_ylabel(f'$p_\\mathrm{{0}}$' if plot_p0 else f'$p_\\mathrm{{eff}}$')
     ax.set_xlabel(f'$c_\\mathrm{{so}}$')
 
-    return ax
+    return ax, xx, theory
 
 def plotP0VsDPhiToAxis(ax, singlet_phases: float | np.ndarray[float], phase_differences: float | np.ndarray[float], so_scaling: float, energy_tuple: tuple[float, ...], singlet_phase_distinguished: float = None, temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK', hybrid = False):
     nenergies = len(energy_tuple)
