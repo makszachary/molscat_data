@@ -79,8 +79,8 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     np.savetxt(data_path.with_stem(data_path.stem+'_DPhi'), _xx, fmt = '%.4f')
     print(*_theory.shape)
     print(*_theory_distinguished.shape)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _theory.reshape((*_theory.shape[:1], -1)), fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished.squeeze(), fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _theory.reshape((-1, *_theory.shape[0])), fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished.squeeze().transpose(), fmt = '%.4f')
 
     figs_axes[2].append(figs[2].add_subplot())
     # TEMPORARY TEMPORARY TEMPORARY
