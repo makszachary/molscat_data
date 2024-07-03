@@ -77,8 +77,8 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs_axes[1].append(_ax_chisq)
 
     np.savetxt(data_path.with_stem(data_path.stem+'_DPhi'), _xx)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _xx)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _xx)
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _theory)
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished)
 
     figs_axes[2].append(figs[2].add_subplot())
     # TEMPORARY TEMPORARY TEMPORARY
@@ -377,7 +377,7 @@ def main():
     parser.add_argument("-d", "--phase_step", type = float, default = None, help = "The phase step multiples of pi.")
     parser.add_argument("-s", "--singlet_phase", type = float, default = None, help = "The distinguished value of the singlet semiclassical phase modulo pi in multiples of pi.")
     parser.add_argument("-t", "--triplet_phase", type = float, default = None, help = "The distinguished value of the triplet semiclassical phase modulo pi in multiples of pi.")
-    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.325,], help = "Values of the SO scaling.")
+    parser.add_argument("--so_scaling", nargs='*', type = float, default = [0.320,], help = "Values of the SO scaling.")
     parser.add_argument("--nenergies", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
     parser.add_argument("--E_max", type = float, default = 4e-3, help = "Highest energy value in the grid.")
