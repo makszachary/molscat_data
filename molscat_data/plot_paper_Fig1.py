@@ -76,9 +76,9 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     figs_axes[1][0], _ax_chisq, log_str, _xx, _theory, _theory_distinguished = plotPeffVsDPhiToAxis(figs_axes[1][0], singlet_phases = singlet_phases, phase_differences = phase_differences, so_scaling = _temp_so_scal, energy_tuple = energy_tuple, singlet_phase_distinguished = singlet_phase_distinguished, temperatures = temperatures, plot_temperature = plot_temperature, input_dir_name = DPhi_input_dir_name, hybrid = False, plot_p0 = plot_p0)
     figs_axes[1].append(_ax_chisq)
 
-    np.savetxt(data_path.with_stem(data_path.stem+'_DPhi'), _xx)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _theory)
-    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished)
+    np.savetxt(data_path.with_stem(data_path.stem+'_DPhi'), _xx, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory'), _theory, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_theory_distinguished'), _theory_distinguished, fmt = '%.4f')
 
     figs_axes[2].append(figs[2].add_subplot())
     # TEMPORARY TEMPORARY TEMPORARY
