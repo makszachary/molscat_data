@@ -355,6 +355,11 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
+    print(f'{red_mass_87Rb_84Sr_amu=}')
+    print(f'{red_mass_87Rb_86Sr_amu=}')
+    print(f'{red_mass_87Rb_87Sr_amu=}')
+    print(f'{red_mass_87Rb_88Sr_amu=}')
+
     [plotFig2(singlet_phase, triplet_phase, so_scaling_value, reduced_masses, energy_tuple_barplot= energy_tuple_barplot, energy_tuple_vs_mass_even = energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd = energy_tuple_vs_mass_odd, temperatures = temperatures, plot_temperature = temperature, barplot_input_dir_name = args.barplot_input_dir_name, barplot_SE_input_dir_name = args.barplot_SE_input_dir_name, vs_mass_even_input_dir_name = args.vs_mass_even_input_dir_name, vs_mass_odd_input_dir_name = args.vs_mass_odd_input_dir_name, fmf_barplot = args.fmf_barplot, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
 
 if __name__ == '__main__':
