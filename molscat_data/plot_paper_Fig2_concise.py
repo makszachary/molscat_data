@@ -300,7 +300,7 @@ def main():
     parser.add_argument("--so_scaling", type = float, default = 0.320, help = "Value of the SO scaling.")
     parser.add_argument("--mass_min", type = float, default = 42.48, help = "Minimum reduced mass for the grid (in a.m.u.).")
     parser.add_argument("--mass_max", type = float, default = 43.8, help = "Maximum reduced mass for the grid (in a.m.u.).")
-    parser.add_argument("--dmass", type = float, default = 0.04, help = "Mass step (in a.m.u.).")
+    parser.add_argument("--dmass", type = float, default = 0.01, help = "Mass step (in a.m.u.).")
 
     parser.add_argument("--nenergies_barplot", type = int, default = 50, help = "Number of energy values in a grid.")
     parser.add_argument("--E_min_barplot", type = float, default = 4e-7, help = "Lowest energy value in the grid.")
