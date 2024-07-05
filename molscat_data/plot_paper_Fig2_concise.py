@@ -50,6 +50,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     log_path = png_path.with_suffix('.log')
+    data_path = png_path.with_suffix('.txt')
     png_path.parent.mkdir(parents = True, exist_ok = True)
     
     
@@ -103,6 +104,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     theory_cold_higher = arrays_cold_higher[T_index,:]
     theory_SE_cold_higher = SE_arrays_cold_higher[T_index,:]
 
+    np.savetxt(data_path.with_stem(data_path.stem+'_hpf'), theory_hpf, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_hpf_SE'), theory_SE_hpf, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_cold_higher'), theory_cold_higher, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_cold_SE_higher'), theory_SE_cold_higher, fmt = '%.4f')
     # print(f'{plot_temperature=}')
     # print(f'{arrays_path_hpf=}')
     # print(f'{theory_hpf=}')
