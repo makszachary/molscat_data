@@ -76,6 +76,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
 
+    theory_cm = theory
+
     ## CONTOUR MAP
     fig0_ax, fig0_ax_bar = ContourMap._initiate_axes(fig0)
     fig0, fig0_ax, fig0_ax_bar, fig0_bar = ContourMap.plotToFigure(fig0, fig0_ax, fig0_ax_bar, singlet_phases_cm, triplet_phases_cm, theory, n_levels = 3)
@@ -146,6 +148,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
+    theory_vs_DPhi = theory
+    theory_vs_DPhi_distinguished = theory_distinguished
+
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
     theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
@@ -162,6 +167,8 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
+ 
+ 
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
     color_map = cmocean.cm.thermal
@@ -184,6 +191,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # print(f'{theory = }')
+
+    theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
+
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
@@ -233,7 +243,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
     fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.08)
 
-    return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1
+    return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_cm, triplet_phases_cm, theory_cm, singlet_phases_sections, theory_vs_DPhi, theory_vs_DPhi_distinguished, theory_vs_T, theory_vs_T_distinguished
 
 def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
     ## (c) Spin-exchange probabilities vs the magnetic field
@@ -354,6 +364,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig3' / f'{cm_input_dir_name}_{vs_B_input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{plot_temperature:.2e}K.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
+    data_path = png_path.with_suffix('.txt')
     png_path.parent.mkdir(parents = True, exist_ok = True)
 
     cm = 1/2.54
@@ -372,7 +383,17 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
     fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
 
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1 = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_DPhi, _theory_vs_DPhi_distinguished, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+ 
+    ###### Save data from figures to .txt files
+    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_triplet_phases'), _triplet_phases_cm, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_theory'), _theory_cm, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_sections_singlet_phases'), _singlet_phases_sections, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_DPhi'), _theory_vs_DPhi, fmt = '%.4f')
+    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T'), _theory_vs_T, fmt = '%.4f')
+
+ 
     fig2, fig2_ax, fig3, fig3_axs, gs3 = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
