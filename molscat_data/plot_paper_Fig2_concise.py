@@ -177,7 +177,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     with open(log_path, 'w') as log_file:
         log_file.write(log_str)
 
-    figs[1], _ax = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name,)
+    figs[1], _ax, _reduced_masses, _theory = plotPeffAverageVsMassToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, energy_tuple_vs_mass_odd, temperatures, plot_temperature, even_input_dir_name = vs_mass_even_input_dir_name, odd_input_dir_name = vs_mass_odd_input_dir_name,)
     figs_axes[1].append(_ax)
     # figs_axes[1][0].set_ylim(figs_axes[0][0].get_ylim())
 
@@ -190,6 +190,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
+
+    np.savetxt(data_path.with_stem(data_path.stem+'_reduced_masses'), _reduced_masses, fmt = '%.4f')
+    print(f'{_theory.shape=}')
+    np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
 
     plt.close()
 
@@ -284,7 +288,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
 
-    return fig, fig_ax
+    return fig, fig_ax, reduced_masses, theory
 
 
 def main():
