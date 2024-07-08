@@ -414,7 +414,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_theory'), _theory_vs_B, fmt = '%.4f')
     for i in range(_theory_vs_B_vs_T.shape[0]):
         np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_{i}'), _theory_vs_B_vs_T[i], fmt = '%.4f')
-        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_distinguished_{i}'), _theory_vs_B_vs_T_distinguished[i], fmt = '%.4f')
+        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_distinguished_{i}'), _theory_vs_B_vs_T_distinguished[:,i], fmt = '%.4f')
     np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_temperatures'), _vs_B_temperatures, fmt = '%.4e')
 
 
