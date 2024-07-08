@@ -279,6 +279,8 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory = np.moveaxis( arrays_cold_lower[:,:,T_index,0], 0, -1)
     theory_distinguished = None
 
+    theory_vs_B = theory
+
     color_map = cmcrameri.cm.devon
     theory_colors = list(reversed([color_map(singlet_phase) for singlet_phase, triplet_phase in magnetic_phases]))
     theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
@@ -319,6 +321,9 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     gs3.update(hspace=0.0)
     fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(len(magnetic_phases))]
     
+    theory_vs_B_vs_T = arrays_cold_lower[:,:,::2,0]
+    theory_vs_B_vs_T_distinguished = np.moveaxis(arrays_cold_lower[:,:,T_index,0], 0, -1)
+
     for i, ax in enumerate(fig3_axs):
         theory = arrays_cold_lower[i,:,::2,0]
         theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[i,:,T_index,0],]), 0, -1)
@@ -353,7 +358,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
 
-    return fig2, fig2_ax, fig3, fig3_axs, gs3
+    return fig2, fig2_ax, fig3, fig3_axs, gs3, theory_vs_B, theory_vs_B_vs_T, theory_vs_B_vs_T_distinguished
 
 def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
@@ -397,7 +402,17 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T_distinguished'), _theory_vs_T_distinguished, fmt = '%.4f')
 
  
-    fig2, fig2_ax, fig3, fig3_axs, gs3 = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+    fig2, fig2_ax, fig3, fig3_axs, gs3, _theory_vs_B, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+
+    ###### Save data from Fig3d-e to .txt files
+    np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_magnetic_fields'), magnetic_fields, fmt = '%.4f')
+    with open(data_path.with_stem(data_path.stem+'_vs_B_phases'), 'w') as f:
+        print(magnetic_phases, file = f)
+    np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_theory'), _theory_vs_B, fmt = '%.4f')
+    for i in range(_theory_vs_B_vs_T.shape[0]):
+        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_{i}'), _theory_vs_B_vs_T[i], fmt = '%.4f')
+        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_distinguished_{i}'), _theory_vs_B_vs_T_distinguished[i], fmt = '%.4f')
+
 
     fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig1_ax0.text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
