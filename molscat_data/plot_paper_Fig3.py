@@ -400,7 +400,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_Phis_distiguished'), _theory_vs_Phis_distinguished, fmt = '%.4f')
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T'), _theory_vs_T, fmt = '%.4f')
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T_distinguished'), _theory_vs_T_distinguished, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_temperatures'), temperatures, fmt = '%.4e')
+    np.savetxt(data_path.with_stem(data_path.stem+'_temperatures'), temperatures[::2], fmt = '%.4e')
 
  
     fig2, fig2_ax, fig3, fig3_axs, gs3, _theory_vs_B, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
