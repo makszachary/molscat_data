@@ -188,7 +188,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     print(f'{_theory.shape=}')
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
+    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, energy_tuple_vs_mass_even, reduced_masses, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
     figs_axes[2].append(_ax)
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
@@ -309,8 +309,13 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     return fig, fig_ax, reduced_masses, theory
 
-def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_vs_mass', transfer_input_dir_name: str = 'RbSr+_tcpld_momentum_transfer_vs_mass',):
+def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_vs_mass', transfer_input_dir_name: str = 'RbSr+_tcpld_momentum_transfer_vs_mass',):
     ## (c) Probability of the hyperfine energy release (only spin exchange?) vs reduced mass
+
+    nenergies = len(energy_tuple_vs_mass)
+    E_min = min(energy_tuple_vs_mass)
+    E_max = max(energy_tuple_vs_mass)
+
     pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
     transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
 
@@ -323,18 +328,11 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     so_scaling = s_matrix_collection.spinOrbitParameter
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
 
-
-    E_min, E_max, nenergies = 4e-7, 4e-3, 50
-
     abbreviation_k_L = 'hpf'
     F_in_even = 2*2
 
     F_in, MF_in, S_in, MS_in = F_in_even, 0, 1, 1
     F_out, MF_out, S_out, MS_out = 2, MF_in+2, 1, MS_in-2
-
-    nenergies = len(s_matrix_collection.collisionEnergy)
-    E_min = min(s_matrix_collection.collisionEnergy)
-    E_max = max(s_matrix_collection.collisionEnergy)   
 
     k_archive_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu.zip' for reduced_mass in reduced_masses]
     k_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
