@@ -333,6 +333,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = energy_min, E_max = energy_max, N = nenergies, n = 3), dtype = float) for temperature in temperatures]
 
+    
     ### array_paths_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), full_path
     array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_even.items() ]
