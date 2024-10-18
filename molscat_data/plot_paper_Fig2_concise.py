@@ -356,6 +356,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=1), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
     print(f'{average_rate_arrays.shape = }, {average_momentum_transfer_arrays.shape = }')
     probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
+    probability_arrays = np.moveaxis(probability_arrays,0,-1)
     print(f'{probability_arrays.shape}')
     # probability_arrays = probability_arrays.squeeze()
 
@@ -368,7 +369,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     print(f'The bare probabilities p_0 of the hyperfine relaxation for phases = ({singlet_phase:.4f}, {triplet_phase:.4f}), {so_scaling = }, {reduced_mass_amu = } a.m.u., temperatures: {temperatures_str} K, the maximum L for the momentum-transfer rates calculations: {transfer_l_max} are:')
     print(probability_arrays, '\n')
 
-    np.savetxt(probability_vs_L_vs_mass_path, probability_arrays.squeeze(), fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe bare probabilities of the hyperfine relaxation exchange; indices: (L, reduced_mass).\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({singlet_phase:.4f}, {triplet_phase:.4f}). The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum L: {l_max}. The maximum change of L: +/-4.\nTemperatures: {temperatures_str} K.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
+    np.savetxt(probability_vs_L_vs_mass_path, probability_arrays.reshape(probability_arrays.shape[0],-1), fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe bare probabilities of the hyperfine relaxation exchange; indices: (L, reduced_mass).\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({singlet_phase:.4f}, {triplet_phase:.4f}). The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum L: {l_max}. The maximum change of L: +/-4.\nTemperatures: {temperatures_str} K.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = np.moveaxis( [probability_arrays[:,T_index],], 0, -1)
