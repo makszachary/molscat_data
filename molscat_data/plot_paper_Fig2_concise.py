@@ -188,7 +188,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     print(f'{_theory.shape=}')
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
+    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[2], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
     figs_axes[2].append(_ax)
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
@@ -315,10 +315,10 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     nenergies = len(energy_tuple_vs_mass)
     E_min = min(energy_tuple_vs_mass)
     E_max = max(energy_tuple_vs_mass)
-    print(f'{energy_tuple_vs_mass = }\n{nenergies = }\n{E_min = }\n{E_max = }')
+    # print(f'{energy_tuple_vs_mass = }\n{nenergies = }\n{E_min = }\n{E_max = }')
 
-    pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
-    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
+    pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.pickle'
+    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.pickle'
 
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
     l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
