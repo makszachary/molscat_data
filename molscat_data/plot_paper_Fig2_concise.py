@@ -2,6 +2,7 @@ import sys
 import os
 from pathlib import Path
 import argparse
+import zipfile
 
 from multiprocessing import Pool
 
@@ -20,7 +21,7 @@ from labellines import labelLines, labelLine
 
 import time
 
-from _molscat_data.thermal_averaging import n_root_scale
+from _molscat_data.thermal_averaging import n_root_scale, n_root_iterator
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot, BicolorHandler
@@ -223,11 +224,16 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     E_min = min(energy_tuple_vs_mass_odd)
     E_max = max(energy_tuple_vs_mass_odd)
 
+    ### array_paths_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), full_path
     array_paths_odd = { abbreviation:  [arrays_dir_path / odd_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_odd.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_odd.items() ]
+    ### p0_arrays_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), loaded_array
     p0_arrays_odd = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1, F_in_odd+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1, F_in_odd+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_odd.items() }
     # print(f'{p0_arrays_odd["p0_hpf"][0]=}')
+    
+    ### firstly, we add the relaxation and the excitation exchange to get the total (effective) probability of any of the two strongly exothermic outcomes
     peff_arrays_odd = effective_probability(np.sum([array for array in p0_arrays_odd.values()], axis = 0), pmf_array = pmf_array)
+    ### then, we correct for the lower efficiency of measurement for the hyperfine excitation exchange
     peff_arrays_odd = peff_arrays_odd * np.sum( [ p0_arrays_odd[abbreviation]*abbreviations_efficiency_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 ) / np.sum( [ p0_arrays_odd[abbreviation] for abbreviation in abbreviations_efficiency_odd.keys() ], axis = 0 )
     peff_arrays_odd = np.mean( peff_arrays_odd, axis = (-2, -1) )
 
@@ -292,23 +298,52 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
 def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass'):
     ## (c) Effective probability of the hyperfine energy release vs reduced mass
+    energy_min, energy_max, nenergies = 4e-7, 4e-3, 50
+    l_max = 29
+    l_max_momentum_transfer = 79
     probabilities_dir_name = 'probabilities'
     
     curves_names = [ f'$i_\\mathrm{{ion}} = 0$', f'$i_\\mathrm{{ion}} = \\frac{{9}}{{2}}$' ]
 
-    abbreviations_efficiency_even = {'p0_hpf': 1.00,}
+    abbreviation_k_L = 'hpf'
     F_in_even = 2*2
+
+    F_in, MF_in, S_in, MS_in = F_in_even, 0, 1, 1
+    F_out, MF_out, S_out, MS_out = 2, MF_in+2, 1, MS_in-2
 
     nenergies = len(energy_tuple_vs_mass_even)
     E_min = min(energy_tuple_vs_mass_even)
     E_max = max(energy_tuple_vs_mass_even)
 
+    k_archive_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu.zip' for reduced_mass in reduced_masses]
+    k_L_E_array_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
+    k_m_L_E_array_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_m_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
+    
+    #### unneeded because zipfile.extract() method will create all the intermediate directories (I hope...)
+    # for path in [*k_L_E_array_paths, *k_m_L_E_array_paths]:
+    #     path.mkdir(parents=True, exist_ok=True)
+
+    for archive_path in k_archive_paths:
+        with zipfile.ZipFile(archive_path, 'r') as zObject:
+            zObject.extract(f'k_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
+            zObject.extract(f'k_m_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
+
+    k_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max+1,50), np.nan) for array_path in k_L_E_array_paths ])
+    k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max_momentum_transfer+1,50), np.nan) for array_path in k_m_L_E_array_paths ])
+
+    distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = energy_min, E_max = energy_max, N = nenergies, n = 3), dtype = float) for temperature in temperatures]
+
+    ### array_paths_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), full_path
     array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
     [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_even.items() ]
+    ### p0_arrays_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), loaded_array
     p0_arrays_even = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_even.items() }
-    peff_arrays_even = effective_probability(np.sum([array for array in p0_arrays_even.values()], axis = 0), pmf_array = pmf_array)
-    peff_arrays_even = peff_arrays_even * np.sum( [ p0_arrays_even[abbreviation]*abbreviations_efficiency_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 ) / np.sum( [ p0_arrays_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 )    
-    peff_arrays_even = np.mean( peff_arrays_even, axis = -1 )
+
+    ### firstly, we add the relaxation and the excitation exchange to get the total (effective) probability of any of the two strongly exothermic outcomes
+    # peff_arrays_even = effective_probability(np.sum([array for array in p0_arrays_even.values()], axis = 0), pmf_array = pmf_array)
+    ### then, we correct for the lower efficiency of measurement for the hyperfine excitation exchange
+    # peff_arrays_even = peff_arrays_even * np.sum( [ p0_arrays_even[abbreviation]*abbreviations_efficiency_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 ) / np.sum( [ p0_arrays_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 )    
+    # peff_arrays_even = np.mean( peff_arrays_even, axis = -1 )
 
     exp_hpf_isotopes = np.loadtxt(data_dir_path / 'exp_data' / 'isotopes_hpf.dat')
     reduced_masses_experimental = np.array([red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu])
