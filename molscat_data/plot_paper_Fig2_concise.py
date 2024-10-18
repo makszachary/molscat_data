@@ -326,7 +326,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
     transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)    
 
-    so_scaling = s_matrix_collection.spinOrbitParameter
+    so_scaling = s_matrix_collection.spinOrbitParameter[0]
     reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
 
     abbreviation_k_L = 'hpf'
