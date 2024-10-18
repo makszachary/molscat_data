@@ -318,7 +318,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     # print(f'{energy_tuple_vs_mass = }\n{nenergies = }\n{E_min = }\n{E_max = }')
 
     pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.pickle'
-    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.pickle'
+    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{0.0:.4f}' / f'{reduced_masses[0]:.4f}_amu.pickle'
 
     s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
     l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
