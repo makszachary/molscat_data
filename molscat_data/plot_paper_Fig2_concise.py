@@ -188,7 +188,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     print(f'{_theory.shape=}')
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, energy_tuple_vs_mass_even, reduced_masses, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
+    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, energy_tuple_vs_mass_even, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
     figs_axes[2].append(_ax)
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
