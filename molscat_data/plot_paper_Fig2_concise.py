@@ -334,7 +334,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     F_in, MF_in, S_in, MS_in = F_in_even, 0, 1, 1
     F_out, MF_out, S_out, MS_out = 2, MF_in+2, 1, MS_in-2
-
+    print(f'{reduced_masses = }')
     k_archive_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu.zip' for reduced_mass in reduced_masses]
     k_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
     k_m_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_m_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
