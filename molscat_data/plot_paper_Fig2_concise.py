@@ -21,11 +21,13 @@ from labellines import labelLines, labelLine
 
 import time
 
+from _molscat_data import quantum_numbers as qn
+from _molscat_data.smatrix import SMatrixCollection
 from _molscat_data.thermal_averaging import n_root_scale, n_root_iterator
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks, Barplot, BicolorHandler
-from _molscat_data.physical_constants import red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu
+from _molscat_data.physical_constants import amu_to_au, red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu
 from _molscat_data.chi_squared import chi_squared
 
 scratch_path = Path(os.path.expandvars('$SCRATCH'))
@@ -57,7 +59,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    nrows = 2
+    nrows = 3 # 2
     row_height = 5
     vpad = .5
     total_height = nrows*row_height + (nrows-1)*vpad
@@ -67,8 +69,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = [1 for row in range(nrows)])
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     figs = [fig.add_subfigure(gs_Figure[i]) for i in range(nrows)]
-    figs[0] = fig.add_subfigure(gs_Figure[0])
-    figs[1] = fig.add_subfigure(gs_Figure[1])
+    # figs[0] = fig.add_subfigure(gs_Figure[0])
+    # figs[1] = fig.add_subfigure(gs_Figure[1])
     figs_axes = [[] for fig in figs]
     # fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[3])
@@ -182,19 +184,30 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figs_axes[1].append(_ax)
     # figs_axes[1][0].set_ylim(figs_axes[0][0].get_ylim())
 
+    np.savetxt(data_path.with_stem(data_path.stem+'_reduced_masses'), _reduced_masses, fmt = '%.4f')
+    print(f'{_theory.shape=}')
+    np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
+
+    figs[2], _ax, _reduced_masses, _theory = plotP0VsMassWithPartialWavesToFig(figs[1], singlet_phase, triplet_phase, so_scaling, reduced_masses, temperatures, plot_temperature, input_dir_name = vs_mass_even_input_dir_name, transfer_input_dir_name = 'RbSr+_tcpld_momentum_transfer_vs_mass',)
+    figs_axes[2].append(_ax)
+
+    np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
+
     figs[0].subplots_adjust(left = 0.1, bottom = 0.15)
     figs[1].subplots_adjust(left = 0.1, bottom = 0.15)
+    figs[2].subplots_adjust(left = 0.1, bottom = 0.15)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(-0.06, 1*row_height/total_height, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, 2*row_height/total_height, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, 1*row_height/total_height, f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
     fig.savefig(pdf_path, bbox_inches='tight', pad_inches = 0, transparent = True)
 
-    np.savetxt(data_path.with_stem(data_path.stem+'_reduced_masses'), _reduced_masses, fmt = '%.4f')
-    print(f'{_theory.shape=}')
-    np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_reduced_masses'), _reduced_masses, fmt = '%.4f')
+    # print(f'{_theory.shape=}')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_reduced_mass'), _theory, fmt = '%.4f')
 
     plt.close()
 
@@ -296,14 +309,22 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
 
     return fig, fig_ax, reduced_masses, theory
 
-def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], energy_tuple_vs_mass_even: tuple[float, ...], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, even_input_dir_name: str = 'RbSr+_tcpld_80mK_vs_mass'):
-    ## (c) Effective probability of the hyperfine energy release vs reduced mass
-    energy_min, energy_max, nenergies = 4e-7, 4e-3, 50
-    l_max = 29
-    l_max_momentum_transfer = 79
-    probabilities_dir_name = 'probabilities'
-    
-    curves_names = [ f'$i_\\mathrm{{ion}} = 0$', f'$i_\\mathrm{{ion}} = \\frac{{9}}{{2}}$' ]
+def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: float, so_scaling: float, reduced_masses: np.ndarray[float], temperatures: np.ndarray[float] = np.array([5e-4,]), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_vs_mass', transfer_input_dir_name: str = 'RbSr+_tcpld_momentum_transfer_vs_mass',):
+    ## (c) Probability of the hyperfine energy release (only spin exchange?) vs reduced mass
+    pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
+    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
+
+    s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
+
+    transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
+    transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)    
+
+    so_scaling = s_matrix_collection.spinOrbitParameter
+    reduced_mass_amu = s_matrix_collection.reducedMass[0]/amu_to_au
+
+
+    E_min, E_max, nenergies = 4e-7, 4e-3, 50
 
     abbreviation_k_L = 'hpf'
     F_in_even = 2*2
@@ -311,96 +332,63 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     F_in, MF_in, S_in, MS_in = F_in_even, 0, 1, 1
     F_out, MF_out, S_out, MS_out = 2, MF_in+2, 1, MS_in-2
 
-    nenergies = len(energy_tuple_vs_mass_even)
-    E_min = min(energy_tuple_vs_mass_even)
-    E_max = max(energy_tuple_vs_mass_even)
+    nenergies = len(s_matrix_collection.collisionEnergy)
+    E_min = min(s_matrix_collection.collisionEnergy)
+    E_max = max(s_matrix_collection.collisionEnergy)   
 
-    k_archive_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu.zip' for reduced_mass in reduced_masses]
-    k_L_E_array_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
-    k_m_L_E_array_paths = [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_m_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
-    
-    #### unneeded because zipfile.extract() method will create all the intermediate directories (I hope...)
-    # for path in [*k_L_E_array_paths, *k_m_L_E_array_paths]:
-    #     path.mkdir(parents=True, exist_ok=True)
+    k_archive_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu.zip' for reduced_mass in reduced_masses]
+    k_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
+    k_m_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_m_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
 
     for archive_path in k_archive_paths:
         with zipfile.ZipFile(archive_path, 'r') as zObject:
             zObject.extract(f'k_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
             zObject.extract(f'k_m_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
 
+    #### here we get arrays with indices (reduced_mass_index, L_index, E_index)
     k_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max+1,50), np.nan) for array_path in k_L_E_array_paths ])
-    k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max_momentum_transfer+1,50), np.nan) for array_path in k_m_L_E_array_paths ])
+    k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((transfer_l_max+1,50), np.nan) for array_path in k_m_L_E_array_paths ])
 
-    distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = energy_min, E_max = energy_max, N = nenergies, n = 3), dtype = float) for temperature in temperatures]
-
+    distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+    transfer_distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(transfer_s_matrix_collection.collisionEnergy), E_max = max(transfer_s_matrix_collection.collisionEnergy), N = len(transfer_s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
     
-    ### array_paths_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), full_path
-    array_paths_even = { abbreviation:  [arrays_dir_path / even_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / probabilities_dir_name / f'{abbreviation}.txt' for reduced_mass in reduced_masses] for abbreviation in abbreviations_efficiency_even.keys() }
-    [ [print({abbreviation: array_path}) for array_path in array_paths if (array_path is not None and not array_path.is_file())] for abbreviation, array_paths in array_paths_even.items() ]
-    ### p0_arrays_even: dict with keys, values = file_name (defining p0/peff & relaxation/excit.exch.), loaded_array
-    p0_arrays_even = { abbreviation: np.array([np.loadtxt(array_path).reshape(len(temperatures), F_in_even+1) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), F_in_even+1), np.nan) for array_path in array_paths]) for abbreviation, array_paths in array_paths_even.items() }
+    average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(k_L_E_arrays, distribution_array) for distribution_array in distribution_arrays ] )
+    average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=0), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
+    probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
+    # probability_arrays = probability_arrays.squeeze()
 
-    ### firstly, we add the relaxation and the excitation exchange to get the total (effective) probability of any of the two strongly exothermic outcomes
-    # peff_arrays_even = effective_probability(np.sum([array for array in p0_arrays_even.values()], axis = 0), pmf_array = pmf_array)
-    ### then, we correct for the lower efficiency of measurement for the hyperfine excitation exchange
-    # peff_arrays_even = peff_arrays_even * np.sum( [ p0_arrays_even[abbreviation]*abbreviations_efficiency_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 ) / np.sum( [ p0_arrays_even[abbreviation] for abbreviation in abbreviations_efficiency_even.keys() ], axis = 0 )    
-    # peff_arrays_even = np.mean( peff_arrays_even, axis = -1 )
+    probability_vs_L_vs_mass_path = k_archive_paths[0].parent / 'p0_vs_L_vs_reduced_mass'
 
-    exp_hpf_isotopes = np.loadtxt(data_dir_path / 'exp_data' / 'isotopes_hpf.dat')
-    reduced_masses_experimental = np.array([red_mass_87Rb_84Sr_amu, red_mass_87Rb_86Sr_amu, red_mass_87Rb_87Sr_amu, red_mass_87Rb_88Sr_amu])
-    reduced_masses_labels = [ f'$\\mathrm{{{{}}^{{84}}Sr^+}}$', f'$\\mathrm{{{{}}^{{86}}Sr^+}}$', f'$\\mathrm{{{{}}^{{87}}Sr^+}}$', f'$\\mathrm{{{{}}^{{88}}Sr^+}}$' ]
-    peff_experiment = exp_hpf_isotopes[0,:]
-    peff_std_experiment = exp_hpf_isotopes[1,:]
-    #dpeff = 1e-3
-    #p0_std = (p0(peff_experiment+dpeff/2, pmf_array=pmf_array)-p0(peff_experiment-dpeff/2, pmf_array=pmf_array))/dpeff * peff_std_experiment
-    experiment = peff_experiment# if enhanced else p0(peff_experiment, pmf_array)
-    std = peff_std_experiment# if enhanced else p0_std
+    temperatures_str = np.array2string( np.array(temperatures),formatter={'float_kind':lambda x: '%.2e' % x} )
+    # momentum_transfer_str = np.array2string(average_momentum_transfer_arrays.reshape(average_momentum_transfer_arrays.shape[0], -1)[:,0], formatter={'float_kind':lambda x: '%.4e' % x} )
+
+    np.savetxt(probability_vs_L_vs_mass_path, probability_arrays.squeeze(), fmt = '%.10f', header = f'[Original shape: {probability_arrays.shape}]\nThe bare probabilities of the hyperfine relaxation exchange; indices: (L, reduced_mass).\nThe values of reduced mass: {np.array(s_matrix_collection.reducedMass)/amu_to_au} a.m.u.\nThe singlet, triplet semiclassical phases: ({singlet_phase:.4f}, {triplet_phase:.4f}). The scaling of the short-range part of lambda_SO: {so_scaling}.\nThe maximum L: {l_max}. The maximum change of L: +/-4.\nTemperatures: {temperatures_str} K.\nThe maximum L for the momentum-transfer rates calculations: {transfer_l_max}.')
+
+    print("------------------------------------------------------------------------")
+    print(f'The bare probabilities p_0 of the hyperfine relaxation for phases = ({singlet_phase:.4f}, {triplet_phase:.4f}), {so_scaling = }, {reduced_mass_amu = } a.m.u., temperatures: {temperatures_str} K, the maximum L for the momentum-transfer rates calculations: {transfer_l_max} are:')
+    print(probability_arrays, '\n')
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis( [peff_arrays_even[:,T_index], peff_arrays_odd[:,T_index]], 0, -1)
-    # print(f'{theory=}')
+    theory = np.moveaxis( [probability_arrays[:,T_index],], 0, -1)
 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
     theory_formattings = [ {'color': even_color, 'linewidth': 1.25},
-                          {'color': odd_color, 'linewidth': 1.25}
+                        #   {'color': odd_color, 'linewidth': 1.25}
                           ]
-    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
-    # experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
     fig_ax = fig.add_subplot()
-    # print(f'{reduced_masses_experimental=}, {experiment=}')
-    fig_ax.scatter(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], s = 16, c = 'firebrick', marker = 'x', edgecolors =  'firebrick', linewidths = None)
-    fig_ax.errorbar(reduced_masses_experimental[[0,1,3]], experiment[[0,1,3]], std[[0,1,3]], ecolor = 'firebrick', capsize = 4, linestyle = 'None')
-    fig_ax.scatter(reduced_masses_experimental[2], experiment[2], s = 16, c = 'darkmagenta', marker = 'x', edgecolors =  'darkmagenta', linewidths = None)
-    fig_ax.errorbar(reduced_masses_experimental[2], experiment[2], std[2], ecolor = 'darkmagenta', capsize = 4, linestyle = 'None')
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=None)
     fig_ax.set_ylim(0,0.5)# 1.2*fig_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
-    # fig_ax.set_xticks([ 43.0, 43.5, *reduced_masses_experimental], labels = [ '$43.0$', '$43.5$', f'${{}}^{{84}}\\mathrm{{Sr^+}}$', f'${{}}^{{86}}\\mathrm{{Sr^+}}$', f'${{}}^{{87}}\\mathrm{{Sr^+}}$', f'${{}}^{{88}}\\mathrm{{Sr^+}}$' ])
-    xx_text, yy_text, alignments = reduced_masses_experimental, experiment, [ {'ha': 'center', 'va': 'top'}, {'ha': 'center', 'va': 'top'}, {'ha': 'right', 'va': 'baseline'}, {'ha': 'right', 'va': 'baseline'} ]
-    xx_text[[3,]] += 0.01
-    yy_text[[0,1]] += -0.045
-    yy_text[[2,3]] += 0.03
-    for i in [0, 1, 3]:
-        fig_ax.text(xx_text[i], yy_text[i], reduced_masses_labels[i], color = 'firebrick', fontsize = 'x-small', **alignments[i])
-    fig_ax.text(xx_text[2], yy_text[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 'x-small', **alignments[i])
-
-    for i, curve_name in enumerate(curves_names):
-        # [print(f'{i}, {line.get_xydata()=}') for i, line in enumerate(fig_ax.get_lines())]
-        if len(fig_ax.get_lines()[i+2*3].get_xydata()) > 0: fig_ax.get_lines()[i+2*3].set_label(curve_name) 
-    fig_ax.legend(frameon = False, loc = 'upper right', bbox_to_anchor = (.97, .98), fontsize = 'x-small', labelspacing = .1)
-    # xvals = (fig_ax.get_xlim()[0] + 0.1*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]), fig_ax.get_xlim()[0] + 0.6*(fig_ax.get_xlim()[1]-fig_ax.get_xlim()[0]))
-    # labelLines(fig_ax.get_lines(), xvals = xvals, align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    # labelLines(fig_ax.get_lines(), xvals = xvals, align = False, outline_color = None, yoffsets= -0*6.7e-3*(fig_ax.get_ylim()[1]-fig_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
-    # fig_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig_ax.transAxes, bbox = props)
-
-    ylabel = f'$p_\\mathrm{{eff}}^\\mathrm{{hpf}}$ (state-averaged)'# if enhanced else f'$p_0$'
+    # fig_ax.legend(frameon = False, loc = 'upper right', bbox_to_anchor = (.97, .98), fontsize = 'x-small', labelspacing = .1)
+    ylabel = f'$p_0$'# if enhanced else f'$p_0$'
     fig_ax.set_ylabel(ylabel)
-
     fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
+
+    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
+    # experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
     return fig, fig_ax, reduced_masses, theory
 
