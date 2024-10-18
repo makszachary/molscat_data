@@ -377,6 +377,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
     theory_formattings = [ {'color': even_color, 'linewidth': 1.25},
+                          *[{{'color': even_color, 'linewidth': 0.25} for i in range(1,29)}]
                         #   {'color': odd_color, 'linewidth': 1.25}
                           ]
 
