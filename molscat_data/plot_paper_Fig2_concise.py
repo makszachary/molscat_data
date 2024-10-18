@@ -315,6 +315,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     nenergies = len(energy_tuple_vs_mass)
     E_min = min(energy_tuple_vs_mass)
     E_max = max(energy_tuple_vs_mass)
+    print(f'{energy_tuple_vs_mass = }\n{nenergies = }\n{E_min = }\n{E_max = }')
 
     pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
     transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_masses[0]:.4f}_amu.zip'
