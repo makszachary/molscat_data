@@ -354,6 +354,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(k_L_E_arrays, distribution_array) for distribution_array in distribution_arrays ] )
     average_rate_arrays = np.moveaxis(average_rate_arrays, -1, 0)
     average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=1), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
+    print(f'{average_rate_arrays.shape = }, {average_momentum_transfer_arrays.shape = }')
     probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
     # probability_arrays = probability_arrays.squeeze()
 
