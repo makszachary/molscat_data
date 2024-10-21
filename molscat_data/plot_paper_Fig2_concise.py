@@ -352,7 +352,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     #### here we get arrays with indices (reduced_mass_index, L_index, E_index)
     print("Starting loading the arrays")
     k_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max+1,50), np.nan) for array_path in k_L_E_array_paths ])
-    k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((transfer_l_max+1,50), np.nan) for array_path in k_m_L_E_array_paths ])
+    k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((transfer_l_max,50), np.nan) for array_path in k_m_L_E_array_paths ])
     print("Finished loading the arrays")
 
     distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
