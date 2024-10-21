@@ -343,8 +343,10 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     for archive_path in k_archive_paths:
         with zipfile.ZipFile(archive_path, 'r') as zObject:
             if not (archive_path.with_suffix('') / Path(f'k_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt')).is_file():
+                print(archive_path, '/ k_L_E')
                 zObject.extract(f'k_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
             if not (archive_path.with_suffix('') / Path(f'k_m_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt')).is_file():
+                print(archive_path, '/ k_m_L_E')
                 zObject.extract(f'k_m_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
     print("Finished extracting!")
 
