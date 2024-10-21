@@ -418,7 +418,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     fig_bar.tick_params(axis = 'both')
     fig_bar.get_yaxis().labelpad = 4
     fig_bar.set_ylabel('$L$', rotation = 0, va = 'baseline', ha = 'left')
-    fig_bar.yaxis.set_label_coords(0.0, 1.05)
+    fig_bar.yaxis.set_label_coords(0.0, 1.10)
 
     return fig, fig_ax, reduced_masses, theory
 
