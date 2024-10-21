@@ -394,10 +394,13 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
                         #   {'color': odd_color, 'linewidth': 1.25}
                           ]
 
-    fig_ax = fig.add_subplot()
+    gs = gridspec.GridSpec(1,60, fig)
+    # gs.update(hspace=0.0)
+    fig_ax = fig.add_subplot(gs[:,:-5])
+    # fig_ax = fig.add_subplot()
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=None)
     fig_ax.set_ylim(0,1.2*np.amax(theory))# 1.2*fig_ax.get_ylim()[1])
-    PhaseTicks.linearStr(fig_ax.yaxis, 0.005, 0.001, '${x:.2f}$')
+    PhaseTicks.linearStr(fig_ax.yaxis, 0.005, 0.001, '${x:.3f}$')
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.legend(frameon = False, loc = 'upper right', bbox_to_anchor = (.97, .98), fontsize = 'x-small', labelspacing = .1)
     ylabel = f'$p_0$'# if enhanced else f'$p_0$'
@@ -406,6 +409,16 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
+
+    fig_bar = fig.add_subplot(gs[:,-4:])
+
+    bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [10, 20], )
+    bar.set_ticklabels(['$10$', '$20$'])
+    # bar.ax.scatter(0.5, plot_temperature, **bar_format)
+    fig_bar.tick_params(axis = 'both')
+    fig_bar.get_yaxis().labelpad = 4
+    fig_bar.set_ylabel('$L$', rotation = 0, va = 'baseline', ha = 'left')
+    fig_bar.yaxis.set_label_coords(0.0, 1.05)
 
     return fig, fig_ax, reduced_masses, theory
 
