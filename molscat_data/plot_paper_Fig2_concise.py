@@ -396,7 +396,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     gs = gridspec.GridSpec(1,100, fig)
     # gs.update(hspace=0.0)
-    fig_ax = fig.add_subplot(gs[:,:-6])
+    fig_ax = fig.add_subplot(gs[:,:-5])
     # fig_ax = fig.add_subplot()
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=None)
     fig_ax.set_ylim(0,1.2*np.amax(theory))# 1.2*fig_ax.get_ylim()[1])
@@ -410,7 +410,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # experiment_formattings = [ {'color': 'firebrick', 'dash_capstyle': 'round', } for exp in experiment]
 
-    fig_bar = fig.add_subplot(gs[:,-5:])
+    fig_bar = fig.add_subplot(gs[:,-4:])
 
     bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [10, 20], )
     bar.set_ticklabels(['$10$', '$20$'])
@@ -418,7 +418,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     fig_bar.tick_params(axis = 'both')
     fig_bar.get_yaxis().labelpad = 4
     fig_bar.set_ylabel('$L$', rotation = 0, va = 'baseline', ha = 'left')
-    fig_bar.yaxis.set_label_coords(0.0, 1.10)
+    fig_bar.yaxis.set_label_coords(0.02, 1.125)
 
     return fig, fig_ax, reduced_masses, theory
 
