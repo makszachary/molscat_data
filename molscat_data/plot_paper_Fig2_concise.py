@@ -339,21 +339,27 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     k_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
     k_m_L_E_array_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'{reduced_mass:.4f}_amu' / f'k_m_L_E' / f'{abbreviation_k_L}' / f'OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt' for reduced_mass in reduced_masses]
 
+    print("Starting extracting!")
     for archive_path in k_archive_paths:
         with zipfile.ZipFile(archive_path, 'r') as zObject:
             zObject.extract(f'k_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
             zObject.extract(f'k_m_L_E/{abbreviation_k_L}/OUT_{F_out}_{MF_out}_{S_out}_{MS_out}_IN_{F_in}_{MF_in}_{S_in}_{MS_in}.txt', archive_path.with_suffix(''))
+    print("Finished extracting!")
 
     #### here we get arrays with indices (reduced_mass_index, L_index, E_index)
+    print("Starting loading the arrays")
     k_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((l_max+1,50), np.nan) for array_path in k_L_E_array_paths ])
     k_m_L_E_arrays = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((transfer_l_max+1,50), np.nan) for array_path in k_m_L_E_array_paths ])
+    print("Finished loading the arrays")
 
     distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
     transfer_distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(transfer_s_matrix_collection.collisionEnergy), E_max = max(transfer_s_matrix_collection.collisionEnergy), N = len(transfer_s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
     
+    print("Starting calculating energy averages")
     average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(k_L_E_arrays, distribution_array) for distribution_array in distribution_arrays ] )
     average_rate_arrays = np.moveaxis(average_rate_arrays, -1, 0)
     average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=1), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
+    print("Finished calculating energy averages")
     print(f'{average_rate_arrays.shape = }, {average_momentum_transfer_arrays.shape = }')
     probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
     probability_arrays = np.moveaxis(probability_arrays,0,-1)
