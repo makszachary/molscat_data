@@ -386,7 +386,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     even_color = 'firebrick'
     odd_color = 'darkmagenta'
-    color_map = matplotlib.colormaps['viridis']
+    color_map = matplotlib.colormaps['inferno']
     norm = matplotlib.colors.Normalize(vmin=0, vmax=l_max, clip = False)
     # theory_colors = [color_map(norm(L)) for L in range(l_max+1)]
     theory_formattings = [ #{'color': even_color, 'linewidth': 1.25},
@@ -397,7 +397,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     fig_ax = fig.add_subplot()
     fig_ax = ValuesVsModelParameters.plotValuestoAxis(fig_ax, reduced_masses, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=None)
     fig_ax.set_ylim(0,1.2*np.amax(theory))# 1.2*fig_ax.get_ylim()[1])
-    PhaseTicks.linearStr(fig_ax.yaxis, 0.01, 0.005, '${x:.1f}$')
+    PhaseTicks.linearStr(fig_ax.yaxis, 0.005, 0.001, '${x:.2f}$')
     PhaseTicks.linearStr(fig_ax.xaxis, 0.5, 0.1, '${x:.1f}$')
     # fig_ax.legend(frameon = False, loc = 'upper right', bbox_to_anchor = (.97, .98), fontsize = 'x-small', labelspacing = .1)
     ylabel = f'$p_0$'# if enhanced else f'$p_0$'
