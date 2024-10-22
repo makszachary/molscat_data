@@ -412,8 +412,8 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     fig_bar = fig.add_subplot(gs[:,-4:])
 
-    bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [10, 20], )
-    bar.set_ticklabels(['$10$', '$20$'])
+    bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [0, 10, 20], )
+    bar.set_ticklabels(['$0$', '$10$', '$20$'])
     # bar.ax.scatter(0.5, plot_temperature, **bar_format)
     fig_bar.tick_params(axis = 'both')
     fig_bar.get_yaxis().labelpad = 4
