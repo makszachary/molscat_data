@@ -256,7 +256,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
     print(f'{probability_arrays[T_index,:,:].shape = }')
     if phase_difference_distinguished is not None and fmf_colormap:
-        theory = np.array([*np.transpose(arrays_cold_lower_distinguished[:,::2,0]), 
+        theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,::2,0]), 
                                *np.transpose(probability_arrays[T_index,:,:])]
                   )
     else:
