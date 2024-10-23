@@ -201,7 +201,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
-    print(f'{theory = }')
+    # print(f'{theory = }')
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
@@ -255,13 +255,16 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = [*np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1),
-                  *probability_arrays[T_index]
+                  *np.moveaxis(probability_arrays[T_index], -1, 0)
                   ]
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     
     # theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     
+    print(f'{theory.shape = }')
+    print(f'{theory = }')
+
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
