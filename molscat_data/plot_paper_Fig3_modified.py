@@ -192,7 +192,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         ### we sum over all values of MF_out and move L-axis to the last position
         probability_arrays = np.moveaxis(probability_arrays.sum(axis=-1),0,-1)
         ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
-        print(f'{probability_arrays.shape}')
+        print(f'{probability_arrays.shape = }')
 
     fig1_ax0 = fig1.add_subplot()
     fig1_ax1 = fig1.add_subplot(sharex = fig1_ax0)
@@ -253,9 +253,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     # print(f'{arrays_cold_lower_distinguished =}')
     # print(f'{arrays_cold_lower_distinguished.shape =}')
 
+    print(f'{np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1).shape =}')
+    print(f'{np.moveaxis(probability_arrays[T_index,:,:], -1, 0).shape = }')
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = np.array([*np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1),
-                  *np.moveaxis(probability_arrays[T_index], -1, 0)
+                  *np.moveaxis(probability_arrays[T_index,:,:], -1, 0)
                   ])
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
