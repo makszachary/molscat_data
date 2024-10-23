@@ -221,7 +221,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = matplotlib.rcParams["xtick.labelsize"], color = 'white')
     # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"])
     for i, phase_difference in enumerate(phase_differences):
-        print(f'{i=}, {phase_difference=}')
+        print(f'{i=}, {phase_difference=}\n{fig1_ax0.get_lines()[i] =}')
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
