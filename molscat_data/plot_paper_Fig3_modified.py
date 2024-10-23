@@ -519,8 +519,8 @@ def main():
     parser.add_argument("--phase_difference", type = float, default = 0.2, help = "The distinguished value of the singlet-triplet semiclassical phase difference modulo pi in multiples of pi.")
     parser.add_argument("--so_scaling", type = float, default = 0.32, help = "Value of the SO scaling.")
 
-    parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,], help = "The singlet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
-    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.24,], help = "The triplet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
+    parser.add_argument("-s", "--singlet_phases", nargs='*', type = float, default = [0.04,0.27,0.49], help = "The singlet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
+    parser.add_argument("-t", "--triplet_phases", nargs='*', type = float, default = [0.24,0.47,0.69], help = "The triplet semiclassical phase modulo pi in multiples of pi for the plot of magnetic field.")
 
     parser.add_argument("--MF_in", type = int, default = -2)
     parser.add_argument("--MS_in", type = int, default = 1)   
