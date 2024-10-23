@@ -182,7 +182,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         ## average_rate_arrays = np.sum(average_rate_arrays, axis = 1)
         average_rate_arrays = np.moveaxis(average_rate_arrays, -1, 0)
         ### now we have (L, T, singlet_phase, MF_out) indices on axes for average_rate_arrays and expected shape (50, 21, 98, 3)
-        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=-1), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
+        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=-2), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
         ### now we have (T, singlet_phase, MF_out) indices on axes for average_momentum_transfer_arrays and expected shape (21, 98, 3)
         print("Finished calculating energy averages")
         print(f'{average_rate_arrays.shape = }, {average_momentum_transfer_arrays.shape = }')
