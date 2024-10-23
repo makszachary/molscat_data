@@ -154,9 +154,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
                 print(archive_path)
                 with zipfile.ZipFile(archive_path, 'r') as zObject:
                     for MF_out in range(-F1, F1+1, 2):
-                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
+                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}/k_L_E/cold_lower/OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
                             zObject.extract(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt', archive_path.with_suffix(''))
-                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
+                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}/k_m_L_E/cold_lower/OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
                             zObject.extract(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_m_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt', archive_path.with_suffix(''))
             print("Finished extracting!")
 
