@@ -234,10 +234,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     L_color_map = matplotlib.colormaps['inferno']
-    L_norm = matplotlib.colors.Normalize(vmin=0, vmax=20, clip = False)
+    plot_l_max = 15
+    L_norm = matplotlib.colors.Normalize(vmin=0, vmax=plot_l_max, clip = False)
     if phase_difference_distinguished is not None and fmf_colormap:
         theory_formattings = [ *[{'color': color, 'linewidth': 1.25} for color in theory_colors],
-                              *[{'color': L_color_map(L_norm(L)), 'linewidth': 0.25} for L in range(0,l_max+1)]
+                              *[{'color': L_color_map(L_norm(L)), 'linewidth': 0.25} for L in range(0,plot_l_max+1)]
                                ]
     else:
         theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
@@ -257,7 +258,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     print(f'{probability_arrays[T_index,:,:].shape = }')
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,::2,0]), 
-                               *np.transpose(probability_arrays[T_index,:,:])]
+                               *np.transpose(probability_arrays[T_index,:(plot_l_max+1),:])]
                   )
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
