@@ -279,7 +279,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     print(f'{filter_max_probability = }')
     # print(f'{filter_max_probability == True}')
     ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
-    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_index,:,l][filter_max_probability[l]] > 0.05*np.nanmax(probability_arrays[T_index,:,:].sum(axis=1))) )
+    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_index,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_index,:,:].sum(axis=1))) )
     print(f'{coords_vs_L = }')
 
 
@@ -292,7 +292,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     # annotate peaks with the orbital quantum numbers L
     for coord in coords_vs_L:
-        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'small', color = L_color_map(L_norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
+        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
