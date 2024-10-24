@@ -275,7 +275,11 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     ##### Finding maxima for each partial wave
     filter_max_probability = np.equal(np.full_like(probability_arrays[T_index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_index,:,:(plot_l_max+1)].transpose())
+    print(f'{filter_max_probability.shape = }')
     print(f'{filter_max_probability = }')
+    ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
+    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_index,:,:(plot_l_max+1)][filter_max_probability[l]]) for l in range(k_L_E_arrays.shape[0]) if np.any(filter_max_arr[l, E_index]) and np.any(k_L_E_arrays[l, E_index][filter_max_arr[l, E_index]] > 0.05*np.nanmax(total_k_vs_Phi_at_E_array)) )
+
 
     sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
