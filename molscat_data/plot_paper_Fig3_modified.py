@@ -468,8 +468,8 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),:90])
     fig1 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),90:])
-    fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
-    fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
+    fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:179])
+    fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,179:])
 
     fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_Phis, _theory_vs_Phis_distinguished, _sections_temperatures, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, input_dir_name = cm_input_dir_name, transfer_input_dir_name = cm_transfer_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
