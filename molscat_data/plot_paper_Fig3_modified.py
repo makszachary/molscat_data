@@ -290,6 +290,10 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
 
+    # annotate peaks with the orbital quantum numbers L
+    for coord in coords_vs_L:
+        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'small', color = L_color_map(L_norm(coord[0])), fontweight = 'bold', va = 'center', ha = 'center')
+
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
     fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
