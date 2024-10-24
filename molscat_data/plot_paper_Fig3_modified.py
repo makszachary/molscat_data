@@ -273,6 +273,10 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # print(f'{theory = }')
 
+    ##### Finding maxima for each partial wave
+    filter_max_probability = np.equal(np.full_like(probability_arrays[T_index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_index,:,:(plot_l_max+1)].transpose())
+    print(f'{filter_max_probability = }')
+
     sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
