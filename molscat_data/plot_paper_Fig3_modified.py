@@ -341,7 +341,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_cm, triplet_phases_cm, theory_cm, singlet_phases_sections, theory_vs_Phis, theory_vs_Phis_distinguished, sections_temperatures, theory_vs_T, theory_vs_T_distinguished
 
-def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
+def plotMagneticFieldtoFigs(fig2, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
     ## (c) Spin-exchange probabilities vs the magnetic field
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -413,45 +413,45 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
     theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
 
-    gs3 = gridspec.GridSpec(3,60, fig3)
-    gs3.update(hspace=0.0)
-    fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(len(magnetic_phases))]
+    # gs3 = gridspec.GridSpec(3,60, fig3)
+    # gs3.update(hspace=0.0)
+    # fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(len(magnetic_phases))]
     
     vs_B_temperatures = temperatures[::2]
     theory_vs_B_vs_T = arrays_cold_lower[:,:,::2,0]
     theory_vs_B_vs_T_distinguished = np.moveaxis(arrays_cold_lower[:,:,T_index,0], 0, -1)
 
-    for i, ax in enumerate(fig3_axs):
-        theory = arrays_cold_lower[i,:,::2,0]
-        theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[i,:,T_index,0],]), 0, -1)
-        ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
-        ax.set_ylim(0, ax.get_ylim()[1])
-        PhaseTicks.linearStr(ax.yaxis, 0.2 if ax.get_ylim()[1] > 0.2 else 0.1, 0.1 if ax.get_ylim()[1] > 0.2 else 0.05, '${x:.1f}$')
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
+    # for i, ax in enumerate(fig3_axs):
+    #     theory = arrays_cold_lower[i,:,::2,0]
+    #     theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[i,:,T_index,0],]), 0, -1)
+    #     ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
+    #     ax.set_ylim(0, ax.get_ylim()[1])
+    #     PhaseTicks.linearStr(ax.yaxis, 0.2 if ax.get_ylim()[1] > 0.2 else 0.1, 0.1 if ax.get_ylim()[1] > 0.2 else 0.05, '${x:.1f}$')
+    #     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
     
-    for ax in fig3_axs[:-1]:
-        plt.setp(ax.get_xticklabels(), visible=False)
+    # for ax in fig3_axs[:-1]:
+    #     plt.setp(ax.get_xticklabels(), visible=False)
 
-    for ax in fig3_axs[1:]:
-        ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+    # for ax in fig3_axs[1:]:
+    #     ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
     
-    # for ax in fig3_axs:
-    #     ax.set_ylim(0, max([_.get_ylim()[1] for _ in fig3_axs]))
+    # # for ax in fig3_axs:
+    # #     ax.set_ylim(0, max([_.get_ylim()[1] for _ in fig3_axs]))
 
-    fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
+    # fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
-    ### create the temperature bar
-    fig3_bar = fig3.add_subplot(gs3[:,-4:])
+    # ### create the temperature bar
+    # fig3_bar = fig3.add_subplot(gs3[:,-4:])
 
-    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize']**2, 'marker': theory_distinguished_formattings[0]['marker']}
+    # bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize']**2, 'marker': theory_distinguished_formattings[0]['marker']}
 
-    bar = matplotlib.colorbar.ColorbarBase(fig3_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
-    bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    bar.ax.scatter(0.5, plot_temperature, **bar_format)
-    fig3_bar.tick_params(axis = 'both')
-    fig3_bar.get_yaxis().labelpad = 4
-    fig3_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
-    fig3_bar.yaxis.set_label_coords(0.0, 1.05)
+    # bar = matplotlib.colorbar.ColorbarBase(fig3_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
+    # bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
+    # bar.ax.scatter(0.5, plot_temperature, **bar_format)
+    # fig3_bar.tick_params(axis = 'both')
+    # fig3_bar.get_yaxis().labelpad = 4
+    # fig3_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
+    # fig3_bar.yaxis.set_label_coords(0.0, 1.05)
 
     # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
 
@@ -500,7 +500,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_temperatures'), _sections_temperatures, fmt = '%.4e')
 
  
-    fig2, fig2_ax, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+    fig2, fig2_ax, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
 
     ###### Save data from Fig3d-e to .txt files
     np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_magnetic_fields'), magnetic_fields, fmt = '%.4f')
