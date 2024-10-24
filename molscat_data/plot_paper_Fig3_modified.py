@@ -455,7 +455,7 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
 
     # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
 
-    return fig2, fig2_ax, fig3, fig3_axs, gs3, theory_vs_B, vs_B_temperatures, theory_vs_B_vs_T, theory_vs_B_vs_T_distinguished
+    return fig2, fig2_ax, theory_vs_B, vs_B_temperatures, theory_vs_B_vs_T, theory_vs_B_vs_T_distinguished
 
 def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', cm_transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
@@ -482,8 +482,8 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     fig0 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),:90])
     fig1 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),90:])
-    fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:179])
-    fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,179:])
+    fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:])
+    # fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,179:])
 
     fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_Phis, _theory_vs_Phis_distinguished, _sections_temperatures, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, input_dir_name = cm_input_dir_name, transfer_input_dir_name = cm_transfer_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
@@ -500,7 +500,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_sections_temperatures'), _sections_temperatures, fmt = '%.4e')
 
  
-    fig2, fig2_ax, fig3, fig3_axs, gs3, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+    fig2, fig2_ax, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
 
     ###### Save data from Fig3d-e to .txt files
     np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_magnetic_fields'), magnetic_fields, fmt = '%.4f')
@@ -517,14 +517,14 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     fig1_ax0.text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    # fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
     gs1.update(left = 0.17, right = 0.97)
     # fig1.subplots_adjust(left = 0.17, right = 0.97)
     fig2.subplots_adjust(left = 0.1, right = 0.97)
     # fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60)
-    gs3.update(left = 0.17, right = 1-(0.03)*90/60)
+    # gs3.update(left = 0.17, right = 1-(0.03)*90/60)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
