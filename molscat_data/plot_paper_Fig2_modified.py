@@ -66,17 +66,16 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figsize = (8.8*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize = figsize, dpi = dpi)
-    gs_Figure_top = gridspec.GridSpec(nrows, 1, fig, hspace = hs, height_ratios = row_heights)
-    gs_Figure_bottom = gridspec.GridSpec(nrows, 1, fig, hspace = 0, height_ratios = row_heights)
+    gs_Figure_top = gridspec.GridSpec(nrows, 100, fig, hspace = hs, height_ratios = row_heights)
+    gs_Figure_bottom = gridspec.GridSpec(nrows, 100, fig, hspace = 0, height_ratios = row_heights)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    figs = [fig.add_subfigure(gs_Figure_top[0]),] + [fig.add_subfigure(gs_Figure_bottom[i]) for i in range(1,nrows)]
+    figs = [fig.add_subfigure(gs_Figure_top[0,95:]), fig.add_subfigure(gs_Figure_bottom[1,:95]), fig.add_subfigure(gs_Figure_bottom[1,:])]
     # figs[0] = fig.add_subfigure(gs_Figure[0])
     # figs[1] = fig.add_subfigure(gs_Figure[1])
     figs_axes = [[] for fig in figs]
     # fig2 = fig.add_subfigure(gs_Figure[2])
     # fig3 = fig.add_subfigure(gs_Figure[3])
-    
-    
+   
     nenergies = len(energy_tuple_barplot)
     E_min = min(energy_tuple_barplot)
     E_max = max(energy_tuple_barplot)
@@ -194,8 +193,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[0].subplots_adjust(left = 0.1, right = 0.95, bottom = 0.15)
-    figs[1].subplots_adjust(left = 0.1, right = 0.95, bottom = 0.)
+    figs[0].subplots_adjust(left = 0.1, bottom = 0.15)
+    figs[1].subplots_adjust(left = 0.1, bottom = 0.)
     figs[2].subplots_adjust(left = 0.1, bottom = 0.)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
