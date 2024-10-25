@@ -66,9 +66,10 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figsize = (8.8*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize = figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = row_heights)
+    gs_Figure_top = gridspec.GridSpec(nrows, 1, fig, hspace = hs, height_ratios = row_heights)
+    gs_Figure_bottom = gridspec.GridSpec(nrows, 1, fig, hspace = 0, height_ratios = row_heights)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    figs = [fig.add_subfigure(gs_Figure[i]) for i in range(nrows)]
+    figs = [fig.add_subfigure(gs_Figure_top[0]),] + [fig.add_subfigure(gs_Figure_bottom[i]) for i in range(1,nrows)]
     # figs[0] = fig.add_subfigure(gs_Figure[0])
     # figs[1] = fig.add_subfigure(gs_Figure[1])
     figs_axes = [[] for fig in figs]
