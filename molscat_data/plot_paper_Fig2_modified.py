@@ -195,7 +195,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     figs[0].subplots_adjust(left = 0.1, bottom = 0.1)
     figs[1].subplots_adjust(left = 0.1, bottom = 0.)
-    figs[2].subplots_adjust(left = 0.1, top = 0., bottom = 0.)
+    figs[2].subplots_adjust(left = 0.1, top = 1.0, bottom = 0.)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     figs_axes[1][0].text(-0.06, np.sum(row_heights[-2:])/total_height, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
