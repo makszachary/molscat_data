@@ -522,7 +522,7 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     fig0.subplots_adjust(left = 0.05)
     gs1.update(left = 0.17, right = 0.97)
     # fig1.subplots_adjust(left = 0.17, right = 0.97)
-    fig2.subplots_adjust(left = 2/30, right = 1-(0.03)*4/3)
+    fig2.subplots_adjust(left = 2/30, right = 0.97)
     # fig2.subplots_adjust(left = 0.1, right = 0.97)
     # fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60)
     # gs3.update(left = 0.17, right = 1-(0.03)*90/60)
