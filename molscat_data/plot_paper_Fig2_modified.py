@@ -69,7 +69,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     gs_Figure_top = gridspec.GridSpec(nrows, 100, fig, hspace = hs, height_ratios = row_heights)
     gs_Figure_bottom = gridspec.GridSpec(nrows, 100, fig, hspace = 0, height_ratios = row_heights)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    figs = [fig.add_subfigure(gs_Figure_top[0,:95]), fig.add_subfigure(gs_Figure_bottom[1,:95]), fig.add_subfigure(gs_Figure_bottom[1,:])]
+    figs = [fig.add_subfigure(gs_Figure_top[0,:95]), fig.add_subfigure(gs_Figure_bottom[1,:95]), fig.add_subfigure(gs_Figure_bottom[2,:])]
     # figs[0] = fig.add_subfigure(gs_Figure[0])
     # figs[1] = fig.add_subfigure(gs_Figure[1])
     figs_axes = [[] for fig in figs]
