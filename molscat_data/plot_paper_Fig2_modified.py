@@ -69,7 +69,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     gs_Figure_top = gridspec.GridSpec(nrows, 1000, fig, hspace = 0, height_ratios = row_heights)
     gs_Figure_bottom = gridspec.GridSpec(nrows, 1000, fig, hspace = 0, height_ratios = row_heights)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    figs = [fig.add_subfigure(gs_Figure_top[0,:955]), fig.add_subfigure(gs_Figure_bottom[1,:955]), fig.add_subfigure(gs_Figure_bottom[2,:])]
+    figs = [fig.add_subfigure(gs_Figure_top[0,5:955]), fig.add_subfigure(gs_Figure_bottom[1,5:955]), fig.add_subfigure(gs_Figure_bottom[2,:])]
     # figs[0] = fig.add_subfigure(gs_Figure[0])
     # figs[1] = fig.add_subfigure(gs_Figure[1])
     figs_axes = [[] for fig in figs]
@@ -193,8 +193,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[0].subplots_adjust(left = 0.11, bottom = 0.1)
-    figs[1].subplots_adjust(left = 0.11, bottom = 0.)
+    figs[0].subplots_adjust(left = 0.1, bottom = 0.1)
+    figs[1].subplots_adjust(left = 0.1, bottom = 0.)
     figs[2].subplots_adjust(left = 0.1, top = 1.0, bottom = 0.)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
