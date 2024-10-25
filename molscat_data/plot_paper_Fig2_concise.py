@@ -60,7 +60,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 3 # 2
-    row_height = 5
+    row_height = 4
     vpad = .5
     total_height = nrows*row_height + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
