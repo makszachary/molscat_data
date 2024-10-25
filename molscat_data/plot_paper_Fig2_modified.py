@@ -60,13 +60,13 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     cm = 1/2.54
     ws, hs = 0.05, 0.05
     nrows = 3 # 2
-    row_height = 5
-    vpad = .5
-    total_height = nrows*row_height + (nrows-1)*vpad
+    row_heights = np.array([5,4,4,])
+    vpad = 0.5
+    total_height = np.sum(row_heights) + (nrows-1)*vpad
     figsize = (8.8*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize = figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = [1 for row in range(nrows)])
+    gs_Figure = gridspec.GridSpec(nrows, 1, fig, hspace = hs, wspace = ws, height_ratios = row_heights)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
     figs = [fig.add_subfigure(gs_Figure[i]) for i in range(nrows)]
     # figs[0] = fig.add_subfigure(gs_Figure[0])
@@ -198,8 +198,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figs[2].subplots_adjust(left = 0.1, bottom = 0.15)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(-0.06, 2*row_height/total_height, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(-0.06, 1*row_height/total_height, f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, np.sum(row_heights[-2:])/total_height, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, np.sum(row_heights[-1:])/total_height, f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
@@ -305,7 +305,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     ylabel = f'$p_\\mathrm{{eff}}^\\mathrm{{hpf}}$ (state-averaged)'# if enhanced else f'$p_0$'
     fig_ax.set_ylabel(ylabel)
 
-    fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
+    # fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
 
     return fig, fig_ax, reduced_masses, theory
 
