@@ -193,8 +193,8 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     np.savetxt(data_path.with_stem(data_path.stem+'_hpf_vs_L_vs_reduced_mass'), _theory, fmt = '%.4f')
 
-    figs[0].subplots_adjust(left = 0.1, bottom = 0.1)
-    figs[1].subplots_adjust(left = 0.1, bottom = 0.)
+    figs[0].subplots_adjust(left = 0.11, bottom = 0.1)
+    figs[1].subplots_adjust(left = 0.11, bottom = 0.)
     figs[2].subplots_adjust(left = 0.1, top = 1.0, bottom = 0.)
 
     figs_axes[0][0].text(-0.06, 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
