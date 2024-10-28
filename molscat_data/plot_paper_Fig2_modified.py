@@ -396,7 +396,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     odd_color = 'darkmagenta'
     # color_map = matplotlib.colormaps['inferno']
     # color_map = matplotlib.colormaps['turbo']
-    color_map = cmcrameri.imola
+    color_map = cmcrameri.cm.imola
     norm = matplotlib.colors.Normalize(vmin=0, vmax=l_max, clip = False)
     # theory_colors = [color_map(norm(L)) for L in range(l_max+1)]
     theory_formattings = [ #{'color': even_color, 'linewidth': 1.25},
