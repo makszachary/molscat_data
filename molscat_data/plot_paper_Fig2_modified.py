@@ -398,7 +398,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     color_map = matplotlib.colormaps['turbo']
     # color_map = cmcrameri.cm.hawaii
     # color_map = cmocean.cm.balance
-    norm = matplotlib.colors.Normalize(vmin=0, vmax=l_max, clip = False)
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=20, clip = False)
     # theory_colors = [color_map(norm(L)) for L in range(l_max+1)]
     theory_formattings = [ #{'color': even_color, 'linewidth': 1.25},
                         #   *[{'color': color_map(norm(L)), 'linewidth': 0.25} for L in range(0,l_max+1)]
