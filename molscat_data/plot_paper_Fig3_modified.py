@@ -392,7 +392,7 @@ def plotMagneticFieldtoFigs(fig2, magnetic_phases: tuple[tuple[float, float], ..
 
     # print(f'{theory = }')
     fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
-    fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = mrkcolor, marker = 'd', edgecolors = mrkcolor)
+    fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = 'k', marker = 'd', edgecolors = mrkcolor)
     fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = mrkcolor, capsize = 6)
     fig2_ax.set_ylim(0, 1.05*fig2_ax.get_ylim()[1])
     PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
