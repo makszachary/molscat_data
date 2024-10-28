@@ -398,7 +398,7 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
     color_map = matplotlib.colormaps['turbo']
     # color_map = cmcrameri.cm.hawaii
     # color_map = cmocean.cm.balance
-    norm = matplotlib.colors.Normalize(vmin=0, vmax=20, clip = False)
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=l_nax, clip = False)
     # theory_colors = [color_map(norm(L)) for L in range(l_max+1)]
     theory_formattings = [ #{'color': even_color, 'linewidth': 1.25},
                         #   *[{'color': color_map(norm(L)), 'linewidth': 0.25} for L in range(0,l_max+1)]
@@ -424,8 +424,9 @@ def plotP0VsMassWithPartialWavesToFig(fig, singlet_phase: float, triplet_phase: 
 
     fig_bar = fig.add_subplot(gs[:,-4:])
 
-    bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [0, 5, 10, 15], )
-    bar.set_ticklabels(['$0$', '$5$', '$10$', '$15$'])
+    bar = matplotlib.colorbar.ColorbarBase(fig_bar, cmap = color_map, norm = norm, ticks = [0, 10, 20], )
+    # bar.set_ticklabels(['$0$', '$5$', '$10$', '$15$'])
+    bar.set_ticklabels(['$0$', '$10$', '$20$'])
     # bar.ax.scatter(0.5, plot_temperature, **bar_format)
     fig_bar.tick_params(axis = 'both')
     fig_bar.get_yaxis().labelpad = 4
