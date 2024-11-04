@@ -14,6 +14,11 @@ from _molscat_data.physical_constants import red_mass_87Rb_88Sr_amu
 
 def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool = False) -> None:
     singletpotential, tripletpotential, so_coupling = read_from_json(file_path)
+    singlet_De = np.amin(singletpotential['energy'])
+    singlet_Re = np.array(singletpotential['distance'])[np.array(singletpotential['energy']) == singlet_De]
+    triplet_De = np.amin(tripletpotential['energy'])
+    triplet_Re = np.array(tripletpotential['distance'])[np.array(tripletpotential['energy']) == triplet_De]
+    print(f'{singlet_De = }\n{np.mean(singlet_Re) = }\n{triplet_De = }\n{np.mean(triplet_Re) = }')
     plt.figure()
     plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
     plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
