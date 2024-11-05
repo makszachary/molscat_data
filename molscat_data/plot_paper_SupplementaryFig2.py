@@ -327,6 +327,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
     theory = np.transpose( arrays_cold_lower[:,:,T_indices,0], (2,1,0))
     ### indices now: (temperature, magnetic_field, phases)
     theory_distinguished = None
+    print(f'{theory.shape = }')
 
     theory_vs_B = theory
 
