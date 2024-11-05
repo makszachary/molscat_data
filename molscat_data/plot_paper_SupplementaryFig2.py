@@ -208,7 +208,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         print(f'{len(theory_distinguished_formattings) = }')
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], None, None, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
-        ax.set_ylim(0, ax.get_ylim()[1])
+        ax.set_ylim(0, 1.2*ax.get_ylim()[1])
 
         filter_max_probability = np.equal(np.full_like(probability_arrays[T_indices[index],:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_indices[index],:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_indices[index],:,:(plot_l_max+1)].transpose())
         print(f'{filter_max_probability.shape = }')
@@ -309,7 +309,9 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory[index], experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
         # fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
         # fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
-        ax.set_ylim(0, 1.05*ax.get_ylim()[1])
+        ax.set_ylim(0, 1.2*ax.get_ylim()[1])
+        ax.tick_params(axis = 'both', which = 'major', direction = 'in', length = 2)
+        ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 1)
         PhaseTicks.linearStr(ax.yaxis, 0.1, 0.05, '${x:.1f}$')
         for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
             ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
