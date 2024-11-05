@@ -1,37 +1,93 @@
 import numpy as np
-from _molscat_data.scaling_old import read_from_json
+from _molscat_data.scaling_old import read_from_json, default_singlet_phase_function, default_triplet_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase
 from matplotlib import pyplot as plt
+import matplotlib
 from scipy.interpolate import interp1d
 import os
 from pathlib import Path
 import argparse
 import time
-from _molscat_data.physical_constants import red_mass_87Rb_88Sr_amu
+from math import log10, floor
+from labellines import labelLines, labelLine
+
+from _molscat_data.physical_constants import red_mass_87Rb_88Sr_amu, hartree_in_inv_cm, fine_structure_constant
+from _molscat_data.visualize import PhaseTicks
 
 # filepath = r"C:\Users\maksw\Documents\python\data\SO\RKHS\molscat-RbSr+30.json"
 # impath = filepath.strip('.json')+'.png'
 # singletpotential, tripletpotential = read_from_json(filepath)
 
-def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool = False) -> None:
+@matplotlib.ticker.FuncFormatter
+def exponential_major_formatter(x, pos, ndp = 0):
+    if float(x) == 0:
+        return '0'
+    s = '{x:0.{ndp:d}e}'.format(x=x, ndp=ndp)
+    m, e = s.split('e')
+    return r'${m:s}\times 10^{{{e:d}}}$'.format(m=m, e=int(e))
+
+
+def plot_potentials(file_path: Path | str, impath: Path | str = None, show: bool = False, original_path: Path | str = None, journal_name = 'NatCommun',) -> None:
+    plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     singletpotential, tripletpotential, so_coupling = read_from_json(file_path)
-    singlet_De = np.amin(singletpotential['energy'])
-    singlet_Re = np.array(singletpotential['distance'])[np.array(singletpotential['energy']) == singlet_De]
-    triplet_De = np.amin(tripletpotential['energy'])
-    triplet_Re = np.array(tripletpotential['distance'])[np.array(tripletpotential['energy']) == triplet_De]
-    print(f'{singlet_De = }\n{np.mean(singlet_Re) = }\n{triplet_De = }\n{np.mean(triplet_Re) = }')
-    plt.figure()
-    plt.plot(singletpotential['distance'], singletpotential['energy'], color = 'tab:blue', label = "$(2)\,{}^{1}\Sigma^{+}$")
-    plt.plot(tripletpotential['distance'], tripletpotential['energy'], color = 'tab:purple', label = "$(1)\,{}^{3}\Sigma^{+}$")
-    plt.plot(so_coupling['distance'], np.array(so_coupling['energy'])*10**3, color = 'black', label = "$\lambda_\mathrm{SO+SS}(R)\\times10^3$")
+
+    ### getting lambda_so (in Hartrees)
+    so_coupling['energy'] = np.array(so_coupling['energy']) + fine_structure_constant**2 / np.array(so_coupling['distance'])**3
+    print(np.amin(so_coupling['energy']))
+    
+    # singlet_De = np.amin(singletpotential['energy'])
+    # singlet_Re = np.array(singletpotential['distance'])[np.array(singletpotential['energy']) == singlet_De]
+    # triplet_De = np.amin(tripletpotential['energy'])
+    # triplet_Re = np.array(tripletpotential['distance'])[np.array(tripletpotential['energy']) == triplet_De]
+    # print(f'{singlet_De = }\n{np.mean(singlet_Re) = }\n{triplet_De = }\n{np.mean(triplet_Re) = }')
+
+    cm = 1/2.54
+    nrows = 1
+    row_height = 6
+    vpad = 1
+    total_height = nrows*row_height + (nrows-1)*vpad
+    # figsize = (18*cm, total_height*cm)
+    figsize = (8.8*cm, total_height*cm)
+    dpi = 1000
+
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+    ax_so_coupling = ax.twinx()
+
+    ax.plot(singletpotential['distance'], np.array(singletpotential['energy'])*hartree_in_inv_cm, color = 'tab:blue', linewidth = 1, linestyle = '--', label = "$(2)\,{}^{1}\Sigma^{+}$")
+    ax.plot(tripletpotential['distance'], np.array(tripletpotential['energy'])*hartree_in_inv_cm, color = 'tab:purple', linewidth = 1, linestyle = '--', label = "$(1)\,{}^{3}\Sigma^{+}$")
+    ax_so_coupling.plot(so_coupling['distance'], np.array(so_coupling['energy'])*hartree_in_inv_cm, color = 'black', linewidth = 1, linestyle = '--', label = "$\lambda_\mathrm{so}$ (fitted)")
+    if original_path is not None and not Path(original_path).is_file():
+        raise ValueError("The given original_path is not a file.")
+    if Path(original_path).is_file():
+            original_singletpotential, original_tripletpotential, original_so_coupling = read_from_json(original_path)
+            ### getting lambda_so (in Hartrees)
+            original_so_coupling['energy'] = np.array(original_so_coupling['energy']) + fine_structure_constant**2 / np.array(original_so_coupling['distance'])**3
+            print(np.amin(original_so_coupling['energy']))
+            ax.plot(original_singletpotential['distance'], np.array(original_singletpotential['energy'])*hartree_in_inv_cm, color = 'tab:blue', linewidth = 1, )
+            ax.plot(original_tripletpotential['distance'], np.array(original_tripletpotential['energy'])*hartree_in_inv_cm, color = 'tab:purple', linewidth = 1, )
+            ax_so_coupling.plot(original_so_coupling['distance'], np.array(original_so_coupling['energy'])*hartree_in_inv_cm, color = 'black', linewidth = 1, label = "$\lambda_\mathrm{so}$ (ab initio)")
     # plt.plot(singletpotential['distance'], np.array(singletpotential['distance'])**4 * np.array(singletpotential['energy']), color = 'tab:blue', label = "$A^{1}\Sigma^{+}$")
     # plt.plot(tripletpotential['distance'], np.array(tripletpotential['distance'])**4 * np.array(tripletpotential['energy']), color = 'tab:purple', label = "$a^{3}\Sigma^{+}$")
-    plt.xlim(5, 25)
-    plt.ylim(-0.03, 0.05)
-    plt.xlabel("$R, a_0$", fontsize = 'xx-large')
-    plt.ylabel("$V(R)$, ($E_h$)", fontsize = 'xx-large')
+    ax.set_xlim(5, 25)
+    # ax.set_ylim(-3e-2*hartree_in_inv_cm, 5e-2*hartree_in_inv_cm)
+    ax.set_ylim(-8e3, 10e3)
+    ax_so_coupling.set_ylim(np.array(ax.get_ylim())/5e3)
+    ax.set_xlabel("$R$ ($a_0$)")
+    ax.set_ylabel("$V$ ($\mathrm{cm}^{-1}$)")
+    ax_so_coupling.set_ylabel("$\lambda_{so}$ ($\mathrm{cm}^{-1}$)")
     # plt.ylabel("$V(R) \cdot R^4$, ($E_h$)", fontsize = 'xx-large')
-    plt.grid('both')
-    plt.legend()
+    # fig.legend()
+
+    PhaseTicks.linearStr(ax.xaxis, 5, 1, '${x:.0f}$')
+    PhaseTicks.linearStr(ax.yaxis, 5e3, 1e3, '${x:.0f}$')
+    PhaseTicks.linearStr(ax_so_coupling.yaxis, 1, 0.2, '${x:.0f}$')
+    # ax_so_coupling.yaxis.set_major_formatter(exponential_major_formatter)
+    ax.tick_params(axis = 'both', which = 'both', direction = 'in')
+    ax_so_coupling.tick_params(axis = 'both', which = 'both', direction = 'in')
+
+    # labelLines(ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
+    labelLines(ax.get_lines(), align = False, outline_color=None, fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
+    labelLines(ax_so_coupling.get_lines(), align = False, outline_color=None, fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
+
     plt.tight_layout()
     if impath is not None:
         plt.savefig(impath)
@@ -143,7 +199,22 @@ def main():
     parser.add_argument("--extension", type = str, default = r'.png', help = "Extension of the output plot file (if a directory was specified as an output and input)")
     parser.add_argument("--show", action = 'store_true', help = "If enabled, the image will be shown (in the single-file case).")
     parser.add_argument("--scaling", action = 'store_true', help = "If enabled, the image will show all the potential curves to show scaling.")
+    parser.add_argument("--original", type = str, default = None, help = "Path to the original input file or directory")
+
+    parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
     args = parser.parse_args()
+
+    singlet_phases = np.arange(0.01, 1.00, 0.01)
+    triplet_phases = np.arange(0.01, 1.00, 0.01)
+    Phis_vs_scaling = np.array([singlet_phases, [default_singlet_parameter_from_phase(phase) for phase in singlet_phases]]).transpose()
+    Phit_vs_scaling = np.array([triplet_phases, [default_triplet_parameter_from_phase(phase) for phase in triplet_phases]]).transpose()
+    singlet_txt_path = Path(__file__).parents[1] / 'data_produced' / 'Phi_vs_scaling' / 'Phis_vs_scaling.txt'
+    triplet_txt_path = singlet_txt_path.with_stem('Phit_vs_scaling')
+    singlet_txt_path.parent.mkdir(parents=True, exist_ok=True)
+    np.savetxt(singlet_txt_path, Phis_vs_scaling, fmt = '%.4f, %.8f')
+    np.savetxt(triplet_txt_path, Phit_vs_scaling, fmt = '%.4f, %.8f')
+    print(f'{default_singlet_phase_function(1.00) = }')
+    print(f'{default_triplet_phase_function(1.00) = }')
 
 
     if args.scaling:
@@ -151,13 +222,13 @@ def main():
         plot_scaling(path = args.input, xrange = [6,30], yrange = [-0.03, 0.005], impath = args.output, show = args.show)
     elif Path(args.input).is_file() and not Path(args.output).is_dir():
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-        plot_potentials(file_path = args.input, impath = args.output, show = args.show)
+        plot_potentials(file_path = args.input, impath = args.output, show = args.show, original_path = args.original, journal_name = args.journal,)
     elif Path(args.input).is_dir():
         Path(args.output).mkdir(parents=True, exist_ok=True)
         for file_path in Path(args.input).iterdir():
             if file_path.is_file() and file_path.name.endswith('.json'):
                 print(file_path.name)
-                plot_potentials(file_path = file_path, impath = Path(args.output).joinpath(file_path.with_suffix(args.extension).name) )
+                plot_potentials(file_path = file_path, impath = Path(args.output).joinpath(file_path.with_suffix(args.extension).name), original_path = args.original, journal_name = args.journal,)
                 print(f"Data from {file_path.name} plotted to {Path(args.output).joinpath(file_path.with_suffix(args.extension).name)}.")
     else:
         print("Input and output should both be .json files or both should be directories. Try again")
