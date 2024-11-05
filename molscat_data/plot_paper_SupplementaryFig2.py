@@ -322,6 +322,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
     std = np.array([exp_cold_lower[1,0],])
 
     T_indices = np.array([np.abs(plot_temperatures - value).argmin() for value in temperatures])
+    print(f'{T_indices = }')
     # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     ### indices: (phases, magnetic_field, temperature)
     theory = np.transpose( arrays_cold_lower[:,:,T_indices,0], (2,1,0))
