@@ -41,7 +41,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
+def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -66,7 +66,12 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
     experiment = np.array([exp_cold_lower[0,0],])
     std = np.array([exp_cold_lower[1,0],])
 
-    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    gs = gridspec.GridSpec(3,1, fig)
+    gs.update(hspace=0.0)
+    fig_axs = [fig.add_subplot(gs[i,:]) for i in range(len(plot_temperatures))]
+    [ax.sharex(fig_axs[0]) for ax in fig_axs[1:]]
+
+    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 
@@ -140,22 +145,22 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
         ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
         print(f'{probability_arrays.shape = }')
 
-    fig1_ax0 = fig1.add_subplot()
-    fig1_ax1 = fig1.add_subplot(sharex = fig1_ax0)
+    fig1_ax0 = fig.add_subplot()
+    fig1_ax1 = fig.add_subplot(sharex = fig1_ax0)
 
     ### Plot sections for a single temperature but a few values of the phase difference
 
     # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
     print(f'{T_indices = }')
-    theory = arrays_cold_lower[:,:,T_index,0]
+    # theory = arrays_cold_lower[:,:,T_index,0]
     # print(f'{theory = }')
-    if plot_nan:
-        theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
-    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
+    # if plot_nan:
+    #     theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
+    # theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
 
-    theory_vs_Phis = theory
-    theory_vs_Phis_distinguished = theory_distinguished
+    # theory_vs_Phis = theory
+    # theory_vs_Phis_distinguished = theory_distinguished
  
  
     ### Plot sections for the fitted value of the phase difference but many temperatures
@@ -187,14 +192,13 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
     # print(f'{arrays_cold_lower_distinguished.shape =}')
 
     print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
-    print(f'{probability_arrays[T_index,:,:].shape = }')
+    # print(f'{probability_arrays[T_index,:,:].shape = }')
     ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,T_indices,0]), 
                                *np.transpose(probability_arrays[T_indices,:,:(plot_l_max+1)], (0,2,1))],
                   (0,2,1)
                   )
-        print(f'{theory.shape = }')
     ### powinien być na końcu kształt (T, singlet_phase, plot_l_max+2), czyli (3, 98, 21), bo dla każdej temperatury i Phis mamy plot_l_max+1 fal parcjalnych i jedno sumaryczne prawdopobieństwo
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
@@ -206,49 +210,44 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
 
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
-    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
+    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), 0, 1)
     # print(f'{theory = }')
 
     ##### Finding maxima for each partial wave
-    filter_max_probability = np.equal(np.full_like(probability_arrays[T_index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_index,:,:(plot_l_max+1)].transpose())
+    filter_max_probability = np.equal(np.full_like(probability_arrays[T_indices,:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_indices,:,:(plot_l_max+1)], axis = 1)).transpose(0,2,1), probability_arrays[T_indices,:,:(plot_l_max+1)].transpose(0,2,1))
     print(f'{filter_max_probability.shape = }')
     print(f'{filter_max_probability = }')
     # print(f'{filter_max_probability == True}')
     ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
-    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_index,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_index,:,:].sum(axis=1))) )
+    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_indices,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_indices,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_indices,:,:].sum(axis=2))) )
     print(f'{coords_vs_L = }')
 
 
-    sections_temperatures = temperatures[::2]
+    # sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
-    fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
-    PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
-    fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
+    for index, ax in fig_axs:
+        ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], experiment, std, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
+        PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
+        ax.set_ylim(0, ax.get_ylim()[1])
 
-    # annotate peaks with the orbital quantum numbers L
-    for coord in coords_vs_L:
-        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
+        # annotate peaks with the orbital quantum numbers L
+        for coord in coords_vs_L:
+            ax.text(coord[1], coord[2][index] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
+        # set y-label
+        ax.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
 
-    ### Set the labels
-    fig1_ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
-    fig1_ax0.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
-    fig1_ax1.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
+    ### Set the x-ticks and x-label
+    PhaseTicks.setInMultiplesOfPhi(fig_axs[0].xaxis)
+    fig_axs[-1].set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
 
     ### Set the grid so that the scale on both subplots is not deformed
-    lim0 = fig1_ax0.get_ylim()
-    lim1 = fig1_ax1.get_ylim()
+    # lim0 = fig1_ax0.get_ylim()
+    # lim1 = fig1_ax1.get_ylim()
     # print(f'{lim1 = }')
 
-    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .1, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
-    
-    fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
-    fig1_ax0.set_subplotspec(gs1[0,:-5])
-    fig1_ax1.set_position(gs1[1,:-5].get_position(fig1))
-    fig1_ax1.set_subplotspec(gs1[1,:-5])
-
-    return fig0, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_sections, theory_vs_Phis, theory_vs_Phis_distinguished, sections_temperatures, theory_vs_T, theory_vs_T_distinguished
+    return fig, fig_axs, gs, singlet_phases_sections
 
 def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
     ## (c) Spin-exchange probabilities vs the magnetic field
@@ -363,7 +362,7 @@ def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phas
     fig0 = fig.add_subfigure(gs_Figure[:,:90])
     fig1 = fig.add_subfigure(gs_Figure[:,90:])
 
-    # fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_Phis, _theory_vs_Phis_distinguished, _sections_temperatures, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    fig0, fig0_axs, gs0, singlet_phases_sections = plotSectionsWithPartialVsTtoFig(fig = fig0, phase_step_sections = phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = phase_difference_distinguished, so_scaling = so_scaling, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = temperatures, cm_input_dir_name = cm_input_dir_name, hybrid = colormap_hybrid, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
     ###### Save data from figures to .txt files
     # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
