@@ -344,7 +344,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
     # fig2_ax = fig.add_subplot()
 
     # print(f'{theory = }')
-    for index, ax in fig_axs:
+    for index, ax in enumerate(fig_axs):
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory[index], experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
         # fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
         # fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
