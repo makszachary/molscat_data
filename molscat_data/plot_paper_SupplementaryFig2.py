@@ -232,6 +232,12 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     PhaseTicks.setInMultiplesOfPhi(fig_axs[0].xaxis)
     fig_axs[-1].set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
 
+    for ax in fig_axs[:-1]:
+        plt.setp(ax.get_xticklabels(), visible=False)
+
+    for ax in fig_axs[1:]:
+        ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+
     ### Set the grid so that the scale on both subplots is not deformed
     # lim0 = fig1_ax0.get_ylim()
     # lim1 = fig1_ax1.get_ylim()
