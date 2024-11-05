@@ -310,8 +310,8 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         # fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
         # fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
         ax.set_ylim(0, 1.2*ax.get_ylim()[1])
-        ax.tick_params(axis = 'both', which = 'major', direction = 'in', length = 2)
-        ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 1)
+        ax.tick_params(axis = 'both', which = 'major', direction = 'in', length = 4)
+        ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
         PhaseTicks.linearStr(ax.yaxis, 0.1, 0.05, '${x:.1f}$')
         for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
             ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
