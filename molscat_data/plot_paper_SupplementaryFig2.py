@@ -153,12 +153,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
  
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
-    color_map = cmocean.cm.thermal
-    lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
-    # theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
+    plot_l_max = 30
     theory_colors = ['k',]
     L_color_map = matplotlib.colormaps['inferno']
-    plot_l_max = 20
     L_norm = matplotlib.colors.Normalize(vmin=0, vmax=plot_l_max, clip = False)
     if phase_difference_distinguished is not None and fmf_colormap:
         theory_formattings = [ *[{'color': color, 'linewidth': 1.25} for color in theory_colors],
@@ -166,9 +163,6 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
                                ]
     else:
         theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
-    # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
-    # mrkcolor='#b50033' # ładny optymalny czerwony # '#f5390a'
-    # mrkcolor = '#ff1414ff'# jaskrawy czerwony
     mrkcolor = '#cc0000ff' # czerwony jak atom rubidu
     theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 1.5,
                                         #   'markevery': 0.03, 'markersize': 3,
@@ -193,7 +187,6 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
 
     theory_distinguished = np.transpose(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), (2, 1, 0))
 
-    theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
     for index, ax in enumerate(fig_axs):
         print(f'{singlet_phases_sections.shape = }')
