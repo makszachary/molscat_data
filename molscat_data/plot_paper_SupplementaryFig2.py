@@ -183,21 +183,12 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     # mrkcolor='#b50033' # ładny optymalny czerwony # '#f5390a'
     # mrkcolor = '#ff1414ff'# jaskrawy czerwony
     mrkcolor = '#cc0000ff' # czerwony jak atom rubidu
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 0,
-                                          'markevery': 0.03, 'markersize': 3,
-                                          'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
+    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 1.5,
+                                        #   'markevery': 0.03, 'markersize': 3,
+                                        #   'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor
+                                          } for exp in experiment]
 
-    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
-    print(f'{T_indices = }')
-    # print(f'{arrays_cold_lower_distinguished =}')
-    # print(f'{arrays_cold_lower_distinguished.shape =}')
-
-    # print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
-    # print(f'{arrays_cold_lower_distinguished[:,T_indices,0].shape = }')
-    print(f'{np.transpose(arrays_cold_lower_distinguished[:,T_indices,0]).reshape(len(T_indices), -1, 1).shape = }')
-    print(f'{np.transpose(probability_arrays[T_indices,:,:(plot_l_max+1)], (0,2,1)).shape =}')
-    # print(f'{probability_arrays[T_index,:,:].shape = }')
     ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = np.array([
@@ -207,26 +198,14 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
             ])
             for index in T_indices
         ])
-        # theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,T_indices,0]).reshape(len(T_indices), 1, -1), 
-        #                        *np.transpose(probability_arrays[T_indices,:,:(plot_l_max+1)], (0,2,1))],
-        #           (0,2,1)
-        #           )
     ### powinien być na końcu kształt (T, singlet_phase, plot_l_max+2), czyli (3, 98, 21), bo dla każdej temperatury i Phis mamy plot_l_max+1 fal parcjalnych i jedno sumaryczne prawdopobieństwo
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
-    
-    # theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
-    
-    print(f'{theory.shape = }')
-    print(f'{theory = }')
 
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.transpose(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), (2, 1, 0))
-    # print(f'{theory = }')
 
-
-    # sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
     for index, ax in enumerate(fig_axs):
@@ -235,7 +214,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         print(f'{theory_distinguished[index].shape =}')
         print(f'{len(theory_formattings) = }')
         print(f'{len(theory_distinguished_formattings) = }')
-        ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], experiment, std, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
+        ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], None, None, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
         ax.set_ylim(0, ax.get_ylim()[1])
 
