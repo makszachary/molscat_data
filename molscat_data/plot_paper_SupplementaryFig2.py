@@ -229,6 +229,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
     for index, ax in fig_axs:
+        ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], experiment, std, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
+        PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
+        ax.set_ylim(0, ax.get_ylim()[1])
 
         filter_max_probability = np.equal(np.full_like(probability_arrays[index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[index,:,:(plot_l_max+1)].transpose())
         print(f'{filter_max_probability.shape = }')
@@ -238,13 +241,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[index,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[index,:,:].sum(axis=1))) )
         print(f'{coords_vs_L = }')
 
-        ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], experiment, std, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
-        PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
-        ax.set_ylim(0, ax.get_ylim()[1])
-
         # annotate peaks with the orbital quantum numbers L
         for coord in coords_vs_L:
-            ax.text(coord[1], coord[2][index] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
+            ax.text(coord[1], coord[2] + (ax.get_ylim()[1]-ax.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
         # set y-label
         ax.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
