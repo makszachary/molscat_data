@@ -189,10 +189,8 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
 
     if plot_nan:
-        print('Fuck you twice')
-        print(f'{theory[np.isnan(theory)] = }')
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,-2)]+theory[np.roll(np.isnan(theory),1,-2)])/2
-        print(f'{theory[np.isnan(theory)] = }')
+
     theory_distinguished = np.transpose(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), (2, 1, 0))
 
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
@@ -212,7 +210,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         print(f'{filter_max_probability = }')
         # print(f'{filter_max_probability == True}')
         ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
-        coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[index,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[index,:,:].sum(axis=1))) )
+        coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[index,:,l][filter_max_probability[l]] > 0.05*np.nanmax(probability_arrays[index,:,:].sum(axis=1))) )
         print(f'{coords_vs_L = }')
 
         # annotate peaks with the orbital quantum numbers L
