@@ -310,7 +310,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
         PhaseTicks.linearStr(ax.yaxis, 0.1, 0.05, '${x:.1f}$')
         for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
-            ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
+            ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}}\\,\\mathrm{{mod}}\\,\\pi = {singlet_phase:.2f}\\pi$')
         # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
         labelLines(ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(ax.get_ylim()[1]-ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
         # props = dict(boxstyle='round', facecolor='none', edgecolor='none')
