@@ -301,6 +301,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
     gs.update(hspace=0.0)
     fig_axs = [fig.add_subplot(gs[i,:]) for i in range(len(plot_temperatures))]
     [ax.sharex(fig_axs[0]) for ax in fig_axs[1:]]
+    [ax.sharey(fig_axs[0]) for ax in fig_axs[1:]]
     
     if so_scaling is None:
         abbreviation='cold'
