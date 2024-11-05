@@ -228,7 +228,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     # sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
 
-    for index, ax in fig_axs:
+    for index, ax in enumerate(fig_axs):
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], experiment, std, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
         ax.set_ylim(0, ax.get_ylim()[1])
