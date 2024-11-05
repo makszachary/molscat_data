@@ -41,7 +41,7 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
+def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
@@ -145,7 +145,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
 
     ### Plot sections for a single temperature but a few values of the phase difference
 
-    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
+    print(f'{T_indices = }')
     theory = arrays_cold_lower[:,:,T_index,0]
     # print(f'{theory = }')
     if plot_nan:
@@ -154,24 +156,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
 
     theory_vs_Phis = theory
     theory_vs_Phis_distinguished = theory_distinguished
-
-    color_map = cmcrameri.cm.devon
-    theory_colors = list(reversed([color_map(phase_difference) for phase_difference in phase_differences]))
-    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
-    theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 1.75, 'linestyle':  '-' } for exp in experiment]
-    fig1_ax0 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax0, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
-    fig1_ax0.set_ylim(0, fig1_ax0.get_ylim()[1])
-    fig1_ax0.set_xlim(0,1)
-    PhaseTicks.setInMultiplesOfPhi(fig1_ax0.xaxis)
-    PhaseTicks.linearStr(fig1_ax0.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
-    # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = matplotlib.rcParams["xtick.labelsize"], color = 'white')
-    # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"])
-    for i, phase_difference in enumerate(phase_differences):
-        # print(f'{i=}, {phase_difference=}\n{fig1_ax0.get_lines()[i] =}')
-        labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-        labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
  
  
     ### Plot sections for the fitted value of the phase difference but many temperatures
@@ -196,16 +180,22 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
                                           'markevery': 0.03, 'markersize': 3,
                                           'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
 
-    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
+    print(f'{T_indices = }')
     # print(f'{arrays_cold_lower_distinguished =}')
     # print(f'{arrays_cold_lower_distinguished.shape =}')
 
     print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
     print(f'{probability_arrays[T_index,:,:].shape = }')
+    ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
     if phase_difference_distinguished is not None and fmf_colormap:
-        theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,::2,0]), 
-                               *np.transpose(probability_arrays[T_index,:,:(plot_l_max+1)])]
+        theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,T_indices,0]), 
+                               *np.transpose(probability_arrays[T_indices,:,:(plot_l_max+1)], (0,2,1))],
+                  (0,2,1)
                   )
+        print(f'{theory.shape = }')
+    ### powinien być na końcu kształt (T, singlet_phase, plot_l_max+2), czyli (3, 98, 21), bo dla każdej temperatury i Phis mamy plot_l_max+1 fal parcjalnych i jedno sumaryczne prawdopobieństwo
     else:
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
     
@@ -240,17 +230,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
     for coord in coords_vs_L:
         fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
-    # draw the label for the experimental value in the upper plot
-    fig1_ax0_right = fig1_ax0.twinx()
-    fig1_ax0_right.set_ylim(fig1_ax0.get_ylim())
-    # fig1_ax0_right.set_yticks(fig1_ax0.get_yticks(minor=True))
-    fig1_ax0_right.set_yticks( experiment, [(f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'),] )
-    fig1_ax0_right.tick_params(axis = 'y', which = 'both', direction = 'in', right = True, length = 8)
-
-    ### Turn off the x-tick labels in the upper plot
-    plt.setp(fig1_ax0.get_xticklabels(), visible=False)
-    yticks = fig1_ax1.yaxis.get_major_ticks()
-    yticks[-1].label1.set_visible(False)
 
     ### Set the labels
     fig1_ax1.set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
@@ -268,22 +247,6 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_
     fig1_ax0.set_subplotspec(gs1[0,:-5])
     fig1_ax1.set_position(gs1[1,:-5].get_position(fig1))
     fig1_ax1.set_subplotspec(gs1[1,:-5])
-
-    ### Add the axis for the temperature bar
-    # fig1_ax1_bar = fig1.add_subplot(gs1[int(1000*(lim0[1]-lim0[0])):,-4:])
-    fig1_ax1_bar = fig1.add_subplot(gs1[1:,-4:])
-
-    
-    ### create the temperature bar
-    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize']**2, 'marker': theory_distinguished_formattings[0]['marker']}
-
-    fig1_bar = matplotlib.colorbar.ColorbarBase(fig1_ax1_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
-    fig1_bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    fig1_bar.ax.scatter(0.5, plot_temperature, **bar_format)
-    fig1_ax1_bar.tick_params(axis = 'both')
-    fig1_ax1_bar.get_yaxis().labelpad = 4
-    fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
-    fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.08)
 
     return fig0, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_sections, theory_vs_Phis, theory_vs_Phis_distinguished, sections_temperatures, theory_vs_T, theory_vs_T_distinguished
 
