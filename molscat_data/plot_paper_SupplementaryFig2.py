@@ -146,22 +146,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
         print(f'{probability_arrays.shape = }')
 
-    fig1_ax0 = fig.add_subplot()
-    fig1_ax1 = fig.add_subplot(sharex = fig1_ax0)
-
     ### Plot sections for a single temperature but a few values of the phase difference
 
-    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
-    print(f'{T_indices = }')
-    # theory = arrays_cold_lower[:,:,T_index,0]
-    # print(f'{theory = }')
-    # if plot_nan:
-    #     theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
-    # theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
-
-    # theory_vs_Phis = theory
-    # theory_vs_Phis_distinguished = theory_distinguished
  
  
     ### Plot sections for the fitted value of the phase difference but many temperatures
@@ -188,7 +175,6 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
                                         #   'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor
                                           } for exp in experiment]
 
-    T_indices = np.array([np.abs(temperatures - value).argmin() for value in plot_temperatures])
     ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
     if phase_difference_distinguished is not None and fmf_colormap:
         theory = np.array([
