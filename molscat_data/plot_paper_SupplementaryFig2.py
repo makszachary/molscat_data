@@ -372,6 +372,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
 
     for ax in fig_axs[1:]:
         ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+        ax.yaxis.get_major_ticks()[-2].label1.set_visible(False)
 
 
     return fig, fig_axs, gs, theory_vs_B,
