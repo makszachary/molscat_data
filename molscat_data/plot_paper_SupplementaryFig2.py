@@ -310,7 +310,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         # props = dict(facecolor='none')
         # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{e:d}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
+        ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
         ax.set_ylabel(ylabel)
     
