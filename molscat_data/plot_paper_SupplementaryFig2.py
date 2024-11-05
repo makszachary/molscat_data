@@ -339,7 +339,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
 
     return fig, fig_axs, gs, theory_vs_B,
 
-def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
+def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', cm_transfer_input_dir_name = 'RbSr+_tcpld_80mK_0.01_step', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -362,7 +362,7 @@ def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phas
     fig0 = fig.add_subfigure(gs_Figure[:,:90])
     fig1 = fig.add_subfigure(gs_Figure[:,90:])
 
-    fig0, fig0_axs, gs0, singlet_phases_sections = plotSectionsWithPartialVsTtoFig(fig = fig0, phase_step_sections = phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = phase_difference_distinguished, so_scaling = so_scaling, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = temperatures, cm_input_dir_name = cm_input_dir_name, hybrid = colormap_hybrid, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    fig0, fig0_axs, gs0, singlet_phases_sections = plotSectionsWithPartialVsTtoFig(fig = fig0, phase_step_sections = phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = phase_difference_distinguished, so_scaling = so_scaling, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = temperatures, input_dir_name = cm_input_dir_name, transfer_input_dir_name = cm_transfer_input_dir_name, hybrid = colormap_hybrid, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
     ###### Save data from figures to .txt files
     # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
@@ -441,6 +441,7 @@ def main():
 
     parser.add_argument("--cm_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--vs_B_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
+    parser.add_argument("--cm_transfer_input_dir_name", type = str, default = 'RbSr+_fmf_momentum_transfer', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--colormap_hybrid", action = 'store_true', help = "If enabled, the probabilities for the colormap will be taken from 'probabilities_hybrid' directories.")
     parser.add_argument("--plot_section_lines", action = 'store_true', help = "If enabled, the section line for the distinguished phase difference will be drawn.")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
@@ -469,7 +470,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
     print("FUCK YOU")
-    plotSupplementaryFig2(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = args.plot_temperatures, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan)
+    plotSupplementaryFig2(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = args.plot_temperatures, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, cm_transfer_input_dir_name = args.cm_transfer_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan)
 
 if __name__ == '__main__':
     main()
