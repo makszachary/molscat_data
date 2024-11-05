@@ -153,7 +153,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
  
     ### Plot sections for the fitted value of the phase difference but many temperatures
     
-    plot_l_max = 20
+    plot_l_max = 30
     theory_colors = ['k',]
     L_color_map = matplotlib.colormaps['inferno']
     L_norm = matplotlib.colors.Normalize(vmin=0, vmax=plot_l_max, clip = False)
@@ -198,12 +198,12 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
         ax.set_ylim(0, ax.get_ylim()[1])
 
-        filter_max_probability = np.equal(np.full_like(probability_arrays[index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[index,:,:(plot_l_max+1)].transpose())
+        filter_max_probability = np.equal(np.full_like(probability_arrays[T_indices[index],:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_indices[index],:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_indices[index],:,:(plot_l_max+1)].transpose())
         print(f'{filter_max_probability.shape = }')
         print(f'{filter_max_probability = }')
         # print(f'{filter_max_probability == True}')
         ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
-        coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[index,:,l][filter_max_probability[l]] > 0.1*np.nanmax(probability_arrays[index,:,:].sum(axis=-1))) )
+        coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_indices[index],:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_indices[index],:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_indices[index],:,:].sum(axis=1))) )
         print(f'{coords_vs_L = }')
 
         # annotate peaks with the orbital quantum numbers L
