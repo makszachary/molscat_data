@@ -2,6 +2,7 @@ import sys
 import os
 from pathlib import Path
 import argparse
+import zipfile
 
 from multiprocessing import Pool
 
@@ -20,7 +21,8 @@ from labellines import labelLines, labelLine
 
 import time
 
-from _molscat_data.thermal_averaging import n_root_scale
+from _molscat_data.smatrix import SMatrixCollection
+from _molscat_data.thermal_averaging import n_root_scale, n_root_iterator
 from _molscat_data.scaling_old import parameter_from_semiclassical_phase, semiclassical_phase_function, default_singlet_parameter_from_phase, default_triplet_parameter_from_phase, default_singlet_phase_function, default_triplet_phase_function
 from _molscat_data.effective_probability import effective_probability, p0
 from _molscat_data.visualize import ContourMap, ValuesVsModelParameters, PhaseTicks
@@ -39,76 +41,32 @@ plots_dir_path = scratch_path / 'python' / 'molscat_data' / 'plots'
 pmf_path = data_dir_path / 'pmf' / 'N_pdf_logic_params_EMM_500uK.txt'
 pmf_array = np.loadtxt(pmf_path)
 
-def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
+def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_section_lines = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
+    transfer_nenergies = 200
     # singlet_phases, triplet_phases = np.array(singlet_phases), np.array(triplet_phases)
     probabilities_dir_name = 'probabilities_hybrid' if hybrid else 'probabilities'
-
+ 
     F1, F2 = 2, 1
     MF1, MF2 = -2, 1
 
-    singlet_phases_cm = np.array([default_singlet_phase_function(1.0),]) if phase_step_cm is None else np.arange(phase_step_cm, 1., phase_step_cm).round(decimals=4)
-    triplet_phases_cm = np.array([default_triplet_phase_function(1.0),]) if phase_step_cm is None else np.arange(phase_step_cm, 1., phase_step_cm).round(decimals=4)
+    pickle_path = pickles_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{0.04:.4f}_{0.04+phase_difference_distinguished:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}.pickle'
+    transfer_pickle_path = pickles_dir_path / transfer_input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{transfer_nenergies}_E' / f'{0.04:.4f}_{0.04+phase_difference_distinguished:.4f}' / f'{0.0:.4f}' / f'in_4_4_1_1.pickle'
 
-    if fmf_colormap:
-        # print('FUCK YOU')
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases_cm] for singlet_phase in singlet_phases_cm]
-        [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
-        # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 1), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
-        arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(temperatures, np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
-        arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
-        # print(arrays_cold_lower.shape)
-    else:
-        array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{triplet_phase:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if triplet_phase % 1 != 0 else None for triplet_phase in triplet_phases_cm] for singlet_phase in singlet_phases_cm]
-        [ [print(f'{array_path} is not a file!') for array_path in sublist if not array_path.is_file()] for sublist in array_paths_cold_lower ]
-        arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
-        arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[0:2], len(temperatures), -1)
+    s_matrix_collection = SMatrixCollection.fromPickle(pickle_path)
+    l_max = int(max(key[0].L for s_matrix in s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)
 
-    # exp_hot = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_hpf.dat')
-    # exp_cold_higher = np.loadtxt(data_dir_path / 'exp_data' / 'single_ion_cold_higher.dat')
+    transfer_s_matrix_collection = SMatrixCollection.fromPickle(transfer_pickle_path)
+    transfer_l_max = int(max(key[0].L for s_matrix in transfer_s_matrix_collection.matrixCollection.values() for key in s_matrix.matrix.keys())/2)   
+
     exp_cold_lower = np.loadtxt(data_dir_path / 'exp_data' / ('p0_single_ion_cold_lower.dat' if plot_p0 else 'single_ion_cold_lower.dat'))
 
     experiment = np.array([exp_cold_lower[0,0],])
     std = np.array([exp_cold_lower[1,0],])
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = arrays_cold_lower[:,:,T_index,0]
-
-    theory_cm = theory
-
-    ## CONTOUR MAP
-    fig0_ax, fig0_ax_bar = ContourMap._initiate_axes(fig0)
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar = ContourMap.plotToFigure(fig0, fig0_ax, fig0_ax_bar, singlet_phases_cm, triplet_phases_cm, theory, n_levels = 3)
-    fig0_ax.set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
-    fig0_ax.set_ylabel(f'$\\Phi_\\mathrm{{t}}$')#, rotation = 0, lapelpad = 12)
-
-    fig0_bar.ax.axhspan((experiment-std)[0], (experiment+std)[0], color = '0.8', alpha=0.8)
-    fig0_bar.ax.axhline(experiment[0], color = '1.0', linestyle = '-', linewidth = 2)
-    for tick, ticklabel in zip(fig0_bar.ax.get_yticks(), fig0_bar.ax.get_yticklabels()):
-        if np.abs(tick - experiment) < 0.05:
-            print(f'{tick=}')
-            plt.setp(ticklabel, visible=False)
-    fig0_bar.ax.text(1.25, experiment, (f'$p_0^\\mathrm{{exp}}$' if plot_p0 else f'$p_\\mathrm{{eff}}^\\mathrm{{exp}}$'), va = 'center', ha = 'left', fontsize = matplotlib.rcParams["xtick.labelsize"],)
-    if plot_p0: fig0_bar.ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.2f}$'))
-
-    ### plotting the section lines and their labels
-    if plot_section_lines:
-        section_distinguished_x = [[min(singlet_phases_cm), max(triplet_phases_cm)-phase_difference_distinguished],
-                                    [(min(triplet_phases_cm) - phase_difference_distinguished ) % 1, max(singlet_phases_cm)]
-                                    ]
-        section_distinguished_y = [[min(singlet_phases_cm)+phase_difference_distinguished, max(triplet_phases_cm)],
-                                   [min(triplet_phases_cm), (max(singlet_phases_cm) + phase_difference_distinguished) % 1 ]
-                                   ]
-        # color_map = cmcrameri.cm.devon
-        # theory_colors = list(reversed([color_map(phase_difference) for phase_difference in section_phase_differences]))
-        theory_distinguished_colors = ['k', 'k']
-        lines  = fig0_ax.plot(section_distinguished_x[0], section_distinguished_y[0], color = theory_distinguished_colors[0], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$')
-        fig0_ax.plot(section_distinguished_x[1], section_distinguished_y[1], color = theory_distinguished_colors[1], linestyle = 'dashed', linewidth = 1, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$')
-        
-        labelLines(lines, align = True, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
-        labelLines(lines, align = True, outline_color=None, fontsize = matplotlib.rcParams["xtick.labelsize"], zorder = 3)
 
     ## SECTIONS THROUGH THE CONTOUR MAP
 
@@ -120,6 +78,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
         # print([ [np.loadtxt(array_path).shape if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan).shape for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = np.array([ [np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan) for array_path in sublist] for sublist in array_paths_cold_lower ])
         arrays_cold_lower = arrays_cold_lower.reshape(*arrays_cold_lower.shape[:2], len(temperatures), -1)
+
     else:
         array_paths_cold_lower = [  [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase+phase_difference ) % 1 !=0 else None for phase_difference in phase_differences] for singlet_phase in singlet_phases_sections]
         [ [print(array_path) for array_path in sublist if (array_path is not None and not array_path.is_file())] for sublist in array_paths_cold_lower ]
@@ -131,11 +90,55 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
             array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases_sections]
             arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full(len(temperatures), np.nan) for array_path in array_paths_cold_lower_distinguished ])
             arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
+
+            k_archive_paths = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}.zip' if (singlet_phase+phase_difference_distinguished)%1 != 0 else None for singlet_phase in singlet_phases_sections]
+            k_L_E_array_paths = [[arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt' if (singlet_phase+phase_difference_distinguished)%1 != 0 else None for MF_out in range(-F1, F1+1, 2)] for singlet_phase in singlet_phases_sections]
+            k_m_L_E_array_paths = [[arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_m_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt' if (singlet_phase+phase_difference_distinguished)%1 != 0 else None for MF_out in range(-F1, F1+1, 2)] for singlet_phase in singlet_phases_sections]
+
+            print("Starting extracting!")
+            for archive_path in k_archive_paths:
+                print(archive_path)
+                if archive_path is None: continue
+                with zipfile.ZipFile(archive_path, 'r') as zObject:
+                    for MF_out in range(-F1, F1+1, 2):
+                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}/k_L_E/cold_lower/OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
+                            zObject.extract(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt', archive_path.with_suffix(''))
+                        if not (archive_path.with_suffix('') / Path(f'in_{F1}_{MF1}_{F2}_{MF2}/k_m_L_E/cold_lower/OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt')).is_file():
+                            zObject.extract(f'in_{F1}_{MF1}_{F2}_{MF2}' / 'k_m_L_E'/ 'cold_lower' / f'OUT_{F1}_{MF_out}_{F2}_{MF2-2}_IN_{F1}_{MF1}_{F2}_{MF2}.txt', archive_path.with_suffix(''))
+            print("Finished extracting!")
+
         else:
             array_paths_cold_lower_distinguished = [arrays_dir_path / input_dir_name / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'{singlet_phase:.4f}_{(singlet_phase+phase_difference_distinguished)%1:.4f}' / f'{so_scaling:.4f}' / probabilities_dir_name / ('p0_cold_lower.txt' if plot_p0 else 'cold_lower.txt') if ( singlet_phase + phase_difference_distinguished ) % 1 !=0 else None for singlet_phase in singlet_phases_sections]
             arrays_cold_lower_distinguished = np.array([ np.loadtxt(array_path) if (array_path is not None and array_path.is_file()) else np.full((len(temperatures), 3), np.nan) for array_path in array_paths_cold_lower_distinguished ])
             arrays_cold_lower_distinguished = arrays_cold_lower_distinguished.reshape(arrays_cold_lower_distinguished.shape[0], len(temperatures), -1)
 
+    if phase_difference_distinguished is not None and fmf_colormap:
+        print("Starting loading k_L_E arrays")
+        k_L_E_arrays = np.array([ [np.loadtxt(array_path_MF_out) if (array_path_MF_out is not None and array_path_MF_out.is_file()) else np.full((l_max+1,50), np.nan) for array_path_MF_out in array_for_singlet_phase] for array_for_singlet_phase in k_L_E_array_paths])
+        print("Starting loading k_m_L_E arrays")
+        k_m_L_E_arrays = np.array([ [np.loadtxt(array_path_MF_out) if (array_path_MF_out is not None and array_path_MF_out.is_file()) else np.full((transfer_l_max,transfer_nenergies), np.nan) for array_path_MF_out in array_for_singlet_phase] for array_for_singlet_phase in k_m_L_E_array_paths ])
+        print("Finished loading the arrays")
+
+        distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(s_matrix_collection.collisionEnergy), E_max = max(s_matrix_collection.collisionEnergy), N = len(s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+        transfer_distribution_arrays = [np.fromiter(n_root_iterator(temperature = temperature, E_min = min(transfer_s_matrix_collection.collisionEnergy), E_max = max(transfer_s_matrix_collection.collisionEnergy), N = len(transfer_s_matrix_collection.collisionEnergy), n = 3), dtype = float) for temperature in temperatures]
+        
+        print("Starting calculating energy averages")
+        average_rate_arrays = np.array( [s_matrix_collection.thermalAverage(k_L_E_arrays, distribution_array) for distribution_array in distribution_arrays ] )
+        #### summing over all values of MF_out
+        ## average_rate_arrays = np.sum(average_rate_arrays, axis = 1)
+        average_rate_arrays = np.moveaxis(average_rate_arrays, -1, 0)
+        ### now we have (L, T, singlet_phase, MF_out) indices on axes for average_rate_arrays and expected shape (50, 21, 98, 3)
+        average_momentum_transfer_arrays = np.array( [ transfer_s_matrix_collection.thermalAverage(k_m_L_E_arrays.sum(axis=-2), transfer_distribution_array) for transfer_distribution_array in transfer_distribution_arrays ] )
+        ### now we have (T, singlet_phase, MF_out) indices on axes for average_momentum_transfer_arrays and expected shape (21, 98, 3)
+        print("Finished calculating energy averages")
+        print(f'{average_rate_arrays.shape = }, {average_momentum_transfer_arrays.shape = }')
+
+        probability_arrays = average_rate_arrays / average_momentum_transfer_arrays
+        ### now we the have (L, T, singlet_phase, MF_out) indices on axes for probability_arrays and expected shape (50, 21, 98, 3)
+        ### we sum over all values of MF_out and move L-axis to the last position
+        probability_arrays = np.moveaxis(probability_arrays.sum(axis=-1),0,-1)
+        ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
+        print(f'{probability_arrays.shape = }')
 
     fig1_ax0 = fig1.add_subplot()
     fig1_ax1 = fig1.add_subplot(sharex = fig1_ax0)
@@ -144,6 +147,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     theory = arrays_cold_lower[:,:,T_index,0]
+    # print(f'{theory = }')
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
@@ -163,6 +167,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     # labelLines(ax0.get_lines(), align = False, outline_width=2, fontsize = matplotlib.rcParams["xtick.labelsize"], color = 'white')
     # labelLines(ax0.get_lines(), align = False, outline_width=2, outline_color = None, yoffsets= -6.7e-3*(ax0.get_ylim()[1]-ax0.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"])
     for i, phase_difference in enumerate(phase_differences):
+        # print(f'{i=}, {phase_difference=}\n{fig1_ax0.get_lines()[i] =}')
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
         labelLine(fig1_ax0.get_lines()[i], 0.35, label = f'$\\Delta\\Phi = {phase_difference:.2f}\\pi$', align = False, yoffset = 0.02-6.7e-3*(fig1_ax0.get_ylim()[1]-fig1_ax0.get_ylim()[0]), outline_color = None, fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLine(fig1_ax0.get_lines()[-1], 0.35, label = f'$\\Delta\\Phi_\\mathrm{{fit}} = {phase_difference_distinguished:.2f}\\pi$', align = False, yoffset = 0.02, outline_width = 2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
@@ -174,7 +179,15 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
     theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
+    L_color_map = matplotlib.colormaps['inferno']
+    plot_l_max = 20
+    L_norm = matplotlib.colors.Normalize(vmin=0, vmax=plot_l_max, clip = False)
+    if phase_difference_distinguished is not None and fmf_colormap:
+        theory_formattings = [ *[{'color': color, 'linewidth': 1.25} for color in theory_colors],
+                              *[{'color': L_color_map(L_norm(L)), 'linewidth': 0.25} for L in range(0,plot_l_max+1)]
+                               ]
+    else:
+        theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
     # theory_distinguished_formattings = [ {'color': 'k', 'linewidth': 4, 'linestyle':  (1.05,(0.1,2)), 'dash_capstyle': 'round' } for exp in experiment]
     # mrkcolor='#b50033' # ładny optymalny czerwony # '#f5390a'
     # mrkcolor = '#ff1414ff'# jaskrawy czerwony
@@ -186,11 +199,35 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     T_index = np.nonzero(temperatures == plot_temperature)[0][0]
     # print(f'{arrays_cold_lower_distinguished =}')
     # print(f'{arrays_cold_lower_distinguished.shape =}')
-    theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
+
+    print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
+    print(f'{probability_arrays[T_index,:,:].shape = }')
+    if phase_difference_distinguished is not None and fmf_colormap:
+        theory = np.transpose([*np.transpose(arrays_cold_lower_distinguished[:,::2,0]), 
+                               *np.transpose(probability_arrays[T_index,:,:(plot_l_max+1)])]
+                  )
+    else:
+        theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
+    
+    # theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
+    
+    print(f'{theory.shape = }')
+    print(f'{theory = }')
+
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
     theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_index, 0], ]), 0, -1)
     # print(f'{theory = }')
+
+    ##### Finding maxima for each partial wave
+    filter_max_probability = np.equal(np.full_like(probability_arrays[T_index,:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_index,:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_index,:,:(plot_l_max+1)].transpose())
+    print(f'{filter_max_probability.shape = }')
+    print(f'{filter_max_probability = }')
+    # print(f'{filter_max_probability == True}')
+    ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
+    coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_index,:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_index,:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_index,:,:].sum(axis=1))) )
+    print(f'{coords_vs_L = }')
+
 
     sections_temperatures = temperatures[::2]
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
@@ -198,6 +235,10 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     fig1_ax1 = ValuesVsModelParameters.plotValuestoAxis(fig1_ax1, singlet_phases_sections, theory, experiment, std, theory_distinguished, theory_formattings, theory_distinguished_formattings)
     PhaseTicks.linearStr(fig1_ax1.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
     fig1_ax1.set_ylim(0, fig1_ax1.get_ylim()[1])
+
+    # annotate peaks with the orbital quantum numbers L
+    for coord in coords_vs_L:
+        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
@@ -221,7 +262,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     lim1 = fig1_ax1.get_ylim()
     # print(f'{lim1 = }')
 
-    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .15, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
+    gs1 = gridspec.GridSpec(2, 90, fig1, hspace = .1, wspace = 0., height_ratios = [1, 1])# [(lim0[1]-lim0[0]),(lim1[1]-lim1[0])])
     
     fig1_ax0.set_position(gs1[0,:-5].get_position(fig1))
     fig1_ax0.set_subplotspec(gs1[0,:-5])
@@ -244,9 +285,9 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
     fig1_ax1_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
     fig1_ax1_bar.yaxis.set_label_coords(0.0, 1.08)
 
-    return fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_cm, triplet_phases_cm, theory_cm, singlet_phases_sections, theory_vs_Phis, theory_vs_Phis_distinguished, sections_temperatures, theory_vs_T, theory_vs_T_distinguished
+    return fig0, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, singlet_phases_sections, theory_vs_Phis, theory_vs_Phis_distinguished, sections_temperatures, theory_vs_T, theory_vs_T_distinguished
 
-def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
+def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_fmf_SE_vs_B_80mK', plot_p0 = False, so_scaling = None,):
     ## (c) Spin-exchange probabilities vs the magnetic field
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -256,6 +297,10 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     F1, F2 = 2, 1
     MF1, MF2 = -2, 1
 
+    gs = gridspec.GridSpec(3,1, fig)
+    gs.update(hspace=0.0)
+    fig_axs = [fig.add_subplot(gs[i,:]) for i in range(len(plot_temperatures))]
+    [ax.xaxis.sharex(fig_axs[0]) for ax in fig_axs[1:]]
     
     if so_scaling is None:
         abbreviation='cold'
@@ -276,8 +321,11 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
     experiment = np.array([exp_cold_lower[0,0],])
     std = np.array([exp_cold_lower[1,0],])
 
-    T_index = np.nonzero(temperatures == plot_temperature)[0][0]
-    theory = np.moveaxis( arrays_cold_lower[:,:,T_index,0], 0, -1)
+    T_indices = np.array([np.abs(plot_temperatures - value).argmin() for value in temperatures])
+    # T_index = np.nonzero(temperatures == plot_temperature)[0][0]
+    ### indices: (phases, magnetic_field, temperature)
+    theory = np.transpose( arrays_cold_lower[:,:,T_indices,0], (2,1,0))
+    ### indices now: (temperature, magnetic_field, phases)
     theory_distinguished = None
 
     theory_vs_B = theory
@@ -293,82 +341,39 @@ def plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases: tuple[tuple[float, floa
                                           'markevery': 0.06, 'markersize': 3,
                                           'marker': 'o', 'markeredgecolor': mrkcolor, 'markerfacecolor': mrkcolor} for exp in experiment]
 
-    fig2_ax = fig2.add_subplot()
+    # fig2_ax = fig.add_subplot()
 
     # print(f'{theory = }')
-    fig2_ax = ValuesVsModelParameters.plotValuestoAxis(fig2_ax, magnetic_fields, theory, experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
-    fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
-    fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
-    fig2_ax.set_ylim(0, 1.05*fig2_ax.get_ylim()[1])
-    PhaseTicks.linearStr(fig2_ax.yaxis, 0.1, 0.05, '${x:.1f}$')
-    PhaseTicks.linearStr(fig2_ax.xaxis, 100, 20, '${x:n}$') if max(magnetic_fields)-min(magnetic_fields) > 250 else PhaseTicks.linearStr(fig2_ax.xaxis, 50, 10, '${x:n}$')
-    for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
-        fig2_ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
-    # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    labelLines(fig2_ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
-    fig2_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig2_ax.transAxes, bbox = props)
-    ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
-    fig2_ax.set_ylabel(ylabel)
-
-    fig2_ax.set_xlabel(f'$B\\,(\\mathrm{{G}})$')
-
-    color_map = cmocean.cm.thermal
-    lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
-    theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_formattings = [ {'color': color, 'linewidth': 1.25} for color in theory_colors ]
-
-    gs3 = gridspec.GridSpec(3,60, fig3)
-    gs3.update(hspace=0.0)
-    fig3_axs = [fig3.add_subplot(gs3[i,:-5], sharex = fig2_ax) for i in range(len(magnetic_phases))]
+    for index, ax in fig_axs:
+        ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory[index], experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
+        # fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
+        # fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
+        ax.set_ylim(0, 1.05*ax.get_ylim()[1])
+        PhaseTicks.linearStr(ax.yaxis, 0.1, 0.05, '${x:.1f}$')
+        for i, (singlet_phase, triplet_phase) in enumerate(magnetic_phases):
+            ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
+        # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
+        labelLines(ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(ax.get_ylim()[1]-ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
+        # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
+        props = dict(facecolor='none')
+        # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
+        ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {plot_temperatures[i]:.2e}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
+        ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
+        ax.set_ylabel(ylabel)
     
-    vs_B_temperatures = temperatures[::2]
-    theory_vs_B_vs_T = arrays_cold_lower[:,:,::2,0]
-    theory_vs_B_vs_T_distinguished = np.moveaxis(arrays_cold_lower[:,:,T_index,0], 0, -1)
+    PhaseTicks.linearStr(fig_axs[0].xaxis, 100, 20, '${x:n}$') if max(magnetic_fields)-min(magnetic_fields) > 250 else PhaseTicks.linearStr(fig_axs[0].xaxis, 50, 10, '${x:n}$')
+    fig_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
-    for i, ax in enumerate(fig3_axs):
-        theory = arrays_cold_lower[i,:,::2,0]
-        theory_distinguished = np.moveaxis( np.array( [arrays_cold_lower[i,:,T_index,0],]), 0, -1)
-        ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory, None, None, theory_distinguished, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
-        ax.set_ylim(0, ax.get_ylim()[1])
-        PhaseTicks.linearStr(ax.yaxis, 0.2 if ax.get_ylim()[1] > 0.2 else 0.1, 0.1 if ax.get_ylim()[1] > 0.2 else 0.05, '${x:.1f}$')
-        ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:.1f}$'))
-    
-    for ax in fig3_axs[:-1]:
-        plt.setp(ax.get_xticklabels(), visible=False)
 
-    for ax in fig3_axs[1:]:
-        ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
-    
-    # for ax in fig3_axs:
-    #     ax.set_ylim(0, max([_.get_ylim()[1] for _ in fig3_axs]))
+    return fig, fig_axs, gs, theory_vs_B,
 
-    fig3_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
-
-    ### create the temperature bar
-    fig3_bar = fig3.add_subplot(gs3[:,-4:])
-
-    bar_format = {'c': mrkcolor, 's': theory_distinguished_formattings[0]['markersize']**2, 'marker': theory_distinguished_formattings[0]['marker']}
-
-    bar = matplotlib.colorbar.ColorbarBase(fig3_bar, cmap = color_map, norm = lognorm, ticks = [1e-4, plot_temperature, 1e-3, 1e-2], )
-    bar.set_ticklabels(['$0.1$', f'$T_\\mathrm{{exp}}$', '$1$', '$10$'])
-    bar.ax.scatter(0.5, plot_temperature, **bar_format)
-    fig3_bar.tick_params(axis = 'both')
-    fig3_bar.get_yaxis().labelpad = 4
-    fig3_bar.set_ylabel('$T\\,(\\mathrm{mK})$', rotation = 0, va = 'baseline', ha = 'left')
-    fig3_bar.yaxis.set_label_coords(0.0, 1.05)
-
-    # fig3.subplots_adjust(left = 0.07, top = 0.9, right = 0.95, bottom = 0.20, hspace = .0)
-
-    return fig2, fig2_ax, fig3, fig3_axs, gs3, theory_vs_B, vs_B_temperatures, theory_vs_B_vs_T, theory_vs_B_vs_T_distinguished
-
-def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperature: float = 5e-4, cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
+def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
     E_max = max(energy_tuple)
     suffix = '_hybrid' if colormap_hybrid else ''
-    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig3' / f'{cm_input_dir_name}_{vs_B_input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'Fig3_{plot_temperature:.2e}K.png'
+    png_path = plots_dir_path / 'paper' / f'{journal_name}' / 'Fig3' / f'{cm_input_dir_name}_{vs_B_input_dir_name}' / f'{E_min:.2e}_{E_max:.2e}_{nenergies}_E' / f'SupplementaryFig2.png'
     pdf_path = png_path.with_suffix('.pdf')
     svg_path = png_path.with_suffix('.svg')
     data_path = png_path.with_suffix('.txt')
@@ -376,60 +381,52 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
 
     cm = 1/2.54
     ws, hs = 0.05, 0.05
-    first_row_height = 7.5
-    vpad = 1
-    second_row_height = 6
-    total_height = first_row_height+vpad+second_row_height
+    total_height = 7.5
     figsize = (18*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize=figsize, dpi = dpi)
-    gs_Figure = gridspec.GridSpec(int(1000*total_height),180, fig)
+    gs_Figure = gridspec.GridSpec(1,180, fig)
     # figs = fig.subfigures(2, 2, wspace = ws, hspace = hs)
-    fig0 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),:90])
-    fig1 = fig.add_subfigure(gs_Figure[:int(1000*first_row_height),90:])
-    fig2 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,:120])
-    fig3 = fig.add_subfigure(gs_Figure[-int(1000*second_row_height):,120:])
+    fig0 = fig.add_subfigure(gs_Figure[:,:90])
+    fig1 = fig.add_subfigure(gs_Figure[:,90:])
 
-    fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_Phis, _theory_vs_Phis_distinguished, _sections_temperatures, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    # fig0, fig0_ax, fig0_ax_bar, fig0_bar, fig0, fig1, fig1_ax0, fig1_ax0_right, fig1_ax1, fig1_ax1_bar, fig1_bar, gs1, _singlet_phases_cm, _triplet_phases_cm, _theory_cm, _singlet_phases_sections, _theory_vs_Phis, _theory_vs_Phis_distinguished, _sections_temperatures, _theory_vs_T, _theory_vs_T_distinguished = plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm, phase_step_sections, phase_differences, phase_difference_distinguished, so_scaling, energy_tuple, temperatures, plot_temperature, cm_input_dir_name, hybrid = colormap_hybrid, plot_section_lines = plot_section_lines, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
     ###### Save data from figures to .txt files
-    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_triplet_phases'), _triplet_phases_cm, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_colormap_theory'), _theory_cm, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_singlet_phases'), _singlet_phases_sections, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_DPhi'), phase_differences, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_Phis'), _theory_vs_Phis, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_Phis_distiguished'), _theory_vs_Phis_distinguished, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T'), _theory_vs_T, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T_distinguished'), _theory_vs_T_distinguished, fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_sections_temperatures'), _sections_temperatures, fmt = '%.4e')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_triplet_phases'), _triplet_phases_cm, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_theory'), _theory_cm, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_singlet_phases'), _singlet_phases_sections, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_DPhi'), phase_differences, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_Phis'), _theory_vs_Phis, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_Phis_distiguished'), _theory_vs_Phis_distinguished, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T'), _theory_vs_T, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_theory_vs_T_distinguished'), _theory_vs_T_distinguished, fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_sections_temperatures'), _sections_temperatures, fmt = '%.4e')
 
- 
-    fig2, fig2_ax, fig3, fig3_axs, gs3, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+    fig1, fig1_axs, gs1, theory_vs_B, = plotMagneticFieldtoFig(fig1, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperatures, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
+    # fig2, fig2_ax, fig3, fig3_axs, gs3, _theory_vs_B, _vs_B_temperatures, _theory_vs_B_vs_T, _theory_vs_B_vs_T_distinguished = plotMagneticFieldtoFigs(fig2, fig3, magnetic_phases, magnetic_fields, magnetic_field_experimental, energy_tuple, temperatures, plot_temperature, vs_B_input_dir_name, plot_p0 = plot_p0, so_scaling = (so_scaling if so_scaling_vs_B else None))
 
     ###### Save data from Fig3d-e to .txt files
-    np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_magnetic_fields'), magnetic_fields, fmt = '%.4f')
-    with open(data_path.with_stem(data_path.stem+'_vs_B_phases'), 'w') as f:
-        print(magnetic_phases, file = f)
-    np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_theory'), _theory_vs_B, fmt = '%.4f')
-    for i in range(_theory_vs_B_vs_T.shape[0]):
-        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_{i}'), _theory_vs_B_vs_T[i], fmt = '%.4f')
-        np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_distinguished_{i}'), _theory_vs_B_vs_T_distinguished[:,i], fmt = '%.4f')
-    np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_temperatures'), _vs_B_temperatures, fmt = '%.4e')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_magnetic_fields'), magnetic_fields, fmt = '%.4f')
+    # with open(data_path.with_stem(data_path.stem+'_vs_B_phases'), 'w') as f:
+    #     print(magnetic_phases, file = f)
+    # np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_theory'), _theory_vs_B, fmt = '%.4f')
+    # for i in range(_theory_vs_B_vs_T.shape[0]):
+    #     np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_{i}'), _theory_vs_B_vs_T[i], fmt = '%.4f')
+    #     np.savetxt(data_path.with_stem(data_path.stem+f'_vs_B_vs_T_theory_distinguished_{i}'), _theory_vs_B_vs_T_distinguished[:,i], fmt = '%.4f')
+    # np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_temperatures'), _vs_B_temperatures, fmt = '%.4e')
 
 
-    fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    # fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_axs[0].text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
     gs1.update(left = 0.17, right = 0.97)
     # fig1.subplots_adjust(left = 0.17, right = 0.97)
-    fig2.subplots_adjust(left = 0.1, right = 0.97)
+    # fig2.subplots_adjust(left = 0.1, right = 0.97)
     # fig3.subplots_adjust(left = 0.17, right = 1-(0.03)*90/60)
-    gs3.update(left = 0.17, right = 1-(0.03)*90/60)
+    # gs3.update(left = 0.17, right = 1-(0.03)*90/60)
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
