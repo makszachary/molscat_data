@@ -462,6 +462,7 @@ def main():
     parser.add_argument("--nT", type = int, default = 20, help = "Number of temperatures included in the calculations.")
     parser.add_argument("--logT_min", type = float, default = -4)
     parser.add_argument("--logT_max", type = float, default = -2)
+    parser.add_argument("--plot_temperatures", nargs='*', type = float, default = [1e-4, 1.1e-3, 1e-2])
 
     parser.add_argument("--fmf_colormap", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with the fmf basis set. Changes the directory structure for arrays.")
     parser.add_argument("--so_scaling_vs_B", action = 'store_true', help = "Assume that the scattering calculations in molscat were done with spin-orbit coupling included. Changes the directory structure for arrays.")
@@ -495,7 +496,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    [plotFig3(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan) for temperature in temperatures]
+    plotFig3(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = args.plot_temperatures, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan)
 
 if __name__ == '__main__':
     main()
