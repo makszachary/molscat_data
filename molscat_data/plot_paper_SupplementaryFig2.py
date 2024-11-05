@@ -354,8 +354,8 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
             ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
         # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
         labelLines(ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(ax.get_ylim()[1]-ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
-        # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
-        props = dict(facecolor='none')
+        props = dict(boxstyle='round', facecolor='none', edgecolor='none')
+        # props = dict(facecolor='none')
         # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {plot_temperatures[i]:.2e}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
