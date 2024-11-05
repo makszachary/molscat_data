@@ -362,7 +362,7 @@ def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phas
     fig0 = fig.add_subfigure(gs_Figure[:,:90])
     fig1 = fig.add_subfigure(gs_Figure[:,90:])
 
-    fig0, fig0_axs, gs0, singlet_phases_sections = plotSectionsWithPartialVsTtoFig(fig = fig0, phase_step_sections = phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = phase_difference_distinguished, so_scaling = so_scaling, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = temperatures, input_dir_name = cm_input_dir_name, transfer_input_dir_name = cm_transfer_input_dir_name, hybrid = colormap_hybrid, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
+    fig0, fig0_axs, gs0, singlet_phases_sections = plotSectionsWithPartialVsTtoFig(fig = fig0, phase_step_sections = phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = phase_difference_distinguished, so_scaling = so_scaling, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = plot_temperatures, input_dir_name = cm_input_dir_name, transfer_input_dir_name = cm_transfer_input_dir_name, hybrid = colormap_hybrid, plot_p0 = plot_p0, fmf_colormap = fmf_colormap, plot_nan = plot_nan)
  
     ###### Save data from figures to .txt files
     # np.savetxt(data_path.with_stem(data_path.stem+'_colormap_singlet_phases'), _singlet_phases_cm, fmt = '%.4f')
