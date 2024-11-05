@@ -367,7 +367,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
 
     return fig, fig_axs, gs, theory_vs_B,
 
-def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
+def plotSupplementaryFig2(phase_step_cm: float, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, magnetic_phases: tuple[tuple[float, float], ...], magnetic_fields: float | np.ndarray[float], magnetic_field_experimental: float, MF_in: int, MS_in: int, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures: float = [1e-4, 1e-3, 1e-2], cm_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', vs_B_input_dir_name = 'RbSr+_fmf_vs_SE_80mK', colormap_hybrid = False, plot_p0 = False, plot_section_lines = False, fmf_colormap = False, so_scaling_vs_B = False, plot_nan = False, journal_name = 'NatCommun'):
     plt.style.use(Path(__file__).parent / 'mpl_style_sheets' / f'{journal_name}.mplstyle')
     nenergies = len(energy_tuple)
     E_min = min(energy_tuple)
@@ -496,7 +496,7 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    plotFig3(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = args.plot_temperatures, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan)
+    plotSupplementaryFig2(phase_step_cm = args.phase_step_cm, phase_step_sections = args.phase_step_sections, phase_differences = phase_differences, phase_difference_distinguished = args.phase_difference, so_scaling = so_scaling, magnetic_phases = magnetic_phases, magnetic_fields = magnetic_fields, magnetic_field_experimental = 2.97, MF_in = MF1, MS_in = MF2, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperatures = args.plot_temperatures, cm_input_dir_name = args.cm_input_dir_name, vs_B_input_dir_name = args.vs_B_input_dir_name, colormap_hybrid = args.colormap_hybrid, plot_p0 = args.plot_p0, plot_section_lines = args.plot_section_lines, journal_name = args.journal, fmf_colormap = args.fmf_colormap, so_scaling_vs_B = args.so_scaling_vs_B, plot_nan = args.plot_nan)
 
 if __name__ == '__main__':
     main()
