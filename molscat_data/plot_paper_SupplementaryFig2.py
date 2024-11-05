@@ -364,6 +364,12 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
     PhaseTicks.linearStr(fig_axs[0].xaxis, 100, 20, '${x:n}$') if max(magnetic_fields)-min(magnetic_fields) > 250 else PhaseTicks.linearStr(fig_axs[0].xaxis, 50, 10, '${x:n}$')
     fig_axs[-1].set_xlabel(f'$B\\,(\\mathrm{{G}})$')
 
+    for ax in fig_axs[:-1]:
+        plt.setp(ax.get_xticklabels(), visible=False)
+
+    for ax in fig_axs[1:]:
+        ax.yaxis.get_major_ticks()[-1].label1.set_visible(False)
+
 
     return fig, fig_axs, gs, theory_vs_B,
 
