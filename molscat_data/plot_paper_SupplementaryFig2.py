@@ -46,7 +46,7 @@ def exponential_formatter(x, ndp = 0):
         return '0'
     s = '{x:0.{ndp:d}e}'.format(x=x, ndp=ndp)
     m, e = s.split('e')
-    return r'${m:s}\times 10^{{{e:d}}}$'.format(m=m, e=int(e))
+    return r'{m:s}\times{}10^{{{e:d}}}'.format(m=m, e=int(e))
 
 def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
