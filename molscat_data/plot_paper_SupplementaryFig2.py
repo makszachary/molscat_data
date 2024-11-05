@@ -222,7 +222,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
 
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.97, 0.95, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
+        ax.text(0.97, 0.9, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
 
     ### Set the x-ticks and x-label
     PhaseTicks.setInMultiplesOfPhi(fig_axs[0].xaxis)
@@ -317,7 +317,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         # props = dict(facecolor='none')
         # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.97, 0.95, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
+        ax.text(0.97, 0.9, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
         ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
         ax.set_ylabel(ylabel)
     
