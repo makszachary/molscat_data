@@ -51,7 +51,7 @@ def exponential_formatter(x, ndp = 0):
 def split_exponential(x, ndp = 0):
     s = '{x:0.{ndp:d}e}'.format(x=x, ndp=ndp)
     m, e = s.split('e')
-    return m, int(e)
+    return float(m), int(e)
 
 def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_differences: float | np.ndarray[float], phase_difference_distinguished: float, so_scaling: float, energy_tuple: tuple[float, ...], temperatures: tuple[float, ...] = (5e-4,), plot_temperatures = [1e-4, 1e-3, 1e-2], input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', transfer_input_dir_name: str = 'RbSr+_tcpld_80mK_0.01_step', hybrid = False, plot_p0 = False, fmf_colormap = False, plot_nan = False,):
     nenergies = len(energy_tuple)
@@ -310,7 +310,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         # props = dict(facecolor='none')
         # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{e:int}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
+        ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{e:d}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
         ax.set_ylabel(ylabel)
     
