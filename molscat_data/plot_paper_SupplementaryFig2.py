@@ -66,8 +66,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     experiment = np.array([exp_cold_lower[0,0],])
     std = np.array([exp_cold_lower[1,0],])
 
-    gs = gridspec.GridSpec(3,1, fig)
+    gs = gridspec.GridSpec(len(plot_temperatures),1, fig)
     gs.update(hspace=0.0)
+    print(f'{plot_temperatures = }')
     fig_axs = [fig.add_subplot(gs[i,:]) for i in range(len(plot_temperatures))]
     [ax.sharex(fig_axs[0]) for ax in fig_axs[1:]]
 
