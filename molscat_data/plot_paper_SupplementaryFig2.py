@@ -194,7 +194,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
 
     # print(f'{arrays_cold_lower_distinguished[:,::2,0].shape =}')
     # print(f'{arrays_cold_lower_distinguished[:,T_indices,0].shape = }')
-    print(f'{np.transpose(arrays_cold_lower_distinguished[:,0,0]).shape = }')
+    print(f'{np.transpose(arrays_cold_lower_distinguished[:,T_indices,0]).reshape(len(T_indices), -1, 1).shape = }')
     print(f'{np.transpose(probability_arrays[0,:,:(plot_l_max+1)]).shape =}')
     # print(f'{probability_arrays[T_index,:,:].shape = }')
     ### now we the have (T, singlet_phase, L) indices on axes for probability_arrays and expected shape (21, 98, 50)
