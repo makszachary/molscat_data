@@ -203,7 +203,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     for index, ax in enumerate(fig_axs):
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], None, None, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
-        ax.set_ylim(0, 1.5*ax.get_ylim()[1])
+        ax.set_ylim(0, 1.3*ax.get_ylim()[1])
 
         filter_max_probability = np.equal(np.full_like(probability_arrays[T_indices[index],:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_indices[index],:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_indices[index],:,:(plot_l_max+1)].transpose())
 
@@ -222,7 +222,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
 
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.97, 0.90, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'center', ha = 'right', transform = ax.transAxes)
+        ax.text(0.97, 0.95, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
 
     ### Set the x-ticks and x-label
     PhaseTicks.setInMultiplesOfPhi(fig_axs[0].xaxis)
@@ -305,7 +305,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, magnetic_fields, theory[index], experiment=None, std=None, theory_distinguished=None, theory_formattings = theory_formattings, theory_distinguished_formattings=theory_distinguished_formattings)
         # fig2_ax.scatter([magnetic_field_experimental,], experiment, s = 16, c = theory_distinguished_formattings[0]['color'], marker = 'd', edgecolors = 'dodgerblue')
         # fig2_ax.errorbar([magnetic_field_experimental, ], experiment, std, ecolor = theory_distinguished_formattings[0]['color'], capsize = 6)
-        ax.set_ylim(0, 1.5*ax.get_ylim()[1])
+        ax.set_ylim(0, 1.3*ax.get_ylim()[1])
         ax.tick_params(axis = 'both', which = 'major', direction = 'in', length = 4)
         ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
         PhaseTicks.linearStr(ax.yaxis, 0.1, 0.05, '${x:.1f}$')
@@ -317,7 +317,7 @@ def plotMagneticFieldtoFig(fig, magnetic_phases: tuple[tuple[float, float], ...]
         # props = dict(facecolor='none')
         # ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = ax.transAxes, bbox = props)
         m, e = split_exponential(plot_temperatures[index])
-        ax.text(0.97, 0.90, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'center', ha = 'right', transform = ax.transAxes)
+        ax.text(0.97, 0.95, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'top', ha = 'right', transform = ax.transAxes)
         ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
         ax.set_ylabel(ylabel)
     
