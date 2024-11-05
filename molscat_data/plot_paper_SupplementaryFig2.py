@@ -225,6 +225,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         # set y-label
         ax.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
 
+        m, e = split_exponential(plot_temperatures[index])
+        ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', va = 'center', ha = 'left', transform = ax.transAxes)
+
     ### Set the x-ticks and x-label
     PhaseTicks.setInMultiplesOfPhi(fig_axs[0].xaxis)
     fig_axs[-1].set_xlabel(f'$\\Phi_\\mathrm{{s}}$')
