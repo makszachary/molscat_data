@@ -201,19 +201,12 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
 
 
     for index, ax in enumerate(fig_axs):
-        print(f'{singlet_phases_sections.shape = }')
-        print(f'{theory[index].shape = }')
-        print(f'{theory_distinguished[index].shape =}')
-        print(f'{len(theory_formattings) = }')
-        print(f'{len(theory_distinguished_formattings) = }')
         ax = ValuesVsModelParameters.plotValuestoAxis(ax, singlet_phases_sections, theory[index], None, None, theory_distinguished[index], theory_formattings, theory_distinguished_formattings)
         PhaseTicks.linearStr(ax.yaxis, 0.1 if plot_p0 else 0.2, 0.05 if plot_p0 else 0.1, '${x:.1f}$')
         ax.set_ylim(0, 1.2*ax.get_ylim()[1])
 
         filter_max_probability = np.equal(np.full_like(probability_arrays[T_indices[index],:,:(plot_l_max+1)], np.nanmax(probability_arrays[T_indices[index],:,:(plot_l_max+1)], axis = 0)).transpose(), probability_arrays[T_indices[index],:,:(plot_l_max+1)].transpose())
-        print(f'{filter_max_probability.shape = }')
-        print(f'{filter_max_probability = }')
-        # print(f'{filter_max_probability == True}')
+
         ##### find the maximum for each partial wave and return tuples of the form (L, Phis_max, k_max)
         coords_vs_L = tuple( (l, singlet_phases_sections[filter_max_probability[l]], probability_arrays[T_indices[index],:,l][filter_max_probability[l]]) for l in range(plot_l_max+1) if np.any(filter_max_probability[l]) and np.any(probability_arrays[T_indices[index],:,l][filter_max_probability[l]] > 0.10*np.nanmax(probability_arrays[T_indices[index],:,:].sum(axis=1))) )
         print(f'{coords_vs_L = }')
@@ -224,6 +217,9 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
 
         # set y-label
         ax.set_ylabel(f'$p_0$' if plot_p0 else f'$p_\\mathrm{{eff}}$')#, rotation = 0, lapelpad = 12)
+
+        ax.tick_params(axis = 'both', which = 'major', direction = 'in', length = 4)
+        ax.tick_params(axis = 'both', which = 'minor', direction = 'in', length = 2)
 
         m, e = split_exponential(plot_temperatures[index])
         ax.text(0.03, 0.10, f'$T = {m:.2f}\\times 10^{{{e:d}}}\\,\\mathrm{{K}}$', fontsize = 'small', va = 'center', ha = 'left', transform = ax.transAxes)
