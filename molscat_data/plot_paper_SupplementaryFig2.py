@@ -168,8 +168,8 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
     
     color_map = cmocean.cm.thermal
     lognorm = matplotlib.colors.LogNorm(vmin=min(temperatures), vmax=max(temperatures), clip = False)
-    theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
-    theory_colors = ['k']
+    # theory_colors = [color_map(lognorm(temperature)) for temperature in temperatures[::2]]
+    theory_colors = ['k',]
     L_color_map = matplotlib.colormaps['inferno']
     plot_l_max = 20
     L_norm = matplotlib.colors.Normalize(vmin=0, vmax=plot_l_max, clip = False)
@@ -222,7 +222,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
 
     if plot_nan:
         theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
-    theory_distinguished = np.moveaxis(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), 0, 1)
+    theory_distinguished = np.transpose(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), (2, 1, 0))
     # print(f'{theory = }')
 
 
