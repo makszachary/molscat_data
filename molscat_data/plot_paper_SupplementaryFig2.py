@@ -189,7 +189,7 @@ def plotSectionsWithPartialVsTtoFig(fig, phase_step_sections: float, phase_diffe
         theory = np.moveaxis(arrays_cold_lower_distinguished[:,::2,0], 1, -1)
 
     if plot_nan:
-        theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,0)]+theory[np.roll(np.isnan(theory),1,0)])/2
+        theory[np.isnan(theory)] = (theory[np.roll(np.isnan(theory),-1,1)]+theory[np.roll(np.isnan(theory),1,1)])/2
     theory_distinguished = np.transpose(np.array( [ arrays_cold_lower_distinguished[:,T_indices, 0], ]), (2, 1, 0))
 
     theory_vs_T, theory_vs_T_distinguished = theory, theory_distinguished
