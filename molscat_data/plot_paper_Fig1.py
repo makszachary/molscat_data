@@ -59,8 +59,10 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     row_height = 3.8
     vpad = 1
     total_height = nrows*row_height + (nrows-1)*vpad
-    figsize = (18*cm, total_height*cm)
-    dpi = 1000
+    # figsize = (18*cm, total_height*cm)
+    figsize = (18.4*cm, total_height*cm)
+    # dpi = 1000
+    dpi = 1200
     fig = plt.figure(figsize = figsize, dpi = dpi)
     gs_Figure = gridspec.GridSpec(2*nrows-1, 2, fig, hspace = hs, wspace = ws, height_ratios = np.array([[row_height, vpad] for row in range(nrows)]).flatten()[:-1], width_ratios = [135,45])    
 
