@@ -423,7 +423,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
     if args.font is not None:
-        plt.rcParams['font'] = Path(__file__).parent / 'mpl_style_sheets' / 'fonts' / args.font+'.ttf'
+        plt.rcParams['font'] = Path(__file__).parent / 'mpl_style_sheets' / 'fonts' / (args.font+'.ttf')
 
     [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
 
