@@ -426,7 +426,7 @@ def main():
     if args.font is not None:
         font_path = Path(__file__).parent / 'mpl_style_sheets' / 'fonts' / (args.font+'.ttf')
         if not font_path.is_file(): NameError(f'{font_path.name} not found in the {font_path.parent} directory')
-        matplotlib.font_manager.fontManager.add_font(font_path)
+        matplotlib.font_manager.fontManager.addfont(font_path)
         prop = matplotlib.font_manager.FontProperties(fname=font_path)
         matplotlib.rc('font', family = 'sans-serif')
         matplotlib.rcParams['font.sans-serif'] = prop.get_name()
