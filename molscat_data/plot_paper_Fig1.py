@@ -401,7 +401,7 @@ def main():
     parser.add_argument("--DPhi_input_dir_name", type = str, default = 'RbSr+_fmf_vs_DPhi_SE', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--SO_input_dir_name", type = str, default = 'RbSr+_fmf_so_scaling', help = "Name of the directory with the molscat inputs")
     parser.add_argument("--journal", type = str, default = 'NatCommun', help = "Name of the journal to prepare the plots for.")
-    parser.add_argument("--font", type = str, default = None, help = "Name of the font file placed in ./mpl_style_sheets/fonts directory(without the needed .ttf extension).")
+    # parser.add_argument("--font", type = str, default = None, help = "Name of the font file placed in ./mpl_style_sheets/fonts directory(without the needed .ttf extension).")
     parser.add_argument("--plot_p0", action = 'store_true', help = "If included, the short-range probability p0 will be plotted instead of peff.")
     args = parser.parse_args()
 
@@ -423,13 +423,13 @@ def main():
     else:
         temperatures = np.array(args.temperatures)
 
-    if args.font is not None:
-        font_path = Path('/net/people/plgrid/plgwalewski/.fonts/'+args.font+'.ttf')
-        if not font_path.is_file(): NameError(f'{font_path.name} not found in the {font_path.parent} directory')
-        matplotlib.font_manager.fontManager.addfont(font_path)
-        prop = matplotlib.font_manager.FontProperties(fname=font_path)
-        matplotlib.rc('font', family = 'sans-serif')
-        matplotlib.rcParams['font.sans-serif'] = prop.get_name()
+    # if args.font is not None:
+    #     font_path = Path('/net/people/plgrid/plgwalewski/.fonts/'+args.font+'.ttf')
+    #     if not font_path.is_file(): NameError(f'{font_path.name} not found in the {font_path.parent} directory')
+    #     matplotlib.font_manager.fontManager.addfont(font_path)
+    #     prop = matplotlib.font_manager.FontProperties(fname=font_path)
+    #     matplotlib.rc('font', family = 'sans-serif')
+    #     matplotlib.rcParams['font.sans-serif'] = prop.get_name()
         
 
     [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
