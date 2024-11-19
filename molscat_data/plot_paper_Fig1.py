@@ -424,7 +424,7 @@ def main():
         temperatures = np.array(args.temperatures)
 
     if args.font is not None:
-        font_path = Path('~/.fonts/'+args.font+'.ttf')
+        font_path = Path('/net/people/plgrid/plgwalewski/.fonts/'+args.font+'.ttf')
         if not font_path.is_file(): NameError(f'{font_path.name} not found in the {font_path.parent} directory')
         matplotlib.font_manager.fontManager.addfont(font_path)
         prop = matplotlib.font_manager.FontProperties(fname=font_path)
