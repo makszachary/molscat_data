@@ -1,5 +1,5 @@
 font.family: sans-serif
-font.sans-serif: Myriad Pro Regular
+font.sans-serif: Myriad Pro:style=Regular
 svg.fonttype: none
 pdf.fonttype: 42
 pdf.use14corefonts: True
