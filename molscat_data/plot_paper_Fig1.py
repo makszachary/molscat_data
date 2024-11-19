@@ -5,6 +5,7 @@ import argparse
 
 from multiprocessing import Pool
 
+import matplotlib.font_manager
 import numpy as np
 from sigfig import round
 
@@ -423,7 +424,13 @@ def main():
         temperatures = np.array(args.temperatures)
 
     if args.font is not None:
-        plt.rcParams['font'] = Path(__file__).parent / 'mpl_style_sheets' / 'fonts' / (args.font+'.ttf')
+        font_path = Path(__file__).parent / 'mpl_style_sheets' / 'fonts' / (args.font+'.ttf')
+        if not font_path.is_file(): NameError(f'{font_path.name} not found in the {font_path.parent} directory')
+        matplotlib.font_manager.add_font(font_path)
+        prop = matplotlib.font_manager.FontProperties(fname=font_path)
+        matplotlib.rc('font', family = 'sans-serif')
+        matplotlib.rcParams['font.sans-serif'] = prop.get_name()
+        
 
     [plotFig1(singlet_phases = singlet_phases, phase_differences = phase_differences, singlet_phase_distinguished = singlet_phase_distinguished, so_phases = (singlet_phase_distinguished, triplet_phase_distinguished), so_scaling_values = so_scaling_values, energy_tuple = energy_tuple, temperatures = temperatures, plot_temperature = temperature, DPhi_input_dir_name = args.DPhi_input_dir_name, SO_input_dir_name = args.SO_input_dir_name, journal_name = args.journal, plot_p0 = args.plot_p0) for temperature in temperatures]
 
