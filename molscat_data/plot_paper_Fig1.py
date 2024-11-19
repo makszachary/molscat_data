@@ -92,6 +92,8 @@ def plotFig1(singlet_phases: float | np.ndarray[float], phase_differences: np.nd
     _temperatures.append(plot_temperature)
     figs_axes[2][0], _xx, _theory = plotPeffVsSOScalingToAxis(figs_axes[2][0], so_scaling_values = so_scaling_values, singlet_phase = so_phases[0], triplet_phase = so_phases[1], energy_tuple = _energy_tuple, temperatures = _temperatures, plot_temperature = plot_temperature, input_dir_name = SO_input_dir_name, plot_p0 = plot_p0)
 
+    print(f'{_xx.shape = }')
+    print(f'{_xx = }')
     np.savetxt(data_path.with_stem(data_path.stem+'_cso'), _xx.squeeze(), fmt = '%.4f')
     print(*_theory.shape)
     np.savetxt(data_path.with_stem(data_path.stem+'_theory_cso'), _theory.squeeze(), fmt = '%.4f')
