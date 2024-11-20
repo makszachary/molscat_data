@@ -292,7 +292,7 @@ def plotColorMapAndSectionstoFigs(fig0, fig1, phase_step_cm: float, phase_step_s
 
     # annotate peaks with the orbital quantum numbers L
     for coord in coords_vs_L:
-        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = 'x-small', color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
+        fig1_ax1.text(coord[1], coord[2] + (fig1_ax1.get_ylim()[1]-fig1_ax1.get_ylim()[0])*0.02, f'{coord[0]}', fontsize = matplotlib.rcParams["legend.fontsize"], color = L_color_map(L_norm(coord[0])), va = 'center', ha = 'center')#fontweight = 'bold', 
 
     # draw the label for the experimental value in the upper plot
     fig1_ax0_right = fig1_ax0.twinx()
@@ -475,7 +475,8 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     vpad = 1
     second_row_height = 6
     total_height = first_row_height+vpad+second_row_height
-    figsize = (18*cm, total_height*cm)
+    # figsize = (18*cm, total_height*cm)
+    figsize = (18.4*cm, total_height*cm)
     dpi = 1200
     fig = plt.figure(figsize=figsize, dpi = dpi)
     gs_Figure = gridspec.GridSpec(int(1000*total_height),180, fig)
@@ -513,10 +514,10 @@ def plotFig3(phase_step_cm: float, phase_step_sections: float, phase_differences
     np.savetxt(data_path.with_stem(data_path.stem+'_vs_B_temperatures'), _vs_B_temperatures, fmt = '%.4e')
 
 
-    fig0_ax.text(0., 1.0, f'a', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00, f'b', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'c', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    fig2_ax.text(0., second_row_height/total_height, f'd', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig0_ax.text(0., 1.0, f'A', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.52, 1.00, f'B', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig1_ax0.text(0.52, 1.00-0.5*(first_row_height/total_height+0.0), f'C', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    fig2_ax.text(0., second_row_height/total_height, f'D', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
     # fig3_axs[0].text(0.67, second_row_height/total_height, f'e', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig0.subplots_adjust(left = 0.05)
