@@ -172,7 +172,7 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
 
     handles = [ *handles_colors,]
     hmap = dict(zip(handles, [BicolorHandler(*color) for color in colors_and_hatches] ))
-    figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (0.98, 1.02), fontsize = 'xx-small', labelspacing = 0.75, frameon=False)
+    figs_axes[0][0].legend(handles, labels, handler_map = hmap, loc = 'upper right', bbox_to_anchor = (0.98, 1.02), labelspacing = 0.75, frameon=False)
 
     chi_sq = chi_squared(theory, experiment = experiment, std = std)
     chi_sq_without_22_cold = chi_squared(theory.flatten()[:-1], experiment = experiment.flatten()[:-1], std = std.flatten()[:-1])
