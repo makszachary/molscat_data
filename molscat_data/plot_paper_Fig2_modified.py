@@ -311,7 +311,7 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
     # fig_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig_ax.transAxes, bbox = props)
 
-    ylabel = f'$p_\\mathrm{{eff}}^\\mathrm{{hpf}}$ (state-averaged)'# if enhanced else f'$p_0$'
+    ylabel = f'$p_\\mathrm{{eff}}$ (state-averaged)'# if enhanced else f'$p_0$'
     fig_ax.set_ylabel(ylabel)
 
     # fig_ax.set_xlabel(f'reduced mass (a.m.u.)')
