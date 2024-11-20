@@ -198,9 +198,9 @@ def plotFig2(singlet_phase: float, triplet_phase: float, so_scaling: float, redu
     figs[1].subplots_adjust(left = 0.1, bottom = 0.00)
     figs[2].subplots_adjust(left = 0.1, top = 0.95, bottom = 0.)
 
-    figs_axes[0][0].text(-0.06, 1.0, f'A', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(-0.06, np.sum(row_heights[-2:])/total_height+0.03, f'B', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
-    figs_axes[1][0].text(-0.06, np.sum(row_heights[-1:])/total_height+0.02, f'C', fontsize = 8, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[0][0].text(-0.06, 1.0, f'A', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, np.sum(row_heights[-2:])/total_height+0.03, f'B', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
+    figs_axes[1][0].text(-0.06, np.sum(row_heights[-1:])/total_height+0.02, f'C', fontsize = 9, family = 'sans-serif', va = 'top', ha = 'left', transform = fig.transFigure, fontweight = 'bold')
 
     fig.savefig(png_path, bbox_inches='tight', pad_inches = 0)
     fig.savefig(svg_path, bbox_inches='tight', pad_inches = 0, transparent = True)
