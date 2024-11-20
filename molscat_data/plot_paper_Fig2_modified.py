@@ -298,8 +298,8 @@ def plotPeffAverageVsMassToFig(fig, singlet_phase: float, triplet_phase: float, 
     yy_text[[0,1]] += -0.045
     yy_text[[2,3]] += 0.03
     for i in [0, 1, 3]:
-        fig_ax.text(xx_text[i], yy_text[i], reduced_masses_labels[i], color = 'firebrick', fontsize = 'x-small', **alignments[i])
-    fig_ax.text(xx_text[2], yy_text[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 'x-small', **alignments[i])
+        fig_ax.text(xx_text[i], yy_text[i], reduced_masses_labels[i], color = 'firebrick', fontsize = 6, **alignments[i])
+    fig_ax.text(xx_text[2], yy_text[2], reduced_masses_labels[2], color = 'darkmagenta', fontsize = 6, **alignments[i])
 
     for i, curve_name in enumerate(curves_names):
         # [print(f'{i}, {line.get_xydata()=}') for i, line in enumerate(fig_ax.get_lines())]
