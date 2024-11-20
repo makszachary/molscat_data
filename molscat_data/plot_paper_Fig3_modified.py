@@ -401,8 +401,9 @@ def plotMagneticFieldtoFigs(fig2, magnetic_phases: tuple[tuple[float, float], ..
         fig2_ax.get_lines()[i].set_label(f'$\\Phi_\\mathrm{{s}} = {singlet_phase:.2f}\\pi$')
     # labelLines(fig2_ax.get_lines(), align = False, outline_width=2, color = 'white', fontsize = matplotlib.rcParams["xtick.labelsize"], )
     labelLines(fig2_ax.get_lines(), align = False, outline_color = None, yoffsets= -6.7e-3*(fig2_ax.get_ylim()[1]-fig2_ax.get_ylim()[0]), fontsize = matplotlib.rcParams["xtick.labelsize"], )
-    props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
-    fig2_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig2_ax.transAxes, bbox = props)
+    # props = dict(boxstyle='round', facecolor='none', edgecolor='midnightblue')
+    # fig2_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig2_ax.transAxes, bbox = props)
+    fig2_ax.text(0.03, 0.10, f'$\\Delta\\Phi_\\mathrm{{fit}} = {(magnetic_phases[0][1]-magnetic_phases[0][0])%1:.2f}\\pi$', va = 'center', ha = 'left', transform = fig2_ax.transAxes,)
     ylabel = f'$p_\\mathrm{{eff}}$' if not plot_p0 else f'$p_0$'
     fig2_ax.set_ylabel(ylabel)
 
